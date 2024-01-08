@@ -1,7 +1,21 @@
 import { useState } from 'react';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+
 import reactLogo from './assets/react.svg';
 import viteLogo from './assets/vite.svg';
 import './App.css';
+
+function BasicAlerts() {
+  return (
+    <Stack sx={{ width: '100%' }} spacing={2}>
+      <Alert severity="error">This is an error alert — check it out!</Alert>
+      <Alert severity="warning">This is a warning alert — check it out!</Alert>
+      <Alert severity="info">This is an info alert — check it out!</Alert>
+      <Alert severity="success">This is a success alert — check it out!</Alert>
+    </Stack>
+  );
+}
 
 function App() {
   const [count, setCount] = useState(0);
@@ -26,6 +40,7 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
+      <BasicAlerts />
     </>
   );
 }
