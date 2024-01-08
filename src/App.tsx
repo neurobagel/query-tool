@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Slider from '@mui/material/Slider';
 
 import reactLogo from './assets/react.svg';
 import viteLogo from './assets/vite.svg';
@@ -31,15 +33,20 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button type="button" onClick={() => setCount((countInline) => countInline + 1)}>
+        <Button type="button" onClick={() => setCount((countInline) => countInline + 1)}>
           count is {count}
-        </button>
+        </Button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
       <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
       <BasicAlerts />
+      <h1 className="bg-red-500 text-3xl font-bold underline">Hello world!</h1>
+      <div>
+      <Slider defaultValue={30} />
+      <Slider defaultValue={30} className="text-orange-600" />
+    </div>
     </>
   );
 }
