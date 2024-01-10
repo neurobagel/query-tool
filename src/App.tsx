@@ -1,52 +1,49 @@
 import { useState } from 'react';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Slider from '@mui/material/Slider';
-
-import reactLogo from './assets/react.svg';
-import viteLogo from './assets/vite.svg';
+import SendIcon from '@mui/icons-material/Send';
+import axios from 'axios';
 import './App.css';
 
-function BasicAlerts() {
-  return (
-    <Stack sx={{ width: '100%' }} spacing={2}>
-      <Alert severity="error">This is an error alert — check it out!</Alert>
-      <Alert severity="warning">This is a warning alert — check it out!</Alert>
-      <Alert severity="success">This is a success alert — check it out!</Alert>
-    </Stack>
-  );
-}
-
 function App() {
-  const [count, setCount] = useState(0);
+  interface Result {
+    node_name: string;
+    dataset_uuid: number;
+    dataset_name: string;
+    dataset_portal_url: string;
+    dataset_total_subjects: number;
+    records_protected: boolean;
+    num_matching_subjects: number;
+    subject_data: object;
+    image_modals: [];
+  }
+
+  const [result, setResult] = useState<Result[]>([])
+
+  function apiQueryURL() {
+    const url: string = import.meta.env.VITE_API_QUERY_URL;
+    return url.endsWith('/') ? `${url}query/?` : `${url}/query/?`;
+  }
+
+  async function submitQuery() {
+    const url: string = `${apiQueryURL()}healthy_control=true`;
+    try {
+      const response = await axios.get(url);
+      setResult(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+    
+    
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <Button type="button" onClick={() => setCount((countInline) => countInline + 1)}>
-          count is {count}
+        <Button variant="contained" endIcon={<SendIcon />} onClick={() => submitQuery()}>
+          Submit Query
         </Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-      <BasicAlerts />
-      <h1 className="bg-red-500 text-3xl font-bold underline">Hello world!</h1>
-      <div>
-      <Slider defaultValue={30} />
-      <Slider defaultValue={30} className="text-orange-600" />
-    </div>
+        <ul>
+          {result.map((item) => <li key={item.dataset_uuid}>{item.dataset_name}</li>)}
+        </ul>
     </>
   );
 }
