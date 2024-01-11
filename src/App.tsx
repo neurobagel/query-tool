@@ -21,29 +21,29 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
   const modalities: {[key: string]: {name: string, style: string}} = {
     'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
       name: 'ASL',
-      style: 'modality-style-1',
+      style: 'bg-zinc-800 text-white',
     },
     'http://purl.org/nidash/nidm#DiffusionWeighted': {
       name: 'DWI',
-      style: 'modality-style-2',
+      style: 'bg-red-700 text-white',
     },
     'http://purl.org/nidash/nidm#EEG':
     {
       name: 'EEG',
-      style: 'modality-style-3',
+      style: 'bg-rose-300 text-white',
     },
     'http://purl.org/nidash/nidm#FlowWeighted':
     {
       name: 'Flow',
-      style: 'modality-style-4',
+      style: 'bg-sky-700 text-white',
     },
     'http://purl.org/nidash/nidm#T1Weighted': {
       name: 'T1',
-      style: 'modality-style-5',
+      style: 'bg-yellow-500 text-white',
     },
     'http://purl.org/nidash/nidm#T2Weighted': {
       name: 'T2',
-      style: 'modality-style-6',
+      style: 'bg-green-600 text-white',
     },
   };
   return (

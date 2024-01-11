@@ -5,36 +5,6 @@
   text-align: center;
 }
 
-.modality-style-1{
-  background-color: rgb(69, 77, 87);
-  color: white;
-}
-
-.modality-style-2{
-  background-color: rgb(205, 92, 92);
-  color: white;
-}
-
-.modality-style-3{
-  background-color: rgb(216, 191, 216);
-  color: white;
-}
-
-.modality-style-4{
-  background-color: rgb(70, 130, 180);
-  color: white;
-}
-
-.modality-style-5{
-  background-color: rgb(189, 183, 107);
-  color: white;
-}
-
-.modality-style-6{
-  background-color: rgb(143, 188, 143);
-  color: white;
-}
-
 .dataset-name-etc-container {
   overflow: hidden;
 }
