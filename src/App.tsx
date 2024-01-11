@@ -90,7 +90,7 @@ function ResultContainer({result} : {result: Result[]}) {
   return (
     <Stack spacing={2}>
           {exampleResult.map((item) =>
-          <ResultCard nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
+          <ResultCard key={item.dataset_uuid} nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
           )}
     </Stack>
   )
