@@ -34,3 +34,14 @@
   background-color: rgb(143, 188, 143);
   color: white;
 }
+
+.dataset-name-etc-container {
+  overflow: hidden;
+}
+
+.dataset-name {
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

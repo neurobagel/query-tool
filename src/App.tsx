@@ -8,9 +8,14 @@ import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Zoom from '@mui/material/Zoom';
 import example from './example.json';
 
 import './App.css';
+
+const exampleResult: Result[] = example as Result[];
 
 function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSubjects, imageModals} : {nodeName: string, datasetName: string, datasetTotalSubjects: number, numMatchingSubjects: number, imageModals: string[]}) {
   const modalities: {[key: string]: {name: string, style: string}} = {
@@ -44,17 +49,32 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
   return (
     <Card>
       <CardContent>
-        <Grid container spacing={2} wrap='nowrap' justifyContent='space-between' alignItems='center'>
-          <Checkbox />
-          <Grid item columns={7}>
-            <h3>{datasetName}</h3>
-            <p>{numMatchingSubjects} subjects / {datasetTotalSubjects} total subjects</p>
+        <Grid container wrap='nowrap' justifyContent='space-between' alignItems='center' spacing={4}>
+          <Grid item>
+            <Checkbox />
           </Grid>
-          <Grid item columns={3}>
-            <p>from {nodeName}</p>
+          <Grid item xs className='dataset-name-etc-container'>
+          <Grid container direction='column' alignItems='flex-start'>
+            <Tooltip title={
+              <Typography variant='body1'>
+                {datasetName}
+              </Typography>
+            } 
+            placement='top' 
+            TransitionComponent={Zoom} 
+            TransitionProps={{ timeout: 500 }}
+            enterDelay={500}
+            >
+              <Typography variant="h5" className='dataset-name'>{datasetName}</Typography>
+            </Tooltip>
+            <Typography variant="subtitle1">from {nodeName}</Typography>
+            <Typography variant='subtitle2'>{numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects</Typography>
+          </Grid>
+          </Grid>
+          <Grid item>
             <ButtonGroup>
-              {imageModals.map((modal) => (
-                <Button key={modal} className={modalities[modal].style}>
+              {imageModals.sort().map((modal) => (
+                <Button key={modal} variant="text" className={modalities[modal].style}>
                   {modalities[modal].name}
                 </Button>
               ))}
@@ -69,7 +89,7 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
 function ResultContainer({result} : {result: Result[]}) {
   return (
     <Stack spacing={2}>
-          {example.map((item) =>
+          {exampleResult.map((item) =>
           <ResultCard nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
           )}
     </Stack>
