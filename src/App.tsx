@@ -65,19 +65,18 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
     </Card>
   )
 }
-function App() {
-  interface Result {
-    node_name: string;
-    dataset_uuid: number;
-    dataset_name: string;
-    dataset_portal_url: string;
-    dataset_total_subjects: number;
-    records_protected: boolean;
-    num_matching_subjects: number;
-    subject_data: object;
-    image_modals: string[];
-  }
 
+function ResultContainer({result} : {result: Result[]}) {
+  return (
+    <Stack spacing={2}>
+          {example.map((item) =>
+          <ResultCard nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
+          )}
+    </Stack>
+  )
+}
+
+function App() {
   const [result, setResult] = useState<Result[]>([])
 
   function apiQueryURL() {
@@ -90,7 +89,6 @@ function App() {
     try {
       const response = await axios.get(url);
       setResult(response.data);
-      console.log(result);
     } catch (error) {
       console.log(error);
     }
@@ -101,13 +99,21 @@ function App() {
         <Button variant="contained" endIcon={<SendIcon />} onClick={() => submitQuery()}>
           Submit Query
         </Button>
-        <Stack spacing={2}>
-          {example.map((item) =>
-          <ResultCard nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
-          )}
-        </Stack>
+        <ResultContainer result={result} />
     </>
   );
+}
+
+interface Result {
+  node_name: string;
+  dataset_uuid: number;
+  dataset_name: string;
+  dataset_portal_url: string;
+  dataset_total_subjects: number;
+  records_protected: boolean;
+  num_matching_subjects: number;
+  subject_data: object;
+  image_modals: string[];
 }
 
 export default App;
