@@ -11,11 +11,31 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
+import TextField from '@mui/material/TextField';
+import select from '@mui/material/Select';
+
 import example from './example.json';
+import diagnosis from './examples/diagnosis.json';
+import assessment from './examples/assessment.json';
 
 import './App.css';
+import Select from '@mui/material/Select';
 
 const exampleResult: Result[] = example as Result[];
+
+function CategoricalField({label, options} : {label:string, options:string[]}) {
+  return (
+    <Select >
+    </Select>
+  )
+}
+
+function ContinuousField({label} : {label:string}) {
+  return (
+    <TextField type='number' label={label}>
+    </TextField>
+  )
+}
 
 function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSubjects, imageModals} : {nodeName: string, datasetName: string, datasetTotalSubjects: number, numMatchingSubjects: number, imageModals: string[]}) {
   const modalities: {[key: string]: {name: string, style: string}} = {
@@ -116,10 +136,33 @@ function App() {
 
   return (
     <>
-        <Button variant="contained" endIcon={<SendIcon />} onClick={() => submitQuery()}>
-          Submit Query
-        </Button>
+     <Grid container spacing={2}>
+      <Grid item xs={3}>
+        <Grid container direction='column' justifyContent='space-around'>
+          <Grid item>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+            <ContinuousField label='Min Age'/>
+            </Grid>
+            <Grid item xs={6}>
+            <ContinuousField label='Max Age'/>
+            </Grid>
+          </Grid>
+          </Grid>
+          <Grid item>
+            {/* <CategoricalField /> */}
+          </Grid>
+          <Grid item>
+          <Button variant="contained" endIcon={<SendIcon />} onClick={() => submitQuery()}>
+            Submit Query
+          </Button>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={9}>
         <ResultContainer result={result} />
+      </Grid>
+      </Grid>
     </>
   );
 }

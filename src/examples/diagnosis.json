@@ -1,0 +1,84 @@
+{
+    "nb:Diagnosis": [
+      {
+        "TermURL": "snomed:58214004",
+        "Label": "Schizophrenia"
+      },
+      {
+        "TermURL": "snomed:13746004",
+        "Label": "Bipolar disorder"
+      },
+      {
+        "TermURL": "snomed:406506008",
+        "Label": "Attention deficit hyperactivity disorder"
+      },
+      {
+        "TermURL": "snomed:126943008",
+        "Label": "Separation anxiety"
+      },
+      {
+        "TermURL": "snomed:370143000",
+        "Label": "Major depressive disorder"
+      },
+      {
+        "TermURL": "snomed:35919005",
+        "Label": "Autism spectrum disorder"
+      },
+      {
+        "TermURL": "snomed:238131007",
+        "Label": "Overweight"
+      },
+      {
+        "TermURL": "snomed:49049000",
+        "Label": "Parkinson's disease"
+      },
+      {
+        "TermURL": "snomed:127295002",
+        "Label": "Traumatic brain injury"
+      },
+      {
+        "TermURL": "snomed:191736004",
+        "Label": "Obsessive-compulsive disorder"
+      },
+      {
+        "TermURL": "snomed:203082005",
+        "Label": "Fibromyalgia"
+      },
+      {
+        "TermURL": "snomed:35489007",
+        "Label": "Depressive disorder"
+      },
+      {
+        "TermURL": "snomed:59770006",
+        "Label": "Dyslexia"
+      },
+      {
+        "TermURL": "snomed:268738002",
+        "Label": "Specific spelling disorder"
+      },
+      {
+        "TermURL": "snomed:397540003",
+        "Label": "Visual impairment"
+      },
+      {
+        "TermURL": "snomed:310496002",
+        "Label": "Moderate depression"
+      },
+      {
+        "TermURL": "snomed:310495003",
+        "Label": "Mild depression"
+      },
+      {
+        "TermURL": "snomed:432119003",
+        "Label": "Aneurysm"
+      },
+      {
+        "TermURL": "snomed:87486003",
+        "Label": "Aphasia"
+      },
+      {
+        "TermURL": "snomed:192976002",
+        "Label": "Progressive supranuclear palsy"
+      }
+    ]
+  }
