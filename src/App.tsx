@@ -1,54 +1,139 @@
 import { useState } from 'react';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
+import axios from 'axios';
 import Button from '@mui/material/Button';
-import Slider from '@mui/material/Slider';
+import SendIcon from '@mui/icons-material/Send';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Checkbox from '@mui/material/Checkbox';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Zoom from '@mui/material/Zoom';
+import example from './example.json';
 
-import reactLogo from './assets/react.svg';
-import viteLogo from './assets/vite.svg';
 import './App.css';
 
-function BasicAlerts() {
+const exampleResult: Result[] = example as Result[];
+
+function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSubjects, imageModals} : {nodeName: string, datasetName: string, datasetTotalSubjects: number, numMatchingSubjects: number, imageModals: string[]}) {
+  const modalities: {[key: string]: {name: string, style: string}} = {
+    'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
+      name: 'ASL',
+      style: 'bg-zinc-800 text-white',
+    },
+    'http://purl.org/nidash/nidm#DiffusionWeighted': {
+      name: 'DWI',
+      style: 'bg-red-700 text-white',
+    },
+    'http://purl.org/nidash/nidm#EEG':
+    {
+      name: 'EEG',
+      style: 'bg-rose-300 text-white',
+    },
+    'http://purl.org/nidash/nidm#FlowWeighted':
+    {
+      name: 'Flow',
+      style: 'bg-sky-700 text-white',
+    },
+    'http://purl.org/nidash/nidm#T1Weighted': {
+      name: 'T1',
+      style: 'bg-yellow-500 text-white',
+    },
+    'http://purl.org/nidash/nidm#T2Weighted': {
+      name: 'T2',
+      style: 'bg-green-600 text-white',
+    },
+  };
   return (
-    <Stack sx={{ width: '100%' }} spacing={2}>
-      <Alert severity="error">This is an error alert — check it out!</Alert>
-      <Alert severity="warning">This is a warning alert — check it out!</Alert>
-      <Alert severity="success">This is a success alert — check it out!</Alert>
+    <Card>
+      <CardContent>
+        <Grid container wrap='nowrap' justifyContent='space-between' alignItems='center' spacing={4}>
+          <Grid item>
+            <Checkbox />
+          </Grid>
+          <Grid item xs className='dataset-name-etc-container'>
+          <Grid container direction='column' alignItems='flex-start'>
+            <Tooltip title={
+              <Typography variant='body1'>
+                {datasetName}
+              </Typography>
+            } 
+            placement='top' 
+            TransitionComponent={Zoom} 
+            TransitionProps={{ timeout: 500 }}
+            enterDelay={500}
+            >
+              <Typography variant="h5" className='dataset-name'>{datasetName}</Typography>
+            </Tooltip>
+            <Typography variant="subtitle1">from {nodeName}</Typography>
+            <Typography variant='subtitle2'>{numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects</Typography>
+          </Grid>
+          </Grid>
+          <Grid item>
+            <ButtonGroup>
+              {imageModals.sort().map((modal) => (
+                <Button key={modal} variant="text" className={modalities[modal].style}>
+                  {modalities[modal].name}
+                </Button>
+              ))}
+            </ButtonGroup>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  )
+}
+
+function ResultContainer({result} : {result: Result[]}) {
+  return (
+    <Stack spacing={2}>
+          {exampleResult.map((item) =>
+          <ResultCard key={item.dataset_uuid} nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
+          )}
     </Stack>
-  );
+  )
 }
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [result, setResult] = useState<Result[]>([])
+
+  function apiQueryURL() {
+    const url: string = import.meta.env.VITE_API_QUERY_URL;
+    return url.endsWith('/') ? `${url}query/?` : `${url}/query/?`;
+  }
+
+  async function submitQuery() {
+    const url: string = `${apiQueryURL()}is_control=true`;
+    try {
+      const response = await axios.get(url);
+      setResult(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <Button type="button" onClick={() => setCount((countInline) => countInline + 1)}>
-          count is {count}
+        <Button variant="contained" endIcon={<SendIcon />} onClick={() => submitQuery()}>
+          Submit Query
         </Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-      <BasicAlerts />
-      <h1 className="bg-red-500 text-3xl font-bold underline">Hello world!</h1>
-      <div>
-      <Slider defaultValue={30} />
-      <Slider defaultValue={30} className="text-orange-600" />
-    </div>
+        <ResultContainer result={result} />
     </>
   );
+}
+
+interface Result {
+  node_name: string;
+  dataset_uuid: number;
+  dataset_name: string;
+  dataset_portal_url: string;
+  dataset_total_subjects: number;
+  records_protected: boolean;
+  num_matching_subjects: number;
+  subject_data: object;
+  image_modals: string[];
 }
 
 export default App;
