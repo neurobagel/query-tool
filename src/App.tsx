@@ -6,34 +6,28 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
 import TextField from '@mui/material/TextField';
-import select from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 import example from './example.json';
-import diagnosis from './examples/diagnosis.json';
-import assessment from './examples/assessment.json';
 
 import './App.css';
-import Select from '@mui/material/Select';
 
 const exampleResult: Result[] = example as Result[];
 
-function CategoricalField({label, options} : {label:string, options:string[]}) {
+function CategoricalField() {
   return (
-    <Select >
-    </Select>
+    <Select />
   )
 }
 
 function ContinuousField({label} : {label:string}) {
   return (
-    <TextField type='number' label={label}>
-    </TextField>
+    <TextField type='number' label={label} />
   )
 }
 
@@ -69,13 +63,12 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
   return (
     <Card>
       <CardContent>
-        <Grid container wrap='nowrap' justifyContent='space-between' alignItems='center' spacing={4}>
-          <Grid item>
+        <div className='grid grid-cols-5 grid-rows-1 place-content-between'>
+          <div className='place-self-center'>
             <Checkbox />
-          </Grid>
-          <Grid item xs className='dataset-name-etc-container'>
-          <Grid container direction='column' alignItems='flex-start'>
-            <Tooltip title={
+          </div>
+          <div className='col-span-3'>
+          <Tooltip title={
               <Typography variant='body1'>
                 {datasetName}
               </Typography>
@@ -89,18 +82,17 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
             </Tooltip>
             <Typography variant="subtitle1">from {nodeName}</Typography>
             <Typography variant='subtitle2'>{numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects</Typography>
-          </Grid>
-          </Grid>
-          <Grid item>
-            <ButtonGroup>
+          </div>
+          <div className='col-start-5'>
+          <ButtonGroup>
               {imageModals.sort().map((modal) => (
                 <Button key={modal} variant="text" className={modalities[modal].style}>
                   {modalities[modal].name}
                 </Button>
               ))}
             </ButtonGroup>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </CardContent>
     </Card>
   )
@@ -113,6 +105,37 @@ function ResultContainer({result} : {result: Result[]}) {
           <ResultCard key={item.dataset_uuid} nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
           )}
     </Stack>
+  )
+}
+
+function QueryForm({onSubmitQuery} : {onSubmitQuery: () => void}) {
+  
+  return (
+    <div className="grid grid-cols-2 grid-rows-7 gap-2">
+        <ContinuousField label='Min Age'/>
+        <ContinuousField label='Max Age'/>
+      <div className='col-span-2'>
+        <CategoricalField />
+      </div>
+      {/* TODO: stretch this to fill the rest of the row so the label looks ok */}
+      <div className='col-span-2 row-start-3 place-self-stretch'>
+        <ContinuousField label='Minimum Number of Sessions'/>
+      </div>
+      <div className='col-span-2 row-start-4'>
+        <CategoricalField />
+      </div>
+      <div className='col-span-2 row-start-5'>
+        <CategoricalField />
+      </div>
+      <div className='row-start-6 col-span-2'>
+        <CategoricalField />
+      </div>
+      <div className="row-start-7">
+        <Button variant="contained" endIcon={<SendIcon />} onClick={onSubmitQuery}>
+          Submit Query
+        </Button>
+      </div>
+    </div>
   )
 }
 
@@ -135,35 +158,14 @@ function App() {
   }
 
   return (
-    <>
-     <Grid container spacing={2}>
-      <Grid item xs={3}>
-        <Grid container direction='column' justifyContent='space-around'>
-          <Grid item>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-            <ContinuousField label='Min Age'/>
-            </Grid>
-            <Grid item xs={6}>
-            <ContinuousField label='Max Age'/>
-            </Grid>
-          </Grid>
-          </Grid>
-          <Grid item>
-            {/* <CategoricalField /> */}
-          </Grid>
-          <Grid item>
-          <Button variant="contained" endIcon={<SendIcon />} onClick={() => submitQuery()}>
-            Submit Query
-          </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={9}>
-        <ResultContainer result={result} />
-      </Grid>
-      </Grid>
-    </>
+    <div className="grid grid-cols-4 grid-rows-1 gap-4">
+        <div>
+          <QueryForm onSubmitQuery={() => submitQuery()}/>
+        </div>
+        <div className="col-span-3">
+          <ResultContainer result={result} />
+        </div>
+    </div>
   );
 }
 
