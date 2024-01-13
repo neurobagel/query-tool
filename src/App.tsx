@@ -63,11 +63,11 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
   return (
     <Card>
       <CardContent>
-        <div className='grid grid-cols-5 grid-rows-1 place-content-between'>
-          <div className='place-self-center'>
+        <div className='grid grid-cols-12 items-center gap-2'>
+          <div className='col-end-1'>
             <Checkbox />
           </div>
-          <div className='col-span-3'>
+          <div className='col-start-1 col-span-10'>
           <Tooltip title={
               <Typography variant='body1'>
                 {datasetName}
@@ -83,16 +83,16 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
             <Typography variant="subtitle1">from {nodeName}</Typography>
             <Typography variant='subtitle2'>{numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects</Typography>
           </div>
-          <div className='col-start-5'>
-          <ButtonGroup>
-              {imageModals.sort().map((modal) => (
-                <Button key={modal} variant="text" className={modalities[modal].style}>
-                  {modalities[modal].name}
-                </Button>
-              ))}
-            </ButtonGroup>
+          <div className='col-span-2 justify-self-end'>
+            <ButtonGroup>
+                {imageModals.sort().map((modal) => (
+                  <Button key={modal} variant="text" className={modalities[modal].style}>
+                    {modalities[modal].name}
+                  </Button>
+                ))}
+              </ButtonGroup>
+            </div>
           </div>
-        </div>
       </CardContent>
     </Card>
   )
