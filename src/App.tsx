@@ -6,7 +6,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
@@ -100,11 +99,11 @@ function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSub
 
 function ResultContainer({result} : {result: Result[]}) {
   return (
-    <Stack spacing={2}>
+    <div className='grid gap-4'>
           {exampleResult.map((item) =>
           <ResultCard key={item.dataset_uuid} nodeName={item.node_name} datasetName={item.dataset_name} datasetTotalSubjects={item.dataset_total_subjects} numMatchingSubjects={item.num_matching_subjects} imageModals={item.image_modals} />
           )}
-    </Stack>
+    </div>
   )
 }
 
@@ -118,7 +117,7 @@ function QueryForm({onSubmitQuery} : {onSubmitQuery: () => void}) {
         <CategoricalField />
       </div>
       {/* TODO: stretch this to fill the rest of the row so the label looks ok */}
-      <div className='col-span-2 row-start-3 place-self-stretch'>
+      <div className='col-span-2 row-start-3'>
         <ContinuousField label='Minimum Number of Sessions'/>
       </div>
       <div className='col-span-2 row-start-4'>
