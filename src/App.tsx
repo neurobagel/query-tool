@@ -5,60 +5,41 @@ import SendIcon from '@mui/icons-material/Send';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-
-import example from './example.json';
+import Autocomplete from '@mui/material/Autocomplete';
+import { sexes, modalities } from './utils/constants';
+import example from './utils/examples/example.json';
+import diagnoses from './utils/examples/diagnoses.json';
+import assessments from './utils/examples/assessments.json';
 
 import './App.css';
 
 const exampleResult: Result[] = example as Result[];
+const modalityOptions: object = modalities;
 
-function CategoricalField() {
+function CategoricalField({label, options} : {label: string, options: object[]}) {
   return (
-    <Select />
+    <Autocomplete
+    disablePortal
+    options={options}
+    renderInput={(params) => <TextField {...params} label={label} 
+    />}
+    />
   )
 }
 
 function ContinuousField({label} : {label:string}) {
   return (
-    <TextField type='number' label={label} />
+    <TextField type='number' label={label} className='w-full' />
   )
 }
 
 function ResultCard({nodeName, datasetName, datasetTotalSubjects, numMatchingSubjects, imageModals} : {nodeName: string, datasetName: string, datasetTotalSubjects: number, numMatchingSubjects: number, imageModals: string[]}) {
-  const modalities: {[key: string]: {name: string, style: string}} = {
-    'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
-      name: 'ASL',
-      style: 'bg-zinc-800 text-white',
-    },
-    'http://purl.org/nidash/nidm#DiffusionWeighted': {
-      name: 'DWI',
-      style: 'bg-red-700 text-white',
-    },
-    'http://purl.org/nidash/nidm#EEG':
-    {
-      name: 'EEG',
-      style: 'bg-rose-300 text-white',
-    },
-    'http://purl.org/nidash/nidm#FlowWeighted':
-    {
-      name: 'Flow',
-      style: 'bg-sky-700 text-white',
-    },
-    'http://purl.org/nidash/nidm#T1Weighted': {
-      name: 'T1',
-      style: 'bg-yellow-500 text-white',
-    },
-    'http://purl.org/nidash/nidm#T2Weighted': {
-      name: 'T2',
-      style: 'bg-green-600 text-white',
-    },
-  };
   return (
     <Card>
       <CardContent>
@@ -108,26 +89,48 @@ function ResultContainer({result} : {result: Result[]}) {
 }
 
 function QueryForm({onSubmitQuery} : {onSubmitQuery: () => void}) {
-  
   return (
     <div className="grid grid-cols-2 grid-rows-7 gap-2">
         <ContinuousField label='Min Age'/>
         <ContinuousField label='Max Age'/>
       <div className='col-span-2'>
-        <CategoricalField />
+        <CategoricalField label='Sex' options={Object.entries(sexes).map(([key, value]) => ({
+        label: key,
+        id: value
+        }))} 
+        />
       </div>
-      {/* TODO: stretch this to fill the rest of the row so the label looks ok */}
       <div className='col-span-2 row-start-3'>
-        <ContinuousField label='Minimum Number of Sessions'/>
+        <div className='grid grid-cols-12 gap-4 items-center'>
+      <div className='col-span-9'>
+          <CategoricalField 
+          label='Diagnosis' 
+          options={diagnoses["nb:Diagnosis"].map((d) => ({
+          label: d.Label,
+          id: d.TermURL
+          }))}
+          />
+      </div>
+      <div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="healthyControl"
+            />
+          }
+          label="Healthy Control"
+        />
+      </div>
+      </div>
       </div>
       <div className='col-span-2 row-start-4'>
-        <CategoricalField />
+        <ContinuousField label='Minimum Number of Sessions'/>
       </div>
       <div className='col-span-2 row-start-5'>
-        <CategoricalField />
+        <CategoricalField label='Assessment tool' options={assessments["nb:Assessment"].map((a) => ({label: a.Label, id: a.TermURL}))}/>
       </div>
-      <div className='row-start-6 col-span-2'>
-        <CategoricalField />
+      <div className='col-span-2 row-start-6'>
+        <CategoricalField label='Imaging modality' options={Object.entries(modalityOptions).map(([, value]) => ({label: value.label, id: value.TermURL}))}/>
       </div>
       <div className="row-start-7">
         <Button variant="contained" endIcon={<SendIcon />} onClick={onSubmitQuery}>
