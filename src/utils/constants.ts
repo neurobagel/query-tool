@@ -1,3 +1,7 @@
+const baseAPIURL : string = import.meta.env.VITE_API_QUERY_URL;
+export const queryURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}query/?` : `${baseAPIURL}/query/?`;
+export const attributesURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}attributes/` : `${baseAPIURL}/attributes/`;
+
 export const sexes: {[key: string]: string} = {
     male: 'snomed:248153007',
     female: 'snomed:248152002',

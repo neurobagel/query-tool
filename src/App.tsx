@@ -12,13 +12,10 @@ import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { sexes, modalities } from './utils/constants';
-import example from './utils/examples/example.json';
-import assessments from './utils/examples/assessments.json';
+import { queryURL, attributesURL, sexes, modalities } from './utils/constants';
 
 import './App.css';
 
-const exampleResult: Result[] = example as Result[];
 const modalityOptions: object = modalities;
 
 function CategoricalField({
@@ -118,10 +115,9 @@ function ResultCard({
 }
 
 function ResultContainer({ result }: { result: Result[] }) {
-  console.log(result);
   return (
     <div className="grid gap-4">
-      {exampleResult.map((item) => (
+      {result.map((item) => (
         <ResultCard
           key={item.dataset_uuid}
           nodeName={item.node_name}
@@ -137,10 +133,12 @@ function ResultContainer({ result }: { result: Result[] }) {
 
 function QueryForm({
   diagnosisOptions,
+  assessmentOptions,
   apiQueryURL,
   onSubmitQuery,
 }: {
   diagnosisOptions: APIOption[];
+  assessmentOptions: APIOption[];
   apiQueryURL: string;
   onSubmitQuery: (url: string) => void;
 }) {
@@ -265,7 +263,7 @@ function QueryForm({
       <div className="col-span-2 row-start-5">
         <CategoricalField
           label="Assessment tool"
-          options={assessments['nb:Assessment'].map((a) => ({ label: a.Label, id: a.TermURL }))}
+          options={assessmentOptions.map((a) => ({ label: a.Label, id: a.TermURL }))}
           onFieldChange={(label, value) => updateQueryParams(label, value)}
         />
       </div>
@@ -295,30 +293,32 @@ function QueryForm({
 function App() {
 
   const [diagnosisOptions, setDiagnosisOptions] = useState<APIOption[]>([]);
-  // const [assessmentOptions, setAssessmentOptions] = useState<RetrievedOption>({});
+  const [assessmentOptions, setAssessmentOptions] = useState<APIOption[]>([]);
+
   const [result, setResult] = useState<Result[]>([]);
 
   // TODO find out if this is expensive
-  const baseAPIURL : string = import.meta.env.VITE_API_QUERY_URL;
-  const queryURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}query/?` : `${baseAPIURL}/query/?`;
-  const attributesURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}attributes/` : `${baseAPIURL}/attributes/`;
+  // const baseAPIURL : string = import.meta.env.VITE_API_QUERY_URL;
+  // const queryURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}query/?` : `${baseAPIURL}/query/?`;
+  // const attributesURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}attributes/` : `${baseAPIURL}/attributes/`;
 
-  async function fetchData() {
-    try {
-      const diagnosisResponse: AxiosResponse<RetrievedOption> = await axios.get(`${attributesURL}nb:Diagnosis`);
-      if (diagnosisResponse.data['nb:Diagnosis'].length === 0) {
+  useEffect( () => {
+    async function fetchData(dataElementURI : string, setState : (options: APIOption[]) => void) {
+      try {
+        const response: AxiosResponse<RetrievedOption> = await axios.get(`${attributesURL}${dataElementURI}`);
+        if (response.data[dataElementURI].length === 0) {
+          // TODO: make into a toast
+        } else {
+          setState(response.data[dataElementURI].sort((a, b) => a.Label.localeCompare(b.Label)));
+        }
+      } catch (err) {
         // TODO: make into a toast
-      } else {
-        setDiagnosisOptions(diagnosisResponse.data["nb:Diagnosis"].sort((a, b) => a.Label.localeCompare(b.Label)));
+        console.log('Failed to retrieve diagnosis options', err);
       }
-    } catch (err) {
-      // TODO: make into a toast
-      console.log('Failed to retrieve diagnosis options', err);
     }
-  }
 
-  useEffect(() => {
-    fetchData();
+    fetchData('nb:Diagnosis', setDiagnosisOptions);
+    fetchData('nb:Assessment', setAssessmentOptions);
   }, []);
 
   async function submitQuery(url: string) {
@@ -333,7 +333,7 @@ function App() {
   return (
     <div className="grid grid-cols-4 grid-rows-1 gap-4">
       <div>
-        <QueryForm diagnosisOptions={diagnosisOptions} apiQueryURL={queryURL} onSubmitQuery={(url: string) => submitQuery(url)} />
+        <QueryForm diagnosisOptions={diagnosisOptions} assessmentOptions={assessmentOptions} apiQueryURL={queryURL} onSubmitQuery={(url: string) => submitQuery(url)} />
       </div>
       <div className="col-span-3">
         <ResultContainer result={result} />
