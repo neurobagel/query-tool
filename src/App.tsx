@@ -294,13 +294,7 @@ function App() {
 
   const [diagnosisOptions, setDiagnosisOptions] = useState<APIOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<APIOption[]>([]);
-
   const [result, setResult] = useState<Result[]>([]);
-
-  // TODO find out if this is expensive
-  // const baseAPIURL : string = import.meta.env.VITE_API_QUERY_URL;
-  // const queryURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}query/?` : `${baseAPIURL}/query/?`;
-  // const attributesURL: string = baseAPIURL.endsWith('/') ? `${baseAPIURL}attributes/` : `${baseAPIURL}/attributes/`;
 
   useEffect( () => {
     async function fetchData(dataElementURI : string, setState : (options: APIOption[]) => void) {
