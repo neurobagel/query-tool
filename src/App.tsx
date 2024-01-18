@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
@@ -21,13 +22,10 @@ function CategoricalField({
   options,
   onFieldChange,
   multiple,
+  inputValue,
 }: CategoricalFieldProps) {
-  const [inputValue, setInputValue] = useState<FieldInputOption | FieldInputOption[] | null>(multiple ?  [{label: 'All', id: 'allNodes'}] : null);
+  // const [inputValue, setInputValue] = useState<FieldInputOption | FieldInputOption[] | null>(multiple ?  [{label: 'All', id: 'allNodes'}] : null);
 
-  function handleOnChange(value : FieldInputOption | FieldInputOption[] | null) {
-    setInputValue(value);
-    onFieldChange(label, value);
-  }
 
   return (
     <Autocomplete
@@ -45,13 +43,14 @@ function CategoricalField({
         />
       )}
       multiple={multiple}
-      onChange={(_, value) => handleOnChange(value)}
+      onChange={(_, value) => onFieldChange(label, value)}
     />
   );
 }
 
 CategoricalField.defaultProps = {
   multiple: false,
+  inputValue: null,
 };
 
 function ContinuousField({
@@ -163,13 +162,34 @@ function QueryForm({
   const [isControl, setIsControl] = useState<boolean>(false);
   const [minNumSessions, setMinNumSessions] = useState<string[] | string | null>(null);
   const [assessmentTool, setAssessmentTool] = useState<string[] | string | null>(null);
-  const [imagingModality, setImagingModality] = useState<string[] | string | null>(null);;
+  const [imagingModality, setImagingModality] = useState<string[] | string | null>(null);
+
+  const [selectedNodes, setSelectedNodes] = useState<FieldInputOption | FieldInputOption[] | null>([{label: 'All', id: 'allNodes'}]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const nodes: string[] = searchParams.getAll('node');
+    if (nodes) {
+      const matchedOptions : FieldInputOption[] = nodes.map(label => {
+        console.log('labe:',label);
+        const foundOption = nodeOptions.find(option => option.NodeName === label);
+        console.log('found option:',foundOption);
+        return foundOption ? {label: label, id: foundOption.ApiURL} : {label: label, id: 'dontMatch'};
+      });
+      console.log('mathced nodes',matchedOptions);
+      const something = matchedOptions.filter(option => option.id !== 'dontMatch');
+      console.log('mathced options after filtering:', something);
+      setSelectedNodes(matchedOptions.filter(option => option.id !== 'dontMatch'));
+    }
+  }, [searchParams]);
 
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInputOption | FieldInputOption[] | null) {
     switch (fieldLabel) {
       case 'Neurobagel graph':
         if(Array.isArray(value)) {
           setNode(value.map((o) => o.id));
+          setSelectedNodes(value);
+          setSearchParams({node:value.map((node) => node.label)});
         }
         else {
           setNode(value?.id ?? null);
@@ -288,7 +308,9 @@ function QueryForm({
         }))}
         onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)} 
         multiple
+        inputValue={selectedNodes}
         />
+        This is what its like: {searchParams}
       </div>
         )
       }
@@ -397,6 +419,7 @@ function App() {
         try {
           const response: AxiosResponse<[]> = await axios.get(nodesURL);
           setNodeOptions([...response.data, {NodeName: 'All', ApiURL: 'allNodes'}]);
+          console.log('node options have been retrieved!', nodeOptions);
         }
         catch (err) {
           // TODO: make into a toast
@@ -410,6 +433,8 @@ function App() {
 
     fetchOptions('nb:Diagnosis', setDiagnosisOptions);
     fetchOptions('nb:Assessment', setAssessmentOptions);
+
+
   }, []);
 
   async function submitQuery(url: string) {
@@ -469,6 +494,7 @@ interface CategoricalFieldProps {
   options: FieldInputOption[];
   onFieldChange: (fieldLabel: string, value: FieldInputOption | FieldInputOption[] | null) => void;
   multiple?: boolean;
+  inputValue?: FieldInputOption | FieldInputOption[] | null;
 }
 
 export default App;
