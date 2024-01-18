@@ -22,10 +22,18 @@ function CategoricalField({
   onFieldChange,
   multiple,
 }: CategoricalFieldProps) {
+  const [inputValue, setInputValue] = useState<FieldInputOption | FieldInputOption[] | null>(multiple ?  [{label: 'All', id: 'allNodes'}] : null);
+
+  function handleOnChange(value : FieldInputOption | FieldInputOption[] | null) {
+    setInputValue(value);
+    onFieldChange(label, value);
+  }
+
   return (
     <Autocomplete
-      options={options}
+      options={options.sort((a, b) => a.label.localeCompare(b.label))}
       isOptionEqualToValue={(option, value) => option.id === value.id}
+      value={inputValue}
       renderInput={(params) => (
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
@@ -37,7 +45,7 @@ function CategoricalField({
         />
       )}
       multiple={multiple}
-      onChange={(_, value) => onFieldChange(label, value)}
+      onChange={(_, value) => handleOnChange(value)}
     />
   );
 }
@@ -254,9 +262,10 @@ function QueryForm({
     const keysToDelete: string[] = [];
 
     queryParams.forEach((value, key) => {
-      if (value === '') {
+      // if All option is selected for nodes field, delete all node_urls
+      if (value === '' || value === 'allNodes') {
         keysToDelete.push(key);
-      } 
+      }
     });
 
     keysToDelete.forEach((key) => {
@@ -366,7 +375,7 @@ function App() {
 
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
-  const [nodeOptions, setNodeOptions] = useState<NodeOption[]>([]);
+  const [nodeOptions, setNodeOptions] = useState<NodeOption[]>([{NodeName: 'All', ApiURL: 'allNodes'}]);
   const [result, setResult] = useState<Result[]>([]);
 
   useEffect( () => {
@@ -376,7 +385,7 @@ function App() {
         if (response.data[dataElementURI].length === 0) {
           // TODO: make into a toast
         } else {
-          setState(response.data[dataElementURI].sort((a, b) => a.Label.localeCompare(b.Label)));
+          setState(response.data[dataElementURI]);
         }
       } catch (err) {
         // TODO: make into a toast
@@ -387,7 +396,7 @@ function App() {
     async function fetchNodes() {
         try {
           const response: AxiosResponse<[]> = await axios.get(nodesURL);
-          setNodeOptions(response.data);
+          setNodeOptions([...response.data, {NodeName: 'All', ApiURL: 'allNodes'}]);
         }
         catch (err) {
           // TODO: make into a toast
