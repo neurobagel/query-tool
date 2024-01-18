@@ -2,7 +2,12 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateRows: {
+        '7': 'repeat(7, auto)',
+        '8': 'repeat(8, auto)',
+      },
+    },
   },
   plugins: [],
   corePlugins: {
