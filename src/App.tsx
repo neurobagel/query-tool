@@ -50,7 +50,6 @@ function CategoricalField({
 
 CategoricalField.defaultProps = {
   multiple: false,
-  inputValue: null,
 };
 
 function ContinuousField({
@@ -154,78 +153,49 @@ function QueryForm({
   apiQueryURL: string;
   onSubmitQuery: (url: string) => void;
 }) {
-  const [node, setNode] = useState<string[] | string | null>(null);
+  const [node, setNode] = useState<FieldInputOption | FieldInputOption[] | null>([{label: 'All', id: 'allNodes'}]);
   const [minAge, setMinAge] = useState<string | null>(null);
   const [maxAge, setMaxAge] = useState<string | null>(null);
-  const [sex, setSex] = useState<string[] | string | null>(null);
-  const [diagnosis, setDiagnosis] = useState<string[] | string | null>(null);
+  const [sex, setSex] = useState<FieldInputOption | FieldInputOption[] | null>(null);
+  const [diagnosis, setDiagnosis] = useState<FieldInputOption | FieldInputOption[] | null>(null);
   const [isControl, setIsControl] = useState<boolean>(false);
-  const [minNumSessions, setMinNumSessions] = useState<string[] | string | null>(null);
-  const [assessmentTool, setAssessmentTool] = useState<string[] | string | null>(null);
-  const [imagingModality, setImagingModality] = useState<string[] | string | null>(null);
-
-  const [selectedNodes, setSelectedNodes] = useState<FieldInputOption | FieldInputOption[] | null>([{label: 'All', id: 'allNodes'}]);
+  const [minNumSessions, setMinNumSessions] = useState<string | null>(null);
+  const [assessmentTool, setAssessmentTool] = useState<FieldInputOption | FieldInputOption[] | null>(null);
+  const [imagingModality, setImagingModality] = useState<FieldInputOption | FieldInputOption[] | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const nodes: string[] = searchParams.getAll('node');
-    if (nodes) {
-      const matchedOptions : FieldInputOption[] = nodes.map(label => {
-        console.log('labe:',label);
-        const foundOption = nodeOptions.find(option => option.NodeName === label);
-        console.log('found option:',foundOption);
-        return foundOption ? {label: label, id: foundOption.ApiURL} : {label: label, id: 'dontMatch'};
-      });
-      console.log('mathced nodes',matchedOptions);
-      const something = matchedOptions.filter(option => option.id !== 'dontMatch');
-      console.log('mathced options after filtering:', something);
-      setSelectedNodes(matchedOptions.filter(option => option.id !== 'dontMatch'));
+    if (nodeOptions.length > 1) {
+      const searchParamNodes: string[] = searchParams.getAll('node');
+      if (searchParamNodes) {
+        const matchedOptions : FieldInputOption[] = searchParamNodes.map(label => {
+          const foundOption = nodeOptions.find(option => option.NodeName === label);
+          return foundOption ? {label, id: foundOption.ApiURL} : {label, id: ''};
+        }).filter(option => option.id !== '');;
+        setNode(matchedOptions);
+      }
     }
-  }, [searchParams]);
+  }, [searchParams, nodeOptions]);
 
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInputOption | FieldInputOption[] | null) {
     switch (fieldLabel) {
       case 'Neurobagel graph':
-        if(Array.isArray(value)) {
-          setNode(value.map((o) => o.id));
-          setSelectedNodes(value);
-          setSearchParams({node:value.map((node) => node.label)});
-        }
-        else {
-          setNode(value?.id ?? null);
+        setNode(value);
+        if (Array.isArray(value)) {
+          setSearchParams({ node: value.map((n) => n.label)});
         }
         break;
       case 'Sex':
-        if(Array.isArray(value)) {
-          setNode(value.map((o) => o.id));
-        }
-        else {
-          setSex(value?.id ?? null);
-        }
+        setSex(value);
         break;
       case 'Diagnosis':
-        if(Array.isArray(value)) {
-          setDiagnosis(value.map((o) => o.id));
-        }
-        else {
-          setDiagnosis(value?.id ?? null);
-        }
+        setDiagnosis(value);
         break;
       case 'Assessment tool':
-        if(Array.isArray(value)) {
-          setAssessmentTool(value.map((o) => o.id));
-        }
-        else {
-          setAssessmentTool(value?.id ?? null);
-        }
+        setAssessmentTool(value);
         break;
       case 'Imaging modality':
-        if(Array.isArray(value)) {
-          setImagingModality(value.map((o) => o.id));
-        }
-        else {
-          setImagingModality(value?.id ?? null);
-        }
+        setImagingModality(value);
         break;
       default:
         break;
@@ -248,28 +218,27 @@ function QueryForm({
     }
   }
 
-  function setQueryParam(param: string, value: string | string[] | null, searchParamsObject: URLSearchParams) {
+  function setQueryParam(param: string, value: FieldInputOption | FieldInputOption[] | null, searchParamsObject: URLSearchParams) {
     if (Array.isArray(value)) {
       value.forEach((v) => {
-        searchParamsObject.append(param, v);
+        searchParamsObject.append(param, v.id);
       })
     }
     else {
-      searchParamsObject.set(param, value ?? '');
+      searchParamsObject.set(param, value?.id ?? '');
     }
-
   }
 
   function constructQueryURL() {
     const queryParams = new URLSearchParams();
 
     setQueryParam('node_url', node, queryParams);
-    setQueryParam('min_age', minAge, queryParams);
-    setQueryParam('max_age', maxAge, queryParams);
+    queryParams.set('min_age', minAge ?? '');
+    queryParams.set('max_age', maxAge ?? '');
     setQueryParam('sex', sex, queryParams);
-    setQueryParam('diagnosis', isControl ? '' : diagnosis, queryParams);
+    setQueryParam('diagnosis', isControl ? null : diagnosis, queryParams);
     queryParams.set('is_control', isControl ? 'true' : '');
-    setQueryParam('min_num_sessions', minNumSessions, queryParams);
+    queryParams.set('min_num_sessions', minNumSessions ?? '');
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
 
@@ -308,9 +277,8 @@ function QueryForm({
         }))}
         onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)} 
         multiple
-        inputValue={selectedNodes}
+        inputValue={node}
         />
-        This is what its like: {searchParams}
       </div>
         )
       }
@@ -334,6 +302,7 @@ function QueryForm({
             id: value,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          inputValue={sex}
         />
       </div>
       <div className={isFederationAPI ? 'col-span-2 row-start-4' : 'col-span-2 row-start-3'}>
@@ -346,6 +315,7 @@ function QueryForm({
                 id: d.TermURL,
               }))}
               onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+              inputValue={diagnosis}
             />
           </div>
           <div>
@@ -368,6 +338,7 @@ function QueryForm({
           label='Assessment tool'
           options={assessmentOptions.map((a) => ({ label: a.Label, id: a.TermURL }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          inputValue={assessmentTool}
         />
       </div>
       <div className={isFederationAPI ? 'col-span-2 row-start-7' : 'col-span-2 row-start-6'}>
@@ -378,6 +349,7 @@ function QueryForm({
             id: value.TermURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          inputValue={imagingModality}
         />
       </div>
       <div className={isFederationAPI ? 'row-start-8' : 'row-start-7'}>
@@ -419,7 +391,6 @@ function App() {
         try {
           const response: AxiosResponse<[]> = await axios.get(nodesURL);
           setNodeOptions([...response.data, {NodeName: 'All', ApiURL: 'allNodes'}]);
-          console.log('node options have been retrieved!', nodeOptions);
         }
         catch (err) {
           // TODO: make into a toast
@@ -494,7 +465,7 @@ interface CategoricalFieldProps {
   options: FieldInputOption[];
   onFieldChange: (fieldLabel: string, value: FieldInputOption | FieldInputOption[] | null) => void;
   multiple?: boolean;
-  inputValue?: FieldInputOption | FieldInputOption[] | null;
+  inputValue: FieldInputOption | FieldInputOption[] | null;
 }
 
 export default App;
