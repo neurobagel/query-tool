@@ -24,8 +24,6 @@ function CategoricalField({
   multiple,
   inputValue,
 }: CategoricalFieldProps) {
-  // const [inputValue, setInputValue] = useState<FieldInputOption | FieldInputOption[] | null>(multiple ?  [{label: 'All', id: 'allNodes'}] : null);
-
 
   return (
     <Autocomplete
@@ -171,11 +169,24 @@ function QueryForm({
         const matchedOptions : FieldInputOption[] = searchParamNodes.map(label => {
           const foundOption = nodeOptions.find(option => option.NodeName === label);
           return foundOption ? {label, id: foundOption.ApiURL} : {label, id: ''};
-        }).filter(option => option.id !== '');;
-        setNode(matchedOptions);
+        }).filter(option => option.id !== '');
+        // If there is no node in the search params, set it to All
+        if (matchedOptions.length === 0) {
+          setSearchParams({ node: ['All']});
+          setNode([{label: 'All', id: 'allNodes'}]);
+        }
+        // If there is any node besides All selected, remove All from the list
+        else if (matchedOptions.length > 1 && matchedOptions.some(option => option.id === 'allNodes')) {
+          const filteredNode : FieldInputOption[] = matchedOptions.filter((n) => n.id !== 'allNodes');
+          setNode(filteredNode);
+          setSearchParams({ node: filteredNode.map((n) => n.label)});
+        }
+        else {
+          setNode(matchedOptions);
+        }
       }
     }
-  }, [searchParams, nodeOptions]);
+  }, [searchParams, setSearchParams, nodeOptions]);
 
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInputOption | FieldInputOption[] | null) {
     switch (fieldLabel) {
