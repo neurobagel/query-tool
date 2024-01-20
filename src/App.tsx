@@ -151,15 +151,15 @@ function QueryForm({
   apiQueryURL: string;
   onSubmitQuery: (url: string) => void;
 }) {
-  const [node, setNode] = useState<FieldInputOption | FieldInputOption[] | null>([{label: 'All', id: 'allNodes'}]);
+  const [node, setNode] = useState<FieldInput>([{label: 'All', id: 'allNodes'}]);
   const [minAge, setMinAge] = useState<string | null>(null);
   const [maxAge, setMaxAge] = useState<string | null>(null);
-  const [sex, setSex] = useState<FieldInputOption | FieldInputOption[] | null>(null);
-  const [diagnosis, setDiagnosis] = useState<FieldInputOption | FieldInputOption[] | null>(null);
+  const [sex, setSex] = useState<FieldInput>(null);
+  const [diagnosis, setDiagnosis] = useState<FieldInput>(null);
   const [isControl, setIsControl] = useState<boolean>(false);
   const [minNumSessions, setMinNumSessions] = useState<string | null>(null);
-  const [assessmentTool, setAssessmentTool] = useState<FieldInputOption | FieldInputOption[] | null>(null);
-  const [imagingModality, setImagingModality] = useState<FieldInputOption | FieldInputOption[] | null>(null);
+  const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
+  const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -188,7 +188,7 @@ function QueryForm({
     }
   }, [searchParams, setSearchParams, nodeOptions]);
 
-  function updateCategoricalQueryParams(fieldLabel: string, value: FieldInputOption | FieldInputOption[] | null) {
+  function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
       case 'Neurobagel graph':
         setNode(value);
@@ -229,7 +229,7 @@ function QueryForm({
     }
   }
 
-  function setQueryParam(param: string, value: FieldInputOption | FieldInputOption[] | null, searchParamsObject: URLSearchParams) {
+  function setQueryParam(param: string, value: FieldInput, searchParamsObject: URLSearchParams) {
     if (Array.isArray(value)) {
       value.forEach((v) => {
         searchParamsObject.append(param, v.id);
@@ -384,13 +384,13 @@ function App() {
   const [result, setResult] = useState<Result[]>([]);
 
   useEffect( () => {
-    async function fetchOptions(dataElementURI : string, setState : (options: AttributeOption[]) => void) {
+    async function fetchOptions(dataElementURI : string, setOptions : (options: AttributeOption[]) => void) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(`${attributesURL}${dataElementURI}`);
         if (response.data[dataElementURI].length === 0) {
           // TODO: make into a toast
         } else {
-          setState(response.data[dataElementURI]);
+          setOptions(response.data[dataElementURI]);
         }
       } catch (err) {
         // TODO: make into a toast
@@ -474,9 +474,11 @@ interface Result {
 interface CategoricalFieldProps {
   label: string;
   options: FieldInputOption[];
-  onFieldChange: (fieldLabel: string, value: FieldInputOption | FieldInputOption[] | null) => void;
+  onFieldChange: (fieldLabel: string, value: FieldInput) => void;
   multiple?: boolean;
-  inputValue: FieldInputOption | FieldInputOption[] | null;
+  inputValue: FieldInput;
 }
+
+type FieldInput = FieldInputOption | FieldInputOption[] | null;
 
 export default App;
