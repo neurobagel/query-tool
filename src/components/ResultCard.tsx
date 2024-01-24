@@ -9,55 +9,65 @@ import Zoom from '@mui/material/Zoom';
 import { modalities } from '../utils/constants';
 
 function ResultCard({
-    nodeName,
-    datasetName,
-    datasetTotalSubjects,
-    numMatchingSubjects,
-    imageModals,
-  }: {
-    nodeName: string;
-    datasetName: string;
-    datasetTotalSubjects: number;
-    numMatchingSubjects: number;
-    imageModals: string[];
-  }) {
-    return (
-      <Card>
-        <CardContent>
-          <div className='grid grid-cols-12 items-center gap-2'>
-            <div className='col-end-1'>
-              <Checkbox />
-            </div>
-            <div className='col-span-10 col-start-1'>
-              <Tooltip
-                title={<Typography variant='body1'>{datasetName}</Typography>}
-                placement='top'
-                TransitionComponent={Zoom}
-                TransitionProps={{ timeout: 500 }}
-                enterDelay={500}
-              >
-                <Typography variant='h5' className='dataset-name'>
-                  {datasetName}
-                </Typography>
-              </Tooltip>
-              <Typography variant='subtitle1'>from {nodeName}</Typography>
-              <Typography variant='subtitle2'>
-                {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
-              </Typography>
-            </div>
-            <div className='col-span-2 justify-self-end'>
-              <ButtonGroup>
-                {imageModals.sort().map((modal) => (
-                  <Button key={modal} variant='text' className={modalities[modal].style}>
-                    {modalities[modal].name}
-                  </Button>
-                ))}
-              </ButtonGroup>
-            </div>
+  nodeName,
+  datasetUUID,
+  datasetName,
+  datasetTotalSubjects,
+  numMatchingSubjects,
+  imageModals,
+  checked,
+  onCheckboxChange,
+}: {
+  nodeName: string;
+  datasetName: string;
+  datasetUUID: string;
+  datasetTotalSubjects: number;
+  numMatchingSubjects: number;
+  imageModals: string[];
+  checked: boolean;
+  onCheckboxChange: (checked: boolean, id: string) => void;
+}) {
+  return (
+    <Card>
+      <CardContent>
+        <div className="grid grid-cols-12 items-center gap-2">
+          <div className="col-end-1">
+            <Checkbox
+              checked={checked}
+              onChange={(event) => onCheckboxChange(event.target.checked, datasetUUID)}
+            />
           </div>
-        </CardContent>
-      </Card>
-    );
-  }
+          <div className="col-span-10 col-start-1">
+            <Tooltip
+              title={<Typography variant="body1">{datasetName}</Typography>}
+              placement="top"
+              TransitionComponent={Zoom}
+              TransitionProps={{ timeout: 500 }}
+              enterDelay={500}
+            >
+              <Typography variant="h5" className="dataset-name">
+                {datasetName}
+              </Typography>
+            </Tooltip>
+            <Typography variant="subtitle1">from {nodeName}</Typography>
+            <Typography variant="subtitle2">
+              {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
+            </Typography>
+          </div>
+          <div className="col-span-2 justify-self-end">
+            <ButtonGroup>
+              {/* TODO: fix the button's hover color issue */}
+              {imageModals.sort().map((modal) => (
+                <Button key={modal} variant="text" className={modalities[modal].style}>
+                  {modalities[modal].name}
+                </Button>
+              ))}
+            </ButtonGroup>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
-  export default ResultCard;
+export default ResultCard;
