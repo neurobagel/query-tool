@@ -38,6 +38,7 @@ function ResultCard({
             />
           </div>
           <div className="col-span-10 col-start-1">
+            {/* TODO: replace the tooltip with the ellipsis open and close trick  */}
             <Tooltip
               title={<Typography variant="body1">{datasetName}</Typography>}
               placement="top"
