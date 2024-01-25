@@ -3,9 +3,11 @@ import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
 import { Result } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
+import NBDialog from './NBDialog';
 
 function ResultContainer({ result }: { result: Result[] | null }) {
   const [download, setDownload] = useState<string[]>([]);
+  const [openModal, setOpenModal] = useState(false);
 
   // TODO: deal with erros
   function updateDownload(checked: boolean, id: string) {
@@ -36,7 +38,9 @@ function ResultContainer({ result }: { result: Result[] | null }) {
   useEffect(() => {
     if (result) {
       setDownload((currentDownload) =>
-        currentDownload.filter((downloadID) => result.some((item) => item.dataset_uuid === downloadID))
+        currentDownload.filter((downloadID) =>
+          result.some((item) => item.dataset_uuid === downloadID)
+        )
       );
     }
   }, [result]);
@@ -182,7 +186,10 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           ))}
         </div>
         <div className="col-span-1">
-          <Button variant="contained">How to get data</Button>
+          <Button variant="contained" onClick={() => setOpenModal(true)}>
+            How to get data
+          </Button>
+          <NBDialog open={openModal} onClose={() => setOpenModal(false)} />
         </div>
         <div className="col-span-3 space-x-2 justify-self-end">
           <DownloadResultButton
