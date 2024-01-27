@@ -25,7 +25,7 @@ function ResultCard({
   numMatchingSubjects: number;
   imageModals: string[];
   checked: boolean;
-  onCheckboxChange: (checked: boolean, id: string) => void;
+  onCheckboxChange: (id: string) => void;
 }) {
   return (
     <Card>
@@ -34,7 +34,7 @@ function ResultCard({
           <div className="col-end-1">
             <Checkbox
               checked={checked}
-              onChange={(event) => onCheckboxChange(event.target.checked, datasetUUID)}
+              onChange={() => onCheckboxChange(datasetUUID)}
             />
           </div>
           <div className="col-span-10 col-start-1">

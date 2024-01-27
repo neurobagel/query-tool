@@ -10,9 +10,19 @@ function ResultContainer({ result }: { result: Result[] | null }) {
   const [openModal, setOpenModal] = useState(false);
 
   // TODO: deal with erros
-  function updateDownload(checked: boolean, id: string) {
+  
+  /**
+   * Updates the download array.
+   * 
+   * @remarks
+   * If the dataset uuid is not in the download array adds it, otherwise removes it.
+   * 
+   * @param id - the uuid of the dataset to be added or removed from the download list
+   * @returns void
+   */
+  function updateDownload(id: string) {
     setDownload((currDownload) => {
-      const newDownload = checked
+      const newDownload = !currDownload.includes(id)
         ? [...currDownload, id]
         : currDownload.filter((downloadID) => downloadID !== id);
       return newDownload;
@@ -181,7 +191,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
               numMatchingSubjects={item.num_matching_subjects}
               imageModals={item.image_modals}
               checked={download.includes(item.dataset_uuid)}
-              onCheckboxChange={(checked, id) => updateDownload(checked, id)}
+              onCheckboxChange={(id) => updateDownload(id)}
             />
           ))}
         </div>
