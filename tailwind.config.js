@@ -4,13 +4,13 @@ export default {
   theme: {
     extend: {
       gridTemplateRows: {
-        '7': 'repeat(7, auto)',
-        '8': 'repeat(8, auto)',
+        7: 'repeat(7, auto)',
+        8: 'repeat(8, auto)',
       },
     },
   },
   plugins: [],
   corePlugins: {
     preflight: false,
-  }
+  },
 };

@@ -8,16 +8,18 @@ import NBDialog from './NBDialog';
 function ResultContainer({ result }: { result: Result[] | null }) {
   const [download, setDownload] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState(false);
-  const selectAll : boolean = result ? result.length === download.length && result.every((r) => download.includes(r.dataset_uuid)) : false;
+  const selectAll: boolean = result
+    ? result.length === download.length && result.every((r) => download.includes(r.dataset_uuid))
+    : false;
 
   // TODO: deal with erros
-  
+
   /**
    * Updates the download array.
-   * 
+   *
    * @remarks
    * If the dataset uuid is not in the download array adds it, otherwise removes it.
-   * 
+   *
    * @param id - The uuid of the dataset to be added or removed from the download list
    * @returns void
    */

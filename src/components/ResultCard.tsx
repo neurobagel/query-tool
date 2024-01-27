@@ -32,10 +32,7 @@ function ResultCard({
       <CardContent>
         <div className="grid grid-cols-12 items-center gap-2">
           <div className="col-end-1">
-            <Checkbox
-              checked={checked}
-              onChange={() => onCheckboxChange(datasetUUID)}
-            />
+            <Checkbox checked={checked} onChange={() => onCheckboxChange(datasetUUID)} />
           </div>
           <div className="col-span-10 col-start-1">
             {/* TODO: replace the tooltip with the ellipsis open and close trick  */}

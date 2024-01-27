@@ -16,11 +16,7 @@ module.exports = {
   parserOptions: {
     project: ['./tsconfig.*json'],
   },
-  plugins: [
-    'react-refresh',
-    'cypress',
-    'eslint-plugin-tsdoc',
-  ],
+  plugins: ['react-refresh', 'cypress', 'eslint-plugin-tsdoc'],
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'react/react-in-jsx-scope': 'off',
