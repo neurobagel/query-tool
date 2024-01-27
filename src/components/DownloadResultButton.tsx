@@ -10,24 +10,26 @@ function DownloadResultButton({
   disabled: boolean;
   handleClick: () => void;
 }) {
-  if (disabled) {
-    return (
-      <Tooltip
-        title={<Typography variant="body1">Please select at least one dataset</Typography>}
-        placement="top"
-      >
-        <span>
-          <Button variant="contained" startIcon={<DownloadIcon />} disabled>
-            Download {identifier} Result
-          </Button>
-        </span>
-      </Tooltip>
-    );
-  }
-  return (
-    <Button variant="contained" startIcon={<DownloadIcon />} onClick={handleClick}>
+  const button = (
+    <Button
+      variant="contained"
+      startIcon={<DownloadIcon />}
+      onClick={handleClick}
+      disabled={disabled}
+    >
       Download {identifier} Result
     </Button>
+  );
+
+  return disabled ? (
+    <Tooltip
+      title={<Typography variant="body1">Please select at least one dataset</Typography>}
+      placement="top"
+    >
+      <span>{button}</span>
+    </Tooltip>
+  ) : (
+    button
   );
 }
 
