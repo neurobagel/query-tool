@@ -18,7 +18,6 @@ function CategoricalField({
           <TextField
             // eslint-disable-next-line react/jsx-props-no-spreading
             {...params}
-            InputLabelProps={params.InputLabelProps}
             label={label}
             placeholder='Select an option'
             className='w-full'
