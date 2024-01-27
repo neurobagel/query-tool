@@ -8,6 +8,7 @@ import NBDialog from './NBDialog';
 function ResultContainer({ result }: { result: Result[] | null }) {
   const [download, setDownload] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const selectAll : boolean = result ? result.length === download.length && result.every((r) => download.includes(r.dataset_uuid)) : false;
 
   // TODO: deal with erros
   
@@ -27,15 +28,6 @@ function ResultContainer({ result }: { result: Result[] | null }) {
         : currDownload.filter((downloadID) => downloadID !== id);
       return newDownload;
     });
-  }
-
-  function selectAll() {
-    if (result) {
-      return (
-        result.length === download.length && result.every((r) => download.includes(r.dataset_uuid))
-      );
-    }
-    return false;
   }
 
   function handleSelectAll(checked: boolean) {
@@ -175,7 +167,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
             control={
               <Checkbox
                 onChange={(event) => handleSelectAll(event.target.checked)}
-                checked={selectAll()}
+                checked={selectAll}
               />
             }
           />
