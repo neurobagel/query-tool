@@ -17,7 +17,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
    * @remarks
    * If the dataset uuid is not in the download array adds it, otherwise removes it.
    * 
-   * @param id - the uuid of the dataset to be added or removed from the download list
+   * @param id - The uuid of the dataset to be added or removed from the download list
    * @returns void
    */
   function updateDownload(id: string) {
