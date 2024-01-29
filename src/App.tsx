@@ -4,6 +4,7 @@ import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/cons
 import { RetrievedAttributeOption, AttributeOption, NodeOption, Result } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
+import Navbar from './components/Navbar';
 import './App.css';
 
 function App() {
@@ -62,6 +63,8 @@ function App() {
   }
 
   return (
+    <>
+    <Navbar />
     <div className="grid grid-cols-4 grid-rows-1 gap-4">
       <div>
         <QueryForm
@@ -80,6 +83,7 @@ function App() {
         />
       </div>
     </div>
+    </>
   );
 }
 
