@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider,} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StyledEngineProvider } from '@mui/material/styles';
 import App from './App';
 import './index.css';
 
-
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
   },
 ]);
