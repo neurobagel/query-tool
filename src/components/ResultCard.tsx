@@ -56,7 +56,7 @@ function ResultCard({
             <ButtonGroup>
               {/* TODO: fix the button's hover color issue */}
               {imageModals.sort().map((modal) => (
-                <Button key={modal} variant="text" className={modalities[modal].style}>
+                <Button key={modal} variant="contained" className={`${modalities[modal].bgColor} hover:bg-gray-400`}>
                   {modalities[modal].name}
                 </Button>
               ))}
