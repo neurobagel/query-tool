@@ -17,6 +17,7 @@ function App() {
   const [nodeOptions, setNodeOptions] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<Result[] | null>(null);
 
   const { addToast } = useSnackStack();
@@ -70,6 +71,7 @@ function App() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function submitQuery(url: string) {
+    setLoading(true);
     try {
       const response = await axios.get(url);
       setResult(response.data);
@@ -80,6 +82,7 @@ function App() {
         severity: 'error',
       });
     }
+    setLoading(false);
   }
 
   return (
@@ -93,6 +96,7 @@ function App() {
             diagnosisOptions={diagnosisOptions}
             assessmentOptions={assessmentOptions}
             apiQueryURL={queryURL}
+            loading={loading}
             onSubmitQuery={(url) => submitQuery(url)}
           />
         </div>

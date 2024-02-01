@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Button, FormControlLabel, Checkbox } from '@mui/material';
+import { Button, FormControlLabel, Checkbox, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { isFederationAPI, sexes, modalities } from '../utils/constants';
 import { FieldInput, FieldInputOption, NodeOption, AttributeOption } from '../utils/types';
@@ -12,12 +12,14 @@ function QueryForm({
   diagnosisOptions,
   assessmentOptions,
   apiQueryURL,
+  loading,
   onSubmitQuery,
 }: {
   nodeOptions: NodeOption[];
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
   apiQueryURL: string;
+  loading: boolean;
   onSubmitQuery: (url: string) => void;
 }) {
   const [node, setNode] = useState<FieldInput>([{ label: 'All', id: 'allNodes' }]);
@@ -263,7 +265,7 @@ function QueryForm({
       <div className={isFederationAPI ? 'row-start-8' : 'row-start-7'}>
         <Button
           variant="contained"
-          endIcon={<SendIcon />}
+          endIcon={loading ? <CircularProgress size='20px' thickness={5.5} className='text-white'/> : <SendIcon />}
           onClick={() => onSubmitQuery(constructQueryURL())}
         >
           Submit Query
