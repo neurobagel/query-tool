@@ -9,14 +9,14 @@ function Navbar() {
 
   useEffect(() => {
     async function fetchLatestRelease() {
-      // TODO: replace with reac-query-tool once there is a release
+      // TODO: replace with react-query-tool once there is a release
       const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
       try {
         const response = await fetch(GHApiURL);
         const data = await response.json();
         setLatestReleaseTag(data.tag_name);
       } catch (error) {
-        console.error('Failed to fetch latest release:', error);
+        setLatestReleaseTag('beta')
       }
     }
 
