@@ -4,8 +4,6 @@ import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
-import Zoom from '@mui/material/Zoom';
 import { modalities } from '../utils/constants';
 
 function ResultCard({
@@ -35,18 +33,9 @@ function ResultCard({
             <Checkbox checked={checked} onChange={() => onCheckboxChange(datasetUUID)} />
           </div>
           <div className="col-span-10 col-start-1">
-            {/* TODO: replace the tooltip with the ellipsis open and close trick  */}
-            <Tooltip
-              title={<Typography variant="body1">{datasetName}</Typography>}
-              placement="top"
-              TransitionComponent={Zoom}
-              TransitionProps={{ timeout: 500 }}
-              enterDelay={500}
-            >
-              <Typography variant="h5" className="dataset-name">
+              <Typography variant="h5">
                 {datasetName}
               </Typography>
-            </Tooltip>
             <Typography variant="subtitle1">from {nodeName}</Typography>
             <Typography variant="subtitle2">
               {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
@@ -54,7 +43,6 @@ function ResultCard({
           </div>
           <div className="col-span-2 justify-self-end">
             <ButtonGroup>
-              {/* TODO: fix the button's hover color issue */}
               {imageModals.sort().map((modal) => (
                 <Button key={modal} variant="contained" className={`${modalities[modal].bgColor} hover:bg-gray-400`}>
                   {modalities[modal].name}
