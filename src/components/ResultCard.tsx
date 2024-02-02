@@ -33,9 +33,7 @@ function ResultCard({
             <Checkbox checked={checked} onChange={() => onCheckboxChange(datasetUUID)} />
           </div>
           <div className="col-span-10 col-start-1">
-              <Typography variant="h5">
-                {datasetName}
-              </Typography>
+            <Typography variant="h5">{datasetName}</Typography>
             <Typography variant="subtitle1">from {nodeName}</Typography>
             <Typography variant="subtitle2">
               {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
@@ -44,7 +42,11 @@ function ResultCard({
           <div className="col-span-2 justify-self-end">
             <ButtonGroup>
               {imageModals.sort().map((modal) => (
-                <Button key={modal} variant="contained" className={`${modalities[modal].bgColor} hover:bg-gray-400`}>
+                <Button
+                  key={modal}
+                  variant="contained"
+                  className={`${modalities[modal].bgColor} hover:bg-gray-400`}
+                >
                   {modalities[modal].name}
                 </Button>
               ))}

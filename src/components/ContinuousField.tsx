@@ -8,18 +8,13 @@ export interface ContinuousFieldProps {
   onFieldChange: (fieldLabel: string, value: number | null) => void;
 }
 
-function ContinuousField({
-  min,
-  max,
-  label,
-  onFieldChange,
-}: ContinuousFieldProps) {
+function ContinuousField({ min, max, label, onFieldChange }: ContinuousFieldProps) {
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState('');
 
-  function validate(value : string) {
+  function validate(value: string) {
     const numberValue: number = parseFloat(value);
-    if (Number.isNaN(numberValue) && value !== "") {
+    if (Number.isNaN(numberValue) && value !== '') {
       setError(true);
       setHelperText('Value must be a number');
       onFieldChange(label, null);
@@ -31,8 +26,7 @@ function ContinuousField({
     } else if (max && numberValue > max) {
       setError(true);
       setHelperText(`Value must be less than or equal to ${max}`);
-    }
-    else {
+    } else {
       setError(false);
       setHelperText('');
     }
@@ -44,13 +38,13 @@ function ContinuousField({
       label={label}
       className="w-full"
       onChange={(event) => validate(event.target.value)}
-      helperText={error ? helperText : ""}
+      helperText={error ? helperText : ''}
     />
   );
 }
 
 ContinuousField.defaultProps = {
   max: null,
-}
+};
 
 export default ContinuousField;

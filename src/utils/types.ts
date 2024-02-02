@@ -50,4 +50,18 @@ export interface CategoricalFieldProps {
   inputValue: FieldInput;
 }
 
+export type ToastProps = {
+  key?: number | string;
+  title?: string;
+  message?: string;
+  children?: React.ReactElement;
+  duration?: number;
+  severity?: 'success' | 'info' | 'warning' | 'error';
+  position?: {
+    vertical?: 'top' | 'bottom';
+    horizontal?: 'left' | 'right' | 'center';
+  };
+  onClose?: () => void;
+};
+
 export type FieldInput = FieldInputOption | FieldInputOption[] | null;

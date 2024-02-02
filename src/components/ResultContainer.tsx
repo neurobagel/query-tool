@@ -12,8 +12,6 @@ function ResultContainer({ result }: { result: Result[] | null }) {
     ? result.length === download.length && result.every((r) => download.includes(r.dataset_uuid))
     : false;
 
-  // TODO: deal with erros
-
   function summaryStats() {
     let datasets = 0;
     let subjects = 0;
@@ -21,7 +19,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
       result.forEach((item) => {
         datasets += 1;
         subjects += item.num_matching_subjects;
-      })
+      });
     }
     return `Summary stats: ${datasets} datasets, ${subjects} subjects`;
   }
@@ -187,9 +185,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           />
         </div>
         <div className="col-end-5 justify-self-end">
-        <Typography variant="body1">
-          {summaryStats()}
-          </Typography>
+          <Typography variant="body1">{summaryStats()}</Typography>
         </div>
         <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
           {result.map((item) => (

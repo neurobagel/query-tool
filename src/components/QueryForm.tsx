@@ -269,7 +269,13 @@ function QueryForm({
       <div className={isFederationAPI ? 'row-start-8' : 'row-start-7'}>
         <Button
           variant="contained"
-          endIcon={loading ? <CircularProgress size='20px' thickness={5.5} className='text-white'/> : <SendIcon />}
+          endIcon={
+            loading ? (
+              <CircularProgress size="20px" thickness={5.5} className="text-white" />
+            ) : (
+              <SendIcon />
+            )
+          }
           onClick={() => onSubmitQuery(constructQueryURL())}
         >
           Submit Query

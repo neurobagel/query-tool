@@ -10,7 +10,6 @@ import { useSnackStack } from './components/SnackStackProvider';
 import SnackStack from './components/SnackStack';
 import './App.css';
 
-
 function App() {
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);

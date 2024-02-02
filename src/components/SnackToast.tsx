@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
-import { Alert, AlertTitle, Grow } from "@mui/material";
-import { useSnackStack, ToastProps } from "./SnackStackProvider";
-
+import { useState, useEffect, useCallback } from 'react';
+import { Alert, AlertTitle, Grow } from '@mui/material';
+import { ToastProps } from '../utils/types';
+import { useSnackStack } from './SnackStackProvider';
 
 const TIMEOUT = 300;
 
-function SnackbarToast({ toast } : { toast: ToastProps}) {
+function SnackbarToast({ toast }: { toast: ToastProps }) {
   const [open, setOpen] = useState(true);
   const { removeToast } = useSnackStack();
 
@@ -21,7 +21,7 @@ function SnackbarToast({ toast } : { toast: ToastProps}) {
       toast.onClose();
     }
     close();
-  };
+  }
 
   useEffect(() => {
     if (toast.duration !== 0) {
@@ -35,7 +35,7 @@ function SnackbarToast({ toast } : { toast: ToastProps}) {
     <Grow in={open} timeout={TIMEOUT}>
       <Alert
         key={toast.key}
-        severity={toast?.severity || "info"}
+        severity={toast?.severity || 'info'}
         onClose={() => handleClose()}
         variant="filled"
       >
@@ -45,6 +45,6 @@ function SnackbarToast({ toast } : { toast: ToastProps}) {
       </Alert>
     </Grow>
   );
-};
+}
 
 export default SnackbarToast;

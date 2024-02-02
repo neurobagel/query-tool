@@ -1,6 +1,6 @@
-import { Stack, Snackbar } from "@mui/material";
-import { useSnackStack } from "./SnackStackProvider";
-import SnackbarToast from "./SnackToast";
+import { Stack, Snackbar } from '@mui/material';
+import { useSnackStack } from './SnackStackProvider';
+import SnackbarToast from './SnackToast';
 
 function SnackStack() {
   const { toastsPack } = useSnackStack();
@@ -13,12 +13,12 @@ function SnackStack() {
       autoHideDuration={null}
       transitionDuration={0}
       anchorOrigin={{
-        vertical: firstToast?.position?.vertical || "top",
-        horizontal: firstToast?.position?.horizontal || "right"
+        vertical: firstToast?.position?.vertical || 'top',
+        horizontal: firstToast?.position?.horizontal || 'right',
       }}
       sx={{
-        mt: "env(safe-area-inset-top)",
-        mb: "env(safe-area-inset-bottom)"
+        mt: 'env(safe-area-inset-top)',
+        mb: 'env(safe-area-inset-bottom)',
       }}
     >
       <Stack flexDirection="column" gap={1}>
@@ -28,6 +28,6 @@ function SnackStack() {
       </Stack>
     </Snackbar>
   );
-};
+}
 
 export default SnackStack;
