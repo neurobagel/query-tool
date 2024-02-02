@@ -23,12 +23,12 @@ function QueryForm({
   onSubmitQuery: (url: string) => void;
 }) {
   const [node, setNode] = useState<FieldInput>([{ label: 'All', id: 'allNodes' }]);
-  const [minAge, setMinAge] = useState<string | null>(null);
-  const [maxAge, setMaxAge] = useState<string | null>(null);
+  const [minAge, setMinAge] = useState<number | null>(null);
+  const [maxAge, setMaxAge] = useState<number | null>(null);
   const [sex, setSex] = useState<FieldInput>(null);
   const [diagnosis, setDiagnosis] = useState<FieldInput>(null);
   const [isControl, setIsControl] = useState<boolean>(false);
-  const [minNumSessions, setMinNumSessions] = useState<string | null>(null);
+  const [minNumSessions, setMinNumSessions] = useState<number | null>(null);
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -90,7 +90,7 @@ function QueryForm({
     }
   }
 
-  function updateContinuousQueryParams(fieldLabel: string, value: string | null) {
+  function updateContinuousQueryParams(fieldLabel: string, value: number | null) {
     switch (fieldLabel) {
       case 'Min age':
         setMinAge(value);
@@ -139,12 +139,12 @@ function QueryForm({
     const queryParams = new URLSearchParams();
 
     setQueryParam('node_url', node, queryParams);
-    queryParams.set('min_age', minAge ?? '');
-    queryParams.set('max_age', maxAge ?? '');
+    queryParams.set('min_age', minAge ? minAge.toString() : '');
+    queryParams.set('max_age', maxAge ? maxAge.toString() : '');
     setQueryParam('sex', sex, queryParams);
     setQueryParam('diagnosis', isControl ? null : diagnosis, queryParams);
     queryParams.set('is_control', isControl ? 'true' : '');
-    queryParams.set('min_num_sessions', minNumSessions ?? '');
+    queryParams.set('min_num_sessions', minNumSessions ? minNumSessions.toString() : '');
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
 
@@ -194,12 +194,15 @@ function QueryForm({
       )}
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
+          min={0}
+          max={maxAge || null}
           label="Min age"
           onFieldChange={(label, value) => updateContinuousQueryParams(label, value)}
         />
       </div>
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
+          min={0}
           label="Max age"
           onFieldChange={(label, value) => updateContinuousQueryParams(label, value)}
         />
@@ -239,6 +242,7 @@ function QueryForm({
       </div>
       <div className={isFederationAPI ? 'col-span-2 row-start-5' : 'col-span-2 row-start-4'}>
         <ContinuousField
+          min={0}
           label="Minimum number of sessions"
           onFieldChange={(label, value) => updateContinuousQueryParams(label, value)}
         />
