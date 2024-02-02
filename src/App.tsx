@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { Alert, Button } from '@mui/material';
 import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
 import { RetrievedAttributeOption, AttributeOption, NodeOption, Result } from './utils/types';
 import QueryForm from './components/QueryForm';
@@ -16,6 +17,7 @@ function App() {
   const [nodeOptions, setNodeOptions] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<Result[] | null>(null);
 
@@ -88,6 +90,25 @@ function App() {
     <>
       <SnackStack />
       <Navbar />
+      {showAlert && (
+        <Alert 
+        severity='info'
+        action={
+          <Button color="inherit" size="small">
+            Dismiss
+          </Button>
+        }
+        >
+            The OpenNeuro node is being actively annotated at the participant level and does
+            not include all datasets yet. Check back soon to find more data. If you would like
+            to contribute annotations for existing OpenNeuro datasets, please get in touch through&nbsp;
+            <a
+              href="https://github.com/OpenNeuroDatasets-JSONLD/.github/issues"
+              target="_blank" rel="noreferrer"
+            >GitHub</a>.
+        </Alert>
+      )}
+      
       <div className="grid grid-cols-4 grid-rows-1 gap-4">
         <div>
           <QueryForm

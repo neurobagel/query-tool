@@ -267,6 +267,7 @@ function QueryForm({
         />
       </div>
       <div className={isFederationAPI ? 'row-start-8' : 'row-start-7'}>
+        {/* TODO: Disable button when there is an error */}
         <Button
           variant="contained"
           endIcon={
