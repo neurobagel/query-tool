@@ -4,7 +4,14 @@ import axios, { AxiosResponse } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { Alert, Grow } from '@mui/material';
 import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
-import { RetrievedAttributeOption, AttributeOption, NodeOption, FieldInput, FieldInputOption, Result } from './utils/types';
+import {
+  RetrievedAttributeOption,
+  AttributeOption,
+  NodeOption,
+  FieldInput,
+  FieldInputOption,
+  Result,
+} from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
@@ -86,7 +93,6 @@ function App() {
     fetchOptions('nb:Assessment', setAssessmentOptions);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-
   useEffect(() => {
     if (nodeOptions.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
@@ -121,13 +127,14 @@ function App() {
 
   function showAlert() {
     if (node && Array.isArray(node)) {
-    const openNeurIsAnoOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro')
-    const isOpenNeuroSelected = node.find((n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeurIsAnoOption))
-    return isOpenNeuroSelected && !alertDismissed;
+      const openNeurIsAnoOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro');
+      const isOpenNeuroSelected = node.find(
+        (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeurIsAnoOption)
+      );
+      return isOpenNeuroSelected && !alertDismissed;
     }
     return alertDismissed;
   }
-
 
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
@@ -156,10 +163,10 @@ function App() {
 
   function updateContinuousQueryParams(fieldLabel: string, value: number | null) {
     switch (fieldLabel) {
-      case 'Min age':
+      case 'Minimum age':
         setMinAge(value);
         break;
-      case 'Max age':
+      case 'Maximum age':
         setMaxAge(value);
         break;
       case 'Minimum number of sessions':
@@ -256,24 +263,31 @@ function App() {
       <Navbar />
       {showAlert() && (
         <>
-        <Grow in={!alertDismissed}>
-          <Alert 
-          severity='info'
-          onClose={() => {setAlertDismissed(true)}}
-          >
-              The OpenNeuro node is being actively annotated at the participant level and does
-              not include all datasets yet. Check back soon to find more data. If you would like
-              to contribute annotations for existing OpenNeuro datasets, please get in touch through&nbsp;
+          <Grow in={!alertDismissed}>
+            <Alert
+              severity="info"
+              onClose={() => {
+                setAlertDismissed(true);
+              }}
+            >
+              The OpenNeuro node is being actively annotated at the participant level and does not
+              include all datasets yet. Check back soon to find more data. If you would like to
+              contribute annotations for existing OpenNeuro datasets, please get in touch
+              through&nbsp;
               <a
                 href="https://github.com/OpenNeuroDatasets-JSONLD/.github/issues"
-                target="_blank" rel="noreferrer"
-              >GitHub</a>.
-          </Alert>
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub
+              </a>
+              .
+            </Alert>
           </Grow>
           <br />
-          </>
+        </>
       )}
-      
+
       <div className="grid grid-cols-4 grid-rows-1 gap-4">
         <div>
           <QueryForm
@@ -289,8 +303,12 @@ function App() {
             setIsControl={setIsControl}
             assessmentTool={assessmentTool}
             imagingModality={imagingModality}
-            updateCategoricalQueryParams={(label, value) => updateCategoricalQueryParams(label, value)}
-            updateContinuousQueryParams={(label, value) =>updateContinuousQueryParams(label, value)}
+            updateCategoricalQueryParams={(label, value) =>
+              updateCategoricalQueryParams(label, value)
+            }
+            updateContinuousQueryParams={(label, value) =>
+              updateContinuousQueryParams(label, value)
+            }
             loading={loading}
             onSubmitQuery={() => submitQuery()}
           />
