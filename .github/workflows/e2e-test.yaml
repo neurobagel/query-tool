@@ -1,0 +1,30 @@
+name: end to end tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up node env
+        uses: actions/setup-node@v4.0.1
+      
+      - name: Create .env file
+        run: |
+          echo -e "API_QUERY_URL=${{ vars.API_QUERY_URL }}\nIS_FEDERATION_API=${{ vars.IS_FEDERATION_API }}" > .env
+
+      - name: Run end to end tests
+        uses: cypress-io/github-action@v6
+        with:
+          wait-on: http://localhost:5173
+          start: npx vite --host
+          component: false
+
