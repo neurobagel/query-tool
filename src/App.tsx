@@ -57,7 +57,7 @@ function App() {
         if (response.data[dataElementURI].length === 0) {
           addToast({
             key: uuidv4(),
-            message: `No options found for ${dataElementURI.slice(3)}`,
+            message: `No ${dataElementURI.slice(3)} options were available`,
             severity: 'info',
           });
         } else {
@@ -66,7 +66,7 @@ function App() {
       } catch (err) {
         addToast({
           key: uuidv4(),
-          message: `Failed to retrieve options for ${dataElementURI.slice(3)}`,
+          message: `Failed to retrieve ${dataElementURI.slice(3)} options`,
           severity: 'error',
         });
       }
@@ -93,6 +93,10 @@ function App() {
     fetchOptions('nb:Assessment', setAssessmentOptions);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  function arraysEqual(a: FieldInputOption[], b: FieldInputOption[]) {
+    return a.length === b.length && a.every((val, index) => val.id === b[index].id && val.label === b[index].label);
+  }
+
   useEffect(() => {
     if (nodeOptions.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
@@ -118,7 +122,7 @@ function App() {
           );
           setNode(filteredNode);
           setSearchParams({ node: filteredNode.map((n) => n.label) });
-        } else {
+        } else if (Array.isArray(node) && !arraysEqual(node, matchedOptions)) {
           setNode(matchedOptions);
         }
       }
@@ -265,6 +269,7 @@ function App() {
         <>
           <Grow in={!alertDismissed}>
             <Alert
+              data-cy="openneuro-alert"
               severity="info"
               onClose={() => {
                 setAlertDismissed(true);

@@ -199,6 +199,7 @@ function QueryForm({
       </div>
       <div className={isFederationAPI ? 'row-start-9' : 'row-start-8'}>
         <Button
+          data-cy="submit-query"
           disabled={disableSubmit}
           variant="contained"
           endIcon={
