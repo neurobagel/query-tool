@@ -9,13 +9,14 @@ export interface ContinuousFieldProps {
 
 function ContinuousField({ error, helperText, label, onFieldChange }: ContinuousFieldProps) {
   return (
-    <TextField
-      error={error}
-      label={label}
-      className="w-full"
-      onChange={(event) => onFieldChange(label, event.target.value)}
-      helperText={helperText}
-    />
+      <TextField
+        data-cy={`${label}-continuous-field`}
+        error={error}
+        label={label}
+        className="w-full"
+        onChange={(event) => onFieldChange(label, event.target.value)}
+        helperText={helperText}
+      />
   );
 }
 
