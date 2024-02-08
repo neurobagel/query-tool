@@ -12,6 +12,7 @@ function DownloadResultButton({
 }) {
   const button = (
     <Button
+      data-cy={`${identifier}-download-results-button`}
       variant="contained"
       startIcon={<DownloadIcon />}
       onClick={handleClick}
@@ -29,7 +30,7 @@ function DownloadResultButton({
       <span>{button}</span>
     </Tooltip>
   ) : (
-    button
+      button
   );
 }
 

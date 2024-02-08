@@ -30,7 +30,7 @@ function ResultCard({
       <CardContent>
         <div className="grid grid-cols-12 items-center gap-2">
           <div className="col-end-1">
-            <Checkbox checked={checked} onChange={() => onCheckboxChange(datasetUUID)} />
+            <Checkbox data-cy={`card-${datasetUUID}-checkbox`} checked={checked} onChange={() => onCheckboxChange(datasetUUID)} />
           </div>
           <div className="col-span-10 col-start-1">
             <Typography variant="h5">{datasetName}</Typography>
