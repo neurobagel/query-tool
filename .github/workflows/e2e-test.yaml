@@ -21,10 +21,6 @@ jobs:
         run: |
           echo -e "API_QUERY_URL=${{ vars.API_QUERY_URL }}\nIS_FEDERATION_API=${{ vars.IS_FEDERATION_API }}" > .env
 
-      - name: Check .env file
-        run: |
-          cat .env
-
       - name: Run end to end tests
         uses: cypress-io/github-action@v6
         with:
