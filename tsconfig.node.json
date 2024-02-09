@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
+    "types": ["cypress"],
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
