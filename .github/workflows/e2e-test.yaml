@@ -24,7 +24,7 @@ jobs:
           echo -e "NB_API_QUERY_URL=${{ vars.NB_API_QUERY_URL }}\nNB_IS_FEDERATION_API=${{ vars.NB_IS_FEDERATION_API }}" > .env
 
       - name: build
-        run: npm instsll && npm run build
+        run: npm install && npm run build
 
       - name: Run end to end tests
         uses: cypress-io/github-action@v6
