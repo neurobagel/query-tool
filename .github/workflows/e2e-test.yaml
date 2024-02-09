@@ -16,6 +16,8 @@ jobs:
 
       - name: Set up node env
         uses: actions/setup-node@v4.0.1
+        with:
+          node-version: 20
       
       - name: Create .env file
         run: |
