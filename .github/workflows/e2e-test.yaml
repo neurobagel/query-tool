@@ -19,7 +19,7 @@ jobs:
       
       - name: Create .env file
         run: |
-          echo -e "API_QUERY_URL=${{ vars.API_QUERY_URL }}\nIS_FEDERATION_API=${{ vars.IS_FEDERATION_API }}" > .env
+          echo -e "NB_API_QUERY_URL=${{ vars.NB_API_QUERY_URL }}\nNB_IS_FEDERATION_API=${{ vars.NB_IS_FEDERATION_API }}" > .env
 
       - name: Run end to end tests
         uses: cypress-io/github-action@v6
