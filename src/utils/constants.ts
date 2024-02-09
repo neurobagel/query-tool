@@ -1,13 +1,16 @@
 const baseAPIURL: string = import.meta.env.VITE_API_QUERY_URL;
-export const queryURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}query/?`
-  : `${baseAPIURL}/query/?`;
-export const attributesURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}attributes/`
-  : `${baseAPIURL}/attributes/`;
-export const nodesURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}nodes/`
-  : `${baseAPIURL}/nodes/`;
+export const queryURL: string = `${baseAPIURL}query/?`;
+// export const queryURL: string = baseAPIURL.endsWith('/')
+//   ? `${baseAPIURL}query/?`
+//   : `${baseAPIURL}/query/?`;
+export const attributesURL: string = `${baseAPIURL}attributes/`;
+  // export const attributesURL: string = baseAPIURL.endsWith('/')
+//   ? `${baseAPIURL}attributes/`
+//   : `${baseAPIURL}/attributes/`;
+export const nodesURL: string = `${baseAPIURL}nodes/`;
+  // export const nodesURL: string = baseAPIURL.endsWith('/')
+//   ? `${baseAPIURL}nodes/`
+//   : `${baseAPIURL}/nodes/`;
 
 export const isFederationAPI: string =
   import.meta.env.VITE_IS_FEDERATION_API === undefined
