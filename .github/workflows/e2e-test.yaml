@@ -21,10 +21,13 @@ jobs:
         run: |
           echo -e "NB_API_QUERY_URL=${{ vars.NB_API_QUERY_URL }}\nNB_IS_FEDERATION_API=${{ vars.NB_IS_FEDERATION_API }}" > .env
 
+      - name: build
+        run: npm run build
+
       - name: Run end to end tests
         uses: cypress-io/github-action@v6
         with:
-          wait-on: http://localhost:5173
-          start: npx vite --host
+          wait-on: http://localhost:4173
+          start: npm run preview
           component: false
 
