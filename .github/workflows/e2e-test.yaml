@@ -25,6 +25,6 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           wait-on: http://localhost:5173
-          start: npx vite --host
+          start: npm run dev
           component: false
 
