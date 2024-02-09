@@ -23,7 +23,7 @@ jobs:
 
       - name: Check .env file
         run: |
-          echo $API_QUERY_URL
+          cat .env
 
       - name: Run end to end tests
         uses: cypress-io/github-action@v6
