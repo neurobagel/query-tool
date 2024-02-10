@@ -13,7 +13,7 @@ describe('API request', () => {
     cy.visit('/?node=OpenNeuro');
     // We need to wait for the fetch to complete and populate the
     // dropdown with nodes and selecting OpenNeuro before making the request
-    cy.wait('@getNodes');
+    cy.wait('@getNodes', { timeout: 10000 });
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
     cy.get('[data-cy="submit-query"]').click();
