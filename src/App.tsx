@@ -46,31 +46,53 @@ function App() {
   const { addToast } = useSnackStack();
 
   useEffect(() => {
-    async function fetchOptions(
-      dataElementURI: string,
-      setOptions: (options: AttributeOption[]) => void
-    ) {
+    async function tryThisOptionsGetter(dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        if (response.data[dataElementURI].length === 0) {
-          addToast({
-            key: uuidv4(),
-            message: `No options found for ${dataElementURI.slice(3)}`,
-            severity: 'info',
-          });
-        } else {
-          setOptions(response.data[dataElementURI]);
-        }
-      } catch (err) {
-        addToast({
-          key: uuidv4(),
-          message: `Failed to retrieve options for ${dataElementURI.slice(3)}`,
-          severity: 'error',
-        });
+        return response.data[dataElementURI];
+      }
+      catch (err) {
+        return null;
       }
     }
+
+    tryThisOptionsGetter('nb:Diagnosis').then(diagnosisResponse => {
+      if (diagnosisResponse === null) {
+        addToast({
+          key: uuidv4(),
+          message: `Failed to retrieve Diagnosis options`,
+          severity: 'error',
+        });
+      } else if (diagnosisResponse.length === 0) {
+        addToast({
+          key: uuidv4(),
+          message: `No options found for Diagnosis`,
+          severity: 'info',
+        });
+      } else {
+        setDiagnosisOptions(diagnosisResponse);
+      }
+    });
+
+    tryThisOptionsGetter('nb:Assessment').then(assessmentResponse => {
+      if (assessmentResponse === null) {
+        addToast({
+          key: uuidv4(),
+          message: `Failed to retrieve Assessment Tool options`,
+          severity: 'error',
+        });
+      } else if (assessmentResponse.length === 0) {
+        addToast({
+          key: uuidv4(),
+          message: `No options found for Assessment Tool`,
+          severity: 'info',
+        });
+      } else {
+        setAssessmentOptions(assessmentResponse);
+      }
+    });
 
     async function fetchNodes() {
       try {
@@ -89,8 +111,6 @@ function App() {
       fetchNodes();
     }
 
-    fetchOptions('nb:Diagnosis', setDiagnosisOptions);
-    fetchOptions('nb:Assessment', setAssessmentOptions);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
