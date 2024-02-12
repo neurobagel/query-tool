@@ -94,21 +94,34 @@ function App() {
       }
     });
 
-    async function fetchNodes() {
+    async function getNodeOptions(fetchURL: string) {
       try {
-        const response: AxiosResponse<[]> = await axios.get(nodesURL);
-        setNodeOptions([...response.data, { NodeName: 'All', ApiURL: 'allNodes' }]);
-      } catch (err) {
-        addToast({
-          key: uuidv4(),
-          message: 'Failed to retrieve nodes',
-          severity: 'error',
-        });
+        const response: AxiosResponse<NodeOption[]> = await axios.get(fetchURL);
+        return response.data;
+      }
+      catch (err) {
+        return null;
       }
     }
 
     if (isFederationAPI) {
-      fetchNodes();
+      getNodeOptions(nodesURL).then(nodeResponse => {
+        if (nodeResponse === null) {
+          addToast({
+            key: uuidv4(),
+            message: `Failed to retrieve Node options`,
+            severity: 'error',
+          });
+        } else if (nodeResponse.length === 0) {
+          addToast({
+            key: uuidv4(),
+            message: `No options found for Node`,
+            severity: 'info',
+          });
+        } else {
+          setNodeOptions([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
+        }
+      });
     }
 
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
