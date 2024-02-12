@@ -1,26 +1,25 @@
 import TextField from '@mui/material/TextField';
 
 export interface ContinuousFieldProps {
-  error?: boolean;
   helperText?: string;
   label: string;
-  onFieldChange: (fieldLabel: string, value: string) => void;
+  onFieldChange: (fieldLabel: string, value: number) => void;
 }
 
-function ContinuousField({ error, helperText, label, onFieldChange }: ContinuousFieldProps) {
+function ContinuousField({ helperText, label, onFieldChange }: ContinuousFieldProps) {
+  const showError: boolean= helperText !== '';
   return (
     <TextField
-      error={error}
+      error={showError}
       label={label}
       className="w-full"
-      onChange={(event) => onFieldChange(label, event.target.value)}
+      onChange={(event) => onFieldChange(label, parseInt(event.target.value, 10))}
       helperText={helperText}
     />
   );
 }
 
 ContinuousField.defaultProps = {
-  error: false,
   helperText: '',
 };
 

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Button,
   FormControlLabel,
@@ -22,6 +21,7 @@ function QueryForm({
   sex,
   diagnosis,
   isControl,
+  minNumSessions,
   setIsControl,
   assessmentTool,
   imagingModality,
@@ -40,6 +40,7 @@ function QueryForm({
   diagnosis: FieldInput;
   isControl: boolean;
   setIsControl: (value: boolean) => void;
+  minNumSessions: number | null;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
   updateCategoricalQueryParams: (label: string, value: FieldInput) => void;
@@ -47,44 +48,28 @@ function QueryForm({
   loading: boolean;
   onSubmitQuery: () => void;
 }) {
-  const [minAgeError, setMinAgeError] = useState(false);
-  const [minAgeHelperText, setMinAgeHelperText] = useState('');
-  const [maxAgeError, setMaxAgeError] = useState(false);
-  const [maxAgeHelperText, setMaxAgeHelperText] = useState('');
-  const [minNumSessionsError, setMinNumSessionsError] = useState(false);
-  const [minNumSessionsHelperText, setMinNumSessionsHelperText] = useState('');
+  
+  function giveMeError (value: number | null)  {
+    if (value === null) {
+      // Value is default, user has not entered anything yet
+      return '';
+    }
+    if (Number.isNaN(value)) {
+      return 'Please enter a valid number!';
+    }
+    if (value < 0) {
+      return 'Please enter a positive number!';
+    }
+    return '';
+  }
+
+  const minAgeHelperText: string = giveMeError(minAge);
+  const maxAgeHelperText: string = giveMeError(maxAge);
+  const minNumSessionsHelperText: string = giveMeError(minNumSessions);
 
   const minAgeBiggerThanMax: boolean = minAge && maxAge ? minAge > maxAge : false;
   const disableSubmit: boolean =
-    minAgeBiggerThanMax || minAgeError || maxAgeError || minNumSessionsError;
-
-  function validate(
-    label: string,
-    value: string,
-    setError: React.Dispatch<React.SetStateAction<boolean>>,
-    setHelperText: React.Dispatch<React.SetStateAction<string>>,
-    min: number,
-    max?: number
-  ) {
-    const numberValue: number = parseFloat(value);
-    if (Number.isNaN(numberValue) && value !== '') {
-      setError(true);
-      setHelperText('Value must be a number');
-      updateContinuousQueryParams(label, null);
-      return;
-    }
-    if (numberValue < min) {
-      setError(true);
-      setHelperText(`Value must be greater than or equal to ${min}`);
-    } else if (max && numberValue > max) {
-      setError(true);
-      setHelperText(`Value must be less than or equal to ${max}`);
-    } else {
-      setError(false);
-      setHelperText('');
-    }
-    updateContinuousQueryParams(label, numberValue);
-  }
+    minAgeBiggerThanMax || minAgeHelperText !== '' || maxAgeHelperText !== '' || minNumSessionsHelperText !== '';
 
   return (
     <div
@@ -110,22 +95,16 @@ function QueryForm({
       )}
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
-          error={minAgeBiggerThanMax || minAgeError}
           helperText={minAgeBiggerThanMax ? '' : minAgeHelperText}
           label="Minimum age"
-          onFieldChange={(label, value) =>
-            validate(label, value, setMinAgeError, setMinAgeHelperText, 0)
-          }
+          onFieldChange={updateContinuousQueryParams}
         />
       </div>
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
-          error={minAgeBiggerThanMax || maxAgeError}
           helperText={minAgeBiggerThanMax ? '' : maxAgeHelperText}
           label="Maximum age"
-          onFieldChange={(label, value) =>
-            validate(label, value, setMaxAgeError, setMaxAgeHelperText, 0)
-          }
+          onFieldChange={updateContinuousQueryParams}
         />
       </div>
       {minAgeBiggerThanMax && (
@@ -170,12 +149,9 @@ function QueryForm({
       </div>
       <div className={isFederationAPI ? 'col-span-2 row-start-6' : 'col-span-2 row-start-5'}>
         <ContinuousField
-          error={minNumSessionsError}
           helperText={minNumSessionsHelperText}
           label="Minimum number of sessions"
-          onFieldChange={(label, value) =>
-            validate(label, value, setMinNumSessionsError, setMinNumSessionsHelperText, 0)
-          }
+          onFieldChange={updateContinuousQueryParams}
         />
       </div>
       <div className={isFederationAPI ? 'col-span-2 row-start-7' : 'col-span-2 row-start-6'}>

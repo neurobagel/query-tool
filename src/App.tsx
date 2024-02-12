@@ -300,6 +300,7 @@ function App() {
             sex={sex}
             diagnosis={diagnosis}
             isControl={isControl}
+            minNumSessions={minNumSessions}
             setIsControl={setIsControl}
             assessmentTool={assessmentTool}
             imagingModality={imagingModality}
