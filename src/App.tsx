@@ -252,12 +252,7 @@ function App() {
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
 
-    // Notes:
-    // 1. Deleting elements in an array as we loop over it is not good, either make a new object or filter (same thing)
-    // 2. using forEach on the QueryParams object,
-    // 3. Do the filtering first / switch before adding
-    // Solution:
-    // Push the keys to be deleted inside keysToDelete and loop over them and delete them from queryParams afterwards
+    // Remove keys with empty values
     const keysToDelete: string[] = [];
 
     queryParams.forEach((value, key) => {
