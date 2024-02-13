@@ -12,7 +12,7 @@ export const nodesURL: string = baseAPIURL.endsWith('/')
 export const isFederationAPI: string =
   import.meta.env.NB_IS_FEDERATION_API === undefined
     ? true
-    : import.meta.env.VITE_API_FEDERATION_URL;
+    : import.meta.env.NB_IS_FEDERATION_API;
 
 export const sexes: { [key: string]: string } = {
   male: 'snomed:248153007',
