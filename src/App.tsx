@@ -160,9 +160,9 @@ function App() {
 
   function showAlert() {
     if (node && Array.isArray(node)) {
-      const openNeurIsAnoOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro');
+      const openNeuroIsAnOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro');
       const isOpenNeuroSelected = node.find(
-        (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeurIsAnoOption)
+        (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeuroIsAnOption)
       );
       return isOpenNeuroSelected && !alertDismissed;
     }
