@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Toolbar, Typography, IconButton, Badge } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
@@ -6,19 +7,15 @@ function Navbar() {
   const [latestReleaseTag, setLatestReleaseTag] = useState('');
 
   useEffect(() => {
-    async function fetchLatestRelease() {
       // TODO: replace with react-query-tool once there is a release
       const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
-      try {
-        const response = await fetch(GHApiURL);
-        const data = await response.json();
+      axios.get(GHApiURL)
+      .then((response) => {
+        const {data} = response;
         setLatestReleaseTag(data.tag_name);
-      } catch (error) {
+      }).catch(() => {
         setLatestReleaseTag('beta');
-      }
-    }
-
-    fetchLatestRelease();
+      });
   }, []);
 
   return (
