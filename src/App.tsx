@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { Alert, Grow } from '@mui/material';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -15,8 +15,6 @@ import {
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
-import { useSnackStack } from './components/SnackStackProvider';
-import SnackStack from './components/SnackStack';
 import './App.css';
 
 function App() {
@@ -43,8 +41,6 @@ function App() {
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { addToast } = useSnackStack();
-
   useEffect(() => {
     async function tryThisOptionsGetter(dataElementURI: string) {
       try {
@@ -60,17 +56,9 @@ function App() {
 
     tryThisOptionsGetter('nb:Diagnosis').then(diagnosisResponse => {
       if (diagnosisResponse === null) {
-        addToast({
-          key: uuidv4(),
-          message: `Failed to retrieve Diagnosis options`,
-          severity: 'error',
-        });
+        enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
       } else if (diagnosisResponse.length === 0) {
-        addToast({
-          key: uuidv4(),
-          message: `No options found for Diagnosis`,
-          severity: 'info',
-        });
+        enqueueSnackbar('No options found for Diagnosis', { variant: 'info' });
       } else {
         setDiagnosisOptions(diagnosisResponse);
       }
@@ -78,17 +66,9 @@ function App() {
 
     tryThisOptionsGetter('nb:Assessment').then(assessmentResponse => {
       if (assessmentResponse === null) {
-        addToast({
-          key: uuidv4(),
-          message: `Failed to retrieve Assessment Tool options`,
-          severity: 'error',
-        });
+        enqueueSnackbar('Failed to retrieve Assessment Tool options', { variant: 'error' });
       } else if (assessmentResponse.length === 0) {
-        addToast({
-          key: uuidv4(),
-          message: `No options found for Assessment Tool`,
-          severity: 'info',
-        });
+        enqueueSnackbar('No options found for Assessment Tool', { variant: 'info' });
       } else {
         setAssessmentOptions(assessmentResponse);
       }
@@ -107,24 +87,16 @@ function App() {
     if (isFederationAPI) {
       getNodeOptions(nodesURL).then(nodeResponse => {
         if (nodeResponse === null) {
-          addToast({
-            key: uuidv4(),
-            message: `Failed to retrieve Node options`,
-            severity: 'error',
-          });
+          enqueueSnackbar('Failed to retrieve Node options', { variant: 'error' });
         } else if (nodeResponse.length === 0) {
-          addToast({
-            key: uuidv4(),
-            message: `No options found for Node`,
-            severity: 'info',
-          });
+          enqueueSnackbar('No options found for Node', { variant: 'info' });
         } else {
           setNodeOptions([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
         }
       });
     }
 
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);  
 
   useEffect(() => {
     if (nodeOptions.length > 1) {
@@ -276,18 +248,14 @@ function App() {
       const response = await axios.get(url);
       setResult(response.data);
     } catch (error) {
-      addToast({
-        key: uuidv4(),
-        message: 'Failed to retrieve results',
-        severity: 'error',
-      });
+      enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
     }
     setLoading(false);
   }
 
   return (
     <>
-      <SnackStack />
+    <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
       <Navbar />
       {showAlert() && (
         <>
