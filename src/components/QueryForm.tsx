@@ -67,9 +67,9 @@ function QueryForm({
   const maxAgeHelperText: string = giveMeError(maxAge);
   const minNumSessionsHelperText: string = giveMeError(minNumSessions);
 
-  const minAgeBiggerThanMax: boolean = minAge && maxAge ? minAge > maxAge : false;
+  const minAgeExceedsMaxAge: boolean = minAge && maxAge ? minAge > maxAge : false;
   const disableSubmit: boolean =
-    minAgeBiggerThanMax || minAgeHelperText !== '' || maxAgeHelperText !== '' || minNumSessionsHelperText !== '';
+    minAgeExceedsMaxAge || minAgeHelperText !== '' || maxAgeHelperText !== '' || minNumSessionsHelperText !== '';
 
   return (
     <div
@@ -95,19 +95,19 @@ function QueryForm({
       )}
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
-          helperText={minAgeBiggerThanMax ? '' : minAgeHelperText}
+          helperText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
           label="Minimum age"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
-          helperText={minAgeBiggerThanMax ? '' : maxAgeHelperText}
+          helperText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
           label="Maximum age"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      {minAgeBiggerThanMax && (
+      {minAgeExceedsMaxAge && (
         <div className="col-span-2">
           <FormHelperText error>
             Value of maximum age must be greater than or equal to value of minimum age
