@@ -20,6 +20,7 @@ function Navbar() {
 
     fetchLatestRelease();
   }, []);
+
   return (
     <Toolbar className="my-4">
       <div className="flex w-full items-center justify-between">
