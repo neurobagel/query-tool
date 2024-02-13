@@ -12,17 +12,15 @@ function ResultContainer({ result }: { result: Result[] | null }) {
     ? result.length === download.length && result.every((r) => download.includes(r.dataset_uuid))
     : false;
 
-  function summaryStats() {
-    let datasets = 0;
-    let subjects = 0;
+    let numOfMatchedDatasets = 0;
+    let numOfMatchedSubjects = 0;
     if (result) {
       result.forEach((item) => {
-        datasets += 1;
-        subjects += item.num_matching_subjects;
+        numOfMatchedDatasets += 1;
+        numOfMatchedSubjects += item.num_matching_subjects;
       });
     }
-    return `Summary stats: ${datasets} datasets, ${subjects} subjects`;
-  }
+    const summaryStats = `Summary stats: ${numOfMatchedDatasets} datasets, ${numOfMatchedSubjects} subjects`;
 
   /**
    * Updates the download array.
@@ -185,7 +183,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           />
         </div>
         <div className="col-end-5 justify-self-end">
-          <Typography variant="body1">{summaryStats()}</Typography>
+          <Typography variant="body1">{summaryStats}</Typography>
         </div>
         <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
           {result.map((item) => (
