@@ -10,7 +10,6 @@ function SnackStack() {
   return (
     <Snackbar
       open={!!firstToast}
-      autoHideDuration={null}
       transitionDuration={0}
       anchorOrigin={{
         vertical: firstToast?.position?.vertical || 'top',
