@@ -184,6 +184,8 @@ function QueryForm({
               <SendIcon />
             )
           }
+          // TODO: figure out why eslint is complain when we pass
+          // a function directly as opposed to using a anonymous function
           onClick={() => onSubmitQuery()}
         >
           Submit Query
