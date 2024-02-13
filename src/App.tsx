@@ -131,9 +131,9 @@ function App() {
       const searchParamNodes: string[] = searchParams.getAll('node');
       if (searchParamNodes) {
         const matchedOptions: FieldInputOption[] = searchParamNodes
-          .map((label) => {
-            const foundOption = nodeOptions.find((option) => option.NodeName === label);
-            return foundOption ? { label, id: foundOption.ApiURL } : { label, id: '' };
+          .map((nodeName) => {
+            const foundOption = nodeOptions.find((option) => option.NodeName === nodeName);
+            return foundOption ? { label: nodeName, id: foundOption.ApiURL } : { label: nodeName, id: '' };
           })
           .filter((option) => option.id !== '');
         // If there is no node in the search params, set it to All
