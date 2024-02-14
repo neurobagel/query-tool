@@ -1,4 +1,4 @@
-import { mixedResponse, emptyDiagnosisOptions, emptyAssessmentToolOptions } from '../fixtures/mocked-responses';
+import { mixedResponse, nodeOptions, emptyDiagnosisOptions, emptyAssessmentToolOptions } from '../fixtures/mocked-responses';
 
 describe('API request', () => {
   it('Intercepts the request sent to the API and asserts over the request url', () => {
@@ -9,7 +9,7 @@ describe('API request', () => {
     cy.intercept({
       method: 'GET',
       url: '/nodes/',
-    }).as('getNodes');
+    }, nodeOptions).as('getNodes');
     cy.visit('/?node=OpenNeuro');
     // We need to wait for the fetch to complete and populate the
     // dropdown with nodes and selecting OpenNeuro before making the request
