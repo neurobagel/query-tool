@@ -14,10 +14,11 @@ describe('Dataset result checkbox', () => {
     }).as('call');
 
     cy.visit('/');
-    cy.wait('@call');
     cy.get('[data-cy="submit-query"]').click();
+    cy.wait('@call');
     cy.get('[data-cy="card-http://neurobagel.org/vocab/cool-dataset-checkbox"]').find('input').check();
     cy.get('[data-cy="submit-query"]').click();
+    cy.wait('@call');
     cy.get('[data-cy="card-http://neurobagel.org/vocab/cool-dataset-checkbox"]').should('not.be.checked');
   });
 });
