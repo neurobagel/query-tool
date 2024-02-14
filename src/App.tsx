@@ -96,8 +96,13 @@ function App() {
       });
     }
 
-  }, []);  
+  }, []);
 
+  function arraysEqual(a: FieldInputOption[], b: FieldInputOption[]) {
+    return a.length === b.length && a.every((val, index) => val.id === b[index].id && val.label === b[index].label);
+  }
+
+  // TODO: Refactor this to address the duplicated state and the loop of doom
   useEffect(() => {
     if (nodeOptions.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
@@ -123,7 +128,7 @@ function App() {
           );
           setNode(filteredNode);
           setSearchParams({ node: filteredNode.map((n) => n.label) });
-        } else {
+        } else if (Array.isArray(node) && !arraysEqual(node, matchedOptions)) {
           setNode(matchedOptions);
         }
       }
