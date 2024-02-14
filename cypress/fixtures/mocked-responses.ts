@@ -143,6 +143,17 @@ export const mixedResponse = [
 
 ];
 
+export const nodeOptions = [
+  {
+    "NodeName": "OpenNeuro",
+    "ApiURL": "https://someurl/"
+  },
+  {
+    "NodeName": "Quebec Parkinson Network",
+    "ApiURL": "http://anotherurl/"
+  }
+]
+
 export const emptyDiagnosisOptions = {
   'nb:Diagnosis': [],
 };
