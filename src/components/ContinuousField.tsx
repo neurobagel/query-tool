@@ -1,21 +1,26 @@
 import TextField from '@mui/material/TextField';
 
-function ContinuousField({
-  label,
-  onFieldChange,
-}: {
+export interface ContinuousFieldProps {
+  helperText?: string;
   label: string;
-  onFieldChange: (fieldLabel: string, value: string) => void;
-}) {
+  onFieldChange: (fieldLabel: string, value: number) => void;
+}
+
+function ContinuousField({ helperText, label, onFieldChange }: ContinuousFieldProps) {
+  const showError: boolean= helperText !== '';
   return (
-    // TODO: see if we can make it so TextField returns type number instead of string as its doing now
     <TextField
-      type="number"
+      error={showError}
       label={label}
       className="w-full"
-      onChange={(event) => onFieldChange(label, event.target.value)}
+      onChange={(event) => onFieldChange(label, parseInt(event.target.value, 10))}
+      helperText={helperText}
     />
   );
 }
+
+ContinuousField.defaultProps = {
+  helperText: '',
+};
 
 export default ContinuousField;

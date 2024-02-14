@@ -1,9 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Button, FormControlLabel, Checkbox } from '@mui/material';
+import {
+  Button,
+  FormControlLabel,
+  Checkbox,
+  CircularProgress,
+  FormHelperText,
+} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { isFederationAPI, sexes, modalities } from '../utils/constants';
-import { FieldInput, FieldInputOption, NodeOption, AttributeOption } from '../utils/types';
+import { NodeOption, AttributeOption, FieldInput } from '../utils/types';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 
@@ -11,169 +15,68 @@ function QueryForm({
   nodeOptions,
   diagnosisOptions,
   assessmentOptions,
-  apiQueryURL,
+  node,
+  minAge,
+  maxAge,
+  sex,
+  diagnosis,
+  isControl,
+  minNumSessions,
+  setIsControl,
+  assessmentTool,
+  imagingModality,
+  updateCategoricalQueryParams,
+  updateContinuousQueryParams,
+  loading,
   onSubmitQuery,
 }: {
   nodeOptions: NodeOption[];
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
-  apiQueryURL: string;
-  onSubmitQuery: (url: string) => void;
+  node: FieldInput;
+  minAge: number | null;
+  maxAge: number | null;
+  sex: FieldInput;
+  diagnosis: FieldInput;
+  isControl: boolean;
+  setIsControl: (value: boolean) => void;
+  minNumSessions: number | null;
+  assessmentTool: FieldInput;
+  imagingModality: FieldInput;
+  updateCategoricalQueryParams: (label: string, value: FieldInput) => void;
+  updateContinuousQueryParams: (label: string, value: number | null) => void;
+  loading: boolean;
+  onSubmitQuery: () => void;
 }) {
-  const [node, setNode] = useState<FieldInput>([{ label: 'All', id: 'allNodes' }]);
-  const [minAge, setMinAge] = useState<string | null>(null);
-  const [maxAge, setMaxAge] = useState<string | null>(null);
-  const [sex, setSex] = useState<FieldInput>(null);
-  const [diagnosis, setDiagnosis] = useState<FieldInput>(null);
-  const [isControl, setIsControl] = useState<boolean>(false);
-  const [minNumSessions, setMinNumSessions] = useState<string | null>(null);
-  const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
-  const [imagingModality, setImagingModality] = useState<FieldInput>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(() => {
-    if (nodeOptions.length > 1) {
-      const searchParamNodes: string[] = searchParams.getAll('node');
-      if (searchParamNodes) {
-        const matchedOptions: FieldInputOption[] = searchParamNodes
-          .map((label) => {
-            const foundOption = nodeOptions.find((option) => option.NodeName === label);
-            return foundOption ? { label, id: foundOption.ApiURL } : { label, id: '' };
-          })
-          .filter((option) => option.id !== '');
-        // If there is no node in the search params, set it to All
-        if (matchedOptions.length === 0) {
-          setSearchParams({ node: ['All'] });
-          setNode([{ label: 'All', id: 'allNodes' }]);
-        }
-        // If there is any node besides All selected, remove All from the list
-        else if (
-          matchedOptions.length > 1 &&
-          matchedOptions.some((option) => option.id === 'allNodes')
-        ) {
-          const filteredNode: FieldInputOption[] = matchedOptions.filter(
-            (n) => n.id !== 'allNodes'
-          );
-          setNode(filteredNode);
-          setSearchParams({ node: filteredNode.map((n) => n.label) });
-        } else {
-          setNode(matchedOptions);
-        }
-      }
+  
+  function giveMeError (value: number | null)  {
+    if (value === null) {
+      // Value is default, user has not entered anything yet
+      return '';
     }
-  }, [searchParams, setSearchParams, nodeOptions]);
-
-  function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
-    switch (fieldLabel) {
-      case 'Neurobagel graph':
-        setNode(value);
-        if (Array.isArray(value)) {
-          setSearchParams({ node: value.map((n) => n.label) });
-        }
-        break;
-      case 'Sex':
-        setSex(value);
-        break;
-      case 'Diagnosis':
-        setDiagnosis(value);
-        break;
-      case 'Assessment tool':
-        setAssessmentTool(value);
-        break;
-      case 'Imaging modality':
-        setImagingModality(value);
-        break;
-      default:
-        break;
+    if (Number.isNaN(value)) {
+      return 'Please enter a valid number!';
     }
+    if (value < 0) {
+      return 'Please enter a positive number!';
+    }
+    return '';
   }
 
-  function updateContinuousQueryParams(fieldLabel: string, value: string | null) {
-    switch (fieldLabel) {
-      case 'Min age':
-        setMinAge(value);
-        break;
-      case 'Max age':
-        setMaxAge(value);
-        break;
-      case 'Minimum number of sessions':
-        setMinNumSessions(value);
-        break;
-      default:
-        break;
-    }
-  }
+  const minAgeHelperText: string = giveMeError(minAge);
+  const maxAgeHelperText: string = giveMeError(maxAge);
+  const minNumSessionsHelperText: string = giveMeError(minNumSessions);
 
-  /**
-   * Sets the value of a query parameter on the query parameter object.
-   *
-   * @remarks
-   * This is a utility function to used to help construct the query URL using a URLSearchParams object.
-   *
-   * @param param - The name of the query parameter
-   * @param value - The value of the query parameter
-   * @param queryParamObject - The query parameter object which contains the query parameters
-   * @returns void
-   */
-  function setQueryParam(param: string, value: FieldInput, queryParamObject: URLSearchParams) {
-    if (Array.isArray(value)) {
-      value.forEach((v) => {
-        queryParamObject.append(param, v.id);
-      });
-    } else {
-      queryParamObject.set(param, value?.id ?? '');
-    }
-  }
-
-  /**
-   * Creates the query URL from user input using a URLSearchParams object.
-   *
-   * @remarks
-   * This function utilizes the `setQueryParam` function to set categorical query parameters.
-   *
-   * @returns The query URL.
-   */
-  function constructQueryURL() {
-    const queryParams = new URLSearchParams();
-
-    setQueryParam('node_url', node, queryParams);
-    queryParams.set('min_age', minAge ?? '');
-    queryParams.set('max_age', maxAge ?? '');
-    setQueryParam('sex', sex, queryParams);
-    setQueryParam('diagnosis', isControl ? null : diagnosis, queryParams);
-    queryParams.set('is_control', isControl ? 'true' : '');
-    queryParams.set('min_num_sessions', minNumSessions ?? '');
-    setQueryParam('assessment', assessmentTool, queryParams);
-    setQueryParam('image_modal', imagingModality, queryParams);
-
-    // Notes:
-    // 1. Deleting elements in an array as we loop over it is not good, either make a new object or filter (same thing)
-    // 2. using forEach on the QueryParams object,
-    // 3. Do the filtering first / switch before adding
-    // Solution:
-    // Push the keys to be deleted inside keysToDelete and loop over them and delete them from queryParams afterwards
-    const keysToDelete: string[] = [];
-
-    queryParams.forEach((value, key) => {
-      // if All option is selected for nodes field, delete all node_urls
-      if (value === '' || value === 'allNodes') {
-        keysToDelete.push(key);
-      }
-    });
-
-    keysToDelete.forEach((key) => {
-      queryParams.delete(key);
-    });
-
-    return `${apiQueryURL}${queryParams.toString()}`;
-  }
+  const minAgeExceedsMaxAge: boolean = minAge && maxAge ? minAge > maxAge : false;
+  const disableSubmit: boolean =
+    minAgeExceedsMaxAge || minAgeHelperText !== '' || maxAgeHelperText !== '' || minNumSessionsHelperText !== '';
 
   return (
     <div
       className={
         isFederationAPI
-          ? 'grid grid-cols-2 grid-rows-8 gap-2'
-          : 'grid grid-cols-2 grid-rows-7 gap-2'
+          ? 'grid grid-cols-2 grid-rows-9 gap-2'
+          : 'grid grid-cols-2 grid-rows-8 gap-2'
       }
     >
       {isFederationAPI && (
@@ -192,16 +95,25 @@ function QueryForm({
       )}
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
-          label="Min age"
-          onFieldChange={(label, value) => updateContinuousQueryParams(label, value)}
+          helperText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
+          label="Minimum age"
+          onFieldChange={updateContinuousQueryParams}
         />
       </div>
       <div className={isFederationAPI && 'row-start-2'}>
         <ContinuousField
-          label="Max age"
-          onFieldChange={(label, value) => updateContinuousQueryParams(label, value)}
+          helperText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
+          label="Maximum age"
+          onFieldChange={updateContinuousQueryParams}
         />
       </div>
+      {minAgeExceedsMaxAge && (
+        <div className="col-span-2">
+          <FormHelperText error>
+            Value of maximum age must be greater than or equal to value of minimum age
+          </FormHelperText>
+        </div>
+      )}
       <div className="col-span-2">
         <CategoricalField
           label="Sex"
@@ -213,7 +125,7 @@ function QueryForm({
           inputValue={sex}
         />
       </div>
-      <div className={isFederationAPI ? 'col-span-2 row-start-4' : 'col-span-2 row-start-3'}>
+      <div className={isFederationAPI ? 'col-span-2 row-start-5' : 'col-span-2 row-start-4'}>
         <div className="grid grid-cols-12 items-center gap-4">
           <div className="col-span-9">
             <CategoricalField
@@ -235,13 +147,14 @@ function QueryForm({
           </div>
         </div>
       </div>
-      <div className={isFederationAPI ? 'col-span-2 row-start-5' : 'col-span-2 row-start-4'}>
+      <div className={isFederationAPI ? 'col-span-2 row-start-6' : 'col-span-2 row-start-5'}>
         <ContinuousField
+          helperText={minNumSessionsHelperText}
           label="Minimum number of sessions"
-          onFieldChange={(label, value) => updateContinuousQueryParams(label, value)}
+          onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      <div className={isFederationAPI ? 'col-span-2 row-start-6' : 'col-span-2 row-start-5'}>
+      <div className={isFederationAPI ? 'col-span-2 row-start-7' : 'col-span-2 row-start-6'}>
         <CategoricalField
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label, id: a.TermURL }))}
@@ -249,7 +162,7 @@ function QueryForm({
           inputValue={assessmentTool}
         />
       </div>
-      <div className={isFederationAPI ? 'col-span-2 row-start-7' : 'col-span-2 row-start-6'}>
+      <div className={isFederationAPI ? 'col-span-2 row-start-8' : 'col-span-2 row-start-7'}>
         <CategoricalField
           label="Imaging modality"
           options={Object.entries(modalities).map(([, value]) => ({
@@ -260,11 +173,20 @@ function QueryForm({
           inputValue={imagingModality}
         />
       </div>
-      <div className={isFederationAPI ? 'row-start-8' : 'row-start-7'}>
+      <div className={isFederationAPI ? 'row-start-9' : 'row-start-8'}>
         <Button
+          disabled={disableSubmit}
           variant="contained"
-          endIcon={<SendIcon />}
-          onClick={() => onSubmitQuery(constructQueryURL())}
+          endIcon={
+            loading ? (
+              <CircularProgress size="20px" thickness={5.5} className="text-white" />
+            ) : (
+              <SendIcon />
+            )
+          }
+          // TODO: figure out why eslint is complain when we pass
+          // a function directly as opposed to using a anonymous function
+          onClick={() => onSubmitQuery()}
         >
           Submit Query
         </Button>
