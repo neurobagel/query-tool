@@ -176,6 +176,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
             label="Select all datasets"
             control={
               <Checkbox
+                data-cy="select-all"
                 onChange={(event) => handleSelectAll(event.target.checked)}
                 checked={selectAll}
               />

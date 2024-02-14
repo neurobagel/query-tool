@@ -7,9 +7,10 @@ export interface ContinuousFieldProps {
 }
 
 function ContinuousField({ helperText, label, onFieldChange }: ContinuousFieldProps) {
-  const showError: boolean= helperText !== '';
+  const showError: boolean = helperText !== '';
   return (
     <TextField
+      data-cy={`${label}-continuous-field`}
       error={showError}
       label={label}
       className="w-full"

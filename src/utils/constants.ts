@@ -1,4 +1,4 @@
-const baseAPIURL: string = import.meta.env.VITE_API_QUERY_URL;
+const baseAPIURL: string = import.meta.env.NB_API_QUERY_URL;
 export const queryURL: string = baseAPIURL.endsWith('/')
   ? `${baseAPIURL}query/?`
   : `${baseAPIURL}/query/?`;
@@ -10,9 +10,9 @@ export const nodesURL: string = baseAPIURL.endsWith('/')
   : `${baseAPIURL}/nodes/`;
 
 export const isFederationAPI: string =
-  import.meta.env.VITE_IS_FEDERATION_API === undefined
+  import.meta.env.NB_IS_FEDERATION_API === undefined
     ? true
-    : import.meta.env.VITE_API_FEDERATION_URL;
+    : import.meta.env.NB_IS_FEDERATION_API;
 
 export const sexes: { [key: string]: string } = {
   male: 'snomed:248153007',

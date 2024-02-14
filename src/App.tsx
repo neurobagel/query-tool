@@ -58,7 +58,7 @@ function App() {
       if (diagnosisResponse === null) {
         enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
       } else if (diagnosisResponse.length === 0) {
-        enqueueSnackbar('No options found for Diagnosis', { variant: 'info' });
+        enqueueSnackbar('No Diagnosis options were available', { variant: 'info' });
       } else {
         setDiagnosisOptions(diagnosisResponse);
       }
@@ -66,9 +66,9 @@ function App() {
 
     getAttributes('nb:Assessment').then(assessmentResponse => {
       if (assessmentResponse === null) {
-        enqueueSnackbar('Failed to retrieve Assessment Tool options', { variant: 'error' });
+        enqueueSnackbar('Failed to retrieve Assessment tool options', { variant: 'error' });
       } else if (assessmentResponse.length === 0) {
-        enqueueSnackbar('No options found for Assessment Tool', { variant: 'info' });
+        enqueueSnackbar('No Assessment tool options were available', { variant: 'info' });
       } else {
         setAssessmentOptions(assessmentResponse);
       }
@@ -96,8 +96,13 @@ function App() {
       });
     }
 
-  }, []);  
+  }, []);
 
+  function arraysEqual(a: FieldInputOption[], b: FieldInputOption[]) {
+    return a.length === b.length && a.every((val, index) => val.id === b[index].id && val.label === b[index].label);
+  }
+
+  // TODO: Refactor this to address the duplicated state and the loop of doom
   useEffect(() => {
     if (nodeOptions.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
@@ -123,7 +128,7 @@ function App() {
           );
           setNode(filteredNode);
           setSearchParams({ node: filteredNode.map((n) => n.label) });
-        } else {
+        } else if (Array.isArray(node) && !arraysEqual(node, matchedOptions)) {
           setNode(matchedOptions);
         }
       }
@@ -255,12 +260,13 @@ function App() {
 
   return (
     <>
-    <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
+      <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
       <Navbar />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>
             <Alert
+              data-cy="openneuro-alert"
               severity="info"
               onClose={() => {
                 setAlertDismissed(true);

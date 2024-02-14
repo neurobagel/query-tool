@@ -49,7 +49,7 @@ function QueryForm({
   onSubmitQuery: () => void;
 }) {
   
-  function giveMeError (value: number | null)  {
+  function validateContinuousValue (value: number | null)  {
     if (value === null) {
       // Value is default, user has not entered anything yet
       return '';
@@ -63,9 +63,9 @@ function QueryForm({
     return '';
   }
 
-  const minAgeHelperText: string = giveMeError(minAge);
-  const maxAgeHelperText: string = giveMeError(maxAge);
-  const minNumSessionsHelperText: string = giveMeError(minNumSessions);
+  const minAgeHelperText: string = validateContinuousValue(minAge);
+  const maxAgeHelperText: string = validateContinuousValue(maxAge);
+  const minNumSessionsHelperText: string = validateContinuousValue(minNumSessions);
 
   const minAgeExceedsMaxAge: boolean = minAge && maxAge ? minAge > maxAge : false;
   const disableSubmit: boolean =
@@ -175,6 +175,7 @@ function QueryForm({
       </div>
       <div className={isFederationAPI ? 'row-start-9' : 'row-start-8'}>
         <Button
+          data-cy="submit-query"
           disabled={disableSubmit}
           variant="contained"
           endIcon={
