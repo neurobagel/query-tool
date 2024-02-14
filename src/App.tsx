@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { Alert, Grow } from '@mui/material';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -15,8 +15,6 @@ import {
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
-import { useSnackStack } from './components/SnackStackProvider';
-import SnackStack from './components/SnackStack';
 import './App.css';
 
 function App() {
@@ -43,68 +41,71 @@ function App() {
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { addToast } = useSnackStack();
-
   useEffect(() => {
-    async function fetchOptions(
-      dataElementURI: string,
-      setOptions: (options: AttributeOption[]) => void
-    ) {
+    async function getAttributes(dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        if (response.data[dataElementURI].length === 0) {
-          addToast({
-            key: uuidv4(),
-            message: `No ${dataElementURI.slice(3)} options were available`,
-            severity: 'info',
-          });
-        } else {
-          setOptions(response.data[dataElementURI]);
-        }
-      } catch (err) {
-        addToast({
-          key: uuidv4(),
-          message: `Failed to retrieve ${dataElementURI.slice(3)} options`,
-          severity: 'error',
-        });
+        return response.data[dataElementURI];
+      }
+      catch (err) {
+        return null;
       }
     }
 
-    async function fetchNodes() {
+    getAttributes('nb:Diagnosis').then(diagnosisResponse => {
+      if (diagnosisResponse === null) {
+        enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
+      } else if (diagnosisResponse.length === 0) {
+        enqueueSnackbar('No options found for Diagnosis', { variant: 'info' });
+      } else {
+        setDiagnosisOptions(diagnosisResponse);
+      }
+    });
+
+    getAttributes('nb:Assessment').then(assessmentResponse => {
+      if (assessmentResponse === null) {
+        enqueueSnackbar('Failed to retrieve Assessment Tool options', { variant: 'error' });
+      } else if (assessmentResponse.length === 0) {
+        enqueueSnackbar('No options found for Assessment Tool', { variant: 'info' });
+      } else {
+        setAssessmentOptions(assessmentResponse);
+      }
+    });
+
+    async function getNodeOptions(fetchURL: string) {
       try {
-        const response: AxiosResponse<[]> = await axios.get(nodesURL);
-        setNodeOptions([...response.data, { NodeName: 'All', ApiURL: 'allNodes' }]);
-      } catch (err) {
-        addToast({
-          key: uuidv4(),
-          message: 'Failed to retrieve nodes',
-          severity: 'error',
-        });
+        const response: AxiosResponse<NodeOption[]> = await axios.get(fetchURL);
+        return response.data;
+      }
+      catch (err) {
+        return null;
       }
     }
 
     if (isFederationAPI) {
-      fetchNodes();
+      getNodeOptions(nodesURL).then(nodeResponse => {
+        if (nodeResponse === null) {
+          enqueueSnackbar('Failed to retrieve Node options', { variant: 'error' });
+        } else if (nodeResponse.length === 0) {
+          enqueueSnackbar('No options found for Node', { variant: 'info' });
+        } else {
+          setNodeOptions([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
+        }
+      });
     }
 
-    fetchOptions('nb:Diagnosis', setDiagnosisOptions);
-    fetchOptions('nb:Assessment', setAssessmentOptions);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function arraysEqual(a: FieldInputOption[], b: FieldInputOption[]) {
-    return a.length === b.length && a.every((val, index) => val.id === b[index].id && val.label === b[index].label);
-  }
+  }, []);  
 
   useEffect(() => {
     if (nodeOptions.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
       if (searchParamNodes) {
         const matchedOptions: FieldInputOption[] = searchParamNodes
-          .map((label) => {
-            const foundOption = nodeOptions.find((option) => option.NodeName === label);
-            return foundOption ? { label, id: foundOption.ApiURL } : { label, id: '' };
+          .map((nodeName) => {
+            const foundOption = nodeOptions.find((option) => option.NodeName === nodeName);
+            return foundOption ? { label: nodeName, id: foundOption.ApiURL } : { label: nodeName, id: '' };
           })
           .filter((option) => option.id !== '');
         // If there is no node in the search params, set it to All
@@ -122,7 +123,7 @@ function App() {
           );
           setNode(filteredNode);
           setSearchParams({ node: filteredNode.map((n) => n.label) });
-        } else if (Array.isArray(node) && !arraysEqual(node, matchedOptions)) {
+        } else {
           setNode(matchedOptions);
         }
       }
@@ -131,9 +132,9 @@ function App() {
 
   function showAlert() {
     if (node && Array.isArray(node)) {
-      const openNeurIsAnoOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro');
+      const openNeuroIsAnOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro');
       const isOpenNeuroSelected = node.find(
-        (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeurIsAnoOption)
+        (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeuroIsAnOption)
       );
       return isOpenNeuroSelected && !alertDismissed;
     }
@@ -223,12 +224,7 @@ function App() {
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
 
-    // Notes:
-    // 1. Deleting elements in an array as we loop over it is not good, either make a new object or filter (same thing)
-    // 2. using forEach on the QueryParams object,
-    // 3. Do the filtering first / switch before adding
-    // Solution:
-    // Push the keys to be deleted inside keysToDelete and loop over them and delete them from queryParams afterwards
+    // Remove keys with empty values
     const keysToDelete: string[] = [];
 
     queryParams.forEach((value, key) => {
@@ -252,18 +248,14 @@ function App() {
       const response = await axios.get(url);
       setResult(response.data);
     } catch (error) {
-      addToast({
-        key: uuidv4(),
-        message: 'Failed to retrieve results',
-        severity: 'error',
-      });
+      enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
     }
     setLoading(false);
   }
 
   return (
     <>
-      <SnackStack />
+    <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
       <Navbar />
       {showAlert() && (
         <>
@@ -305,6 +297,7 @@ function App() {
             sex={sex}
             diagnosis={diagnosis}
             isControl={isControl}
+            minNumSessions={minNumSessions}
             setIsControl={setIsControl}
             assessmentTool={assessmentTool}
             imagingModality={imagingModality}
