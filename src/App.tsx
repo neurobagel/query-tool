@@ -42,7 +42,7 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    async function tryThisOptionsGetter(dataElementURI: string) {
+    async function getAttributes(dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
@@ -54,7 +54,7 @@ function App() {
       }
     }
 
-    tryThisOptionsGetter('nb:Diagnosis').then(diagnosisResponse => {
+    getAttributes('nb:Diagnosis').then(diagnosisResponse => {
       if (diagnosisResponse === null) {
         enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
       } else if (diagnosisResponse.length === 0) {
@@ -64,7 +64,7 @@ function App() {
       }
     });
 
-    tryThisOptionsGetter('nb:Assessment').then(assessmentResponse => {
+    getAttributes('nb:Assessment').then(assessmentResponse => {
       if (assessmentResponse === null) {
         enqueueSnackbar('Failed to retrieve Assessment Tool options', { variant: 'error' });
       } else if (assessmentResponse.length === 0) {
