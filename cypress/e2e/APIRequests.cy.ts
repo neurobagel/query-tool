@@ -30,8 +30,8 @@ describe('API request', () => {
     }, emptyAssessmentToolOptions).as('getAssessmentToolOptions');
     cy.visit('/');
     cy.wait('@getDiagnosisOptions');
-    cy.get('[data-cy="snack-stack"]').should('contain', 'No Diagnosis options were available');
-    cy.get('[data-cy="snack-stack"]').should('contain', 'No Assessment options were available');
+    cy.get('.notistack-SnackbarContainer').should('contain', 'No Diagnosis options were available');
+    cy.get('.notistack-SnackbarContainer').should('contain', 'No Assessment tool options were available');
   });
   it('Failed responses for diagnosis and assessment make an error toast appear', () => {
     cy.intercept({
@@ -44,8 +44,8 @@ describe('API request', () => {
     }, { statusCode: 500 }).as('getAssessmentToolOptions');
     cy.visit('/');
     cy.wait('@getDiagnosisOptions');
-    cy.get('[data-cy="snack-stack"]').should('contain', 'Failed to retrieve Diagnosis options');
+    cy.get('.notistack-SnackbarContainer').should('contain', 'Failed to retrieve Diagnosis options');
     cy.wait('@getAssessmentToolOptions');
-    cy.get('[data-cy="snack-stack"]').should('contain', 'Failed to retrieve Assessment options');
+    cy.get('.notistack-SnackbarContainer').should('contain', 'Failed to retrieve Assessment tool options');
   });
 });

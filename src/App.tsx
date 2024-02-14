@@ -58,7 +58,7 @@ function App() {
       if (diagnosisResponse === null) {
         enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
       } else if (diagnosisResponse.length === 0) {
-        enqueueSnackbar('No options found for Diagnosis', { variant: 'info' });
+        enqueueSnackbar('No Diagnosis options were available', { variant: 'info' });
       } else {
         setDiagnosisOptions(diagnosisResponse);
       }
@@ -66,9 +66,9 @@ function App() {
 
     getAttributes('nb:Assessment').then(assessmentResponse => {
       if (assessmentResponse === null) {
-        enqueueSnackbar('Failed to retrieve Assessment Tool options', { variant: 'error' });
+        enqueueSnackbar('Failed to retrieve Assessment tool options', { variant: 'error' });
       } else if (assessmentResponse.length === 0) {
-        enqueueSnackbar('No options found for Assessment Tool', { variant: 'info' });
+        enqueueSnackbar('No Assessment tool options were available', { variant: 'info' });
       } else {
         setAssessmentOptions(assessmentResponse);
       }
@@ -260,7 +260,7 @@ function App() {
 
   return (
     <>
-    <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
+      <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
       <Navbar />
       {showAlert() && (
         <>
