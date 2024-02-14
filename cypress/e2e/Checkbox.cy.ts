@@ -1,7 +1,7 @@
 import { protectedResponse1, protectedResponse2 } from '../fixtures/mocked-responses';
 
-describe('Checkbox', () => {
-  it('Unchecks checked checkboxes after a second query is run.', () => {
+describe('Dataset result checkbox', () => {
+  it('A selected dataset card will be uncheckd when a new query is run.', () => {
     let isFirstClick = true;
 
     cy.intercept('GET', 'query/*', (req) => {
@@ -11,9 +11,10 @@ describe('Checkbox', () => {
       } else {
         req.reply(protectedResponse2);
       }
-    });
+    }).as('call');
 
     cy.visit('/');
+    cy.wait('@call');
     cy.get('[data-cy="submit-query"]').click();
     cy.get('[data-cy="card-http://neurobagel.org/vocab/cool-dataset-checkbox"]').find('input').check();
     cy.get('[data-cy="submit-query"]').click();
