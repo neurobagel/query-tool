@@ -30,7 +30,6 @@ function App() {
 
   const [result, setResult] = useState<Result[] | null>(null);
 
-  const [node, setNode] = useState<FieldInput>([{ label: 'All', id: 'allNodes' }]);
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
   const [sex, setSex] = useState<FieldInput>(null);
@@ -40,6 +39,10 @@ function App() {
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const node: FieldInputOption[] = nodeOptions
+    .filter((n) => searchParams.getAll('node').includes(n.NodeName))
+    .map((n) => ({ label: n.NodeName, id: n.ApiURL }));
 
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
@@ -98,42 +101,29 @@ function App() {
 
   }, []);
 
-  function arraysEqual(a: FieldInputOption[], b: FieldInputOption[]) {
-    return a.length === b.length && a.every((val, index) => val.id === b[index].id && val.label === b[index].label);
-  }
-
-  // TODO: Refactor this to address the duplicated state and the loop of doom
   useEffect(() => {
     if (nodeOptions.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
+
       if (searchParamNodes) {
-        const matchedOptions: FieldInputOption[] = searchParamNodes
-          .map((nodeName) => {
-            const foundOption = nodeOptions.find((option) => option.NodeName === nodeName);
-            return foundOption ? { label: nodeName, id: foundOption.ApiURL } : { label: nodeName, id: '' };
-          })
-          .filter((option) => option.id !== '');
+        const matchedNodeNames: string[] = searchParamNodes
+        .filter((nodeName) => nodeOptions.some((option) => option.NodeName === nodeName));
+
         // If there is no node in the search params, set it to All
-        if (matchedOptions.length === 0) {
+        if (matchedNodeNames.length === 0) {
           setSearchParams({ node: ['All'] });
-          setNode([{ label: 'All', id: 'allNodes' }]);
         }
         // If there is any node besides All selected, remove All from the list
         else if (
-          matchedOptions.length > 1 &&
-          matchedOptions.some((option) => option.id === 'allNodes')
+          matchedNodeNames.length > 1 &&
+          matchedNodeNames.includes('All')
         ) {
-          const filteredNode: FieldInputOption[] = matchedOptions.filter(
-            (n) => n.id !== 'allNodes'
-          );
-          setNode(filteredNode);
-          setSearchParams({ node: filteredNode.map((n) => n.label) });
-        } else if (Array.isArray(node) && !arraysEqual(node, matchedOptions)) {
-          setNode(matchedOptions);
+          const filteredNodeNames = matchedNodeNames.filter((nodeName) => nodeName !== 'All');
+          setSearchParams({ node: filteredNodeNames });
         }
-      }
+      } 
     }
-  }, [searchParams, setSearchParams, nodeOptions, node]);
+  }, [searchParams, setSearchParams, nodeOptions]);
 
   function showAlert() {
     if (node && Array.isArray(node)) {
@@ -149,9 +139,16 @@ function App() {
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
       case 'Neurobagel graph':
-        setNode(value);
         if (Array.isArray(value)) {
-          setSearchParams({ node: value.map((n) => n.label) });
+          // If no option is selected default to All
+          if (value.length === 0) {
+            setSearchParams({ node: ['All'] });
+            // If any option beside All is selected, remove All
+          } else if (value.length > 1) {
+            setSearchParams({ node: value.filter((n) => n.label !== 'All').map((n) => n.label) });
+          } else {
+            setSearchParams({ node: value.map((n) => n.label) });
+          }
         }
         break;
       case 'Sex':
