@@ -20,7 +20,7 @@ import './App.css';
 function App() {
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
-  const [nodeOptions, setNodeOptions] = useState<NodeOption[]>([
+  const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
 
@@ -40,9 +40,9 @@ function App() {
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const node: FieldInputOption[] = nodeOptions
-    .filter((n) => searchParams.getAll('node').includes(n.NodeName))
-    .map((n) => ({ label: n.NodeName, id: n.ApiURL }));
+  const selectedNode: FieldInputOption[] = availableNodes
+    .filter((option) => searchParams.getAll('node').includes(option.NodeName))
+    .map((option) => ({ label: option.NodeName, id: option.ApiURL }));
 
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
@@ -94,7 +94,7 @@ function App() {
         } else if (nodeResponse.length === 0) {
           enqueueSnackbar('No options found for Node', { variant: 'info' });
         } else {
-          setNodeOptions([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
+          setAvailableNodes([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
         }
       });
     }
@@ -102,12 +102,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (nodeOptions.length > 1) {
+    if (availableNodes.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
 
       if (searchParamNodes) {
         const matchedNodeNames: string[] = searchParamNodes
-        .filter((nodeName) => nodeOptions.some((option) => option.NodeName === nodeName));
+        .filter((nodeName) => availableNodes.some((option) => option.NodeName === nodeName));
 
         // If there is no node in the search params, set it to All
         if (matchedNodeNames.length === 0) {
@@ -123,12 +123,12 @@ function App() {
         }
       } 
     }
-  }, [searchParams, setSearchParams, nodeOptions]);
+  }, [searchParams, setSearchParams, availableNodes]);
 
   function showAlert() {
-    if (node && Array.isArray(node)) {
-      const openNeuroIsAnOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro');
-      const isOpenNeuroSelected = node.find(
+    if (selectedNode && Array.isArray(selectedNode)) {
+      const openNeuroIsAnOption = availableNodes.find((n) => n.NodeName === 'OpenNeuro');
+      const isOpenNeuroSelected = selectedNode.find(
         (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeuroIsAnOption)
       );
       return isOpenNeuroSelected && !alertDismissed;
@@ -216,7 +216,7 @@ function App() {
   function constructQueryURL() {
     const queryParams = new URLSearchParams();
 
-    setQueryParam('node_url', node, queryParams);
+    setQueryParam('node_url', selectedNode, queryParams);
     queryParams.set('min_age', minAge ? minAge.toString() : '');
     queryParams.set('max_age', maxAge ? maxAge.toString() : '');
     setQueryParam('sex', sex, queryParams);
@@ -290,10 +290,10 @@ function App() {
       <div className="grid grid-cols-4 grid-rows-1 gap-4">
         <div>
           <QueryForm
-            nodeOptions={nodeOptions}
+            nodeOptions={availableNodes}
             diagnosisOptions={diagnosisOptions}
             assessmentOptions={assessmentOptions}
-            node={node}
+            node={selectedNode}
             minAge={minAge}
             maxAge={maxAge}
             sex={sex}
