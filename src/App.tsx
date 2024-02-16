@@ -51,13 +51,12 @@ function App() {
           `${attributesURL}${dataElementURI}`
         );
         return response.data[dataElementURI];
-      }
-      catch (err) {
+      } catch (err) {
         return null;
       }
     }
 
-    getAttributes('nb:Diagnosis').then(diagnosisResponse => {
+    getAttributes('nb:Diagnosis').then((diagnosisResponse) => {
       if (diagnosisResponse === null) {
         enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
       } else if (diagnosisResponse.length === 0) {
@@ -67,7 +66,7 @@ function App() {
       }
     });
 
-    getAttributes('nb:Assessment').then(assessmentResponse => {
+    getAttributes('nb:Assessment').then((assessmentResponse) => {
       if (assessmentResponse === null) {
         enqueueSnackbar('Failed to retrieve Assessment tool options', { variant: 'error' });
       } else if (assessmentResponse.length === 0) {
@@ -81,14 +80,13 @@ function App() {
       try {
         const response: AxiosResponse<NodeOption[]> = await axios.get(fetchURL);
         return response.data;
-      }
-      catch (err) {
+      } catch (err) {
         return null;
       }
     }
 
     if (isFederationAPI) {
-      getNodeOptions(nodesURL).then(nodeResponse => {
+      getNodeOptions(nodesURL).then((nodeResponse) => {
         if (nodeResponse === null) {
           enqueueSnackbar('Failed to retrieve Node options', { variant: 'error' });
         } else if (nodeResponse.length === 0) {
@@ -98,7 +96,6 @@ function App() {
         }
       });
     }
-
   }, []);
 
   useEffect(() => {
@@ -106,22 +103,20 @@ function App() {
       const searchParamNodes: string[] = searchParams.getAll('node');
 
       if (searchParamNodes) {
-        const matchedNodeNames: string[] = searchParamNodes
-        .filter((nodeName) => availableNodes.some((option) => option.NodeName === nodeName));
+        const matchedNodeNames: string[] = searchParamNodes.filter((nodeName) =>
+          availableNodes.some((option) => option.NodeName === nodeName)
+        );
 
         // If there is no node in the search params, set it to All
         if (matchedNodeNames.length === 0) {
           setSearchParams({ node: ['All'] });
         }
         // If there is any node besides All selected, remove All from the list
-        else if (
-          matchedNodeNames.length > 1 &&
-          matchedNodeNames.includes('All')
-        ) {
+        else if (matchedNodeNames.length > 1 && matchedNodeNames.includes('All')) {
           const filteredNodeNames = matchedNodeNames.filter((nodeName) => nodeName !== 'All');
           setSearchParams({ node: filteredNodeNames });
         }
-      } 
+      }
     }
   }, [searchParams, setSearchParams, availableNodes]);
 
@@ -257,7 +252,11 @@ function App() {
 
   return (
     <>
-      <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
+      <SnackbarProvider
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        maxSnack={7}
+      />
       <Navbar />
       {showAlert() && (
         <>

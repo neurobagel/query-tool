@@ -30,7 +30,7 @@ function DownloadResultButton({
       <span>{button}</span>
     </Tooltip>
   ) : (
-      button
+    button
   );
 }
 

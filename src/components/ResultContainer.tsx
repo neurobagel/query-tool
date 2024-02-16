@@ -12,15 +12,15 @@ function ResultContainer({ result }: { result: Result[] | null }) {
     ? result.length === download.length && result.every((r) => download.includes(r.dataset_uuid))
     : false;
 
-    let numOfMatchedDatasets = 0;
-    let numOfMatchedSubjects = 0;
-    if (result) {
-      result.forEach((item) => {
-        numOfMatchedDatasets += 1;
-        numOfMatchedSubjects += item.num_matching_subjects;
-      });
-    }
-    const summaryStats = `Summary stats: ${numOfMatchedDatasets} datasets, ${numOfMatchedSubjects} subjects`;
+  let numOfMatchedDatasets = 0;
+  let numOfMatchedSubjects = 0;
+  if (result) {
+    result.forEach((item) => {
+      numOfMatchedDatasets += 1;
+      numOfMatchedSubjects += item.num_matching_subjects;
+    });
+  }
+  const summaryStats = `Summary stats: ${numOfMatchedDatasets} datasets, ${numOfMatchedSubjects} subjects`;
 
   /**
    * Updates the download array.
