@@ -8,14 +8,14 @@ function DownloadResultButton({
 }: {
   identifier: string;
   disabled: boolean;
-  handleClick: () => void;
+  handleClick: (identifier: string) => void;
 }) {
   const button = (
     <Button
       data-cy={`${identifier}-download-results-button`}
       variant="contained"
       startIcon={<DownloadIcon />}
-      onClick={handleClick}
+      onClick={() =>handleClick(identifier)}
       disabled={disabled}
     >
       Download {identifier} Result

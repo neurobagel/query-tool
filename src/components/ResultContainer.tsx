@@ -211,12 +211,12 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           <DownloadResultButton
             identifier="participant-level"
             disabled={download.length === 0}
-            handleClick={() => downloadResults('participant-level')}
+            handleClick={(identifier) => downloadResults(identifier)}
           />
           <DownloadResultButton
             identifier="dataset-level"
             disabled={download.length === 0}
-            handleClick={() => downloadResults('dataset-level')}
+            handleClick={(identifier) => downloadResults(identifier)}
           />
         </div>
       </>
