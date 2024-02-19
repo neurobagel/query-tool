@@ -7,13 +7,15 @@ function Navbar() {
   const [latestReleaseTag, setLatestReleaseTag] = useState('');
 
   useEffect(() => {
-      // TODO: replace with react-query-tool once there is a release
-      const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
-      axios.get(GHApiURL)
+    // TODO: replace with react-query-tool once there is a release
+    const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
+    axios
+      .get(GHApiURL)
       .then((response) => {
-        const {data} = response;
+        const { data } = response;
         setLatestReleaseTag(data.tag_name);
-      }).catch(() => {
+      })
+      .catch(() => {
         setLatestReleaseTag('beta');
       });
   }, []);

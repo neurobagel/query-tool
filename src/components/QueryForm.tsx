@@ -48,8 +48,7 @@ function QueryForm({
   loading: boolean;
   onSubmitQuery: () => void;
 }) {
-  
-  function validateContinuousValue (value: number | null)  {
+  function validateContinuousValue(value: number | null) {
     if (value === null) {
       // Value is default, user has not entered anything yet
       return '';
@@ -69,7 +68,10 @@ function QueryForm({
 
   const minAgeExceedsMaxAge: boolean = minAge && maxAge ? minAge > maxAge : false;
   const disableSubmit: boolean =
-    minAgeExceedsMaxAge || minAgeHelperText !== '' || maxAgeHelperText !== '' || minNumSessionsHelperText !== '';
+    minAgeExceedsMaxAge ||
+    minAgeHelperText !== '' ||
+    maxAgeHelperText !== '' ||
+    minNumSessionsHelperText !== '';
 
   return (
     <div

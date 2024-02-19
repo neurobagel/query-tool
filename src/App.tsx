@@ -20,7 +20,7 @@ import './App.css';
 function App() {
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
-  const [nodeOptions, setNodeOptions] = useState<NodeOption[]>([
+  const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
 
@@ -30,7 +30,6 @@ function App() {
 
   const [result, setResult] = useState<Result[] | null>(null);
 
-  const [node, setNode] = useState<FieldInput>([{ label: 'All', id: 'allNodes' }]);
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
   const [sex, setSex] = useState<FieldInput>(null);
@@ -41,6 +40,10 @@ function App() {
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const selectedNode: FieldInputOption[] = availableNodes
+    .filter((option) => searchParams.getAll('node').includes(option.NodeName))
+    .map((filteredOption) => ({ label: filteredOption.NodeName, id: filteredOption.ApiURL }));
+
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
       try {
@@ -48,13 +51,12 @@ function App() {
           `${attributesURL}${dataElementURI}`
         );
         return response.data[dataElementURI];
-      }
-      catch (err) {
+      } catch (err) {
         return null;
       }
     }
 
-    getAttributes('nb:Diagnosis').then(diagnosisResponse => {
+    getAttributes('nb:Diagnosis').then((diagnosisResponse) => {
       if (diagnosisResponse === null) {
         enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
       } else if (diagnosisResponse.length === 0) {
@@ -64,7 +66,7 @@ function App() {
       }
     });
 
-    getAttributes('nb:Assessment').then(assessmentResponse => {
+    getAttributes('nb:Assessment').then((assessmentResponse) => {
       if (assessmentResponse === null) {
         enqueueSnackbar('Failed to retrieve Assessment tool options', { variant: 'error' });
       } else if (assessmentResponse.length === 0) {
@@ -78,67 +80,50 @@ function App() {
       try {
         const response: AxiosResponse<NodeOption[]> = await axios.get(fetchURL);
         return response.data;
-      }
-      catch (err) {
+      } catch (err) {
         return null;
       }
     }
 
     if (isFederationAPI) {
-      getNodeOptions(nodesURL).then(nodeResponse => {
+      getNodeOptions(nodesURL).then((nodeResponse) => {
         if (nodeResponse === null) {
           enqueueSnackbar('Failed to retrieve Node options', { variant: 'error' });
         } else if (nodeResponse.length === 0) {
           enqueueSnackbar('No options found for Node', { variant: 'info' });
         } else {
-          setNodeOptions([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
+          setAvailableNodes([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
         }
       });
     }
-
   }, []);
 
-  function arraysEqual(a: FieldInputOption[], b: FieldInputOption[]) {
-    return a.length === b.length && a.every((val, index) => val.id === b[index].id && val.label === b[index].label);
-  }
-
-  // TODO: Refactor this to address the duplicated state and the loop of doom
   useEffect(() => {
-    if (nodeOptions.length > 1) {
+    if (availableNodes.length > 1) {
       const searchParamNodes: string[] = searchParams.getAll('node');
+
       if (searchParamNodes) {
-        const matchedOptions: FieldInputOption[] = searchParamNodes
-          .map((nodeName) => {
-            const foundOption = nodeOptions.find((option) => option.NodeName === nodeName);
-            return foundOption ? { label: nodeName, id: foundOption.ApiURL } : { label: nodeName, id: '' };
-          })
-          .filter((option) => option.id !== '');
+        const matchedNodeNames: string[] = searchParamNodes.filter((nodeName) =>
+          availableNodes.some((option) => option.NodeName === nodeName)
+        );
+
         // If there is no node in the search params, set it to All
-        if (matchedOptions.length === 0) {
+        if (matchedNodeNames.length === 0) {
           setSearchParams({ node: ['All'] });
-          setNode([{ label: 'All', id: 'allNodes' }]);
         }
         // If there is any node besides All selected, remove All from the list
-        else if (
-          matchedOptions.length > 1 &&
-          matchedOptions.some((option) => option.id === 'allNodes')
-        ) {
-          const filteredNode: FieldInputOption[] = matchedOptions.filter(
-            (n) => n.id !== 'allNodes'
-          );
-          setNode(filteredNode);
-          setSearchParams({ node: filteredNode.map((n) => n.label) });
-        } else if (Array.isArray(node) && !arraysEqual(node, matchedOptions)) {
-          setNode(matchedOptions);
+        else if (matchedNodeNames.length > 1 && matchedNodeNames.includes('All')) {
+          const filteredNodeNames = matchedNodeNames.filter((nodeName) => nodeName !== 'All');
+          setSearchParams({ node: filteredNodeNames });
         }
       }
     }
-  }, [searchParams, setSearchParams, nodeOptions, node]);
+  }, [searchParams, setSearchParams, availableNodes]);
 
   function showAlert() {
-    if (node && Array.isArray(node)) {
-      const openNeuroIsAnOption = nodeOptions.find((n) => n.NodeName === 'OpenNeuro');
-      const isOpenNeuroSelected = node.find(
+    if (selectedNode && Array.isArray(selectedNode)) {
+      const openNeuroIsAnOption = availableNodes.find((n) => n.NodeName === 'OpenNeuro');
+      const isOpenNeuroSelected = selectedNode.find(
         (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeuroIsAnOption)
       );
       return isOpenNeuroSelected && !alertDismissed;
@@ -149,9 +134,16 @@ function App() {
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
       case 'Neurobagel graph':
-        setNode(value);
         if (Array.isArray(value)) {
-          setSearchParams({ node: value.map((n) => n.label) });
+          // If no option is selected default to All
+          if (value.length === 0) {
+            setSearchParams({ node: ['All'] });
+            // If any option beside All is selected, remove All
+          } else if (value.length > 1) {
+            setSearchParams({ node: value.filter((n) => n.label !== 'All').map((n) => n.label) });
+          } else {
+            setSearchParams({ node: value.map((n) => n.label) });
+          }
         }
         break;
       case 'Sex':
@@ -219,7 +211,7 @@ function App() {
   function constructQueryURL() {
     const queryParams = new URLSearchParams();
 
-    setQueryParam('node_url', node, queryParams);
+    setQueryParam('node_url', selectedNode, queryParams);
     queryParams.set('min_age', minAge ? minAge.toString() : '');
     queryParams.set('max_age', maxAge ? maxAge.toString() : '');
     setQueryParam('sex', sex, queryParams);
@@ -260,7 +252,11 @@ function App() {
 
   return (
     <>
-      <SnackbarProvider autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={7} />
+      <SnackbarProvider
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        maxSnack={7}
+      />
       <Navbar />
       {showAlert() && (
         <>
@@ -293,10 +289,10 @@ function App() {
       <div className="grid grid-cols-4 grid-rows-1 gap-4">
         <div>
           <QueryForm
-            nodeOptions={nodeOptions}
+            nodeOptions={availableNodes}
             diagnosisOptions={diagnosisOptions}
             assessmentOptions={assessmentOptions}
-            node={node}
+            node={selectedNode}
             minAge={minAge}
             maxAge={maxAge}
             sex={sex}
