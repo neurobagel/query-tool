@@ -14,13 +14,9 @@ export const unprotectedresponse1 = [
         num_sessions: '1',
         age: '10.4',
         sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248152002',
-        diagnosis: [
-          null,
-        ],
+        diagnosis: [null],
         subject_group: null,
-        assessment: [
-          null,
-        ],
+        assessment: [null],
         image_modal: [
           'http://purl.org/nidash/nidm#FlowWeighted',
           'http://purl.org/nidash/nidm#T2Weighted',
@@ -33,13 +29,9 @@ export const unprotectedresponse1 = [
         num_sessions: '1',
         age: '10.4',
         sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248152002',
-        diagnosis: [
-          null,
-        ],
+        diagnosis: [null],
         subject_group: null,
-        assessment: [
-          null,
-        ],
+        assessment: [null],
         image_modal: [
           'http://purl.org/nidash/nidm#FlowWeighted',
           'http://purl.org/nidash/nidm#T2Weighted',
@@ -64,7 +56,10 @@ export const protectedResponse1 = [
     records_protected: true,
     num_matching_subjects: 2,
     subject_data: 'protected',
-    image_modals: ['http://purl.org/nidash/nidm#T1Weighted', 'http://purl.org/nidash/nidm#T2Weighted'],
+    image_modals: [
+      'http://purl.org/nidash/nidm#T1Weighted',
+      'http://purl.org/nidash/nidm#T2Weighted',
+    ],
   },
 ];
 
@@ -78,7 +73,10 @@ export const protectedResponse2 = [
     records_protected: true,
     num_matching_subjects: 2,
     subject_data: 'protected',
-    image_modals: ['http://purl.org/nidash/nidm#T1Weighted', 'http://purl.org/nidash/nidm#T2Weighted'],
+    image_modals: [
+      'http://purl.org/nidash/nidm#T1Weighted',
+      'http://purl.org/nidash/nidm#T2Weighted',
+    ],
   },
   {
     node_name: 'another-node-name',
@@ -89,9 +87,12 @@ export const protectedResponse2 = [
     records_protected: true,
     num_matching_subjects: 2,
     subject_data: 'protected',
-    image_modals: ['http://purl.org/nidash/nidm#T2Weighted', 'http://purl.org/nidash/nidm#FlowWeighted', 'http://purl.org/nidash/nidm#T1Weighted'],
+    image_modals: [
+      'http://purl.org/nidash/nidm#T2Weighted',
+      'http://purl.org/nidash/nidm#FlowWeighted',
+      'http://purl.org/nidash/nidm#T1Weighted',
+    ],
   },
-
 ];
 
 // Protected Response with a dataset name containing a newline
@@ -105,7 +106,10 @@ export const mixedResponse = [
     dataset_total_subjects: 10,
     num_matching_subjects: 3,
     subject_data: 'protected',
-    image_modals: ['http://purl.org/nidash/nidm#FlowWeighted', 'http://purl.org/nidash/nidm#T1Weighted'],
+    image_modals: [
+      'http://purl.org/nidash/nidm#FlowWeighted',
+      'http://purl.org/nidash/nidm#T1Weighted',
+    ],
   },
   {
     records_protected: false,
@@ -121,15 +125,9 @@ export const mixedResponse = [
         num_sessions: '1',
         age: '35.0',
         sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248153007',
-        diagnosis: [
-          null,
-          null,
-          null,
-        ],
+        diagnosis: [null, null, null],
         subject_group: null,
-        assessment: [
-          null,
-        ],
+        assessment: [null],
         image_modal: [
           'http://purl.org/nidash/nidm#T2Weighted',
           'http://purl.org/nidash/nidm#T1Weighted',
@@ -138,21 +136,23 @@ export const mixedResponse = [
         session_file_path: '/ds000011/sub-04',
       },
     ],
-    image_modals: ['http://purl.org/nidash/nidm#FlowWeighted', 'http://purl.org/nidash/nidm#T1Weighted'],
+    image_modals: [
+      'http://purl.org/nidash/nidm#FlowWeighted',
+      'http://purl.org/nidash/nidm#T1Weighted',
+    ],
   },
-
 ];
 
 export const nodeOptions = [
   {
-    "NodeName": "OpenNeuro",
-    "ApiURL": "https://someurl/"
+    NodeName: 'OpenNeuro',
+    ApiURL: 'https://someurl/',
   },
   {
-    "NodeName": "Quebec Parkinson Network",
-    "ApiURL": "http://anotherurl/"
-  }
-]
+    NodeName: 'Quebec Parkinson Network',
+    ApiURL: 'http://anotherurl/',
+  },
+];
 
 export const emptyDiagnosisOptions = {
   'nb:Diagnosis': [],

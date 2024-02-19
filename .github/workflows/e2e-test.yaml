@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v4.0.1
         with:
           node-version: 20
-      
+
       - name: Create .env file
         run: |
           echo -e "NB_API_QUERY_URL=${{ vars.NB_API_QUERY_URL }}\nNB_IS_FEDERATION_API=${{ vars.NB_IS_FEDERATION_API }}" > .env
@@ -32,4 +32,3 @@ jobs:
           wait-on: http://localhost:5173
           start: npm run preview
           component: false
-

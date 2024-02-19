@@ -42,7 +42,7 @@ function App() {
 
   const selectedNode: FieldInputOption[] = availableNodes
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
-    .map((option) => ({ label: option.NodeName, id: option.ApiURL }));
+    .map((filteredOption) => ({ label: filteredOption.NodeName, id: filteredOption.ApiURL }));
 
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
