@@ -25,3 +25,7 @@ dist-ssr
 
 # Environment files
 .env
+
+# Cypress
+cypress/screenshots
+cypress/downloads
