@@ -289,10 +289,10 @@ function App() {
       <div className="grid grid-cols-4 grid-rows-1 gap-4">
         <div>
           <QueryForm
-            nodeOptions={availableNodes}
+            availableNodes={availableNodes}
             diagnosisOptions={diagnosisOptions}
             assessmentOptions={assessmentOptions}
-            node={selectedNode}
+            selectedNode={selectedNode}
             minAge={minAge}
             maxAge={maxAge}
             sex={sex}

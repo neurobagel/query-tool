@@ -12,10 +12,10 @@ import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 
 function QueryForm({
-  nodeOptions,
+  availableNodes,
   diagnosisOptions,
   assessmentOptions,
-  node,
+  selectedNode,
   minAge,
   maxAge,
   sex,
@@ -30,10 +30,10 @@ function QueryForm({
   loading,
   onSubmitQuery,
 }: {
-  nodeOptions: NodeOption[];
+  availableNodes: NodeOption[];
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
-  node: FieldInput;
+  selectedNode: FieldInput;
   minAge: number | null;
   maxAge: number | null;
   sex: FieldInput;
@@ -85,13 +85,13 @@ function QueryForm({
         <div className="col-span-2">
           <CategoricalField
             label="Neurobagel graph"
-            options={nodeOptions.map((n) => ({
+            options={availableNodes.map((n) => ({
               label: n.NodeName,
               id: n.ApiURL,
             }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
             multiple
-            inputValue={node}
+            inputValue={selectedNode}
           />
         </div>
       )}
@@ -142,6 +142,7 @@ function QueryForm({
           </div>
           <div>
             <FormControlLabel
+              data-cy="healthy-control-checkbox"
               control={<Checkbox name="healthyControl" />}
               label="Healthy Control"
               onChange={() => setIsControl(!isControl)}
@@ -177,7 +178,7 @@ function QueryForm({
       </div>
       <div className={isFederationAPI ? 'row-start-9' : 'row-start-8'}>
         <Button
-          data-cy="submit-query"
+          data-cy="submit-query-button"
           disabled={disableSubmit}
           variant="contained"
           endIcon={
