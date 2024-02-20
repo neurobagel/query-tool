@@ -38,7 +38,7 @@ export interface Result {
   dataset_total_subjects: number;
   records_protected: boolean;
   num_matching_subjects: number;
-  subject_data: Subject[];
+  subject_data: Subject[] | string;
   image_modals: string[];
 }
 
