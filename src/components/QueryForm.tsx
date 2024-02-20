@@ -137,7 +137,8 @@ function QueryForm({
                 id: d.TermURL,
               }))}
               onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-              inputValue={diagnosis}
+              inputValue={isControl ? null : diagnosis}
+              disabled={isControl}
             />
           </div>
           <div>

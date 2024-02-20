@@ -48,6 +48,7 @@ export interface CategoricalFieldProps {
   onFieldChange: (fieldLabel: string, value: FieldInput) => void;
   multiple?: boolean;
   inputValue: FieldInput;
+  disabled?: boolean;
 }
 
 export type ToastProps = {
