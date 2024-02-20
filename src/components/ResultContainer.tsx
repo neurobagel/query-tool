@@ -94,6 +94,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
               ].join('\t')
             );
           } else {
+            // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
             res.subject_data.forEach((subject) => {
               tsvRows.push(
                 [
@@ -157,14 +158,14 @@ function ResultContainer({ result }: { result: Result[] | null }) {
   function renderResults() {
     if (result === null) {
       return (
-        <Typography variant="h5" className="text-gray-500">
+        <Typography variant="h5" data-cy="default-result-container-view" className="text-gray-500">
           Click &apos;Submit Query&apos; for results
         </Typography>
       );
     }
     if (result.length === 0) {
       return (
-        <Typography variant="h5" className="text-gray-500">
+        <Typography variant="h5" data-cy="empty-result-container-view" className="text-gray-500">
           No results
         </Typography>
       );
@@ -173,10 +174,10 @@ function ResultContainer({ result }: { result: Result[] | null }) {
       <>
         <div>
           <FormControlLabel
+            data-cy="select-all-checkbox"
             label="Select all datasets"
             control={
               <Checkbox
-                data-cy="select-all"
                 onChange={(event) => handleSelectAll(event.target.checked)}
                 checked={selectAll}
               />
@@ -184,7 +185,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           />
         </div>
         <div className="col-end-5 justify-self-end">
-          <Typography variant="body1">{summaryStats}</Typography>
+          <Typography variant="body1" data-cy="summary-stats">{summaryStats}</Typography>
         </div>
         <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
           {result.map((item) => (
@@ -202,7 +203,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           ))}
         </div>
         <div className="col-span-1">
-          <Button variant="contained" onClick={() => setOpenModal(true)}>
+          <Button variant="contained" data-cy="how-to-get-data-modal-button" onClick={() => setOpenModal(true)}>
             How to get data
           </Button>
           <NBDialog open={openModal} onClose={() => setOpenModal(false)} />
