@@ -6,7 +6,7 @@ describe('Results TSV', () => {
     cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('[data-cy="select-all"]').find('input').check();
+    cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="dataset-level-download-results-button"]').click();
     cy.readFile('cypress/downloads/dataset-level-results.tsv').should('contain', 'some name');
   });
@@ -15,7 +15,7 @@ describe('Results TSV', () => {
     cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('[data-cy="select-all"]').find('input').check();
+    cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="dataset-level-download-results-button"]').click();
     cy.readFile('cypress/downloads/dataset-level-results.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetID/);
@@ -30,7 +30,7 @@ describe('Results TSV', () => {
     cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('[data-cy="select-all"]').find('input').check();
+    cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="dataset-level-download-results-button"]').click();
     cy.get('[data-cy="participant-level-download-results-button"]').click();
     cy.readFile('cypress/downloads/participant-level-results.tsv').then((fileContent) => {
