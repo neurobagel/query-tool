@@ -15,7 +15,7 @@ function DownloadResultButton({
       data-cy={`${identifier}-download-results-button`}
       variant="contained"
       startIcon={<DownloadIcon />}
-      onClick={() =>handleClick(identifier)}
+      onClick={() => handleClick(identifier)}
       disabled={disabled}
     >
       Download {identifier} Result

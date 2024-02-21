@@ -185,7 +185,9 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           />
         </div>
         <div className="col-end-5 justify-self-end">
-          <Typography variant="body1" data-cy="summary-stats">{summaryStats}</Typography>
+          <Typography variant="body1" data-cy="summary-stats">
+            {summaryStats}
+          </Typography>
         </div>
         <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
           {result.map((item) => (
@@ -203,7 +205,11 @@ function ResultContainer({ result }: { result: Result[] | null }) {
           ))}
         </div>
         <div className="col-span-1">
-          <Button variant="contained" data-cy="how-to-get-data-modal-button" onClick={() => setOpenModal(true)}>
+          <Button
+            variant="contained"
+            data-cy="how-to-get-data-modal-button"
+            onClick={() => setOpenModal(true)}
+          >
             How to get data
           </Button>
           <NBDialog open={openModal} onClose={() => setOpenModal(false)} />

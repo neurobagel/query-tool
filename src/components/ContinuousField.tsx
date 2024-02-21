@@ -14,7 +14,9 @@ function ContinuousField({ helperText, label, onFieldChange }: ContinuousFieldPr
       error={showError}
       label={label}
       className="w-full"
-      onChange={(event) => onFieldChange(label, event.target.value === '' ? null : parseInt(event.target.value, 10))}
+      onChange={(event) =>
+        onFieldChange(label, event.target.value === '' ? null : parseInt(event.target.value, 10))
+      }
       helperText={helperText}
     />
   );

@@ -1,35 +1,35 @@
-import QueryForm from "../../src/components/QueryForm";
+import QueryForm from '../../src/components/QueryForm';
 
 const props = {
-availableNodes: [
- {
-  NodeName: "Some Node Name",
-  ApiURL: "https://someurl/",
- },
- {
-  NodeName: "Another Node Name",
-  ApiURL: "http://anotherurl/",
- },
- ],
+  availableNodes: [
+    {
+      NodeName: 'Some Node Name',
+      ApiURL: 'https://someurl/',
+    },
+    {
+      NodeName: 'Another Node Name',
+      ApiURL: 'http://anotherurl/',
+    },
+  ],
   diagnosisOptions: [
-  {
-   Label: "Some Diagnosis",
-   TermURL: "https://someurl/",
-  },
-  {
-   Label: "Another Diagnosis",
-   TermURL: "http://anotherurl/",
-  },
+    {
+      Label: 'Some Diagnosis',
+      TermURL: 'https://someurl/',
+    },
+    {
+      Label: 'Another Diagnosis',
+      TermURL: 'http://anotherurl/',
+    },
   ],
   assessmentOptions: [
     {
-     Label: "Some Assessment",
-     TermURL: "https://someurl/",
+      Label: 'Some Assessment',
+      TermURL: 'https://someurl/',
     },
     {
-     Label: "Another Assessment",
-     TermURL: "http://anotherurl/",
-    }
+      Label: 'Another Assessment',
+      TermURL: 'http://anotherurl/',
+    },
   ],
   selectedNode: [],
   minAge: null,
@@ -45,118 +45,123 @@ availableNodes: [
   updateContinuousQueryParams: () => {},
   loading: false,
   onSubmitQuery: () => {},
-}
+};
 
-describe("QueryForm", () => {
-    it("Displays a set of fields for user input and a button for submitting query", () => {
-        cy.mount(
-        <QueryForm 
-            availableNodes={props.availableNodes}
-            diagnosisOptions={props.diagnosisOptions}
-            assessmentOptions={props.assessmentOptions}
-            selectedNode={props.selectedNode}
-            minAge={props.minAge}
-            maxAge={props.maxAge}
-            sex={props.sex}
-            diagnosis={props.diagnosis}
-            isControl={props.isControl}
-            minNumSessions={props.minNumSessions}
-            setIsControl={props.setIsControl}
-            assessmentTool={props.assessmentTool}
-            imagingModality={props.imagingModality}
-            updateCategoricalQueryParams={props.updateCategoricalQueryParams}
-            updateContinuousQueryParams={props.updateContinuousQueryParams}
-            loading={props.loading}
-            onSubmitQuery={props.onSubmitQuery}
-        />);
-        cy.get('[data-cy="Neurobagel graph-categorical-field"]').should("be.visible");
-        cy.get('[data-cy="Minimum age-continuous-field"]').should("be.visible");
-        cy.get('[data-cy="Maximum age-continuous-field"]').should("be.visible");
-        cy.get('[data-cy="Neurobagel graph-categorical-field"]').should("be.visible");
-        cy.get('[data-cy="Sex-categorical-field"]').should("be.visible");
-        cy.get('[data-cy="Diagnosis-categorical-field"]').should("be.visible");
-        cy.get('[data-cy="healthy-control-checkbox"]').should("be.visible");
-        cy.get('[data-cy="Minimum number of sessions-continuous-field"]').should("be.visible");
-        cy.get('[data-cy="Assessment tool-categorical-field"]').should("be.visible");
-        cy.get('[data-cy="Imaging modality-categorical-field"]').should("be.visible");
-        cy.get('[data-cy="submit-query-button"]').should("be.visible");
-    })
-    it("Fires updateCategoricalQueryParams event handler with the appropriate payload when a categorical field is selected", () => {
-      const updateCategoricalQueryParams = cy.spy().as("updateCategoricalQueryParams");
-      cy.mount(
-        <QueryForm 
-            availableNodes={props.availableNodes}
-            diagnosisOptions={props.diagnosisOptions}
-            assessmentOptions={props.assessmentOptions}
-            selectedNode={props.selectedNode}
-            minAge={props.minAge}
-            maxAge={props.maxAge}
-            sex={props.sex}
-            diagnosis={props.diagnosis}
-            isControl={props.isControl}
-            minNumSessions={props.minNumSessions}
-            setIsControl={props.setIsControl}
-            assessmentTool={props.assessmentTool}
-            imagingModality={props.imagingModality}
-            updateCategoricalQueryParams={updateCategoricalQueryParams}
-            updateContinuousQueryParams={props.updateContinuousQueryParams}
-            loading={props.loading}
-            onSubmitQuery={props.onSubmitQuery}
-        />);
+describe('QueryForm', () => {
+  it('Displays a set of fields for user input and a button for submitting query', () => {
+    cy.mount(
+      <QueryForm
+        availableNodes={props.availableNodes}
+        diagnosisOptions={props.diagnosisOptions}
+        assessmentOptions={props.assessmentOptions}
+        selectedNode={props.selectedNode}
+        minAge={props.minAge}
+        maxAge={props.maxAge}
+        sex={props.sex}
+        diagnosis={props.diagnosis}
+        isControl={props.isControl}
+        minNumSessions={props.minNumSessions}
+        setIsControl={props.setIsControl}
+        assessmentTool={props.assessmentTool}
+        imagingModality={props.imagingModality}
+        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
+        updateContinuousQueryParams={props.updateContinuousQueryParams}
+        loading={props.loading}
+        onSubmitQuery={props.onSubmitQuery}
+      />
+    );
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Minimum age-continuous-field"]').should('be.visible');
+    cy.get('[data-cy="Maximum age-continuous-field"]').should('be.visible');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Sex-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Diagnosis-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="healthy-control-checkbox"]').should('be.visible');
+    cy.get('[data-cy="Minimum number of sessions-continuous-field"]').should('be.visible');
+    cy.get('[data-cy="Assessment tool-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Imaging modality-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="submit-query-button"]').should('be.visible');
+  });
+  it('Fires updateCategoricalQueryParams event handler with the appropriate payload when a categorical field is selected', () => {
+    const updateCategoricalQueryParams = cy.spy().as('updateCategoricalQueryParams');
+    cy.mount(
+      <QueryForm
+        availableNodes={props.availableNodes}
+        diagnosisOptions={props.diagnosisOptions}
+        assessmentOptions={props.assessmentOptions}
+        selectedNode={props.selectedNode}
+        minAge={props.minAge}
+        maxAge={props.maxAge}
+        sex={props.sex}
+        diagnosis={props.diagnosis}
+        isControl={props.isControl}
+        minNumSessions={props.minNumSessions}
+        setIsControl={props.setIsControl}
+        assessmentTool={props.assessmentTool}
+        imagingModality={props.imagingModality}
+        updateCategoricalQueryParams={updateCategoricalQueryParams}
+        updateContinuousQueryParams={props.updateContinuousQueryParams}
+        loading={props.loading}
+        onSubmitQuery={props.onSubmitQuery}
+      />
+    );
 
-        cy.get('[data-cy="Diagnosis-categorical-field"]').type("Some{downarrow}{enter}");
-        cy.get('@updateCategoricalQueryParams').should("have.been.calledWith", "Diagnosis", {id: "https://someurl/", label: "Some Diagnosis"});
-
-    })
-    it("Fires updateContinuousQueryParams event handler with the appropriate payload when a continuous field is selected", () => {
-      const updateContinuousQueryParams = cy.spy().as("updateContinuousQueryParams");
-      cy.mount(
-        <QueryForm 
-            availableNodes={props.availableNodes}
-            diagnosisOptions={props.diagnosisOptions}
-            assessmentOptions={props.assessmentOptions}
-            selectedNode={props.selectedNode}
-            minAge={props.minAge}
-            maxAge={props.maxAge}
-            sex={props.sex}
-            diagnosis={props.diagnosis}
-            isControl={props.isControl}
-            minNumSessions={props.minNumSessions}
-            setIsControl={props.setIsControl}
-            assessmentTool={props.assessmentTool}
-            imagingModality={props.imagingModality}
-            updateCategoricalQueryParams={props.updateCategoricalQueryParams}
-            updateContinuousQueryParams={updateContinuousQueryParams}
-            loading={props.loading}
-            onSubmitQuery={props.onSubmitQuery}
-        />);
-        cy.get('[data-cy="Minimum age-continuous-field"]').type("10");
-        cy.get('@updateContinuousQueryParams').should("have.been.calledWith", "Minimum age", 10);
-    })
-    it("Fires the onSubmitQuery event handler when the submit button is clicked", () => {
-      const onSubmitQuery = cy.spy().as("onSubmitQuery");
-      cy.mount(
-        <QueryForm 
-            availableNodes={props.availableNodes}
-            diagnosisOptions={props.diagnosisOptions}
-            assessmentOptions={props.assessmentOptions}
-            selectedNode={props.selectedNode}
-            minAge={props.minAge}
-            maxAge={props.maxAge}
-            sex={props.sex}
-            diagnosis={props.diagnosis}
-            isControl={props.isControl}
-            minNumSessions={props.minNumSessions}
-            setIsControl={props.setIsControl}
-            assessmentTool={props.assessmentTool}
-            imagingModality={props.imagingModality}
-            updateCategoricalQueryParams={props.updateCategoricalQueryParams}
-            updateContinuousQueryParams={props.updateContinuousQueryParams}
-            loading={props.loading}
-            onSubmitQuery={onSubmitQuery}
-      />);
-      cy.get('[data-cy="submit-query-button"]').click();
-      cy.get('@onSubmitQuery').should("have.been.called");
-    })
-
-})
+    cy.get('[data-cy="Diagnosis-categorical-field"]').type('Some{downarrow}{enter}');
+    cy.get('@updateCategoricalQueryParams').should('have.been.calledWith', 'Diagnosis', {
+      id: 'https://someurl/',
+      label: 'Some Diagnosis',
+    });
+  });
+  it('Fires updateContinuousQueryParams event handler with the appropriate payload when a continuous field is selected', () => {
+    const updateContinuousQueryParams = cy.spy().as('updateContinuousQueryParams');
+    cy.mount(
+      <QueryForm
+        availableNodes={props.availableNodes}
+        diagnosisOptions={props.diagnosisOptions}
+        assessmentOptions={props.assessmentOptions}
+        selectedNode={props.selectedNode}
+        minAge={props.minAge}
+        maxAge={props.maxAge}
+        sex={props.sex}
+        diagnosis={props.diagnosis}
+        isControl={props.isControl}
+        minNumSessions={props.minNumSessions}
+        setIsControl={props.setIsControl}
+        assessmentTool={props.assessmentTool}
+        imagingModality={props.imagingModality}
+        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
+        updateContinuousQueryParams={updateContinuousQueryParams}
+        loading={props.loading}
+        onSubmitQuery={props.onSubmitQuery}
+      />
+    );
+    cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
+    cy.get('@updateContinuousQueryParams').should('have.been.calledWith', 'Minimum age', 10);
+  });
+  it('Fires the onSubmitQuery event handler when the submit button is clicked', () => {
+    const onSubmitQuery = cy.spy().as('onSubmitQuery');
+    cy.mount(
+      <QueryForm
+        availableNodes={props.availableNodes}
+        diagnosisOptions={props.diagnosisOptions}
+        assessmentOptions={props.assessmentOptions}
+        selectedNode={props.selectedNode}
+        minAge={props.minAge}
+        maxAge={props.maxAge}
+        sex={props.sex}
+        diagnosis={props.diagnosis}
+        isControl={props.isControl}
+        minNumSessions={props.minNumSessions}
+        setIsControl={props.setIsControl}
+        assessmentTool={props.assessmentTool}
+        imagingModality={props.imagingModality}
+        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
+        updateContinuousQueryParams={props.updateContinuousQueryParams}
+        loading={props.loading}
+        onSubmitQuery={onSubmitQuery}
+      />
+    );
+    cy.get('[data-cy="submit-query-button"]').click();
+    cy.get('@onSubmitQuery').should('have.been.called');
+  });
+});

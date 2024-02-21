@@ -144,7 +144,7 @@ function QueryForm({
           <div>
             <FormControlLabel
               data-cy="healthy-control-checkbox"
-              control={<Checkbox  name="healthyControl" />}
+              control={<Checkbox name="healthyControl" />}
               label="Healthy Control"
               onChange={() => setIsControl(!isControl)}
             />
