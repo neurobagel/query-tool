@@ -3,7 +3,7 @@ name: component tests
 on:
   push:
     branches:
-      - maint-20
+      - main
   pull_request:
   workflow_dispatch:
 
