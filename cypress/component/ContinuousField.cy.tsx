@@ -7,7 +7,7 @@ const props = {
 };
 
 describe('ContinuousField', () => {
-  it('Displays a MUI Textfield with the label passed as a prop', () => {
+  it('Displays a MUI Textfield and a label as passed via prop', () => {
     cy.mount(<ContinuousField label={props.label} onFieldChange={props.onFieldChange} />);
     cy.get('[data-cy="Continuous Field-continuous-field"]').should('be.visible');
     cy.get('[data-cy="Continuous Field-continuous-field"] label').should(
@@ -19,7 +19,7 @@ describe('ContinuousField', () => {
       'Mui-error'
     );
   });
-  it('Displays a MUI Textfield in error state with the helper text passed as a prop', () => {
+  it('Displays a MUI Textfield in error state when the helper text is not empty', () => {
     cy.mount(
       <ContinuousField
         label={props.label}
@@ -34,9 +34,9 @@ describe('ContinuousField', () => {
     cy.get('[data-cy="Continuous Field-continuous-field"] label').should('have.class', 'Mui-error');
   });
   it('Fires onFieldChange event handler with the appropriate payload when a value is entered', () => {
-    const onFieldChange = cy.spy().as('onFieldChange');
-    cy.mount(<ContinuousField label={props.label} onFieldChange={onFieldChange} />);
+    const onFieldChangeSpy = cy.spy().as('onFieldChangeSpy');
+    cy.mount(<ContinuousField label={props.label} onFieldChange={onFieldChangeSpy} />);
     cy.get('[data-cy="Continuous Field-continuous-field"]').type('10');
-    cy.get('@onFieldChange').should('have.been.calledWith', 'Continuous Field', 10);
+    cy.get('@onFieldChangeSpy').should('have.been.calledWith', 'Continuous Field', 10);
   });
 });

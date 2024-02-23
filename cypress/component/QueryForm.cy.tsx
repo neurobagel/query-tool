@@ -83,7 +83,7 @@ describe('QueryForm', () => {
     cy.get('[data-cy="submit-query-button"]').should('be.visible');
   });
   it('Fires updateCategoricalQueryParams event handler with the appropriate payload when a categorical field is selected', () => {
-    const updateCategoricalQueryParams = cy.spy().as('updateCategoricalQueryParams');
+    const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
     cy.mount(
       <QueryForm
         availableNodes={props.availableNodes}
@@ -99,7 +99,7 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
-        updateCategoricalQueryParams={updateCategoricalQueryParams}
+        updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
         onSubmitQuery={props.onSubmitQuery}
@@ -107,13 +107,13 @@ describe('QueryForm', () => {
     );
 
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('Some{downarrow}{enter}');
-    cy.get('@updateCategoricalQueryParams').should('have.been.calledWith', 'Diagnosis', {
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Diagnosis', {
       id: 'https://someurl/',
       label: 'Some Diagnosis',
     });
   });
   it('Fires updateContinuousQueryParams event handler with the appropriate payload when a continuous field is selected', () => {
-    const updateContinuousQueryParams = cy.spy().as('updateContinuousQueryParams');
+    const updateContinuousQueryParamsSpy = cy.spy().as('updateContinuousQueryParamsSpy');
     cy.mount(
       <QueryForm
         availableNodes={props.availableNodes}
@@ -130,16 +130,16 @@ describe('QueryForm', () => {
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
-        updateContinuousQueryParams={updateContinuousQueryParams}
+        updateContinuousQueryParams={updateContinuousQueryParamsSpy}
         loading={props.loading}
         onSubmitQuery={props.onSubmitQuery}
       />
     );
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
-    cy.get('@updateContinuousQueryParams').should('have.been.calledWith', 'Minimum age', 10);
+    cy.get('@updateContinuousQueryParamsSpy').should('have.been.calledWith', 'Minimum age', 10);
   });
   it('Fires the onSubmitQuery event handler when the submit button is clicked', () => {
-    const onSubmitQuery = cy.spy().as('onSubmitQuery');
+    const onSubmitQuerySpy = cy.spy().as('onSubmitQuerySpy');
     cy.mount(
       <QueryForm
         availableNodes={props.availableNodes}
@@ -158,10 +158,10 @@ describe('QueryForm', () => {
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
-        onSubmitQuery={onSubmitQuery}
+        onSubmitQuery={onSubmitQuerySpy}
       />
     );
     cy.get('[data-cy="submit-query-button"]').click();
-    cy.get('@onSubmitQuery').should('have.been.called');
+    cy.get('@onSubmitQuerySpy').should('have.been.called');
   });
 });
