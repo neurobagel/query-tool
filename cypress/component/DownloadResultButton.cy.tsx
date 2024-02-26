@@ -31,15 +31,15 @@ describe('DownloadResultButton', () => {
     cy.get('.MuiTooltip-tooltip').should('contain', 'Please select at least one dataset');
   });
   it('Fires the handleClick event handler with the appropriate payload when the button is clicked', () => {
-    const handleClick = cy.spy().as('handleClick');
+    const handleClickSpy = cy.spy().as('handleClickSpy');
     cy.mount(
       <DownloadResultButton
         identifier={props.identifier}
         disabled={props.disabled}
-        handleClick={handleClick}
+        handleClick={handleClickSpy}
       />
     );
     cy.get('[data-cy="test-download-results-button"]').click();
-    cy.get('@handleClick').should('have.been.calledWith', 'test');
+    cy.get('@handleClickSpy').should('have.been.calledWith', 'test');
   });
 });

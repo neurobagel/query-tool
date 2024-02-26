@@ -5,7 +5,8 @@ describe('App', () => {
     cy.get('[data-cy="Minimum age-continuous-field"]').type('some text');
     cy.get('[data-cy="Minimum age-continuous-field"] p')
       .should('be.visible')
-      .should('contain', 'Please enter a valid number!');
+      .should('contain', 'Please enter a valid number!')
+      .should('have.class', 'Mui-error');
     cy.get('[data-cy="submit-query-button"]').should('be.disabled');
     cy.get('[data-cy="Minimum age-continuous-field"] input').clear();
     cy.get('[data-cy="submit-query-button"]').should('not.be.disabled');

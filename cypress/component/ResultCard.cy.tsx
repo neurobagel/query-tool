@@ -42,7 +42,7 @@ describe('ResultCard', () => {
       .should('have.class', 'bg-red-700');
   });
   it('Fires onCheckboxChange event handler with the appropriate payload when the checkbox is clicked', () => {
-    const onCheckboxChange = cy.spy().as('onCheckboxChange');
+    const onCheckboxChangeSpy = cy.spy().as('onCheckboxChangeSpy');
     cy.mount(
       <ResultCard
         nodeName={props.nodeName}
@@ -52,10 +52,10 @@ describe('ResultCard', () => {
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
         checked={false}
-        onCheckboxChange={onCheckboxChange}
+        onCheckboxChange={onCheckboxChangeSpy}
       />
     );
     cy.get('[data-cy="card-some uuid-checkbox"] input').check();
-    cy.get('@onCheckboxChange').should('have.been.calledWith', props.datasetUUID);
+    cy.get('@onCheckboxChangeSpy').should('have.been.calledWith', props.datasetUUID);
   });
 });
