@@ -21,7 +21,7 @@ function Navbar() {
   }, []);
 
   return (
-    <Toolbar className="my-4">
+    <Toolbar className="my-4" data-cy="navbar">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center">
           <img

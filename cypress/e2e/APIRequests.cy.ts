@@ -27,7 +27,7 @@ describe('API request', () => {
     cy.wait('@getNodes');
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
-    cy.get('[data-cy="submit-query"]').click();
+    cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call').its('request.url').should('contains', '&min_age=10&max_age=30');
   });
   it('Empty responses for diagnosis and Assessment make a toast appear', () => {

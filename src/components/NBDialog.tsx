@@ -12,7 +12,7 @@ function NBDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Dialog fullScreen={fullScreen} open={open} onClose={() => onClose()}>
+    <Dialog fullScreen={fullScreen} open={open} onClose={onClose} data-cy="nb-dialog">
       <DialogTitle>Example usage</DialogTitle>
       <DialogContent>
         <DialogContentText>

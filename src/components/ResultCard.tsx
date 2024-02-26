@@ -26,7 +26,7 @@ function ResultCard({
   onCheckboxChange: (id: string) => void;
 }) {
   return (
-    <Card>
+    <Card data-cy={`card-${datasetUUID}`}>
       <CardContent>
         <div className="grid grid-cols-12 items-center gap-2">
           <div className="col-end-1">

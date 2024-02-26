@@ -7,6 +7,7 @@ function CategoricalField({
   onFieldChange,
   multiple,
   inputValue,
+  disabled,
 }: CategoricalFieldProps) {
   return (
     <Autocomplete
@@ -25,12 +26,14 @@ function CategoricalField({
       )}
       multiple={multiple}
       onChange={(_, value) => onFieldChange(label, value)}
+      disabled={disabled}
     />
   );
 }
 
 CategoricalField.defaultProps = {
   multiple: false,
+  disabled: false,
 };
 
 export default CategoricalField;
