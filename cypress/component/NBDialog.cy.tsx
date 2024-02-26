@@ -20,9 +20,9 @@ describe('NBDialog', () => {
     cy.get('[data-cy="nb-dialog"]').should('not.exist');
   });
   it('Fires onClose event handler when the close button is clicked', () => {
-    const onClose = cy.spy().as('onClose');
-    cy.mount(<NBDialog open={props.open} onClose={onClose} />);
+    const onCloseSpy = cy.spy().as('onCloseSpy');
+    cy.mount(<NBDialog open={props.open} onClose={onCloseSpy} />);
     cy.get('[data-cy="nb-dialog"] button').click();
-    cy.get('@onClose').should('have.been.called');
+    cy.get('@onCloseSpy').should('have.been.called');
   });
 });

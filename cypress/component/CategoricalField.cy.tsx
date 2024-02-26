@@ -53,17 +53,17 @@ describe('CategoricalField', () => {
     );
   });
   it('Fires onFieldChange event handler with the appropriate payload when a value is selected', () => {
-    const onFieldChange = cy.spy().as('onFieldChange');
+    const onFieldChangeSpy = cy.spy().as('onFieldChangeSpy');
     cy.mount(
       <CategoricalField
         label={props.label}
         options={props.options}
-        onFieldChange={onFieldChange}
+        onFieldChange={onFieldChangeSpy}
         inputValue={props.inputValue}
       />
     );
     cy.get('[data-cy="Categorical Field-categorical-field"]').type('Option 1{downarrow}{enter}');
-    cy.get('@onFieldChange').should('have.been.calledWith', 'Categorical Field', {
+    cy.get('@onFieldChangeSpy').should('have.been.calledWith', 'Categorical Field', {
       id: '1',
       label: 'Option 1',
     });
