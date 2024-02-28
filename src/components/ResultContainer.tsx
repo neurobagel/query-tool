@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
-import ResultCard from './ResultCard';
+import HappyCard from './HappyCard';
 import { Result } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import NBDialog from './NBDialog';
@@ -31,14 +31,14 @@ function ResultContainer({ result }: { result: Result[] | null }) {
    * @param id - The uuid of the dataset to be added or removed from the download list
    * @returns void
    */
-  function updateDownload(id: string) {
-    setDownload((currDownload) => {
-      const newDownload = !currDownload.includes(id)
-        ? [...currDownload, id]
-        : currDownload.filter((downloadID) => downloadID !== id);
-      return newDownload;
-    });
-  }
+  // function updateDownload(id: string) {
+  //   setDownload((currDownload) => {
+  //     const newDownload = !currDownload.includes(id)
+  //       ? [...currDownload, id]
+  //       : currDownload.filter((downloadID) => downloadID !== id);
+  //     return newDownload;
+  //   });
+  // }
 
   function handleSelectAll(checked: boolean) {
     if (result) {
@@ -191,17 +191,19 @@ function ResultContainer({ result }: { result: Result[] | null }) {
         </div>
         <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
           {result.map((item) => (
-            <ResultCard
-              key={item.dataset_uuid}
-              nodeName={item.node_name}
-              datasetUUID={item.dataset_uuid}
-              datasetName={item.dataset_name}
-              datasetTotalSubjects={item.dataset_total_subjects}
-              numMatchingSubjects={item.num_matching_subjects}
-              imageModals={item.image_modals}
-              checked={download.includes(item.dataset_uuid)}
-              onCheckboxChange={(id) => updateDownload(id)}
-            />
+            <HappyCard
+            key={item.dataset_uuid} />
+            // <ResultCard
+            //   key={item.dataset_uuid}
+            //   nodeName={item.node_name}
+            //   datasetUUID={item.dataset_uuid}
+            //   datasetName={item.dataset_name}
+            //   datasetTotalSubjects={item.dataset_total_subjects}
+            //   numMatchingSubjects={item.num_matching_subjects}
+            //   imageModals={item.image_modals}
+            //   checked={download.includes(item.dataset_uuid)}
+            //   onCheckboxChange={(id) => updateDownload(id)}
+            // />
           ))}
         </div>
         <div className="col-span-1">
