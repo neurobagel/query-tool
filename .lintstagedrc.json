@@ -1,6 +1,6 @@
 {
   "*.{ts,tsx}": [
     "npm run lint",
-    "prettier --write"
+    "npm run format"
   ]
 }
