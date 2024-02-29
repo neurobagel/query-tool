@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
-import { CellMeasurer, CellMeasurerCache, AutoSizer, List, ListRowRenderer} from 'react-virtualized';
 import ResultCard from './ResultCard';
 import { Result } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
@@ -156,11 +155,6 @@ function ResultContainer({ result }: { result: Result[] | null }) {
     document.body.removeChild(element);
   }
 
-  const cache = new CellMeasurerCache({
-    defaultHeight: 150, // Estimate of row height for unmeasured items
-    fixedWidth: true,
-  });
-
   function renderResults() {
     if (result === null) {
       return (
@@ -176,29 +170,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
         </Typography>
       );
     }
-    const rowRenderer: ListRowRenderer = ({ index, style, parent }) => (
-        <CellMeasurer
-          cache={cache}
-          columnIndex={0}
-          key={result[index].dataset_uuid}
-          parent={parent}
-          rowIndex={index}
-        >
-          <div style={style}>
-          <ResultCard
-                key={result[index].dataset_uuid}
-                nodeName={result[index].node_name}
-                datasetUUID={result[index].dataset_uuid}
-                datasetName={result[index].dataset_name}
-                datasetTotalSubjects={result[index].dataset_total_subjects}
-                numMatchingSubjects={result[index].num_matching_subjects}
-                imageModals={result[index].image_modals}
-                checked={download.includes(result[index].dataset_uuid)}
-                onCheckboxChange={updateDownload}
-              />
-          </div>
-        </CellMeasurer>
-      );
+
     return (
       <>
         <div>
@@ -218,20 +190,20 @@ function ResultContainer({ result }: { result: Result[] | null }) {
             {summaryStats}
           </Typography>
         </div>
-        <div className="col-span-4 h-96 space-y-2 overflow-auto">
-        <AutoSizer>
-            {({ height, width }) => (
-              <List
-              width={width}
-              height={height}
-              deferredMeasurementCache={cache}
-              rowCount={result.length}
-              rowHeight={cache.rowHeight}
-              rowRenderer={rowRenderer}
-              overscanRowCount={2}
+        <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
+          {result.map((item) => (
+            <ResultCard
+              key={item.dataset_uuid}
+              nodeName={item.node_name}
+              datasetUUID={item.dataset_uuid}
+              datasetName={item.dataset_name}
+              datasetTotalSubjects={item.dataset_total_subjects}
+              numMatchingSubjects={item.num_matching_subjects}
+              imageModals={item.image_modals}
+              checked={download.includes(item.dataset_uuid)}
+              onCheckboxChange={updateDownload}
             />
-            )}
-          </AutoSizer>
+          ))}
         </div>
         <div className="col-span-1">
           <Button
