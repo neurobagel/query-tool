@@ -7,7 +7,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 import { modalities } from '../utils/constants';
 
-function ResultCard({
+const ResultCard = memo(({
   nodeName,
   datasetUUID,
   datasetName,
@@ -25,8 +25,7 @@ function ResultCard({
   imageModals: string[];
   checked: boolean;
   onCheckboxChange: (id: string) => void;
-}) {
-  return (
+}) => (
     <Card data-cy={`card-${datasetUUID}`}>
       <CardContent>
         <div className="grid grid-cols-12 items-center gap-2">
@@ -60,7 +59,6 @@ function ResultCard({
         </div>
       </CardContent>
     </Card>
-  );
-}
+  ));
 
-export default memo(ResultCard);
+export default ResultCard;
