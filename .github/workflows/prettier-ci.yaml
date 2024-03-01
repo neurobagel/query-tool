@@ -1,9 +1,13 @@
 name: Prettier CI
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
-    paths:
-      - '**/*.{ts,tsx}'
+  workflow_dispatch:
+      
+
 jobs:
   prettier-check:
     runs-on: ubuntu-latest
