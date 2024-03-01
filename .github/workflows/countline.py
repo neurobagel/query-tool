@@ -4,7 +4,7 @@
 
 Methodology:
 
-    Analyses the `lib` and `test` directories to find files that exceed a
+    Analyses the `lib` and `src` directories to find files that exceed a
     pre-defined number of lines of code.
 
     This script was created to help improve code quality by encouraging
