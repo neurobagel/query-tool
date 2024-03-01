@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
 import { Result } from '../utils/types';
@@ -31,14 +31,14 @@ function ResultContainer({ result }: { result: Result[] | null }) {
    * @param id - The uuid of the dataset to be added or removed from the download list
    * @returns void
    */
-  function updateDownload(id: string) {
+  const updateDownload = useCallback((id: string) => {
     setDownload((currDownload) => {
       const newDownload = !currDownload.includes(id)
         ? [...currDownload, id]
         : currDownload.filter((downloadID) => downloadID !== id);
       return newDownload;
     });
-  }
+  }, []);
 
   function handleSelectAll(checked: boolean) {
     if (result) {
@@ -170,6 +170,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
         </Typography>
       );
     }
+
     return (
       <>
         <div>
@@ -200,7 +201,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
               numMatchingSubjects={item.num_matching_subjects}
               imageModals={item.image_modals}
               checked={download.includes(item.dataset_uuid)}
-              onCheckboxChange={(id) => updateDownload(id)}
+              onCheckboxChange={updateDownload}
             />
           ))}
         </div>
