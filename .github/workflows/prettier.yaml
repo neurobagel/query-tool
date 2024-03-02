@@ -1,4 +1,4 @@
-name: Prettier CI
+name: prettier
 
 on:
   push:
@@ -7,7 +7,6 @@ on:
   pull_request:
   workflow_dispatch:
       
-
 jobs:
   prettier-check:
     runs-on: ubuntu-latest
@@ -26,4 +25,3 @@ jobs:
 
       - name: Run Prettier Check
         run: npx prettier --check .
-
