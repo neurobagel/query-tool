@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo } from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -7,25 +7,26 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 import { modalities } from '../utils/constants';
 
-const ResultCard = memo(({
-  nodeName,
-  datasetUUID,
-  datasetName,
-  datasetTotalSubjects,
-  numMatchingSubjects,
-  imageModals,
-  checked,
-  onCheckboxChange,
-}: {
-  nodeName: string;
-  datasetName: string;
-  datasetUUID: string;
-  datasetTotalSubjects: number;
-  numMatchingSubjects: number;
-  imageModals: string[];
-  checked: boolean;
-  onCheckboxChange: (id: string) => void;
-}) => (
+const ResultCard = memo(
+  ({
+    nodeName,
+    datasetUUID,
+    datasetName,
+    datasetTotalSubjects,
+    numMatchingSubjects,
+    imageModals,
+    checked,
+    onCheckboxChange,
+  }: {
+    nodeName: string;
+    datasetName: string;
+    datasetUUID: string;
+    datasetTotalSubjects: number;
+    numMatchingSubjects: number;
+    imageModals: string[];
+    checked: boolean;
+    onCheckboxChange: (id: string) => void;
+  }) => (
     <Card data-cy={`card-${datasetUUID}`}>
       <CardContent>
         <div className="grid grid-cols-12 items-center gap-2">
@@ -59,6 +60,7 @@ const ResultCard = memo(({
         </div>
       </CardContent>
     </Card>
-  ));
+  )
+);
 
 export default ResultCard;
