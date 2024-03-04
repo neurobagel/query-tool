@@ -6,7 +6,7 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-      
+
 jobs:
   prettier-check:
     runs-on: ubuntu-latest
