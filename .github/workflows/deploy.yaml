@@ -19,6 +19,7 @@ concurrency:
 
 jobs:
   deploy:
+    # See docs: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#using-an-environment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -29,7 +30,6 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
           cache: 'npm'
       - name: Create .env file
         run: |
