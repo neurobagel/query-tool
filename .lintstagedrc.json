@@ -1,3 +1,3 @@
 {
-  "*.{ts,tsx}": ["npm run lint:check", "npm run format:fix", "npm run format:check"]
+  "*.{ts,tsx}": ["npm run lint:check", "npm run format:check"]
 }
