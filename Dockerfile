@@ -8,8 +8,6 @@ RUN npm ci
 
 COPY . .
 
-RUN npm run build
-
 EXPOSE 5173
 
-ENTRYPOINT npm run preview
+ENTRYPOINT npm run build && npm run preview
