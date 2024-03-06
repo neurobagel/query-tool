@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => {
   return {
     preview: {
       port: 5173,
+      strictPort: true,
+      host: true,
     },
     plugins: [react()],
     envPrefix: 'NB_',
