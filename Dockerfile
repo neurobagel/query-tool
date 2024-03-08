@@ -6,11 +6,12 @@ COPY package*.json ./
 
 COPY tsconfig*.json ./
 
+
 RUN npm ci
 
 COPY . .
 
 EXPOSE 5173
 
-CMD [ "npm","run","dev" ]
+ENTRYPOINT npm run build && npm run preview
 
