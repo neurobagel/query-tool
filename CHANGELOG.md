@@ -50,7 +50,7 @@ The first release of the tool refactored and reimplemented in React and TypeScri
 - [MNT] Added post-merge hook and updated scripts [#38](https://github.com/neurobagel/query-tool/pull/38) ([@Sauradip07](https://github.com/Sauradip07))
 - [CI] Set up GitHub pages deployment CI [#50](https://github.com/neurobagel/query-tool/pull/50) ([@rmanaem](https://github.com/rmanaem))
 - [CI] Set up ESLint CI [#47](https://github.com/neurobagel/query-tool/pull/47) ([@rmanaem](https://github.com/rmanaem))
-- [CI]  Implement Prettier CI Check for Code Consistency [#44](https://github.com/neurobagel/query-tool/pull/44) ([@samadpls](https://github.com/samadpls))
+- [CI] Implement Prettier CI Check for Code Consistency [#44](https://github.com/neurobagel/query-tool/pull/44) ([@samadpls](https://github.com/samadpls))
 - [MNT] Added `prettier` support [#35](https://github.com/neurobagel/query-tool/pull/35) ([@samadpls](https://github.com/samadpls))
 
 #### ⚠️ Pushed to `main`
@@ -65,7 +65,7 @@ The first release of the tool refactored and reimplemented in React and TypeScri
 - Setup prettier ([@surchs](https://github.com/surchs))
 - Vite setup ([@surchs](https://github.com/surchs))
 
-####  🧪 Tests
+#### 🧪 Tests
 
 - [MNT] Implemented component tests [#31](https://github.com/neurobagel/query-tool/pull/31) ([@rmanaem](https://github.com/rmanaem))
 - [TST] Implemented e2e tests [#19](https://github.com/neurobagel/query-tool/pull/19) ([@rmanaem](https://github.com/rmanaem))
