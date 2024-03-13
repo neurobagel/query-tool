@@ -24,7 +24,7 @@ The first release of the tool refactored and reimplemented in React and TypeScri
 
 #### 💥 Breaking Changes
 
-- [ENH] Implemented UI improvements [#16](https://github.com/neurobagel/query-tool/pull/16) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
+- [ENH]  Implemented UI improvements [#16](https://github.com/neurobagel/query-tool/pull/16) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
 - [ENH] Implemented logic for downloading result [#13](https://github.com/neurobagel/query-tool/pull/13) ([@rmanaem](https://github.com/rmanaem))
 - [ENH] Implemented logic for parsing selection from the url search parameters [#12](https://github.com/neurobagel/query-tool/pull/12) ([@rmanaem](https://github.com/rmanaem))
 - [ENH] Implemented logic for node selection [#10](https://github.com/neurobagel/query-tool/pull/10) ([@rmanaem](https://github.com/rmanaem))
@@ -65,7 +65,7 @@ The first release of the tool refactored and reimplemented in React and TypeScri
 - Setup prettier ([@surchs](https://github.com/surchs))
 - Vite setup ([@surchs](https://github.com/surchs))
 
-#### 🧪 Tests
+####  🧪 Tests
 
 - [MNT] Implemented component tests [#31](https://github.com/neurobagel/query-tool/pull/31) ([@rmanaem](https://github.com/rmanaem))
 - [TST] Implemented e2e tests [#19](https://github.com/neurobagel/query-tool/pull/19) ([@rmanaem](https://github.com/rmanaem))
