@@ -41,7 +41,7 @@ The first release of the tool refactored and reimplemented in React and TypeScri
 #### 🐛 Bug Fixes
 
 - [FIX] Fixed the performance issues caused by re-rendering [#39](https://github.com/neurobagel/query-tool/pull/39) ([@rmanaem](https://github.com/rmanaem))
-- [FIX] Refactored synching of the `URLSearchParams` and selected nodes [#25](https://github.com/neurobagel/query-tool/pull/25) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Refactored syncing of the `URLSearchParams` and selected nodes [#25](https://github.com/neurobagel/query-tool/pull/25) ([@rmanaem](https://github.com/rmanaem))
 
 #### 🏠 Internal
 
