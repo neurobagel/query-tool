@@ -24,7 +24,7 @@ The first release of the tool refactored and reimplemented in React and TypeScri
 
 #### 💥 Breaking Changes
 
-- [ENH]  Implemented UI improvements [#16](https://github.com/neurobagel/query-tool/pull/16) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
+- [ENH] Implemented UI improvements [#16](https://github.com/neurobagel/query-tool/pull/16) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
 - [ENH] Implemented logic for downloading result [#13](https://github.com/neurobagel/query-tool/pull/13) ([@rmanaem](https://github.com/rmanaem))
 - [ENH] Implemented logic for parsing selection from the url search parameters [#12](https://github.com/neurobagel/query-tool/pull/12) ([@rmanaem](https://github.com/rmanaem))
 - [ENH] Implemented logic for node selection [#10](https://github.com/neurobagel/query-tool/pull/10) ([@rmanaem](https://github.com/rmanaem))
@@ -50,7 +50,7 @@ The first release of the tool refactored and reimplemented in React and TypeScri
 - [MNT] Added post-merge hook and updated scripts [#38](https://github.com/neurobagel/query-tool/pull/38) ([@Sauradip07](https://github.com/Sauradip07))
 - [CI] Set up GitHub pages deployment CI [#50](https://github.com/neurobagel/query-tool/pull/50) ([@rmanaem](https://github.com/rmanaem))
 - [CI] Set up ESLint CI [#47](https://github.com/neurobagel/query-tool/pull/47) ([@rmanaem](https://github.com/rmanaem))
-- [CI] Implement Prettier CI Check for Code Consistency [#44](https://github.com/neurobagel/query-tool/pull/44) ([@samadpls](https://github.com/samadpls))
+- [CI]  Implement Prettier CI Check for Code Consistency [#44](https://github.com/neurobagel/query-tool/pull/44) ([@samadpls](https://github.com/samadpls))
 - [MNT] Added `prettier` support [#35](https://github.com/neurobagel/query-tool/pull/35) ([@samadpls](https://github.com/samadpls))
 
 #### ⚠️ Pushed to `main`
