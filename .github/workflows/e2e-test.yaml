@@ -21,7 +21,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo -e "NB_API_QUERY_URL=${{ vars.NB_API_QUERY_URL }}\nNB_IS_FEDERATION_API=${{ vars.NB_IS_FEDERATION_API }}" > .env
+          echo -e "NB_API_QUERY_URL=https://federate.neurobagel.org/\nNB_IS_FEDERATION_API=true" > .env
 
       - name: build
         run: npm install && npm run build
