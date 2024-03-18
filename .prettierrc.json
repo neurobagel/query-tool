@@ -5,8 +5,5 @@
   "singleQuote": true,
   "printWidth": 100,
   "trailingComma": "es5",
-  "plugins": ["prettier-plugin-tailwindcss"],
-  "corePlugins": {
-    "preflight": false
-  }
+  "plugins": ["prettier-plugin-tailwindcss"]
 }
