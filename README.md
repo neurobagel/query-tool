@@ -2,7 +2,6 @@
 
 # Query Tool
 
-    
 <div>
     <a href="https://github.com/neurobagel/query-tool/actions/workflows/pages/pages-build-deployment">
         <img src="https://img.shields.io/website?down_color=CD5C5C&down_message=down&label=deployed%20app&style=flat-square&up_color=B0C4DE&up_message=live&url=https%3A%2F%2Fquery.neurobagel.org%2F" alt="deployed app">
@@ -48,21 +47,18 @@ but before proceeding with either you need to set the environment variables.
 
 ### Environment Variables
 
-| Environment variable   | Type    | Required | Default value if not set | Example                          |
-|------------------------|---------|----------|--------------------------|----------------------------------|
-| [`NB_API_QUERY_URL`](#nb_api_query_url)     | string  | Yes      | -                        | https://federate.neurobagel.org/ |
+| Environment variable                            | Type    | Required | Default value if not set | Example                          |
+| ----------------------------------------------- | ------- | -------- | ------------------------ | -------------------------------- |
+| [`NB_API_QUERY_URL`](#nb_api_query_url)         | string  | Yes      | -                        | https://federate.neurobagel.org/ |
 | [`NB_IS_FEDERATION_API`](#nb_is_federation_api) | boolean | No       | true                     | true                             |
-
 
 #### `NB_API_QUERY_URL`
 
-You'll need to set the `NB_API_QUERY_URL` environment variable required to run the query tool. `NB_API_QUERY_URL` is the [Neurobagel API](https://github.com/neurobagel/api) URL that the query tool uses to send requests to for results. 
-
+You'll need to set the `NB_API_QUERY_URL` environment variable required to run the query tool. `NB_API_QUERY_URL` is the [Neurobagel API](https://github.com/neurobagel/api) URL that the query tool uses to send requests to for results.
 
 #### `NB_IS_FEDERATION_API`
 
 If the API you'd like to send queries to is not a [federation api](https://neurobagel.org/federate/), you need to set the `NB_IS_FEDERATION_API` to `false` as it is `true` by default.
-
 
 #### Set the environment variables
 
@@ -78,9 +74,8 @@ if you're using the remote api, your `.env` file would look something like this:
 NB_API_QUERY_URL=https://api.neurobagel.org/
 ```
 
-:warning: The protocol matters here. 
+:warning: The protocol matters here.
 If you wish to use the Neurobagel remote API, ensure your `NB_API_QUERY_URL` uses `https` instead of `http`.
-
 
 ### Manual installation
 
@@ -149,9 +144,9 @@ To define a cohort, set your inclusion criteria using the following:
 - Assessment tool: Non-imaging assessment completed by participant that should be included in the results.
 - Modality: Imaging modality of participant scans that should be included in the results.
 
-
 Once you've defined your criteria, submit them as a query and the query tool will display the results.\
 The query tool offers two different TSV files for results:
+
 - Dataset-level results TSV contains: dataset id, dataset name, dataset portal uri, number of matching subjects, and available imaging modalities
 - Participant-level results TSV contains: dataset id, subject id, age, sex, diagnosis, assessment, session id, session file path, number of sessions, and imaging modality
 
