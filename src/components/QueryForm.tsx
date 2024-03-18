@@ -95,14 +95,14 @@ function QueryForm({
           />
         </div>
       )}
-      <div className={isFederationAPI && 'row-start-2'}>
+      <div className={isFederationAPI ? 'row-start-2' : ''}>
         <ContinuousField
           helperText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
           label="Minimum age"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      <div className={isFederationAPI && 'row-start-2'}>
+      <div className={isFederationAPI ? 'row-start-2' : ''}>
         <ContinuousField
           helperText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
           label="Maximum age"
