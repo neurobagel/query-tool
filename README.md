@@ -40,12 +40,12 @@ The query tool is hosted at https://query.neurobagel.org/ and interfaces with [N
 
 To run the query tool locally, you have two options:
 
-1. Do a manual install from the cloned git repo.
-2. Use our docker image
+1. Use our docker image
+2. Do a manual install from the cloned git repo.
 
 but before proceeding with either you need to set the environment variables.
 
-### Environment Variables
+### Mandatory configuration  
 
 | Environment variable                            | Type    | Required | Default value if not set | Example                          |
 | ----------------------------------------------- | ------- | -------- | ------------------------ | -------------------------------- |
@@ -62,54 +62,21 @@ If the API you'd like to send queries to is not a [federation api](https://neuro
 
 #### Set the environment variables
 
-To set environment variables, create an `.env` file in the root directory and add the environment variables there. If you're running the API locally on your machine (following the instructions [here](https://github.com/neurobagel/api#local-installation)), your `.env` file would look something like this:
+To set environment variables, create a `.env` file in the root directory and add the environment variables there. If you're running a neurobagel node-API locally on your machine (following the instructions [here](https://github.com/neurobagel/api#local-installation)), your `.env` file would look something like this:
 
 ```bash
 NB_API_QUERY_URL=http://localhost:8000/
+NB_IS_FEDERATION_API=false # For node API
 ```
 
-if you're using the remote api, your `.env` file would look something like this:
+if you're using the remote (in this example federation) api, your `.env` file would look something like this:
 
 ```bash
-NB_API_QUERY_URL=https://api.neurobagel.org/
+NB_API_QUERY_URL=https://federate.neurobagel.org/
 ```
 
 :warning: The protocol matters here.
 If you wish to use the Neurobagel remote API, ensure your `NB_API_QUERY_URL` uses `https` instead of `http`.
-
-### Manual installation
-
-To run the query tool, you'll need [node package manager (npm)](https://www.npmjs.com/) and [Node.js](https://nodejs.org/en/).
-You can find the instructions on installing npm and node in the official [documentation](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-
-Once you have npm and node installed, you'll need to install the dependencies outlined in the package.json file.
-You can do so by running the following command:
-
-```bash
-npm install
-```
-
-To launch the tool in developer mode run the following command:
-
-```bash
-npm run dev
-```
-
-You can also build and then run the tool from the (production) build of the application by running the following command:
-
-```bash
-npm run build && npm run preview
-```
-
-You can verify the tool is running once you receive info messages from Vite regarding environment, rendering, and what port the tool is running on in your terminal.
-
-#### Developer setup
-
-Having installed the dependencies, run the following command to enable husky `pre-commit` and `post-merge` hooks:
-
-```
-npx husky install
-```
 
 ### Docker installation
 
@@ -131,6 +98,44 @@ Then you can access the query tool at http://localhost:5173
 
 **Note**: the query tool is listening on port `5173` inside the docker container,
 replace port `5173` by the port you would like to expose to the host.
+For example if you'd like to run the tool on port `8000` of your machine you can run the following command:
+```bash
+docker run -p 8000:5173 --env-file=.env neurobagel/query_tool:latest
+```
+
+### Manual installation
+
+To install the query tool directly, you'll need [node package manager (npm)](https://www.npmjs.com/) and [Node.js](https://nodejs.org/en/).
+You can find the instructions on installing npm and node in the official [documentation](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+
+Once you have npm and node installed, you'll need to install the dependencies outlined in the package.json file.
+You can do so by running the following command:
+
+```bash
+npm install
+```
+
+To launch the tool in developer mode run the following command:
+
+```bash
+npm run dev
+```
+
+You can also build and then run the tool from ([production](https://vitejs.dev/guide/build)) build of the application by running the following command:
+
+```bash
+npm run build && npm run preview
+```
+
+You can verify the tool is running by watching for the` info messages from Vite regarding environment, rendering, and what port the tool is running on in your terminal.
+
+#### Developer setup
+
+Having installed the dependencies, run the following command to enable husky `pre-commit` and `post-merge` hooks:
+
+```
+npx husky install
+```
 
 ## Usage
 
