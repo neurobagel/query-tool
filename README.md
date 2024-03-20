@@ -45,7 +45,7 @@ To run the query tool locally, you have two options:
 
 but before proceeding with either you need to set the environment variables.
 
-### Mandatory configuration  
+### Mandatory configuration
 
 | Environment variable                            | Type    | Required | Default value if not set | Example                          |
 | ----------------------------------------------- | ------- | -------- | ------------------------ | -------------------------------- |
@@ -99,6 +99,7 @@ Then you can access the query tool at http://localhost:5173
 **Note**: the query tool is listening on port `5173` inside the docker container,
 replace port `5173` by the port you would like to expose to the host.
 For example if you'd like to run the tool on port `8000` of your machine you can run the following command:
+
 ```bash
 docker run -p 8000:5173 --env-file=.env neurobagel/query_tool:latest
 ```
