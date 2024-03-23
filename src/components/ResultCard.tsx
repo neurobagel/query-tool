@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { modalities } from '../utils/constants';
 
 const ResultCard = memo(
@@ -31,10 +32,15 @@ const ResultCard = memo(
       <CardContent>
         <div className="grid grid-cols-12 items-center gap-2">
           <div className="col-end-1">
-            <Checkbox
-              data-cy={`card-${datasetUUID}-checkbox`}
-              checked={checked}
-              onChange={() => onCheckboxChange(datasetUUID)}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  data-cy={`card-${datasetUUID}-checkbox`}
+                  checked={checked}
+                  onChange={() => onCheckboxChange(datasetUUID)}
+                />
+              }
+              label={datasetName}
             />
           </div>
           <div className="col-span-10 col-start-1">
