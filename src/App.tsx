@@ -11,6 +11,7 @@ import {
   FieldInput,
   FieldInputOption,
   Result,
+  NodeError,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -50,7 +51,15 @@ function App() {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        return response.data[dataElementURI];
+        if (response.data.nodes_response_status === 'partial success') {
+          response.data.errors.forEach((error) => {
+            enqueueSnackbar(
+              `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
+              { variant: 'warning' }
+            );
+          });
+        }
+        return response.data.responses[dataElementURI];
       } catch (err) {
         return null;
       }
@@ -243,7 +252,12 @@ function App() {
     const url: string = constructQueryURL();
     try {
       const response = await axios.get(url);
-      setResult(response.data);
+      setResult(response.data.responses);
+      if (response.data.nodes_response_status === 'partial success') {
+        response.data.errors.forEach((error: NodeError) => {
+          enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
+        });
+      }
     } catch (error) {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
     }
