@@ -2,11 +2,44 @@ import {
   mixedResponse,
   nodeOptions,
   emptyDiagnosisOptions,
+  diagnosisOptions,
   emptyAssessmentToolOptions,
+  assessmentToolOptions,
 } from '../fixtures/mocked-responses';
 
+// TODO: Put some of the setup in a beforeEach block
 describe('API request', () => {
-  it('Intercepts the request sent to the API and asserts over the request url', () => {
+  it.only('Loads correctly if all node responses are successful', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes/',
+      },
+      nodeOptions
+    ).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+
+    cy.visit('/');
+    cy.wait('@getNodes');
+    cy.wait('@getDiagnosisOptions');
+    cy.wait('@getAssessmentToolOptions');
+
+    cy.get('.notistack-SnackbarContainer').should('not.exist');
+  });
+  it('Intercepts the request sent to the APpI and asserts over the request url', () => {
     cy.intercept(
       {
         method: 'GET',
