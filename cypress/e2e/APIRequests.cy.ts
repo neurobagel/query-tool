@@ -9,36 +9,6 @@ import {
 
 // TODO: Put some of the setup in a beforeEach block
 describe('API request', () => {
-  it.only('Loads correctly if all node responses are successful', () => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/nodes/',
-      },
-      nodeOptions
-    ).as('getNodes');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Diagnosis',
-      },
-      diagnosisOptions
-    ).as('getDiagnosisOptions');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Assessment',
-      },
-      assessmentToolOptions
-    ).as('getAssessmentToolOptions');
-
-    cy.visit('/');
-    cy.wait('@getNodes');
-    cy.wait('@getDiagnosisOptions');
-    cy.wait('@getAssessmentToolOptions');
-
-    cy.get('.notistack-SnackbarContainer').should('not.exist');
-  });
   it('Intercepts the request sent to the APpI and asserts over the request url', () => {
     cy.intercept(
       {
@@ -113,4 +83,76 @@ describe('API request', () => {
       'Failed to retrieve Assessment tool options'
     );
   });
+  it('partially failed attribute response lists the failed node', () => {});
 });
+
+describe.only('Successful API attribute responses', () => {
+  beforeEach(() => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes/',
+      },
+      nodeOptions
+    ).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.visit('/');
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+  });
+
+  it('Loads correctly if all node responses are successful', () => {
+    cy.get('.notistack-SnackbarContainer').should('not.exist');
+  });
+  it('Empty diagnosis response makes info toast appear', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      emptyDiagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.visit('/');
+    cy.wait('@getDiagnosisOptions');
+    cy.get('.notistack-SnackbarContainer').should('contain', 'No Diagnosis options were available');
+  });
+  it('Empty assessment response makes info toast appear', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      emptyAssessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.visit('/');
+    cy.wait('@getAssessmentToolOptions');
+
+    cy.get('.notistack-SnackbarContainer').should(
+      'contain',
+      'No Assessment tool options were available'
+    );
+  });
+});
+
+describe('Partially successful API attribute responses', () => {
+  beforeEach(() => {});
+});
+
+describe('Failed API attribute responses', () => {
+  beforeEach(() => {});
+});
+
+// TODO: maybe refactor query and attribute requests into separate files
+describe('Successful API query requests', () => {});
