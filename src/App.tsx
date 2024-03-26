@@ -252,7 +252,7 @@ function App() {
     const url: string = constructQueryURL();
     try {
       const response = await axios.get(url);
-      setResult(response.data.responses);
+      setResult(response.data);
       if (response.data.nodes_response_status === 'partial success') {
         response.data.errors.forEach((error: NodeError) => {
           enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });

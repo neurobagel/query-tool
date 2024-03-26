@@ -1,7 +1,7 @@
 import { protectedResponse1, protectedResponse2 } from '../fixtures/mocked-responses';
 
 describe('Dataset result checkbox', () => {
-  it('A selected dataset card will be uncheckd when a new query is run.', () => {
+  it('A selected dataset card will be unchecked when a new query is run.', () => {
     let isFirstClick = true;
 
     cy.intercept('GET', 'query/*', (req) => {
