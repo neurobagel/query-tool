@@ -203,6 +203,28 @@ export const emptyAssessmentToolOptions = {
   nodes_response_status: 'success',
 };
 
+export const partiallyFailedAssessmentToolOptions = {
+  errors: [
+    {
+      node_name: 'OpenNeuro',
+      error: 'some error message',
+    },
+  ],
+  responses: {
+    'nb:Assessment': [
+      {
+        TermURL: 'cogatlas:trm_4d559bcd67c18',
+        Label: 'balloon analogue risk task',
+      },
+      {
+        TermURL: 'cogatlas:tsk_4a57abb949e1a',
+        Label: 'stop signal task',
+      },
+    ],
+  },
+  nodes_response_status: 'partial success',
+};
+
 export const assessmentToolOptions = {
   errors: [],
   responses: {
