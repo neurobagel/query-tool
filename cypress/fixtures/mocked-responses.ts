@@ -1,5 +1,5 @@
 export const unprotectedresponse1 = {
-  erros: [],
+  errors: [],
   responses: [
     {
       node_name: 'some-node-name',
@@ -171,9 +171,26 @@ export const nodeOptions = [
 ];
 
 export const emptyDiagnosisOptions = {
-  erros: [],
+  errors: [],
   responses: {
     'nb:Diagnosis': [],
+  },
+  nodes_response_status: 'success',
+};
+
+export const diagnosisOptions = {
+  errors: [],
+  responses: {
+    'nb:Diagnosis': [
+      {
+        TermURL: 'snomed:49049000',
+        Label: "Parkinson's disease",
+      },
+      {
+        TermURL: 'snomed:127295002',
+        Label: 'Traumatic brain injury',
+      },
+    ],
   },
   nodes_response_status: 'success',
 };
@@ -182,6 +199,23 @@ export const emptyAssessmentToolOptions = {
   errors: [],
   responses: {
     'nb:Assessment': [],
+  },
+  nodes_response_status: 'success',
+};
+
+export const assessmentToolOptions = {
+  errors: [],
+  responses: {
+    'nb:Assessment': [
+      {
+        TermURL: 'cogatlas:trm_4d559bcd67c18',
+        Label: 'balloon analogue risk task',
+      },
+      {
+        TermURL: 'cogatlas:tsk_4a57abb949e1a',
+        Label: 'stop signal task',
+      },
+    ],
   },
   nodes_response_status: 'success',
 };
