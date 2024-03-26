@@ -1,5 +1,4 @@
 // TODO: rename mocked responses to something more descriptive
-// TODO: reuse common parts of mocked responses to reduce redundancy
 
 // QUERY RESPONSES
 const protectedDatasetSnippet = {
