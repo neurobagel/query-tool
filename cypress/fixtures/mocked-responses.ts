@@ -1,3 +1,5 @@
+// TODO: rename mocked responses to something more descriptive
+// TODO: reuse common parts of mocked responses to reduce redundancy
 export const unprotectedresponse1 = {
   errors: [],
   responses: [
@@ -170,14 +172,6 @@ export const nodeOptions = [
   },
 ];
 
-export const emptyDiagnosisOptions = {
-  errors: [],
-  responses: {
-    'nb:Diagnosis': [],
-  },
-  nodes_response_status: 'success',
-};
-
 export const diagnosisOptions = {
   errors: [],
   responses: {
@@ -194,35 +188,22 @@ export const diagnosisOptions = {
   },
   nodes_response_status: 'success',
 };
+export const emptyDiagnosisOptions = { ...diagnosisOptions, responses: { 'nb:Diagnosis': [] } };
 
-export const emptyAssessmentToolOptions = {
-  errors: [],
-  responses: {
-    'nb:Assessment': [],
-  },
-  nodes_response_status: 'success',
-};
-
-export const partiallyFailedAssessmentToolOptions = {
+export const partiallyFailedDiagnosisToolOptions = {
+  ...diagnosisOptions,
+  nodes_response_status: 'partial success',
   errors: [
     {
-      node_name: 'OpenNeuro',
+      node_name: 'NoDiagnosisNode',
       error: 'some error message',
     },
   ],
-  responses: {
-    'nb:Assessment': [
-      {
-        TermURL: 'cogatlas:trm_4d559bcd67c18',
-        Label: 'balloon analogue risk task',
-      },
-      {
-        TermURL: 'cogatlas:tsk_4a57abb949e1a',
-        Label: 'stop signal task',
-      },
-    ],
-  },
-  nodes_response_status: 'partial success',
+};
+
+export const failedDiagnosisToolOptions = {
+  ...partiallyFailedDiagnosisToolOptions,
+  nodes_response_status: 'failure',
 };
 
 export const assessmentToolOptions = {
@@ -240,4 +221,25 @@ export const assessmentToolOptions = {
     ],
   },
   nodes_response_status: 'success',
+};
+
+export const emptyAssessmentToolOptions = {
+  ...assessmentToolOptions,
+  responses: { 'nb:Assessment': [] },
+};
+
+export const partiallyFailedAssessmentToolOptions = {
+  ...assessmentToolOptions,
+  nodes_response_status: 'partial success',
+  errors: [
+    {
+      node_name: 'NoAssessmentNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const failedAssessmentToolOptions = {
+  ...partiallyFailedAssessmentToolOptions,
+  nodes_response_status: 'failure',
 };
