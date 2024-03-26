@@ -51,6 +51,12 @@ export interface Result {
   image_modals: string[];
 }
 
+export interface QueryResponse {
+  errors: NodeError[];
+  responses: Result[];
+  nodes_response_status: string;
+}
+
 export interface CategoricalFieldProps {
   label: string;
   options: FieldInputOption[];

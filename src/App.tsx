@@ -10,8 +10,8 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
-  Result,
   NodeError,
+  QueryResponse,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -29,7 +29,7 @@ function App() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [result, setResult] = useState<Result[] | null>(null);
+  const [result, setResult] = useState<QueryResponse | null>(null);
 
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
@@ -327,11 +327,7 @@ function App() {
           />
         </div>
         <div className="col-span-3">
-          <ResultContainer
-            result={
-              result ? result.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)) : null
-            }
-          />
+          <ResultContainer response={result || null} />
         </div>
       </div>
     </>

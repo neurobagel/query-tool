@@ -1,5 +1,8 @@
 // TODO: rename mocked responses to something more descriptive
 // TODO: reuse common parts of mocked responses to reduce redundancy
+
+// QUERY RESPONSES
+// not used at all
 export const unprotectedresponse1 = {
   errors: [],
   responses: [
@@ -52,6 +55,67 @@ export const unprotectedresponse1 = {
   nodes_response_status: 'success',
 };
 
+// const protectedDatasetSnippet = {
+//     records_protected: true,
+//     dataset_uuid: 'https://someportal.org/datasets/ds0001',
+//     dataset_file_path: 'https://github.com/somethingDatasets/ds0001.git',
+//     dataset_name: 'some\ncool name',
+//     dataset_total_subjects: 10,
+//     num_matching_subjects: 3,
+//     subject_data: 'protected',
+//     image_modals: [
+//       'http://purl.org/nidash/nidm#FlowWeighted',
+//       'http://purl.org/nidash/nidm#T1Weighted',
+//     ],
+// };
+
+// const unprotectedDatasetSnippet = {
+//   node_name: 'some-node-name',
+//   dataset_uuid: 'http://neurobagel.org/vocab/0b9277fd-3d72-458f-9340-e468e67e5dc1',
+//   dataset_name: 'some-dataset',
+//   dataset_portal_uri: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
+//   dataset_total_subjects: 209,
+//   records_protected: false,
+//   num_matching_subjects: 2,
+//   subject_data: [
+//     {
+//       sub_id: 'sub-300100',
+//       session_id: 'ses-nb01',
+//       num_sessions: '1',
+//       age: '10.4',
+//       sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248152002',
+//       diagnosis: [null],
+//       subject_group: null,
+//       assessment: [null],
+//       image_modal: [
+//         'http://purl.org/nidash/nidm#FlowWeighted',
+//         'http://purl.org/nidash/nidm#T2Weighted',
+//       ],
+//       session_file_path: '/ds004116/sub-300100',
+//     },
+//     {
+//       sub_id: 'sub-300101',
+//       session_id: 'ses-nb01',
+//       num_sessions: '1',
+//       age: '10.4',
+//       sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248152002',
+//       diagnosis: [null],
+//       subject_group: null,
+//       assessment: [null],
+//       image_modal: [
+//         'http://purl.org/nidash/nidm#FlowWeighted',
+//         'http://purl.org/nidash/nidm#T2Weighted',
+//       ],
+//       session_file_path: '/ds004116/sub-300101',
+//     },
+//   ],
+//   image_modals: [
+//     'http://purl.org/nidash/nidm#T2Weighted',
+//     'http://purl.org/nidash/nidm#FlowWeighted',
+//   ],
+// };
+
+// doesn't care
 export const protectedResponse1 = {
   errors: [],
   responses: [
@@ -73,6 +137,7 @@ export const protectedResponse1 = {
   nodes_response_status: 'success',
 };
 
+// Needs 2 datasets with 4 total matching subjects
 export const protectedResponse2 = {
   errors: [],
   responses: [
@@ -161,6 +226,7 @@ export const mixedResponse = {
   nodes_response_status: 'success',
 };
 
+// ATTRIBUTE RESPONSES
 export const nodeOptions = [
   {
     NodeName: 'OpenNeuro',
