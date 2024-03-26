@@ -4,8 +4,8 @@ import { protectedResponse2 } from '../fixtures/mocked-responses';
 describe('ResultContainer', () => {
   it('Displays a set of Result Cards, select all checkbox, disabled download result buttons, summary stats, and how to get data modal button', () => {
     cy.mount(<ResultContainer response={protectedResponse2} />);
-    cy.get('[data-cy="card-http://neurobagel.org/vocab/cool-dataset"]').should('be.visible');
-    cy.get('[data-cy="card-http://neurobagel.org/vocab/not-so-cool-dataset"]').should('be.visible');
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001"]').should('be.visible');
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0002"]').should('be.visible');
     cy.get('[data-cy="select-all-checkbox"]').should('be.visible');
     cy.get('[data-cy="summary-stats"]')
       .should('be.visible')
@@ -20,7 +20,7 @@ describe('ResultContainer', () => {
   });
   it('Selecting a dataset should enable the download result buttons', () => {
     cy.mount(<ResultContainer response={protectedResponse2} />);
-    cy.get('[data-cy="card-http://neurobagel.org/vocab/cool-dataset-checkbox"] input').check();
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
     cy.get('[data-cy="participant-level-download-results-button"]')
       .should('be.visible')
       .should('not.be.disabled');
@@ -31,19 +31,19 @@ describe('ResultContainer', () => {
   it('Selecting/unselecting select all datasets checkbox should check/uncheck all dataset cards', () => {
     cy.mount(<ResultContainer response={protectedResponse2} />);
     cy.get('[data-cy="select-all-checkbox"] input').check();
-    cy.get('[data-cy="card-http://neurobagel.org/vocab/cool-dataset-checkbox"] input').should(
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').should(
       'be.checked'
     );
-    cy.get(
-      '[data-cy="card-http://neurobagel.org/vocab/not-so-cool-dataset-checkbox"] input'
-    ).should('be.checked');
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0002-checkbox"] input').should(
+      'be.checked'
+    );
     cy.get('[data-cy="select-all-checkbox"] input').uncheck();
-    cy.get('[data-cy="card-http://neurobagel.org/vocab/cool-dataset-checkbox"] input').should(
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0002-checkbox"] input').should(
       'not.be.checked'
     );
-    cy.get(
-      '[data-cy="card-http://neurobagel.org/vocab/not-so-cool-dataset-checkbox"] input'
-    ).should('not.be.checked');
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0002-checkbox"] input').should(
+      'not.be.checked'
+    );
   });
   it('Clicking the how to get data modal button should open the modal', () => {
     cy.mount(<ResultContainer response={protectedResponse2} />);
