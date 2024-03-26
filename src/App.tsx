@@ -10,7 +10,8 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
-  Result,
+  NodeError,
+  QueryResponse,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -28,7 +29,7 @@ function App() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [result, setResult] = useState<Result[] | null>(null);
+  const [result, setResult] = useState<QueryResponse | null>(null);
 
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
@@ -50,7 +51,15 @@ function App() {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        return response.data[dataElementURI];
+        if (response.data.nodes_response_status === 'partial success') {
+          response.data.errors.forEach((error) => {
+            enqueueSnackbar(
+              `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
+              { variant: 'warning' }
+            );
+          });
+        }
+        return response.data.responses[dataElementURI];
       } catch (err) {
         return null;
       }
@@ -244,6 +253,11 @@ function App() {
     try {
       const response = await axios.get(url);
       setResult(response.data);
+      if (response.data.nodes_response_status === 'partial success') {
+        response.data.errors.forEach((error: NodeError) => {
+          enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
+        });
+      }
     } catch (error) {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
     }
@@ -313,11 +327,7 @@ function App() {
           />
         </div>
         <div className="col-span-3">
-          <ResultContainer
-            result={
-              result ? result.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)) : null
-            }
-          />
+          <ResultContainer response={result || null} />
         </div>
       </div>
     </>

@@ -1,3 +1,5 @@
+import { diagnosisOptions } from '../fixtures/mocked-responses';
+
 describe('App', () => {
   it('Validates input to continuous field, displays the appropriate error, and disables the submit query button', () => {
     cy.visit('/');
@@ -17,10 +19,13 @@ describe('App', () => {
     cy.get('[data-cy="submit-query-button"]').should('be.disabled');
   });
   it('Disables the diagnosis field if healthy control checkbox is checked', () => {
-    cy.intercept({
-      method: 'GET',
-      url: '/attributes/nb:Diagnosis',
-    }).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
     cy.visit('/');
     cy.wait('@getDiagnosisOptions');
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should('not.be.disabled');
