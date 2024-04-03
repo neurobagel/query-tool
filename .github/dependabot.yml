@@ -23,11 +23,6 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-    ignore:
-      - dependency-name: 'react'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'typescript'
-        update-types: ['version-update:semver-major']
     labels:
       - '_bot'
       - 'maint:dependency'
