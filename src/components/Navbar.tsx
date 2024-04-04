@@ -33,14 +33,14 @@ function Navbar() {
             <Badge badgeContent={latestReleaseTag}>
               <Typography variant="h5">Neurobagel Query</Typography>
             </Badge>
-            <Typography variant="body1" className="text-gray-500">
+            <Typography className="text-gray-500">
               Define and find cohorts at the subject level
             </Typography>
           </div>
         </div>
         <div className="flex">
           <IconButton size="small" href="https://neurobagel.org/query_tool/" target="_blank">
-            Documentation
+            <Typography>Documentation</Typography>
           </IconButton>
           <IconButton href="https://github.com/neurobagel/react-query-tool/" target="_blank">
             <GitHubIcon />

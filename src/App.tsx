@@ -286,7 +286,7 @@ function App() {
         </>
       )}
 
-      <div className="grid grid-cols-4 grid-rows-1 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div>
           <QueryForm
             availableNodes={availableNodes}

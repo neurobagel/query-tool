@@ -190,7 +190,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
             {summaryStats}
           </Typography>
         </div>
-        <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
+        <div className="col-span-4 h-[70vh] space-y-2 overflow-auto">
           {result.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
