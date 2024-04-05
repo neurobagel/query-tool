@@ -131,8 +131,12 @@ describe('Failed API attribute responses', () => {
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
   });
-  it('Shows error toast for failed Assessment tool options', () => {});
-  it('Shows error toast for failed Diagnosis options', () => {});
+  it('Shows error toast for failed Assessment tool options', () => {
+    cy.get('.notistack-SnackbarContainer').should('contain', 'Assessment');
+  });
+  it('Shows error toast for failed Diagnosis options', () => {
+    cy.get('.notistack-SnackbarContainer').should('contain', 'Diagnosis');
+  });
 });
 
 // TODO: maybe refactor query and attribute requests into separate files

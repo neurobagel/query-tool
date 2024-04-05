@@ -141,8 +141,14 @@ export const partiallyFailedDiagnosisToolOptions = {
 };
 
 export const failedDiagnosisToolOptions = {
-  ...partiallyFailedDiagnosisToolOptions,
+  ...emptyDiagnosisOptions,
   nodes_response_status: 'failure',
+  errors: [
+    {
+      node_name: 'NoDiagnosisNode',
+      error: 'some error message',
+    },
+  ],
 };
 
 export const assessmentToolOptions = {
@@ -179,6 +185,12 @@ export const partiallyFailedAssessmentToolOptions = {
 };
 
 export const failedAssessmentToolOptions = {
-  ...partiallyFailedAssessmentToolOptions,
+  ...emptyAssessmentToolOptions,
   nodes_response_status: 'failure',
+  errors: [
+    {
+      node_name: 'NoAssessmentNode',
+      error: 'some error message',
+    },
+  ],
 };
