@@ -88,6 +88,17 @@ export const mixedResponse = {
   nodes_response_status: 'success',
 };
 
+export const partialSuccessMixedResponse = {
+  ...mixedResponse,
+  nodes_response_status: 'partial success',
+  errors: [
+    {
+      node_name: 'DidNotWorkNode',
+      error: 'some error message',
+    },
+  ],
+}; // Partial Success
+
 // ATTRIBUTE RESPONSES
 export const nodeOptions = [
   {

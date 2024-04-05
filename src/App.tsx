@@ -45,6 +45,13 @@ function App() {
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
     .map((filteredOption) => ({ label: filteredOption.NodeName, id: filteredOption.ApiURL }));
 
+  const sortedResults: QueryResponse | null = result
+    ? {
+        ...result,
+        responses: result.responses.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)),
+      }
+    : null;
+
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
       try {
@@ -327,7 +334,7 @@ function App() {
           />
         </div>
         <div className="col-span-3">
-          <ResultContainer response={result || null} />
+          <ResultContainer response={sortedResults || null} />
         </div>
       </div>
     </>

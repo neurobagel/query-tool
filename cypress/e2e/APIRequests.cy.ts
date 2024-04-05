@@ -1,5 +1,6 @@
 import {
   mixedResponse,
+  partialSuccessMixedResponse,
   nodeOptions,
   diagnosisOptions,
   emptyDiagnosisOptions,
@@ -136,7 +137,7 @@ describe('Failed API attribute responses', () => {
 
 // TODO: maybe refactor query and attribute requests into separate files
 describe('Successful API query requests', () => {
-  it('Intercepts the request sent to the APpI and asserts over the request url', () => {
+  beforeEach(() => {
     cy.intercept(
       {
         method: 'GET',
@@ -144,6 +145,7 @@ describe('Successful API query requests', () => {
       },
       mixedResponse
     ).as('call');
+
     cy.intercept(
       {
         method: 'GET',
@@ -151,13 +153,86 @@ describe('Successful API query requests', () => {
       },
       nodeOptions
     ).as('getNodes');
-    cy.visit('/?node=OpenNeuro');
-    // We need to wait for the fetch to complete and populate the
-    // dropdown with nodes and selecting OpenNeuro before making the request
-    cy.wait('@getNodes');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.visit('/');
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+  });
+  it('Intercepts the request sent to the APpI and asserts over the request url', () => {
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
     cy.get('[data-cy="submit-query-button"]').click();
-    cy.wait('@call').its('request.url').should('contains', '&min_age=10&max_age=30');
+    cy.wait('@call').its('request.url').should('contains', 'min_age=10&max_age=30');
+  });
+});
+
+describe('Partially successful API query requests', () => {
+  beforeEach(() => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'query/?*',
+      },
+      partialSuccessMixedResponse
+    ).as('call');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes/',
+      },
+      nodeOptions
+    ).as('getNodes');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.visit('/');
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+  });
+  it('Shows a warning for nodes that did not return any results', () => {
+    cy.get('[data-cy="submit-query-button"]').click();
+    cy.wait('@call');
+    cy.get('.notistack-SnackbarContainer').should('contain', 'DidNotWorkNode');
   });
 });
