@@ -52,7 +52,9 @@ describe('Successful API attribute responses', () => {
     ).as('getDiagnosisOptions');
     cy.visit('/');
     cy.wait('@getDiagnosisOptions');
-    cy.get('.notistack-SnackbarContainer').should('contain', 'No Diagnosis options were available');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-info')
+      .should('contain', 'No Diagnosis options were available');
   });
   it('Empty assessment response makes info toast appear', () => {
     cy.intercept(
@@ -65,10 +67,9 @@ describe('Successful API attribute responses', () => {
     cy.visit('/');
     cy.wait('@getAssessmentToolOptions');
 
-    cy.get('.notistack-SnackbarContainer').should(
-      'contain',
-      'No Assessment tool options were available'
-    );
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-info')
+      .should('contain', 'No Assessment options were available');
   });
 });
 
@@ -99,10 +100,14 @@ describe('Partially successful API attribute responses', () => {
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
   });
   it('Shows warning for node that failed Assessment tool option request', () => {
-    cy.get('.notistack-SnackbarContainer').should('contain', 'NoAssessmentNode');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-warning')
+      .should('contain', 'NoAssessmentNode');
   });
   it('Shows warning for node that failed Diagnosis option request', () => {
-    cy.get('.notistack-SnackbarContainer').should('contain', 'NoDiagnosisNode');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-warning')
+      .should('contain', 'NoDiagnosisNode');
   });
 });
 
@@ -133,10 +138,14 @@ describe('Failed API attribute responses', () => {
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
   });
   it('Shows error toast for failed Assessment tool options', () => {
-    cy.get('.notistack-SnackbarContainer').should('contain', 'Assessment');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-error')
+      .should('contain', 'Assessment');
   });
   it('Shows error toast for failed Diagnosis options', () => {
-    cy.get('.notistack-SnackbarContainer').should('contain', 'Diagnosis');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-error')
+      .should('contain', 'Diagnosis');
   });
 });
 
@@ -238,11 +247,13 @@ describe('Partially successful API query requests', () => {
   it('Shows a warning for nodes that did not return any results', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('.notistack-SnackbarContainer').should('contain', 'DidNotWorkNode');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-warning')
+      .should('contain', 'DidNotWorkNode');
   });
 });
 
-describe.only('Failed API query requests', () => {
+describe('Failed API query requests', () => {
   beforeEach(() => {
     cy.intercept(
       {
@@ -296,7 +307,10 @@ describe.only('Failed API query requests', () => {
   it('Shows an error toast and does not display results for a completely failed ', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('.notistack-SnackbarContainer').should('contain', 'Error').and('contain', 'All nodes');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-error')
+      .should('contain', 'Error')
+      .and('contain', 'All nodes');
     cy.get('[data-cy="result-container"]')
       .should('contain', 'Query failed')
       .and('contain', 'Please try again');

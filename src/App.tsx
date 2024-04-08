@@ -58,13 +58,24 @@ function App() {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        if (response.data.nodes_response_status === 'partial success') {
+        if (response.data.nodes_response_status === 'failure') {
+          enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
+            variant: 'error',
+          });
+        } else {
+          // If any errors occurred, report them
           response.data.errors.forEach((error) => {
             enqueueSnackbar(
               `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
               { variant: 'warning' }
             );
           });
+          // If the results are empty, report that
+          if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
+            enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
+              variant: 'info',
+            });
+          }
         }
         return response.data.responses[dataElementURI];
       } catch (err) {
@@ -73,21 +84,13 @@ function App() {
     }
 
     getAttributes('nb:Diagnosis').then((diagnosisResponse) => {
-      if (diagnosisResponse === null) {
-        enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
-      } else if (diagnosisResponse.length === 0) {
-        enqueueSnackbar('No Diagnosis options were available', { variant: 'info' });
-      } else {
+      if (diagnosisResponse !== null && Object.keys(diagnosisResponse).length === 0) {
         setDiagnosisOptions(diagnosisResponse);
       }
     });
 
     getAttributes('nb:Assessment').then((assessmentResponse) => {
-      if (assessmentResponse === null) {
-        enqueueSnackbar('Failed to retrieve Assessment tool options', { variant: 'error' });
-      } else if (assessmentResponse.length === 0) {
-        enqueueSnackbar('No Assessment tool options were available', { variant: 'info' });
-      } else {
+      if (assessmentResponse !== null && Object.keys(assessmentResponse).length === 0) {
         setAssessmentOptions(assessmentResponse);
       }
     });
