@@ -297,9 +297,8 @@ describe.only('Failed API query requests', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('.notistack-SnackbarContainer').should('contain', 'Error').and('contain', 'All nodes');
-    cy.get('[data-cy="result-container"]').should(
-      'contain',
-      'Query unsuccessful: all requested nodes failed to respond'
-    );
+    cy.get('[data-cy="result-container"]')
+      .should('contain', 'Query failed')
+      .and('contain', 'Please try again');
   });
 });

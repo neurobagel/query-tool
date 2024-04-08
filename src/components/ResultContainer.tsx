@@ -164,6 +164,20 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
         </Typography>
       );
     }
+
+    if (response.nodes_response_status === 'failure') {
+      return (
+        <div data-cy="failed-result-container-view">
+          <Typography variant="h5" className="text-red-500">
+            Query failed - no nodes responded!
+          </Typography>
+          <Typography className="text-gray-500">
+            This is not supposed to happen. Please try again, or open an issue.
+          </Typography>
+        </div>
+      );
+    }
+
     if (response.responses.length === 0) {
       return (
         <Typography variant="h5" data-cy="empty-result-container-view" className="text-gray-500">
