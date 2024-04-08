@@ -1,6 +1,7 @@
 import {
   mixedResponse,
   partialSuccessMixedResponse,
+  failedQueryResponse,
   nodeOptions,
   diagnosisOptions,
   emptyDiagnosisOptions,
@@ -238,5 +239,67 @@ describe('Partially successful API query requests', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('.notistack-SnackbarContainer').should('contain', 'DidNotWorkNode');
+  });
+});
+
+describe.only('Failed API query requests', () => {
+  beforeEach(() => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'query/?*',
+      },
+      failedQueryResponse
+    ).as('call');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes/',
+      },
+      nodeOptions
+    ).as('getNodes');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.visit('/');
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+  });
+  it('Shows an error toast and does not display results for a completely failed ', () => {
+    cy.get('[data-cy="submit-query-button"]').click();
+    cy.wait('@call');
+    cy.get('.notistack-SnackbarContainer').should('contain', 'Error').and('contain', 'All nodes');
+    cy.get('[data-cy="result-container"]').should(
+      'contain',
+      'Query unsuccessful: all requested nodes failed to respond'
+    );
   });
 });

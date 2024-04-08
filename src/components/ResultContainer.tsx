@@ -233,7 +233,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
   }
 
   return (
-    <div className="grid grid-cols-4 grid-rows-2">
+    <div className="grid grid-cols-4 grid-rows-2" data-cy="result-container">
       <div className="col-span-4">
         <Typography variant="h5">Results</Typography>
       </div>

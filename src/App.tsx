@@ -260,10 +260,20 @@ function App() {
     try {
       const response = await axios.get(url);
       setResult(response.data);
-      if (response.data.nodes_response_status === 'partial success') {
-        response.data.errors.forEach((error: NodeError) => {
-          enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
-        });
+      switch (response.data.nodes_response_status) {
+        case 'partial success': {
+          response.data.errors.forEach((error: NodeError) => {
+            enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
+          });
+          break;
+        }
+        case 'failure': {
+          enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error' });
+          break;
+        }
+        default: {
+          break;
+        }
       }
     } catch (error) {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error' });

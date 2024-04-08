@@ -99,6 +99,17 @@ export const partialSuccessMixedResponse = {
   ],
 }; // Partial Success
 
+export const failedQueryResponse = {
+  responses: [],
+  nodes_response_status: 'failure',
+  errors: [
+    {
+      node_name: 'DidNotWorkNode',
+      error: 'some error message',
+    },
+  ],
+};
+
 // ATTRIBUTE RESPONSES
 export const nodeOptions = [
   {
