@@ -10,7 +10,8 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
-  Result,
+  NodeError,
+  QueryResponse,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -28,7 +29,7 @@ function App() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [result, setResult] = useState<Result[] | null>(null);
+  const [result, setResult] = useState<QueryResponse | null>(null);
 
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
@@ -44,34 +45,52 @@ function App() {
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
     .map((filteredOption) => ({ label: filteredOption.NodeName, id: filteredOption.ApiURL }));
 
+  const sortedResults: QueryResponse | null = result
+    ? {
+        ...result,
+        responses: result.responses.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)),
+      }
+    : null;
+
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        return response.data[dataElementURI];
+        if (response.data.nodes_response_status === 'failure') {
+          enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
+            variant: 'error',
+          });
+        } else {
+          // If any errors occurred, report them
+          response.data.errors.forEach((error) => {
+            enqueueSnackbar(
+              `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
+              { variant: 'warning' }
+            );
+          });
+          // If the results are empty, report that
+          if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
+            enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
+              variant: 'info',
+            });
+          }
+        }
+        return response.data.responses[dataElementURI];
       } catch (err) {
         return null;
       }
     }
 
     getAttributes('nb:Diagnosis').then((diagnosisResponse) => {
-      if (diagnosisResponse === null) {
-        enqueueSnackbar('Failed to retrieve Diagnosis options', { variant: 'error' });
-      } else if (diagnosisResponse.length === 0) {
-        enqueueSnackbar('No Diagnosis options were available', { variant: 'info' });
-      } else {
+      if (diagnosisResponse !== null && diagnosisResponse.length !== 0) {
         setDiagnosisOptions(diagnosisResponse);
       }
     });
 
     getAttributes('nb:Assessment').then((assessmentResponse) => {
-      if (assessmentResponse === null) {
-        enqueueSnackbar('Failed to retrieve Assessment tool options', { variant: 'error' });
-      } else if (assessmentResponse.length === 0) {
-        enqueueSnackbar('No Assessment tool options were available', { variant: 'info' });
-      } else {
+      if (assessmentResponse !== null && assessmentResponse.length !== 0) {
         setAssessmentOptions(assessmentResponse);
       }
     });
@@ -244,6 +263,21 @@ function App() {
     try {
       const response = await axios.get(url);
       setResult(response.data);
+      switch (response.data.nodes_response_status) {
+        case 'partial success': {
+          response.data.errors.forEach((error: NodeError) => {
+            enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
+          });
+          break;
+        }
+        case 'failure': {
+          enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error' });
+          break;
+        }
+        default: {
+          break;
+        }
+      }
     } catch (error) {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
     }
@@ -313,11 +347,7 @@ function App() {
           />
         </div>
         <div className="col-span-3">
-          <ResultContainer
-            result={
-              result ? result.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)) : null
-            }
-          />
+          <ResultContainer response={sortedResults || null} />
         </div>
       </div>
     </>

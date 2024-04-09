@@ -13,8 +13,17 @@ export interface NodeOption {
   ApiURL: string;
 }
 
+export interface NodeError {
+  node_name: string;
+  error: string;
+}
+
 export interface RetrievedAttributeOption {
-  [key: string]: AttributeOption[];
+  responses: {
+    [key: string]: AttributeOption[];
+  };
+  nodes_response_status: string;
+  errors: NodeError[];
 }
 
 export interface Subject {
@@ -40,6 +49,12 @@ export interface Result {
   num_matching_subjects: number;
   subject_data: Subject[] | string;
   image_modals: string[];
+}
+
+export interface QueryResponse {
+  errors: NodeError[];
+  responses: Result[];
+  nodes_response_status: string;
 }
 
 export interface CategoricalFieldProps {
