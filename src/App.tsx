@@ -84,13 +84,13 @@ function App() {
     }
 
     getAttributes('nb:Diagnosis').then((diagnosisResponse) => {
-      if (diagnosisResponse !== null && Object.keys(diagnosisResponse).length === 0) {
+      if (diagnosisResponse !== null && diagnosisResponse.length !== 0) {
         setDiagnosisOptions(diagnosisResponse);
       }
     });
 
     getAttributes('nb:Assessment').then((assessmentResponse) => {
-      if (assessmentResponse !== null && Object.keys(assessmentResponse).length === 0) {
+      if (assessmentResponse !== null && assessmentResponse.length !== 0) {
         setAssessmentOptions(assessmentResponse);
       }
     });
