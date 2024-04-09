@@ -168,9 +168,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
     if (response.nodes_response_status === 'failure') {
       return (
         <div data-cy="failed-result-container-view">
-          <Typography variant="h5" className="text-red-500">
-            Query failed - no nodes responded!
-          </Typography>
+          <Typography variant="h5">Query failed - no nodes responded!</Typography>
           <Typography className="text-gray-500">
             This is not supposed to happen. Please try again, or open an issue.
           </Typography>
