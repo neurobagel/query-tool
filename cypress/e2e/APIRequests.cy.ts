@@ -227,20 +227,6 @@ describe('Partially successful API query requests', () => {
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Diagnosis',
-      },
-      diagnosisOptions
-    ).as('getDiagnosisOptions');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Assessment',
-      },
-      assessmentToolOptions
-    ).as('getAssessmentToolOptions');
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
   });
@@ -287,20 +273,6 @@ describe('Failed API query requests', () => {
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Diagnosis',
-      },
-      diagnosisOptions
-    ).as('getDiagnosisOptions');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Assessment',
-      },
-      assessmentToolOptions
-    ).as('getAssessmentToolOptions');
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
   });
