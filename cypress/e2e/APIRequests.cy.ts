@@ -185,7 +185,7 @@ describe('Successful API query requests', () => {
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
   });
-  it('Intercepts the request sent to the APpI and asserts over the request url', () => {
+  it('Intercepts the request sent to the API and asserts over the request url', () => {
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
     cy.get('[data-cy="submit-query-button"]').click();
@@ -244,7 +244,7 @@ describe('Partially successful API query requests', () => {
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
   });
-  it('Shows a warning for nodes that did not return any results', () => {
+  it('Shows a warning for nodes that failed to return any results', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('.notistack-SnackbarContainer')
