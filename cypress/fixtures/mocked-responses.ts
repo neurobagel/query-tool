@@ -29,24 +29,25 @@ const unprotectedDatasetSnippet = {
     {
       sub_id: 'sub-300100',
       session_id: 'ses-nb01',
-      num_sessions: '1',
+      num_matching_phenotypic_sessions: '1',
+      num_matching_imaging_sessions: '1',
+      session_type: 'http://neurobagel.org/vocab/PhenotypicSession',
       age: '10.4',
       sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248152002',
-      diagnosis: [null],
+      diagnosis: ['http://purl.bioontology.org/ontology/SNOMEDCT/370143000'],
       subject_group: null,
-      assessment: [null],
-      image_modal: [
-        'http://purl.org/nidash/nidm#FlowWeighted',
-        'http://purl.org/nidash/nidm#T2Weighted',
-      ],
-      session_file_path: '/ds004116/sub-300100',
+      assessment: ['https://www.cognitiveatlas.org/task/id/trm_4f2419c4a1646'],
+      image_modal: [null],
+      session_file_path: null,
     },
     {
       sub_id: 'sub-300101',
       session_id: 'ses-nb01',
-      num_sessions: '1',
-      age: '10.4',
-      sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248152002',
+      num_matching_phenotypic_sessions: '1',
+      num_matching_imaging_sessions: '1',
+      session_type: 'http://neurobagel.org/vocab/ImagingSession',
+      age: null,
+      sex: null,
       diagnosis: [null],
       subject_group: null,
       assessment: [null],
@@ -77,6 +78,12 @@ export const protectedResponse2 = {
     protectedDatasetSnippet,
     { ...protectedDatasetSnippet, dataset_uuid: 'https://someportal.org/datasets/ds0002' },
   ],
+  nodes_response_status: 'success',
+};
+
+export const unprotectedResponse = {
+  errors: [],
+  responses: [unprotectedDatasetSnippet],
   nodes_response_status: 'success',
 };
 
