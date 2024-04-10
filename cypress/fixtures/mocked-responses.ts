@@ -30,7 +30,7 @@ const unprotectedDatasetSnippet = {
       sub_id: 'sub-300100',
       session_id: 'ses-nb01',
       num_matching_phenotypic_sessions: '1',
-      num_matching_imaging_sessions: '1',
+      num_matching_imaging_sessions: '0',
       session_type: 'http://neurobagel.org/vocab/PhenotypicSession',
       age: '10.4',
       sex: 'http://purl.bioontology.org/ontology/SNOMEDCT/248152002',
@@ -43,7 +43,7 @@ const unprotectedDatasetSnippet = {
     {
       sub_id: 'sub-300101',
       session_id: 'ses-nb01',
-      num_matching_phenotypic_sessions: '1',
+      num_matching_phenotypic_sessions: '0',
       num_matching_imaging_sessions: '1',
       session_type: 'http://neurobagel.org/vocab/ImagingSession',
       age: null,
