@@ -37,7 +37,8 @@ const props = {
   sex: null,
   diagnosis: null,
   isControl: false,
-  minNumSessions: null,
+  minNumImagingSessions: null,
+  minNumPhenotypicSessions: null,
   setIsControl: () => {},
   assessmentTool: null,
   imagingModality: null,
@@ -60,7 +61,8 @@ describe('QueryForm', () => {
         sex={props.sex}
         diagnosis={props.diagnosis}
         isControl={props.isControl}
-        minNumSessions={props.minNumSessions}
+        minNumImagingSessions={props.minNumImagingSessions}
+        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
@@ -77,7 +79,10 @@ describe('QueryForm', () => {
     cy.get('[data-cy="Sex-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Diagnosis-categorical-field"]').should('be.visible');
     cy.get('[data-cy="healthy-control-checkbox"]').should('be.visible');
-    cy.get('[data-cy="Minimum number of sessions-continuous-field"]').should('be.visible');
+    cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').should('be.visible');
+    cy.get('[data-cy="Minimum number of phenotypic sessions-continuous-field"]').should(
+      'be.visible'
+    );
     cy.get('[data-cy="Assessment tool-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Imaging modality-categorical-field"]').should('be.visible');
     cy.get('[data-cy="submit-query-button"]').should('be.visible');
@@ -95,7 +100,8 @@ describe('QueryForm', () => {
         sex={props.sex}
         diagnosis={props.diagnosis}
         isControl={props.isControl}
-        minNumSessions={props.minNumSessions}
+        minNumImagingSessions={props.minNumImagingSessions}
+        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
@@ -125,7 +131,8 @@ describe('QueryForm', () => {
         sex={props.sex}
         diagnosis={props.diagnosis}
         isControl={props.isControl}
-        minNumSessions={props.minNumSessions}
+        minNumImagingSessions={props.minNumImagingSessions}
+        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
@@ -151,7 +158,8 @@ describe('QueryForm', () => {
         sex={props.sex}
         diagnosis={props.diagnosis}
         isControl={props.isControl}
-        minNumSessions={props.minNumSessions}
+        minNumImagingSessions={props.minNumImagingSessions}
+        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}

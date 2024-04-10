@@ -21,7 +21,8 @@ function QueryForm({
   sex,
   diagnosis,
   isControl,
-  minNumSessions,
+  minNumImagingSessions,
+  minNumPhenotypicSessions,
   setIsControl,
   assessmentTool,
   imagingModality,
@@ -40,7 +41,8 @@ function QueryForm({
   diagnosis: FieldInput;
   isControl: boolean;
   setIsControl: (value: boolean) => void;
-  minNumSessions: number | null;
+  minNumImagingSessions: number | null;
+  minNumPhenotypicSessions: number | null;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
   updateCategoricalQueryParams: (label: string, value: FieldInput) => void;
@@ -64,21 +66,23 @@ function QueryForm({
 
   const minAgeHelperText: string = validateContinuousValue(minAge);
   const maxAgeHelperText: string = validateContinuousValue(maxAge);
-  const minNumSessionsHelperText: string = validateContinuousValue(minNumSessions);
+  const minNumImagingSessionsHelperText: string = validateContinuousValue(minNumImagingSessions);
+  const minNumPhenotypicSessionsHelperText: string =
+    validateContinuousValue(minNumPhenotypicSessions);
 
   const minAgeExceedsMaxAge: boolean = minAge && maxAge ? minAge > maxAge : false;
   const disableSubmit: boolean =
     minAgeExceedsMaxAge ||
     minAgeHelperText !== '' ||
     maxAgeHelperText !== '' ||
-    minNumSessionsHelperText !== '';
+    minNumImagingSessionsHelperText !== '';
 
   return (
     <div
       className={
         isFederationAPI
           ? 'grid grid-cols-2 grid-rows-9 gap-2'
-          : 'grid grid-cols-2 grid-rows-8 gap-2'
+          : 'grid grid-cols-2 grid-rows-10 gap-2'
       }
     >
       {isFederationAPI && (
@@ -153,12 +157,19 @@ function QueryForm({
       </div>
       <div className={isFederationAPI ? 'col-span-2 row-start-6' : 'col-span-2 row-start-5'}>
         <ContinuousField
-          helperText={minNumSessionsHelperText}
-          label="Minimum number of sessions"
+          helperText={minNumImagingSessionsHelperText}
+          label="Minimum number of imaging sessions"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
       <div className={isFederationAPI ? 'col-span-2 row-start-7' : 'col-span-2 row-start-6'}>
+        <ContinuousField
+          helperText={minNumPhenotypicSessionsHelperText}
+          label="Minimum number of phenotypic sessions"
+          onFieldChange={updateContinuousQueryParams}
+        />
+      </div>
+      <div className={isFederationAPI ? 'col-span-2 row-start-8' : 'col-span-2 row-start-7'}>
         <CategoricalField
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label, id: a.TermURL }))}
@@ -166,7 +177,7 @@ function QueryForm({
           inputValue={assessmentTool}
         />
       </div>
-      <div className={isFederationAPI ? 'col-span-2 row-start-8' : 'col-span-2 row-start-7'}>
+      <div className={isFederationAPI ? 'col-span-2 row-start-9' : 'col-span-2 row-start-8'}>
         <CategoricalField
           label="Imaging modality"
           options={Object.entries(modalities).map(([, value]) => ({
@@ -177,7 +188,7 @@ function QueryForm({
           inputValue={imagingModality}
         />
       </div>
-      <div className={isFederationAPI ? 'row-start-9' : 'row-start-8'}>
+      <div className={isFederationAPI ? 'row-start-10' : 'row-start-9'}>
         <Button
           data-cy="submit-query-button"
           disabled={disableSubmit}
