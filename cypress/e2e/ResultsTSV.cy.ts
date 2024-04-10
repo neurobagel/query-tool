@@ -8,7 +8,7 @@ describe('Results TSV', () => {
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="dataset-level-download-results-button"]').click();
-    cy.readFile('cypress/downloads/dataset-level-results.tsv').should('contain', 'some name');
+    cy.readFile('cypress/downloads/dataset-level-results.tsv').should('contain', 'some cool name');
   });
   it('Removes the unwanted whitespace from the downloaded results files', () => {
     cy.intercept('query/?*', mixedResponse).as('call');
@@ -40,7 +40,7 @@ describe('Results TSV', () => {
       const datasetNotProtected = rows[2];
 
       expect(datasetProtected.split('\t')[7]).to.equal('protected');
-      expect(datasetNotProtected.split('\t')[7]).to.equal('/ds000011/sub-04');
+      expect(datasetNotProtected.split('\t')[7]).to.equal('/ds004116/sub-300100');
     });
   });
 });
