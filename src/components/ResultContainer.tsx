@@ -67,13 +67,15 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
         const headers = [
           'DatasetID',
           'SubjectID',
+          'SessionID',
+          'SessionType',
           'Age',
           'Sex',
           'Diagnosis',
           'Assessment',
-          'SessionID',
-          'SessionPath',
-          'NumSessions',
+          'SessionFilePath',
+          'NumPhenotypicSessions',
+          'NumImagingSessions',
           'Modality',
         ].join('\t');
         tsvRows.push(headers);
@@ -84,13 +86,15 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
               [
                 res.dataset_uuid,
                 'protected', // subject_id
+                'protected', // session_id
+                'protected', // session_type
                 'protected', // age
                 'protected', // sex
                 'protected', // diagnosis
                 'protected', // assessment
-                'protected', // session_id
                 'protected', // session_file_path
-                'protected', // num_sessions
+                'protected', // num_phenotypic_sessions
+                'protected', // num_imaging_sessions
                 'protected', // image_modal
               ].join('\t')
             );
@@ -101,13 +105,15 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                 [
                   res.dataset_uuid,
                   subject.sub_id,
+                  subject.session_id,
+                  subject.session_type,
                   subject.age,
                   subject.sex,
                   subject.diagnosis?.join(', '),
                   subject.assessment?.join(', '),
-                  subject.session_id,
                   subject.session_file_path,
-                  subject.num_sessions,
+                  subject.num_matching_phenotypic_sessions,
+                  subject.num_matching_imaging_sessions,
                   subject.image_modal?.join(', '),
                 ].join('\t')
               );
@@ -203,7 +209,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
             {summaryStats}
           </Typography>
         </div>
-        <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
+        <div className="col-span-4 h-[70vh] space-y-2 overflow-auto">
           {response.responses.map((item) => (
             <ResultCard
               key={item.dataset_uuid}

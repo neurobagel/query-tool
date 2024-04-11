@@ -36,7 +36,8 @@ function App() {
   const [sex, setSex] = useState<FieldInput>(null);
   const [diagnosis, setDiagnosis] = useState<FieldInput>(null);
   const [isControl, setIsControl] = useState<boolean>(false);
-  const [minNumSessions, setMinNumSessions] = useState<number | null>(null);
+  const [minNumImagingSessions, setMinNumSessions] = useState<number | null>(null);
+  const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<number | null>(null);
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -190,8 +191,11 @@ function App() {
       case 'Maximum age':
         setMaxAge(value);
         break;
-      case 'Minimum number of sessions':
+      case 'Minimum number of imaging sessions':
         setMinNumSessions(value);
+        break;
+      case 'Minimum number of phenotypic sessions':
+        setMinNumPhenotypicSessions(value);
         break;
       default:
         break;
@@ -236,7 +240,14 @@ function App() {
     setQueryParam('sex', sex, queryParams);
     setQueryParam('diagnosis', isControl ? null : diagnosis, queryParams);
     queryParams.set('is_control', isControl ? 'true' : '');
-    queryParams.set('min_num_sessions', minNumSessions ? minNumSessions.toString() : '');
+    queryParams.set(
+      'min_num_imaging_sessions',
+      minNumImagingSessions ? minNumImagingSessions.toString() : ''
+    );
+    queryParams.set(
+      'min_num_phenotypic_sessions',
+      minNumPhenotypicSessions ? minNumPhenotypicSessions.toString() : ''
+    );
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
 
@@ -320,7 +331,7 @@ function App() {
         </>
       )}
 
-      <div className="grid grid-cols-4 grid-rows-1 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div>
           <QueryForm
             availableNodes={availableNodes}
@@ -332,7 +343,8 @@ function App() {
             sex={sex}
             diagnosis={diagnosis}
             isControl={isControl}
-            minNumSessions={minNumSessions}
+            minNumImagingSessions={minNumImagingSessions}
+            minNumPhenotypicSessions={minNumPhenotypicSessions}
             setIsControl={setIsControl}
             assessmentTool={assessmentTool}
             imagingModality={imagingModality}

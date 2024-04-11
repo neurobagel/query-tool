@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       gridTemplateRows: {
-        8: 'repeat(8, auto)',
         9: 'repeat(9, auto)',
+        10: 'repeat(10, auto)',
       },
     },
   },

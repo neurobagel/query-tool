@@ -188,8 +188,15 @@ describe('Successful API query requests', () => {
   it('Intercepts the request sent to the API and asserts over the request url', () => {
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
+    cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').type('2');
+    cy.get('[data-cy="Minimum number of phenotypic sessions-continuous-field"]').type('3');
     cy.get('[data-cy="submit-query-button"]').click();
-    cy.wait('@call').its('request.url').should('contains', 'min_age=10&max_age=30');
+    cy.wait('@call')
+      .its('request.url')
+      .should('contain', 'min_age=10')
+      .and('contain', 'max_age=30')
+      .and('contain', 'min_num_imaging_sessions=2')
+      .and('contain', 'min_num_phenotypic_sessions=3');
   });
 });
 
