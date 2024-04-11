@@ -35,7 +35,7 @@ jobs:
         run: |
           echo -e "NB_API_QUERY_URL=${{ vars.NB_API_QUERY_URL }}\nNB_IS_FEDERATION_API=${{ vars.NB_IS_FEDERATION_API }}" > .env
       - name: Install dependencies
-        run: npm ci --production
+        run: npm ci --omit=dev --ignore-scripts
       - name: Build
         run: npm run build
       - name: Setup Pages
