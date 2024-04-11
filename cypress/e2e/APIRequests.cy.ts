@@ -193,10 +193,10 @@ describe('Successful API query requests', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call')
       .its('request.url')
-      .should(
-        'contains',
-        'min_age=10&max_age=30&min_num_imaging_sessions=2&min_num_phenotypic_sessions=3'
-      );
+      .should('contain', 'min_age=10')
+      .and('contain', 'max_age=30')
+      .and('contain', 'min_num_imaging_sessions=2')
+      .and('contain', 'min_num_phenotypic_sessions=3');
   });
 });
 
