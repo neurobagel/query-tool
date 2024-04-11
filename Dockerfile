@@ -2,11 +2,9 @@ FROM node:20
 
 WORKDIR /app
 
-COPY package*.json .
-
-RUN npm ci
-
 COPY . .
+
+RUN npm ci --omit=dev --ignore-scripts
 
 EXPOSE 5173
 
