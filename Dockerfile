@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm ci --production --ignore-scripts
+RUN npm ci --omit=dev --ignore-scripts
 
 EXPOSE 5173
 
