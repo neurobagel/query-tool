@@ -169,6 +169,43 @@ export const failedDiagnosisToolOptions = {
   ],
 };
 
+// Real example of a bad response where some attributes
+// did not have labels in the federated nodes
+export const badDiagnosisOptions = {
+  errors: [
+    {
+      node_name: 'International Neuroimaging Data-sharing Initiative',
+      error:
+        'Bad Gateway: <html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body>\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>nginx/1.18.0 (Ubuntu)</center>\r\n</body>\r\n</html>\r\n',
+    },
+  ],
+  responses: {
+    'nb:Diagnosis': [
+      {
+        TermURL: 'snomed:49049000',
+        Label: "Parkinson's disease",
+      },
+      {
+        TermURL: 'snomed:77176002',
+        Label: null,
+      },
+      {
+        TermURL: 'snomed:197480006',
+        Label: 'Anxiety disorder',
+      },
+      {
+        TermURL: 'snomed:37796009',
+        Label: null,
+      },
+      {
+        TermURL: 'snomed:82838007',
+        Label: null,
+      },
+    ],
+  },
+  nodes_response_status: 'partial success',
+};
+
 export const assessmentToolOptions = {
   errors: [],
   responses: {
