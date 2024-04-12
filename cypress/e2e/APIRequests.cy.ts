@@ -202,7 +202,7 @@ describe('Successful API query requests', () => {
 });
 
 // Bad things that should no longer happen
-describe.only('Regression Tests', () => {
+describe('Regression Tests', () => {
   it('App can start if attributes have null values and filters out bad attributes', () => {
     cy.intercept(
       {
