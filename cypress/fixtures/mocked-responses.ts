@@ -108,7 +108,7 @@ export const partialSuccessMixedResponse = {
 
 export const failedQueryResponse = {
   responses: [],
-  nodes_response_status: 'failure',
+  nodes_response_status: 'fail',
   errors: [
     {
       node_name: 'DidNotWorkNode',
@@ -160,7 +160,7 @@ export const partiallyFailedDiagnosisToolOptions = {
 
 export const failedDiagnosisToolOptions = {
   ...emptyDiagnosisOptions,
-  nodes_response_status: 'failure',
+  nodes_response_status: 'fail',
   errors: [
     {
       node_name: 'NoDiagnosisNode',
@@ -241,7 +241,7 @@ export const partiallyFailedAssessmentToolOptions = {
 
 export const failedAssessmentToolOptions = {
   ...emptyAssessmentToolOptions,
-  nodes_response_status: 'failure',
+  nodes_response_status: 'fail',
   errors: [
     {
       node_name: 'NoAssessmentNode',
