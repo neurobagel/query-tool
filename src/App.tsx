@@ -76,6 +76,14 @@ function App() {
             enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
               variant: 'info',
             });
+          } else if (response.data.responses[dataElementURI].some((item) => item.Label === null)) {
+            enqueueSnackbar(
+              `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
+              { variant: 'warning' }
+            );
+            response.data.responses[dataElementURI] = response.data.responses[
+              dataElementURI
+            ].filter((item) => item.Label !== null);
           }
         }
         return response.data.responses[dataElementURI];
