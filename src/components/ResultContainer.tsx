@@ -171,7 +171,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
       );
     }
 
-    if (response.nodes_response_status === 'failure') {
+    if (response.nodes_response_status === 'fail') {
       return (
         <div data-cy="failed-result-container-view">
           <Typography variant="h5">Query failed - no nodes responded!</Typography>
