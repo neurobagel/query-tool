@@ -5,6 +5,7 @@ import {
   nodeOptions,
   diagnosisOptions,
   emptyDiagnosisOptions,
+  badDiagnosisOptions,
   partiallyFailedDiagnosisToolOptions,
   failedDiagnosisToolOptions,
   assessmentToolOptions,
@@ -197,6 +198,44 @@ describe('Successful API query requests', () => {
       .and('contain', 'max_age=30')
       .and('contain', 'min_num_imaging_sessions=2')
       .and('contain', 'min_num_phenotypic_sessions=3');
+  });
+});
+
+// Bad things that should no longer happen
+describe('Regression Tests', () => {
+  it('App can start if attributes have null values and filters out bad attributes', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes/',
+      },
+      nodeOptions
+    ).as('getNodes');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      badDiagnosisOptions
+    ).as('getDiagnosisOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+
+    cy.visit('/');
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+
+    cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
+    cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
+      'have.value',
+      "Parkinson's disease"
+    );
   });
 });
 
