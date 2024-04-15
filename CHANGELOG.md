@@ -1,3 +1,26 @@
+# v0.2.1 (Mon Apr 15 2024)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Alyssa Dai ([@alyssadai](https://github.com/alyssadai)), for all your work!
+
+#### 🐛 Bug Fixes
+
+- [FIX] Fixed the condition for when federation API's `nodes_response_status` is `fail` [#126](https://github.com/neurobagel/query-tool/pull/126) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Remove attributes with a NULL label [#124](https://github.com/neurobagel/query-tool/pull/124) ([@surchs](https://github.com/surchs))
+
+#### 🏠 Internal
+
+- [CI] Add .github to .prettierignore [#127](https://github.com/neurobagel/query-tool/pull/127) ([@alyssadai](https://github.com/alyssadai))
+
+#### Authors: 3
+
+- Alyssa Dai ([@alyssadai](https://github.com/alyssadai))
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.2.0 (Thu Apr 11 2024)
 
 :tada: This release contains work from new contributors! :tada:
