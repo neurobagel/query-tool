@@ -59,7 +59,7 @@ function App() {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        if (response.data.nodes_response_status === 'failure') {
+        if (response.data.nodes_response_status === 'fail') {
           enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
             variant: 'error',
           });
@@ -289,7 +289,7 @@ function App() {
           });
           break;
         }
-        case 'failure': {
+        case 'fail': {
           enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error' });
           break;
         }
