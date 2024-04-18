@@ -281,21 +281,31 @@ function App() {
     const url: string = constructQueryURL();
     try {
       const response = await axios.get(url);
-      setResult(response.data);
-      switch (response.data.nodes_response_status) {
-        case 'partial success': {
-          response.data.errors.forEach((error: NodeError) => {
-            enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
-          });
-          break;
+      // TODO: remove this branch once there is no more non-federation option
+      if (isFederationAPI) {
+        setResult(response.data);
+        switch (response.data.nodes_response_status) {
+          case 'partial success': {
+            response.data.errors.forEach((error: NodeError) => {
+              enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
+            });
+            break;
+          }
+          case 'fail': {
+            enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error' });
+            break;
+          }
+          default: {
+            break;
+          }
         }
-        case 'fail': {
-          enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error' });
-          break;
-        }
-        default: {
-          break;
-        }
+      } else {
+        const myResponse = {
+          responses: response.data,
+          nodes_response_status: 'success',
+          errors: [],
+        };
+        setResult(myResponse);
       }
     } catch (error) {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
