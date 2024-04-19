@@ -1,3 +1,19 @@
+# v0.2.2 (Fri Apr 19 2024)
+
+#### 🐛 Bug Fixes
+
+- [FIX] Hotfix for handling responses from n-API [#139](https://github.com/neurobagel/query-tool/pull/139) ([@surchs](https://github.com/surchs))
+
+#### 🏠 Internal
+
+- [MNT] Add plausible [#135](https://github.com/neurobagel/query-tool/pull/135) ([@surchs](https://github.com/surchs))
+
+#### Authors: 1
+
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.2.1 (Mon Apr 15 2024)
 
 :tada: This release contains work from a new contributor! :tada:
