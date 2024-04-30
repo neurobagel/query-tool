@@ -1,3 +1,96 @@
+# v0.2.2 (Fri Apr 19 2024)
+
+#### 🐛 Bug Fixes
+
+- [FIX] Hotfix for handling responses from n-API [#139](https://github.com/neurobagel/query-tool/pull/139) ([@surchs](https://github.com/surchs))
+
+#### 🏠 Internal
+
+- [MNT] Add plausible [#135](https://github.com/neurobagel/query-tool/pull/135) ([@surchs](https://github.com/surchs))
+
+#### Authors: 1
+
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
+# v0.2.1 (Mon Apr 15 2024)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Alyssa Dai ([@alyssadai](https://github.com/alyssadai)), for all your work!
+
+#### 🐛 Bug Fixes
+
+- [FIX] Fixed the condition for when federation API's `nodes_response_status` is `fail` [#126](https://github.com/neurobagel/query-tool/pull/126) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Remove attributes with a NULL label [#124](https://github.com/neurobagel/query-tool/pull/124) ([@surchs](https://github.com/surchs))
+
+#### 🏠 Internal
+
+- [CI] Add .github to .prettierignore [#127](https://github.com/neurobagel/query-tool/pull/127) ([@alyssadai](https://github.com/alyssadai))
+
+#### Authors: 3
+
+- Alyssa Dai ([@alyssadai](https://github.com/alyssadai))
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
+# v0.2.0 (Thu Apr 11 2024)
+
+:tada: This release contains work from new contributors! :tada:
+
+Thanks for all your work!
+
+:heart: Sauradip Ghosh ([@Sauradip07](https://github.com/Sauradip07))
+
+:heart: Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+### Release Notes
+
+#### [MNT] Release new data model ([#118](https://github.com/neurobagel/query-tool/pull/118))
+
+We have updated the Neurobagel data model to allow users to specify phenotypic information at the session level (https://github.com/neurobagel/planning/issues/83). This release updates the query tool so it can understand the new response from APIs.
+
+---
+
+#### 💥 Breaking Changes
+
+- [ENH] Enabled pheno level session for response and query [#112](https://github.com/neurobagel/query-tool/pull/112) ([@rmanaem](https://github.com/rmanaem))
+- [REF] Enable handling of partial node response success [#97](https://github.com/neurobagel/query-tool/pull/97) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
+
+#### 🚀 Enhancements
+
+- [MNT] Release new data model [#118](https://github.com/neurobagel/query-tool/pull/118) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Reverted back to installing devdependencies along with dependencies [#117](https://github.com/neurobagel/query-tool/pull/117) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Fixed parsing of `NB_IS_FEDERATION_API` [#88](https://github.com/neurobagel/query-tool/pull/88) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [CI] Set up docker nightly build [#114](https://github.com/neurobagel/query-tool/pull/114) ([@rmanaem](https://github.com/rmanaem))
+- [MNT] Add dependabot.yml [#94](https://github.com/neurobagel/query-tool/pull/94) ([@Sauradip07](https://github.com/Sauradip07) [@rmanaem](https://github.com/rmanaem))
+- [MNT] Removed `corePlugins` option from `prettier` config file [#87](https://github.com/neurobagel/query-tool/pull/87) ([@rmanaem](https://github.com/rmanaem))
+- [CI] adding codespell: fixing one typo [#86](https://github.com/neurobagel/query-tool/pull/86) ([@yarikoptic](https://github.com/yarikoptic) [@rmanaem](https://github.com/rmanaem))
+- [CI] Remove GH variable dependence for tests [#80](https://github.com/neurobagel/query-tool/pull/80) ([@surchs](https://github.com/surchs))
+- [MNT] Add .prettierignore for CHANGELOG [#83](https://github.com/neurobagel/query-tool/pull/83) ([@surchs](https://github.com/surchs))
+
+#### 📝 Documentation
+
+- [DOC] Updated README.md [#89](https://github.com/neurobagel/query-tool/pull/89) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 4
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sauradip Ghosh ([@Sauradip07](https://github.com/Sauradip07))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+- Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+---
+
 # v0.1.0 (Thu Mar 07 2024)
 
 :tada: This release contains work from new contributors! :tada:

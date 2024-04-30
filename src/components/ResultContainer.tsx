@@ -1,21 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
-import { Result } from '../utils/types';
+import { QueryResponse } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import NBDialog from './NBDialog';
 
-function ResultContainer({ result }: { result: Result[] | null }) {
+function ResultContainer({ response }: { response: QueryResponse | null }) {
   const [download, setDownload] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState(false);
-  const selectAll: boolean = result
-    ? result.length === download.length && result.every((r) => download.includes(r.dataset_uuid))
+  const selectAll: boolean = response
+    ? response.responses.length === download.length &&
+      response.responses.every((r) => download.includes(r.dataset_uuid))
     : false;
 
   let numOfMatchedDatasets = 0;
   let numOfMatchedSubjects = 0;
-  if (result) {
-    result.forEach((item) => {
+  if (response) {
+    response.responses.forEach((item) => {
       numOfMatchedDatasets += 1;
       numOfMatchedSubjects += item.num_matching_subjects;
     });
@@ -41,38 +42,40 @@ function ResultContainer({ result }: { result: Result[] | null }) {
   }, []);
 
   function handleSelectAll(checked: boolean) {
-    if (result) {
-      const uuids = result.map((item) => item.dataset_uuid);
+    if (response) {
+      const uuids = response.responses.map((item) => item.dataset_uuid);
       setDownload(checked ? uuids : []);
     }
   }
 
   useEffect(() => {
-    if (result) {
+    if (response) {
       setDownload((currentDownload) =>
         currentDownload.filter((downloadID) =>
-          result.some((item) => item.dataset_uuid === downloadID)
+          response.responses.some((item) => item.dataset_uuid === downloadID)
         )
       );
     }
-  }, [result]);
+  }, [response]);
 
   function generateTSVString(buttonIdentifier: string) {
-    if (result) {
+    if (response) {
       const tsvRows = [];
-      const datasets = result.filter((res) => download.includes(res.dataset_uuid));
+      const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
 
       if (buttonIdentifier === 'participant-level') {
         const headers = [
           'DatasetID',
           'SubjectID',
+          'SessionID',
+          'SessionType',
           'Age',
           'Sex',
           'Diagnosis',
           'Assessment',
-          'SessionID',
-          'SessionPath',
-          'NumSessions',
+          'SessionFilePath',
+          'NumPhenotypicSessions',
+          'NumImagingSessions',
           'Modality',
         ].join('\t');
         tsvRows.push(headers);
@@ -83,13 +86,15 @@ function ResultContainer({ result }: { result: Result[] | null }) {
               [
                 res.dataset_uuid,
                 'protected', // subject_id
+                'protected', // session_id
+                'protected', // session_type
                 'protected', // age
                 'protected', // sex
                 'protected', // diagnosis
                 'protected', // assessment
-                'protected', // session_id
                 'protected', // session_file_path
-                'protected', // num_sessions
+                'protected', // num_phenotypic_sessions
+                'protected', // num_imaging_sessions
                 'protected', // image_modal
               ].join('\t')
             );
@@ -100,13 +105,15 @@ function ResultContainer({ result }: { result: Result[] | null }) {
                 [
                   res.dataset_uuid,
                   subject.sub_id,
+                  subject.session_id,
+                  subject.session_type,
                   subject.age,
                   subject.sex,
                   subject.diagnosis?.join(', '),
                   subject.assessment?.join(', '),
-                  subject.session_id,
                   subject.session_file_path,
-                  subject.num_sessions,
+                  subject.num_matching_phenotypic_sessions,
+                  subject.num_matching_imaging_sessions,
                   subject.image_modal?.join(', '),
                 ].join('\t')
               );
@@ -156,14 +163,26 @@ function ResultContainer({ result }: { result: Result[] | null }) {
   }
 
   function renderResults() {
-    if (result === null) {
+    if (response === null) {
       return (
         <Typography variant="h5" data-cy="default-result-container-view" className="text-gray-500">
           Click &apos;Submit Query&apos; for results
         </Typography>
       );
     }
-    if (result.length === 0) {
+
+    if (response.nodes_response_status === 'fail') {
+      return (
+        <div data-cy="failed-result-container-view">
+          <Typography variant="h5">Query failed - no nodes responded!</Typography>
+          <Typography className="text-gray-500">
+            This is not supposed to happen. Please try again, or open an issue.
+          </Typography>
+        </div>
+      );
+    }
+
+    if (response.responses.length === 0) {
       return (
         <Typography variant="h5" data-cy="empty-result-container-view" className="text-gray-500">
           No results
@@ -190,8 +209,8 @@ function ResultContainer({ result }: { result: Result[] | null }) {
             {summaryStats}
           </Typography>
         </div>
-        <div className="col-span-4 max-h-96 space-y-2 overflow-auto">
-          {result.map((item) => (
+        <div className="col-span-4 h-[70vh] space-y-2 overflow-auto">
+          {response.responses.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
               nodeName={item.node_name}
@@ -232,7 +251,7 @@ function ResultContainer({ result }: { result: Result[] | null }) {
   }
 
   return (
-    <div className="grid grid-cols-4 grid-rows-2">
+    <div className="grid grid-cols-4 grid-rows-2" data-cy="result-container">
       <div className="col-span-4">
         <Typography variant="h5">Results</Typography>
       </div>

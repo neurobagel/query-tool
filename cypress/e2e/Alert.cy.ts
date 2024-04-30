@@ -1,13 +1,37 @@
+import {
+  failedAssessmentToolOptions,
+  failedDiagnosisToolOptions,
+  nodeOptions,
+} from '../fixtures/mocked-responses';
+
 describe('Alert', () => {
   it('Correctly displays and dismisses the alert', () => {
-    cy.intercept({
-      method: 'GET',
-      url: '/nodes/',
-    }).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes/',
+      },
+      nodeOptions
+    ).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      failedDiagnosisToolOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      failedAssessmentToolOptions
+    ).as('getAssessmentToolOptions');
     cy.visit('/?node=All');
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+
     // We need to wait for the fetch to complete and populate the
     // dropdown with nodes before searching for OpenNeuro
-    cy.wait('@getNodes');
     cy.get('[data-cy="openneuro-alert"]')
       .should('be.visible')
       .should('contain', 'The OpenNeuro node is being actively annotated at the participant');
