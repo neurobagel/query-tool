@@ -37,7 +37,7 @@
     "@vitejs/plugin-react-swc": "^3.6.0",
     "@vitest/ui": "^1.6.0",
     "autoprefixer": "^10.4.19",
-    "cypress": "^13.9.0",
+    "cypress": "^13.10.0",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
