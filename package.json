@@ -18,7 +18,7 @@
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.20",
-    "@mui/material": "^5.15.19",
+    "@mui/material": "^5.15.21",
     "axios": "^1.7.2",
     "eslint-plugin-tsdoc": "^0.2.17",
     "notistack": "^3.0.1",
