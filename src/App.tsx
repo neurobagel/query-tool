@@ -12,11 +12,14 @@ import {
   FieldInputOption,
   NodeError,
   QueryResponse,
+  GoogleJWT,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
+import AuthDialog from './components/AuthDialog';
 import './App.css';
+import { jwtDecode } from 'jwt-decode';
 
 function App() {
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
@@ -41,6 +44,10 @@ function App() {
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
+  const [profilePic, setProfilePic] = useState<string>('');
 
   const selectedNode: FieldInputOption[] = availableNodes
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
@@ -313,8 +320,17 @@ function App() {
     setLoading(false);
   }
 
+  function Login(credential: string | undefined) {
+    setIsLoggedIn(true);
+    let jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
+    setName(jwt.given_name);
+    setProfilePic(jwt.picture);
+    console.log(jwt);
+  }
+
   return (
     <>
+      <AuthDialog isLoggedIn={isLoggedIn} onAuth={Login} />
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
