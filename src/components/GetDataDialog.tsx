@@ -7,12 +7,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-function NBDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Dialog fullScreen={fullScreen} open={open} onClose={onClose} data-cy="nb-dialog">
+    <Dialog fullScreen={fullScreen} open={open} onClose={onClose} data-cy="get-data-dialog">
       <DialogTitle>Example usage</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -45,4 +45,4 @@ function NBDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
-export default NBDialog;
+export default GetDataDialog;

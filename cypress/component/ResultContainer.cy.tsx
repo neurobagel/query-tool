@@ -47,9 +47,9 @@ describe('ResultContainer', () => {
   });
   it('Clicking the how to get data modal button should open the modal', () => {
     cy.mount(<ResultContainer response={protectedResponse2} />);
-    cy.get('[data-cy="nb-dialog"]').should('not.exist');
+    cy.get('[data-cy="get-data-dialog"]').should('not.exist');
     cy.get('[data-cy="how-to-get-data-modal-button"]').click();
-    cy.get('[data-cy="nb-dialog"]').should('be.visible');
+    cy.get('[data-cy="get-data-dialog"]').should('be.visible');
   });
   it('Shows no result view when result is empty', () => {
     cy.mount(
