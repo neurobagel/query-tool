@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Grow } from '@mui/material';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { jwtDecode } from 'jwt-decode';
 import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -19,7 +20,6 @@ import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import './App.css';
-import { jwtDecode } from 'jwt-decode';
 
 function App() {
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
@@ -48,6 +48,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>('');
+  const [IDToken, setIDToken] = useState<string | undefined>('');
 
   const selectedNode: FieldInputOption[] = availableNodes
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
@@ -287,7 +288,12 @@ function App() {
     setLoading(true);
     const url: string = constructQueryURL();
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${IDToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
       // TODO: remove this branch once there is no more non-federation option
       if (isFederationAPI) {
         setResult(response.data);
@@ -322,21 +328,21 @@ function App() {
 
   function Login(credential: string | undefined) {
     setIsLoggedIn(true);
-    let jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
+    const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
+    setIDToken(credential);
     setName(jwt.given_name);
     setProfilePic(jwt.picture);
-    console.log(jwt);
   }
 
   return (
     <>
-      <AuthDialog isLoggedIn={isLoggedIn} onAuth={Login} />
+      <AuthDialog isLoggedIn={isLoggedIn} onAuth={(credential) => Login(credential)} />
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         maxSnack={7}
       />
-      <Navbar />
+      <Navbar name={name} profilePic={profilePic} />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>
