@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Grow } from '@mui/material';
-import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { Alert, Grow, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
 import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
 import {
@@ -61,6 +62,16 @@ function App() {
       }
     : null;
 
+  const action = (snackbarId: SnackbarKey) => (
+    <IconButton
+      onClick={() => {
+        closeSnackbar(snackbarId);
+      }}
+    >
+      <CloseIcon className="text-white" />
+    </IconButton>
+  );
+
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
       try {
@@ -70,24 +81,26 @@ function App() {
         if (response.data.nodes_response_status === 'fail') {
           enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
             variant: 'error',
+            action,
           });
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
             enqueueSnackbar(
               `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
-              { variant: 'warning' }
+              { variant: 'warning', action }
             );
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
             enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
               variant: 'info',
+              action,
             });
           } else if (response.data.responses[dataElementURI].some((item) => item.Label === null)) {
             enqueueSnackbar(
               `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
-              { variant: 'warning' }
+              { variant: 'warning', action }
             );
             response.data.responses[dataElementURI] = response.data.responses[
               dataElementURI
@@ -124,9 +137,9 @@ function App() {
     if (isFederationAPI) {
       getNodeOptions(nodesURL).then((nodeResponse) => {
         if (nodeResponse === null) {
-          enqueueSnackbar('Failed to retrieve Node options', { variant: 'error' });
+          enqueueSnackbar('Failed to retrieve Node options', { variant: 'error', action });
         } else if (nodeResponse.length === 0) {
-          enqueueSnackbar('No options found for Node', { variant: 'info' });
+          enqueueSnackbar('No options found for Node', { variant: 'info', action });
         } else {
           setAvailableNodes([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
         }
@@ -300,12 +313,15 @@ function App() {
         switch (response.data.nodes_response_status) {
           case 'partial success': {
             response.data.errors.forEach((error: NodeError) => {
-              enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
+              enqueueSnackbar(`${error.node_name} failed to respond`, {
+                variant: 'warning',
+                action,
+              });
             });
             break;
           }
           case 'fail': {
-            enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error' });
+            enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error', action });
             break;
           }
           default: {
@@ -321,7 +337,7 @@ function App() {
         setResult(myResponse);
       }
     } catch (error) {
-      enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
+      enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
     }
     setLoading(false);
   }
