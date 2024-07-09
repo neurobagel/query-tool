@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Toolbar, Typography, IconButton, Badge } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import Avatar from '@mui/material/Avatar';
 
-function Navbar() {
+function Navbar({ name, profilePic }: { name: string; profilePic: string }) {
   const [latestReleaseTag, setLatestReleaseTag] = useState('');
 
   useEffect(() => {
@@ -45,6 +46,7 @@ function Navbar() {
           <IconButton href="https://github.com/neurobagel/react-query-tool/" target="_blank">
             <GitHubIcon />
           </IconButton>
+          <Avatar src={profilePic} alt={name} />
         </div>
       </div>
     </Toolbar>
