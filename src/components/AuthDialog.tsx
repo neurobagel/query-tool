@@ -16,7 +16,7 @@ function AuthDialog({
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Dialog fullScreen={fullScreen} open={!isLoggedIn} data-cy="get-data-dialog">
+    <Dialog fullScreen={fullScreen} open={!isLoggedIn} data-cy="auth-dialog">
       <DialogTitle>Please login using one of the following before proceeding</DialogTitle>
       <DialogContent>
         <div className="flex flex-col items-center justify-center">
