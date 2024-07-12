@@ -1,11 +1,30 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Toolbar, Typography, IconButton, Badge } from '@mui/material';
+import {
+  Toolbar,
+  Typography,
+  IconButton,
+  Badge,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+} from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import Logout from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
 
-function Navbar({ name, profilePic }: { name: string; profilePic: string }) {
+function Navbar({
+  name,
+  profilePic,
+  onLogout,
+}: {
+  name: string;
+  profilePic: string;
+  onLogout: () => void;
+}) {
   const [latestReleaseTag, setLatestReleaseTag] = useState('');
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openAccountMenu = Boolean(anchorEl);
 
   useEffect(() => {
     // TODO: replace with react-query-tool once there is a release
@@ -20,6 +39,13 @@ function Navbar({ name, profilePic }: { name: string; profilePic: string }) {
         setLatestReleaseTag('beta');
       });
   }, []);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Toolbar className="my-4" data-cy="navbar">
@@ -46,7 +72,38 @@ function Navbar({ name, profilePic }: { name: string; profilePic: string }) {
           <IconButton href="https://github.com/neurobagel/react-query-tool/" target="_blank">
             <GitHubIcon />
           </IconButton>
-          <Avatar src={profilePic} alt={name} />
+          <IconButton onClick={handleClick}>
+            <Avatar src={profilePic} sx={{ width: 30, height: 30 }} alt={name} />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={openAccountMenu}
+            onClose={handleClose}
+            onClick={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <MenuItem>
+                <Avatar src={profilePic} alt={name} />
+              </MenuItem>
+            </div>
+            <MenuItem>
+              <Typography>Logged in as {name}</Typography>
+            </MenuItem>
+            <MenuItem onClick={onLogout}>
+              <ListItemIcon>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+          </Menu>
         </div>
       </div>
     </Toolbar>
