@@ -27,7 +27,6 @@ function Navbar({
   const openAccountMenu = Boolean(anchorEl);
 
   useEffect(() => {
-    // TODO: replace with react-query-tool once there is a release
     const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
     axios
       .get(GHApiURL)

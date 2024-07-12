@@ -1,11 +1,9 @@
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { GoogleLogin } from '@react-oauth/google';
-// import { GoogleJWT } from '../utils/types';
 
 function AuthDialog({
   isLoggedIn,
@@ -21,15 +19,7 @@ function AuthDialog({
     <Dialog fullScreen={fullScreen} open={!isLoggedIn} data-cy="get-data-dialog">
       <DialogTitle>Please login using one of the following before proceeding</DialogTitle>
       <DialogContent>
-        {/* TODO move this style to style sheet */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <div className="flex flex-col items-center justify-center">
           <GoogleLogin onSuccess={(response) => onAuth(response.credential)} />
         </div>
       </DialogContent>
