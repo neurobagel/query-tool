@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
-import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
+import { queryURL, attributesURL, isFederationAPI, nodesURL, enableAuth } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
@@ -361,7 +361,11 @@ function App() {
 
   return (
     <>
-      <AuthDialog isLoggedIn={isLoggedIn} onAuth={(credential) => login(credential)} />
+      <div>
+        {enableAuth && (
+          <AuthDialog isLoggedIn={isLoggedIn} onAuth={(credential) => login(credential)} />
+        )}
+      </div>
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
