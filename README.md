@@ -68,7 +68,7 @@ If the API you'd like to send queries to requires authentication, you need to se
 
 #### `NB_QUERY_CLIENT_ID`
 
-If the `NB_ENABLE_AUTH` is set to `true` (it is `true` by default), you need to provide a valid client ID for the authentication.
+If the `NB_ENABLE_AUTH` is set to `true` (it is `false` by default), you need to provide a valid client ID for the authentication.
 _At the moment, query tool uses Google for authentication, so you need to obtain a client ID from Google developer console. See [documentation](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid) for more information._
 
 #### Set the environment variables
