@@ -5,6 +5,7 @@ import { Alert, Grow, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
+import { googleLogout } from '@react-oauth/google';
 import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -342,7 +343,7 @@ function App() {
     setLoading(false);
   }
 
-  function Login(credential: string | undefined) {
+  function login(credential: string | undefined) {
     setIsLoggedIn(true);
     const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
     setIDToken(credential);
@@ -350,15 +351,23 @@ function App() {
     setProfilePic(jwt.picture);
   }
 
+  function logout() {
+    googleLogout();
+    setIsLoggedIn(false);
+    setIDToken('');
+    setName('');
+    setProfilePic('');
+  }
+
   return (
     <>
-      <AuthDialog isLoggedIn={isLoggedIn} onAuth={(credential) => Login(credential)} />
+      <AuthDialog isLoggedIn={isLoggedIn} onAuth={(credential) => login(credential)} />
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         maxSnack={7}
       />
-      <Navbar name={name} profilePic={profilePic} />
+      <Navbar name={name} profilePic={profilePic} onLogout={() => logout()} />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>
