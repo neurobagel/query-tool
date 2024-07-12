@@ -9,6 +9,12 @@ export default defineConfig(({ mode }) => {
     throw new Error(`Environment variable NB_API_QUERY_URL is not defined.`);
   }
 
+  if (envVars.NB_ENABLE_AUTH && envVars.NB_ENABLE_AUTH.toLowerCase() === 'true') {
+    if (!envVars.NB_QUERY_CLIENT_ID) {
+      throw new Error('Environment variable NB_QUERY_CLIENT_ID is not defined.');
+    }
+  }
+
   return {
     preview: {
       port: 5173,
