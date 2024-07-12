@@ -48,11 +48,11 @@ but before proceeding with either you need to set the environment variables.
 ### Mandatory configuration
 
 | Environment variable | Type    | Required                               | Default value if not set | Example                                                 |
-| -------------------- | ------- | -------------------------------------- | ------------------------ | ------------------------------------------------------- | --- |
+| -------------------- | ------- | -------------------------------------- | ------------------------ | ------------------------------------------------------- |
 | NB_API_QUERY_URL     | string  | Yes                                    | -                        | https://federate.neurobagel.org/                        |
 | NB_IS_FEDERATION_API | boolean | No                                     | true                     | true                                                    |
-| NB_ENABLE_AUTH       | boolean | no                                     | true                     | true                                                    |
-| NB_QUERY_CLIENT_ID   | string  | Yes (if NB_ENABLE_AUTH is set to true) | -                        | 46923719231972-dhsahgasl3123.apps.googleusercontent.com |     |
+| NB_ENABLE_AUTH       | boolean | no                                     | false                    | false                                                   |
+| NB_QUERY_CLIENT_ID   | string  | Yes (if NB_ENABLE_AUTH is set to true) | -                        | 46923719231972-dhsahgasl3123.apps.googleusercontent.com |
 
 #### `NB_API_QUERY_URL`
 
@@ -64,7 +64,7 @@ If the API you'd like to send queries to is not a [federation api](https://neuro
 
 #### `NB_ENABLE_AUTH`
 
-If the API you'd like to send queries to doesn't require authentication, you can to set `NB_ENABLE_AUTH` to `false` as it is `true` by default. This will disable authentication flow of the app.
+If the API you'd like to send queries to requires authentication, you need to set `NB_ENABLE_AUTH` to `true` as it is `false` by default. This will enable authentication flow of the app.
 
 #### `NB_QUERY_CLIENT_ID`
 
@@ -84,6 +84,14 @@ if you're using the remote (in this example federation) api, your `.env` file wo
 
 ```bash
 NB_API_QUERY_URL=https://federate.neurobagel.org/
+```
+
+if you're using a federation api with authentication, your `.env` file would look something like this:
+
+```bash
+NB_API_QUERY_URL=https://federate.neurobagel.org/
+NB_ENABLE_AUTH=true
+NB_QUERY_CLIENT_ID=46923719231972-dhsahgasl3123.apps.googleusercontent.com
 ```
 
 :warning: The protocol matters here.

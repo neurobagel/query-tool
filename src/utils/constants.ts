@@ -16,7 +16,7 @@ export const isFederationAPI: boolean =
 
 export const enableAuth: boolean =
   import.meta.env.NB_ENABLE_AUTH === undefined
-    ? true
+    ? false
     : import.meta.env.NB_ENABLE_AUTH.toLowerCase() === 'true';
 
 export const clientID: string = import.meta.env.NB_QUERY_CLIENT_ID ?? '';
