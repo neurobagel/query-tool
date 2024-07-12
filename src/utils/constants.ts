@@ -12,7 +12,14 @@ export const nodesURL: string = baseAPIURL.endsWith('/')
 export const isFederationAPI: boolean =
   import.meta.env.NB_IS_FEDERATION_API === undefined
     ? true
-    : import.meta.env.NB_IS_FEDERATION_API === 'true';
+    : import.meta.env.NB_IS_FEDERATION_API.toLowerCase() === 'true';
+
+export const enableAuth: boolean =
+  import.meta.env.NB_ENABLE_AUTH === undefined
+    ? true
+    : import.meta.env.NB_ENABLE_AUTH.toLowerCase() === 'true';
+
+export const clientID: string = import.meta.env.NB_QUERY_CLIENT_ID ?? '';
 
 export const sexes: { [key: string]: string } = {
   male: 'snomed:248153007',
