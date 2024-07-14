@@ -3,7 +3,7 @@ import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
 import { QueryResponse } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
-import NBDialog from './NBDialog';
+import GetDataDialog from './GetDataDialog';
 
 function ResultContainer({ response }: { response: QueryResponse | null }) {
   const [download, setDownload] = useState<string[]>([]);
@@ -232,7 +232,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           >
             How to get data
           </Button>
-          <NBDialog open={openModal} onClose={() => setOpenModal(false)} />
+          <GetDataDialog open={openModal} onClose={() => setOpenModal(false)} />
         </div>
         <div className="col-span-3 space-x-2 justify-self-end">
           <DownloadResultButton

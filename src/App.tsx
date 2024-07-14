@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Grow } from '@mui/material';
-import { SnackbarProvider, enqueueSnackbar } from 'notistack';
-import { queryURL, attributesURL, isFederationAPI, nodesURL } from './utils/constants';
+import { Alert, Grow, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
+import { jwtDecode } from 'jwt-decode';
+import { googleLogout } from '@react-oauth/google';
+import { queryURL, attributesURL, isFederationAPI, nodesURL, enableAuth } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
@@ -12,10 +15,12 @@ import {
   FieldInputOption,
   NodeError,
   QueryResponse,
+  GoogleJWT,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
+import AuthDialog from './components/AuthDialog';
 import './App.css';
 
 function App() {
@@ -42,6 +47,11 @@ function App() {
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
+  const [profilePic, setProfilePic] = useState<string>('');
+  const [IDToken, setIDToken] = useState<string | undefined>('');
+
   const selectedNode: FieldInputOption[] = availableNodes
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
     .map((filteredOption) => ({ label: filteredOption.NodeName, id: filteredOption.ApiURL }));
@@ -53,6 +63,16 @@ function App() {
       }
     : null;
 
+  const action = (snackbarId: SnackbarKey) => (
+    <IconButton
+      onClick={() => {
+        closeSnackbar(snackbarId);
+      }}
+    >
+      <CloseIcon className="text-white" />
+    </IconButton>
+  );
+
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
       try {
@@ -62,24 +82,26 @@ function App() {
         if (response.data.nodes_response_status === 'fail') {
           enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
             variant: 'error',
+            action,
           });
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
             enqueueSnackbar(
               `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
-              { variant: 'warning' }
+              { variant: 'warning', action }
             );
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
             enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
               variant: 'info',
+              action,
             });
           } else if (response.data.responses[dataElementURI].some((item) => item.Label === null)) {
             enqueueSnackbar(
               `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
-              { variant: 'warning' }
+              { variant: 'warning', action }
             );
             response.data.responses[dataElementURI] = response.data.responses[
               dataElementURI
@@ -116,9 +138,9 @@ function App() {
     if (isFederationAPI) {
       getNodeOptions(nodesURL).then((nodeResponse) => {
         if (nodeResponse === null) {
-          enqueueSnackbar('Failed to retrieve Node options', { variant: 'error' });
+          enqueueSnackbar('Failed to retrieve Node options', { variant: 'error', action });
         } else if (nodeResponse.length === 0) {
-          enqueueSnackbar('No options found for Node', { variant: 'info' });
+          enqueueSnackbar('No options found for Node', { variant: 'info', action });
         } else {
           setAvailableNodes([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
         }
@@ -280,19 +302,27 @@ function App() {
     setLoading(true);
     const url: string = constructQueryURL();
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${IDToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
       // TODO: remove this branch once there is no more non-federation option
       if (isFederationAPI) {
         setResult(response.data);
         switch (response.data.nodes_response_status) {
           case 'partial success': {
             response.data.errors.forEach((error: NodeError) => {
-              enqueueSnackbar(`${error.node_name} failed to respond`, { variant: 'warning' });
+              enqueueSnackbar(`${error.node_name} failed to respond`, {
+                variant: 'warning',
+                action,
+              });
             });
             break;
           }
           case 'fail': {
-            enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error' });
+            enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error', action });
             break;
           }
           default: {
@@ -308,19 +338,40 @@ function App() {
         setResult(myResponse);
       }
     } catch (error) {
-      enqueueSnackbar('Failed to retrieve results', { variant: 'error' });
+      enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
     }
     setLoading(false);
   }
 
+  function login(credential: string | undefined) {
+    setIsLoggedIn(true);
+    const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
+    setIDToken(credential);
+    setName(jwt.given_name);
+    setProfilePic(jwt.picture);
+  }
+
+  function logout() {
+    googleLogout();
+    setIsLoggedIn(false);
+    setIDToken('');
+    setName('');
+    setProfilePic('');
+  }
+
   return (
     <>
+      <div>
+        {enableAuth && (
+          <AuthDialog isLoggedIn={isLoggedIn} onAuth={(credential) => login(credential)} />
+        )}
+      </div>
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         maxSnack={7}
       />
-      <Navbar />
+      <Navbar name={name} profilePic={profilePic} onLogout={() => logout()} />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>
