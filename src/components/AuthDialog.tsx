@@ -17,7 +17,7 @@ function AuthDialog({
 
   return (
     <Dialog fullScreen={fullScreen} open={!isLoggedIn} data-cy="auth-dialog">
-      <DialogTitle>Please login using one of the following before proceeding</DialogTitle>
+      <DialogTitle>You must log in to a trusted identity provider in order to query!</DialogTitle>
       <DialogContent>
         <div className="flex flex-col items-center justify-center">
           <GoogleLogin onSuccess={(response) => onAuth(response.credential)} />

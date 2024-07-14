@@ -15,12 +15,9 @@ describe('ContinuousField', () => {
       </GoogleOAuthProvider>
     );
     cy.get('[data-cy="auth-dialog"]').should('be.visible');
-    cy.get('[data-cy="auth-dialog"]').should(
-      'contain',
-      'Please login using one of the following before proceeding'
-    );
+    cy.get('[data-cy="auth-dialog"]').should('contain', 'You must log in');
     cy.get('[data-cy="auth-dialog"]').within(() => {
-      cy.contains('Sign in with Google');
+      cy.contains('Google');
     });
   });
 });
