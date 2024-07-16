@@ -8,20 +8,27 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  Tooltip,
 } from '@mui/material';
-import GitHubIcon from '@mui/icons-material/GitHub';
+import GitHub from '@mui/icons-material/GitHub';
+import Article from '@mui/icons-material/Article';
 import Logout from '@mui/icons-material/Logout';
+import Login from '@mui/icons-material/Login';
 import Avatar from '@mui/material/Avatar';
 import { enableAuth } from '../utils/constants';
 
 function Navbar({
+  isLoggedIn,
   name,
   profilePic,
   onLogout,
+  onLogin,
 }: {
+  isLoggedIn: boolean;
   name: string;
   profilePic: string;
   onLogout: () => void;
+  onLogin: () => void;
 }) {
   const [latestReleaseTag, setLatestReleaseTag] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -66,11 +73,13 @@ function Navbar({
           </div>
         </div>
         <div className="flex">
-          <IconButton size="small" href="https://neurobagel.org/query_tool/" target="_blank">
-            <Typography>Documentation</Typography>
-          </IconButton>
+          <Tooltip title="Documentation">
+            <IconButton size="small" href="https://neurobagel.org/query_tool/" target="_blank">
+              <Article />
+            </IconButton>
+          </Tooltip>
           <IconButton href="https://github.com/neurobagel/react-query-tool/" target="_blank">
-            <GitHubIcon />
+            <GitHub />
           </IconButton>
           {enableAuth && (
             <>
@@ -96,15 +105,26 @@ function Navbar({
                     <Avatar src={profilePic} alt={name} />
                   </MenuItem>
                 </div>
-                <MenuItem>
-                  <Typography>Logged in as {name}</Typography>
-                </MenuItem>
-                <MenuItem onClick={onLogout}>
-                  <ListItemIcon>
-                    <Logout fontSize="small" />
-                  </ListItemIcon>
-                  Logout
-                </MenuItem>
+                {isLoggedIn ? (
+                  <>
+                    <MenuItem>
+                      <Typography>Logged in as {name}</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={onLogout}>
+                      <ListItemIcon className="mr-[-8px]">
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      Logout
+                    </MenuItem>
+                  </>
+                ) : (
+                  <MenuItem onClick={onLogin}>
+                    <ListItemIcon className="mr-[-8px]">
+                      <Login fontSize="small" />
+                    </ListItemIcon>
+                    Login
+                  </MenuItem>
+                )}
               </Menu>
             </>
           )}
