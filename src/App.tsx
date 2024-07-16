@@ -48,7 +48,7 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [openAuthModal, setOpenAuthModal] = useState(true);
+  const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [name, setName] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>('');
   const [IDToken, setIDToken] = useState<string | undefined>('');
@@ -346,7 +346,7 @@ function App() {
 
   function login(credential: string | undefined) {
     setIsLoggedIn(true);
-    setOpenAuthModal(false);
+    setOpenAuthDialog(false);
     const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
     setIDToken(credential);
     setName(jwt.given_name);
@@ -366,9 +366,9 @@ function App() {
       <div>
         {enableAuth && (
           <AuthDialog
-            open={openAuthModal}
+            open={openAuthDialog}
             onAuth={(credential) => login(credential)}
-            onClose={() => setOpenAuthModal(false)}
+            onClose={() => setOpenAuthDialog(false)}
           />
         )}
       </div>
@@ -382,7 +382,7 @@ function App() {
         name={name}
         profilePic={profilePic}
         onLogout={() => logout()}
-        onLogin={() => setOpenAuthModal(true)}
+        onLogin={() => setOpenAuthDialog(true)}
       />
       {showAlert() && (
         <>
