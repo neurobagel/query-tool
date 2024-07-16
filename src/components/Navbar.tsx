@@ -118,7 +118,7 @@ function Navbar({
                     </MenuItem>
                   </>
                 ) : (
-                  <MenuItem onClick={onLogin}>
+                  <MenuItem onClick={onLogin} data-cy="login-button">
                     <ListItemIcon className="mr-[-8px]">
                       <Login fontSize="small" />
                     </ListItemIcon>

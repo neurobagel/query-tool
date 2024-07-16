@@ -18,6 +18,6 @@ describe('ContinuousField', () => {
     cy.get('[data-cy="auth-dialog"]').within(() => {
       cy.contains('Google');
     });
-    cy.get('[data-cy="auth-dialog-close-button"]').should('be.visible');
+    cy.get('[data-cy="close-auth-dialog-button"]').should('be.visible');
   });
 });

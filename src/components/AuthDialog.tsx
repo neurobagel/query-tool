@@ -30,7 +30,7 @@ function AuthDialog({
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} data-cy="auth-dialog-close-button">
+        <Button onClick={onClose} data-cy="close-auth-dialog-button">
           Close
         </Button>
       </DialogActions>
