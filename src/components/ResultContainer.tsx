@@ -7,7 +7,7 @@ import GetDataDialog from './GetDataDialog';
 
 function ResultContainer({ response }: { response: QueryResponse | null }) {
   const [download, setDownload] = useState<string[]>([]);
-  const [openModal, setOpenModal] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const selectAll: boolean = response
     ? response.responses.length === download.length &&
       response.responses.every((r) => download.includes(r.dataset_uuid))
@@ -227,12 +227,12 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
         <div className="col-span-1">
           <Button
             variant="contained"
-            data-cy="how-to-get-data-modal-button"
-            onClick={() => setOpenModal(true)}
+            data-cy="how-to-get-data-dialog-button"
+            onClick={() => setOpenDialog(true)}
           >
             How to get data
           </Button>
-          <GetDataDialog open={openModal} onClose={() => setOpenModal(false)} />
+          <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
         </div>
         <div className="col-span-3 space-x-2 justify-self-end">
           <DownloadResultButton

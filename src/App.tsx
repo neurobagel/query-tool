@@ -48,6 +48,7 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [name, setName] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>('');
   const [IDToken, setIDToken] = useState<string | undefined>('');
@@ -345,6 +346,7 @@ function App() {
 
   function login(credential: string | undefined) {
     setIsLoggedIn(true);
+    setOpenAuthDialog(false);
     const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
     setIDToken(credential);
     setName(jwt.given_name);
@@ -363,7 +365,11 @@ function App() {
     <>
       <div>
         {enableAuth && (
-          <AuthDialog isLoggedIn={isLoggedIn} onAuth={(credential) => login(credential)} />
+          <AuthDialog
+            open={openAuthDialog}
+            onAuth={(credential) => login(credential)}
+            onClose={() => setOpenAuthDialog(false)}
+          />
         )}
       </div>
       <SnackbarProvider
@@ -371,7 +377,13 @@ function App() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         maxSnack={7}
       />
-      <Navbar name={name} profilePic={profilePic} onLogout={() => logout()} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        name={name}
+        profilePic={profilePic}
+        onLogout={() => logout()}
+        onLogin={() => setOpenAuthDialog(true)}
+      />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>
