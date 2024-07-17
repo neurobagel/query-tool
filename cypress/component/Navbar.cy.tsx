@@ -26,6 +26,7 @@ describe('Navbar', () => {
       'contain',
       'Define and find cohorts at the subject level'
     );
+    // Check for the documentation and GitHub icon and links
     cy.get("[data-cy='navbar'] a").eq(0).find('svg').should('be.visible');
     cy.get("[data-cy='navbar'] a")
       .eq(0)
