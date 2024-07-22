@@ -1,12 +1,12 @@
 import TextField from '@mui/material/TextField';
 
 export interface ContinuousFieldProps {
-  helperText?: string;
+  helperText: string;
   label: string;
   onFieldChange: (fieldLabel: string, value: number | null) => void;
 }
 
-function ContinuousField({ helperText, label, onFieldChange }: ContinuousFieldProps) {
+function ContinuousField({ helperText = '', label, onFieldChange }: ContinuousFieldProps) {
   const showError: boolean = helperText !== '';
   return (
     <TextField
@@ -21,9 +21,5 @@ function ContinuousField({ helperText, label, onFieldChange }: ContinuousFieldPr
     />
   );
 }
-
-ContinuousField.defaultProps = {
-  helperText: '',
-};
 
 export default ContinuousField;

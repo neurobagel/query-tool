@@ -5,9 +5,9 @@ function CategoricalField({
   label,
   options,
   onFieldChange,
-  multiple,
+  multiple = false,
   inputValue,
-  disabled,
+  disabled = false,
 }: CategoricalFieldProps) {
   return (
     <Autocomplete
@@ -30,10 +30,5 @@ function CategoricalField({
     />
   );
 }
-
-CategoricalField.defaultProps = {
-  multiple: false,
-  disabled: false,
-};
 
 export default CategoricalField;
