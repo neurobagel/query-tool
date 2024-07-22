@@ -76,40 +76,68 @@ function App() {
 
   useEffect(() => {
     async function getAttributes(dataElementURI: string) {
+      let options: AttributeOption[] = [];
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
           `${attributesURL}${dataElementURI}`
         );
-        if (response.data.nodes_response_status === 'fail') {
+        if (isFederationAPI) {
+          if (response.data.nodes_response_status === 'fail') {
+            enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
+              variant: 'error',
+              action,
+            });
+          } else {
+            // If any errors occurred, report them
+            response.data.errors.forEach((error) => {
+              enqueueSnackbar(
+                `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
+                { variant: 'warning', action }
+              );
+            });
+            // If the results are empty, report that
+            if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
+              enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
+                variant: 'info',
+                action,
+              });
+            } else if (
+              response.data.responses[dataElementURI].some((item) => item.Label === null)
+            ) {
+              enqueueSnackbar(
+                `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
+                { variant: 'warning', action }
+              );
+              response.data.responses[dataElementURI] = response.data.responses[
+                dataElementURI
+              ].filter((item) => item.Label !== null);
+            }
+          }
+          options = response.data.responses[dataElementURI];
+        } else if (response.status !== 200) {
           enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
             variant: 'error',
             action,
           });
         } else {
-          // If any errors occurred, report them
-          response.data.errors.forEach((error) => {
-            enqueueSnackbar(
-              `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
-              { variant: 'warning', action }
-            );
-          });
           // If the results are empty, report that
-          if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
+          if (Object.keys(response.data[dataElementURI]).length === 0) {
             enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
               variant: 'info',
               action,
             });
-          } else if (response.data.responses[dataElementURI].some((item) => item.Label === null)) {
+          } else if (response.data[dataElementURI].some((item) => item.Label === null)) {
             enqueueSnackbar(
               `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
               { variant: 'warning', action }
             );
-            response.data.responses[dataElementURI] = response.data.responses[
-              dataElementURI
-            ].filter((item) => item.Label !== null);
+            response.data[dataElementURI] = response.data[dataElementURI].filter(
+              (item) => item.Label !== null
+            );
           }
+          options = response.data[dataElementURI];
         }
-        return response.data.responses[dataElementURI];
+        return options;
       } catch (err) {
         return null;
       }
@@ -339,7 +367,7 @@ function App() {
         setResult(myResponse);
       }
     } catch (error) {
-      enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
+      enqueueSnackbar(`Failed to retrieve results: ${error}`, { variant: 'error', action });
     }
     setLoading(false);
   }

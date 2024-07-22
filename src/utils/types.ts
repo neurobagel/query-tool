@@ -24,6 +24,9 @@ export interface RetrievedAttributeOption {
   };
   nodes_response_status: string;
   errors: NodeError[];
+  data: {
+    [key: string]: AttributeOption[];
+  };
 }
 
 export interface Subject {
