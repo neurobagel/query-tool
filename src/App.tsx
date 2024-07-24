@@ -9,6 +9,8 @@ import { googleLogout } from '@react-oauth/google';
 import { queryURL, attributesURL, isFederationAPI, nodesURL, enableAuth } from './utils/constants';
 import {
   RetrievedAttributeOption,
+  FederationRetrievedAttributeOption,
+  NodeRetrievedAttributeOption,
   AttributeOption,
   NodeOption,
   FieldInput,
@@ -82,60 +84,62 @@ function App() {
           `${attributesURL}${dataElementURI}`
         );
         if (isFederationAPI) {
-          if (response.data.nodes_response_status === 'fail') {
+          const federationResponse = response.data as FederationRetrievedAttributeOption;
+          if (federationResponse.nodes_response_status === 'fail') {
             enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
               variant: 'error',
               action,
             });
           } else {
             // If any errors occurred, report them
-            response.data.errors.forEach((error) => {
+            federationResponse.errors.forEach((error) => {
               enqueueSnackbar(
                 `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
                 { variant: 'warning', action }
               );
             });
             // If the results are empty, report that
-            if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
+            if (Object.keys(federationResponse.responses[dataElementURI]).length === 0) {
               enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
                 variant: 'info',
                 action,
               });
             } else if (
-              response.data.responses[dataElementURI].some((item) => item.Label === null)
+              federationResponse.responses[dataElementURI].some((item) => item.Label === null)
             ) {
               enqueueSnackbar(
                 `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
                 { variant: 'warning', action }
               );
-              response.data.responses[dataElementURI] = response.data.responses[
+              federationResponse.responses[dataElementURI] = federationResponse.responses[
                 dataElementURI
               ].filter((item) => item.Label !== null);
             }
           }
-          options = response.data.responses[dataElementURI];
+          options = federationResponse.responses[dataElementURI];
         } else if (response.status !== 200) {
           enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
             variant: 'error',
             action,
           });
         } else {
+          const nodeResponse = response.data as NodeRetrievedAttributeOption;
           // If the results are empty, report that
-          if (Object.keys(response.data[dataElementURI]).length === 0) {
+          if (Object.keys(nodeResponse[dataElementURI]).length === 0) {
             enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
               variant: 'info',
               action,
             });
-          } else if (response.data[dataElementURI].some((item) => item.Label === null)) {
+          } else if (nodeResponse[dataElementURI].some((item) => item.Label === null)) {
             enqueueSnackbar(
               `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
               { variant: 'warning', action }
             );
-            response.data[dataElementURI] = response.data[dataElementURI].filter(
+            nodeResponse[dataElementURI] = nodeResponse[dataElementURI].filter(
               (item) => item.Label !== null
             );
           }
-          options = response.data[dataElementURI];
+          options = nodeResponse[dataElementURI];
         }
         return options;
       } catch (err) {

@@ -18,7 +18,7 @@ export interface NodeError {
   error: string;
 }
 
-export interface RetrievedAttributeOption {
+export interface FederationRetrievedAttributeOption {
   responses: {
     [key: string]: AttributeOption[];
   };
@@ -28,6 +28,14 @@ export interface RetrievedAttributeOption {
     [key: string]: AttributeOption[];
   };
 }
+
+export interface NodeRetrievedAttributeOption {
+  [key: string]: AttributeOption[];
+}
+
+export type RetrievedAttributeOption =
+  | NodeRetrievedAttributeOption
+  | FederationRetrievedAttributeOption;
 
 export interface Subject {
   sub_id: string;
