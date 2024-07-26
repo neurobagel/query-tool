@@ -14,7 +14,7 @@ export const isFederationAPI: boolean =
     ? true
     : import.meta.env.NB_IS_FEDERATION_API.toLowerCase() === 'true';
 
-export const queryPath: string = import.meta.env.NB_QUERY_PATH ?? '/';
+export const queryURLPath: string = import.meta.env.NB_QUERY_URL_PATH ?? '/';
 
 export const enableAuth: boolean =
   import.meta.env.NB_ENABLE_AUTH === undefined
