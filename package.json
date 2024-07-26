@@ -18,7 +18,7 @@
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.20",
-    "@mui/material": "^5.16.1",
+    "@mui/material": "^5.16.4",
     "@react-oauth/google": "^0.12.1",
     "axios": "^1.7.2",
     "eslint-plugin-tsdoc": "^0.2.17",
