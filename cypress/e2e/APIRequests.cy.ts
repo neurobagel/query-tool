@@ -156,7 +156,7 @@ describe('Successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'query/?*',
+        url: 'query?*',
       },
       mixedResponse
     ).as('call');
@@ -244,7 +244,7 @@ describe('Partially successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'query/?*',
+        url: 'query?*',
       },
       partialSuccessMixedResponse
     ).as('call');
@@ -290,7 +290,7 @@ describe('Failed API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'query/?*',
+        url: 'query?*',
       },
       failedQueryResponse
     ).as('call');

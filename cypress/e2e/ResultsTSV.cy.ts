@@ -2,7 +2,7 @@ import { mixedResponse, unprotectedResponse } from '../fixtures/mocked-responses
 
 describe('Results TSV', () => {
   it('Removes a newline character from a dataset name in the downloaded dataset-level results file', () => {
-    cy.intercept('query/?*', mixedResponse).as('call');
+    cy.intercept('query?*', mixedResponse).as('call');
     cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
@@ -11,7 +11,7 @@ describe('Results TSV', () => {
     cy.readFile('cypress/downloads/dataset-level-results.tsv').should('contain', 'some cool name');
   });
   it('Removes the unwanted whitespace from the downloaded results files', () => {
-    cy.intercept('query/?*', mixedResponse).as('call');
+    cy.intercept('query?*', mixedResponse).as('call');
     cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
@@ -26,7 +26,7 @@ describe('Results TSV', () => {
     });
   });
   it('Checks whether the protected and unprotected datasets are correctly identified', () => {
-    cy.intercept('query/?*', mixedResponse).as('call');
+    cy.intercept('query?*', mixedResponse).as('call');
     cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
@@ -44,7 +44,7 @@ describe('Results TSV', () => {
     });
   });
   it('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
-    cy.intercept('query/?*', unprotectedResponse).as('call');
+    cy.intercept('query?*', unprotectedResponse).as('call');
     cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
