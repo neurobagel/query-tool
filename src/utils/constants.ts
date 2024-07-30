@@ -1,7 +1,7 @@
 const baseAPIURL: string = import.meta.env.NB_API_QUERY_URL;
 export const queryURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}query/?`
-  : `${baseAPIURL}/query/?`;
+  ? `${baseAPIURL}query?`
+  : `${baseAPIURL}/query?`;
 export const attributesURL: string = baseAPIURL.endsWith('/')
   ? `${baseAPIURL}attributes/`
   : `${baseAPIURL}/attributes/`;
