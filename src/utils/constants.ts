@@ -6,8 +6,8 @@ export const attributesURL: string = baseAPIURL.endsWith('/')
   ? `${baseAPIURL}attributes/`
   : `${baseAPIURL}/attributes/`;
 export const nodesURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}nodes/`
-  : `${baseAPIURL}/nodes/`;
+  ? `${baseAPIURL}nodes`
+  : `${baseAPIURL}/nodes`;
 
 export const isFederationAPI: boolean =
   import.meta.env.NB_IS_FEDERATION_API === undefined
