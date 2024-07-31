@@ -11,7 +11,7 @@ describe('Dataset result checkbox', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
