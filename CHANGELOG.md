@@ -1,3 +1,22 @@
+# v0.3.0 (Fri Aug 02 2024)
+
+#### 💥 Breaking Changes
+
+- [ENH] Implemented OIDC flow that results in a query sent to the f-API [#205](https://github.com/neurobagel/query-tool/pull/205) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
+
+#### 🚀 Enhancements
+
+- [ENH] Added `NB_QUERY_PATH` env var to configure path variable [#227](https://github.com/neurobagel/query-tool/pull/227) ([@rmanaem](https://github.com/rmanaem))
+- [ENH] Made authentication optional on the UI [#214](https://github.com/neurobagel/query-tool/pull/214) ([@rmanaem](https://github.com/rmanaem))
+- [MNT] Removed trailing slash from `queryURL` [#235](https://github.com/neurobagel/query-tool/pull/235) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.2.2 (Fri Apr 19 2024)
 
 #### 🐛 Bug Fixes
