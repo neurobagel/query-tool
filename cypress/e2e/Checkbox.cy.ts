@@ -11,7 +11,7 @@ describe('Dataset result checkbox', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
@@ -34,7 +34,7 @@ describe('Dataset result checkbox', () => {
 
     let isFirstClick = true;
 
-    cy.intercept('GET', 'query/*', (req) => {
+    cy.intercept('GET', 'query*', (req) => {
       if (isFirstClick) {
         isFirstClick = false;
         req.reply(protectedResponse1);

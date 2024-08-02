@@ -1,13 +1,13 @@
 const baseAPIURL: string = import.meta.env.NB_API_QUERY_URL;
 export const queryURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}query/?`
-  : `${baseAPIURL}/query/?`;
+  ? `${baseAPIURL}query?`
+  : `${baseAPIURL}/query?`;
 export const attributesURL: string = baseAPIURL.endsWith('/')
   ? `${baseAPIURL}attributes/`
   : `${baseAPIURL}/attributes/`;
 export const nodesURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}nodes/`
-  : `${baseAPIURL}/nodes/`;
+  ? `${baseAPIURL}nodes`
+  : `${baseAPIURL}/nodes`;
 
 export const isFederationAPI: boolean =
   import.meta.env.NB_IS_FEDERATION_API === undefined

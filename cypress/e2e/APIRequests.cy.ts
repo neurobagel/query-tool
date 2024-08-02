@@ -19,7 +19,7 @@ describe('Successful API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
@@ -79,7 +79,7 @@ describe('Partially successful API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
@@ -117,7 +117,7 @@ describe('Failed API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
@@ -156,7 +156,7 @@ describe('Successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'query/?*',
+        url: 'query?*',
       },
       mixedResponse
     ).as('call');
@@ -164,7 +164,7 @@ describe('Successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
@@ -207,7 +207,7 @@ describe('Regression Tests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
@@ -244,7 +244,7 @@ describe('Partially successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'query/?*',
+        url: 'query?*',
       },
       partialSuccessMixedResponse
     ).as('call');
@@ -252,7 +252,7 @@ describe('Partially successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
@@ -290,7 +290,7 @@ describe('Failed API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'query/?*',
+        url: 'query?*',
       },
       failedQueryResponse
     ).as('call');
@@ -298,7 +298,7 @@ describe('Failed API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/nodes/',
+        url: '/nodes',
       },
       nodeOptions
     ).as('getNodes');
