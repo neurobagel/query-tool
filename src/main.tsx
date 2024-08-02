@@ -4,12 +4,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StyledEngineProvider } from '@mui/material/styles';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import App from './App';
-import { enableAuth, clientID } from './utils/constants';
+import { queryURLPath, enableAuth, clientID } from './utils/constants';
 import './index.css';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: queryURLPath,
     element: <App />,
   },
 ]);
