@@ -1,3 +1,19 @@
+# v0.4.0 (Fri Aug 09 2024)
+
+#### 💥 Breaking Changes
+
+- [ENH] Removed `NB_IS_FEDERATION_API` environment variable [#245](https://github.com/neurobagel/query-tool/pull/245) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [REF] Renamed `NB_QUERY_URL_PATH` env var to `NB_QUERY_APP_BASE_PATH` [#246](https://github.com/neurobagel/query-tool/pull/246) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 1
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.3.0 (Fri Aug 02 2024)
 
 #### 💥 Breaking Changes
