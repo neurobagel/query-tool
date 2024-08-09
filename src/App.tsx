@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
-import { queryURL, attributesURL, isFederationAPI, nodesURL, enableAuth } from './utils/constants';
+import { queryURL, attributesURL, nodesURL, enableAuth } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
@@ -136,17 +136,15 @@ function App() {
       }
     }
 
-    if (isFederationAPI) {
-      getNodeOptions(nodesURL).then((nodeResponse) => {
-        if (nodeResponse === null) {
-          enqueueSnackbar('Failed to retrieve Node options', { variant: 'error', action });
-        } else if (nodeResponse.length === 0) {
-          enqueueSnackbar('No options found for Node', { variant: 'info', action });
-        } else {
-          setAvailableNodes([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
-        }
-      });
-    }
+    getNodeOptions(nodesURL).then((nodeResponse) => {
+      if (nodeResponse === null) {
+        enqueueSnackbar('Failed to retrieve Node options', { variant: 'error', action });
+      } else if (nodeResponse.length === 0) {
+        enqueueSnackbar('No options found for Node', { variant: 'info', action });
+      } else {
+        setAvailableNodes([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -309,34 +307,24 @@ function App() {
           'Content-Type': 'application/json',
         },
       });
-      // TODO: remove this branch once there is no more non-federation option
-      if (isFederationAPI) {
-        setResult(response.data);
-        switch (response.data.nodes_response_status) {
-          case 'partial success': {
-            response.data.errors.forEach((error: NodeError) => {
-              enqueueSnackbar(`${error.node_name} failed to respond`, {
-                variant: 'warning',
-                action,
-              });
+      setResult(response.data);
+      switch (response.data.nodes_response_status) {
+        case 'partial success': {
+          response.data.errors.forEach((error: NodeError) => {
+            enqueueSnackbar(`${error.node_name} failed to respond`, {
+              variant: 'warning',
+              action,
             });
-            break;
-          }
-          case 'fail': {
-            enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error', action });
-            break;
-          }
-          default: {
-            break;
-          }
+          });
+          break;
         }
-      } else {
-        const myResponse = {
-          responses: response.data,
-          nodes_response_status: 'success',
-          errors: [],
-        };
-        setResult(myResponse);
+        case 'fail': {
+          enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error', action });
+          break;
+        }
+        default: {
+          break;
+        }
       }
     } catch (error) {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });

@@ -50,7 +50,6 @@ but before proceeding with either you need to set the environment variables.
 | Environment variable     | Type    | Required                                 | Default value if not set | Example                                                   |
 | ------------------------ | ------- | ---------------------------------------- | ------------------------ | --------------------------------------------------------- |
 | `NB_API_QUERY_URL`       | string  | Yes                                      | -                        | `https://federate.neurobagel.org/`                        |
-| `NB_IS_FEDERATION_API`   | boolean | No                                       | `true`                   | `true`                                                    |
 | `NB_QUERY_APP_BASE_PATH` | string  | No                                       | `/`                      | `/query/`                                                 |
 | `NB_ENABLE_AUTH`         | boolean | No                                       | `false`                  | `false`                                                   |
 | `NB_QUERY_CLIENT_ID`     | string  | Yes (if `NB_ENABLE_AUTH` is set to true) | -                        | `46923719231972-dhsahgasl3123.apps.googleusercontent.com` |
@@ -58,10 +57,6 @@ but before proceeding with either you need to set the environment variables.
 #### `NB_API_QUERY_URL`
 
 You'll need to set the `NB_API_QUERY_URL` environment variable required to run the query tool. `NB_API_QUERY_URL` is the [Neurobagel API](https://github.com/neurobagel/api) URL that the query tool uses to send requests to for results.
-
-#### `NB_IS_FEDERATION_API`
-
-If the API you'd like to send queries to is not a [federation api](https://neurobagel.org/federate/), you need to set the `NB_IS_FEDERATION_API` to `false` as it is `true` by default.
 
 #### `NB_QUERY_APP_BASE_PATH`
 
@@ -82,16 +77,15 @@ To set environment variables, create a `.env` file in the root directory and add
 
 ```bash
 NB_API_QUERY_URL=http://localhost:8000/
-NB_IS_FEDERATION_API=false # For node API
 ```
 
-if you're using the remote (in this example federation) api, your `.env` file would look something like this:
+if you're using the remote api, your `.env` file would look something like this:
 
 ```bash
 NB_API_QUERY_URL=https://federate.neurobagel.org/
 ```
 
-if you're using a federation api with authentication, your `.env` file would look something like this:
+if you're using a remote api with authentication, your `.env` file would look something like this:
 
 ```bash
 NB_API_QUERY_URL=https://federate.neurobagel.org/

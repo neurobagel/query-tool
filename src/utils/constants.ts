@@ -9,11 +9,6 @@ export const nodesURL: string = baseAPIURL.endsWith('/')
   ? `${baseAPIURL}nodes`
   : `${baseAPIURL}/nodes`;
 
-export const isFederationAPI: boolean =
-  import.meta.env.NB_IS_FEDERATION_API === undefined
-    ? true
-    : import.meta.env.NB_IS_FEDERATION_API.toLowerCase() === 'true';
-
 export const appBasePath: string = import.meta.env.NB_QUERY_APP_BASE_PATH ?? '/';
 
 export const enableAuth: boolean =
