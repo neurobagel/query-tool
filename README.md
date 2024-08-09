@@ -47,12 +47,12 @@ but before proceeding with either you need to set the environment variables.
 
 ### Mandatory configuration
 
-| Environment variable | Type    | Required                                 | Default value if not set | Example                                                   |
-| -------------------- | ------- | ---------------------------------------- | ------------------------ | --------------------------------------------------------- |
-| `NB_API_QUERY_URL`   | string  | Yes                                      | -                        | `https://federate.neurobagel.org/`                        |
-| `NB_QUERY_APP_BASE_PATH`  | string  | No                                       | `/`                      | `/query/`                                                 |
-| `NB_ENABLE_AUTH`     | boolean | No                                       | `false`                  | `false`                                                   |
-| `NB_QUERY_CLIENT_ID` | string  | Yes (if `NB_ENABLE_AUTH` is set to true) | -                        | `46923719231972-dhsahgasl3123.apps.googleusercontent.com` |
+| Environment variable     | Type    | Required                                 | Default value if not set | Example                                                   |
+| ------------------------ | ------- | ---------------------------------------- | ------------------------ | --------------------------------------------------------- |
+| `NB_API_QUERY_URL`       | string  | Yes                                      | -                        | `https://federate.neurobagel.org/`                        |
+| `NB_QUERY_APP_BASE_PATH` | string  | No                                       | `/`                      | `/query/`                                                 |
+| `NB_ENABLE_AUTH`         | boolean | No                                       | `false`                  | `false`                                                   |
+| `NB_QUERY_CLIENT_ID`     | string  | Yes (if `NB_ENABLE_AUTH` is set to true) | -                        | `46923719231972-dhsahgasl3123.apps.googleusercontent.com` |
 
 #### `NB_API_QUERY_URL`
 
