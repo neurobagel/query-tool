@@ -9,7 +9,7 @@ export const nodesURL: string = baseAPIURL.endsWith('/')
   ? `${baseAPIURL}nodes`
   : `${baseAPIURL}/nodes`;
 
-export const queryURLPath: string = import.meta.env.NB_QUERY_URL_PATH ?? '/';
+export const appBasePath: string = import.meta.env.NB_QUERY_APP_BASE_PATH ?? '/';
 
 export const enableAuth: boolean =
   import.meta.env.NB_ENABLE_AUTH === undefined
