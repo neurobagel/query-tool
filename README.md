@@ -47,13 +47,13 @@ but before proceeding with either you need to set the environment variables.
 
 ### Mandatory configuration
 
-| Environment variable   | Type    | Required                                 | Default value if not set | Example                                                   |
-| ---------------------- | ------- | ---------------------------------------- | ------------------------ | --------------------------------------------------------- |
-| `NB_API_QUERY_URL`     | string  | Yes                                      | -                        | `https://federate.neurobagel.org/`                        |
-| `NB_IS_FEDERATION_API` | boolean | No                                       | `true`                   | `true`                                                    |
-| `NB_QUERY_URL_PATH`    | string  | No                                       | `/`                      | `/query/`                                                 |
-| `NB_ENABLE_AUTH`       | boolean | No                                       | `false`                  | `false`                                                   |
-| `NB_QUERY_CLIENT_ID`   | string  | Yes (if `NB_ENABLE_AUTH` is set to true) | -                        | `46923719231972-dhsahgasl3123.apps.googleusercontent.com` |
+| Environment variable     | Type    | Required                                 | Default value if not set | Example                                                   |
+| ------------------------ | ------- | ---------------------------------------- | ------------------------ | --------------------------------------------------------- |
+| `NB_API_QUERY_URL`       | string  | Yes                                      | -                        | `https://federate.neurobagel.org/`                        |
+| `NB_IS_FEDERATION_API`   | boolean | No                                       | `true`                   | `true`                                                    |
+| `NB_QUERY_APP_BASE_PATH` | string  | No                                       | `/`                      | `/query/`                                                 |
+| `NB_ENABLE_AUTH`         | boolean | No                                       | `false`                  | `false`                                                   |
+| `NB_QUERY_CLIENT_ID`     | string  | Yes (if `NB_ENABLE_AUTH` is set to true) | -                        | `46923719231972-dhsahgasl3123.apps.googleusercontent.com` |
 
 #### `NB_API_QUERY_URL`
 
@@ -63,9 +63,9 @@ You'll need to set the `NB_API_QUERY_URL` environment variable required to run t
 
 If the API you'd like to send queries to is not a [federation api](https://neurobagel.org/federate/), you need to set the `NB_IS_FEDERATION_API` to `false` as it is `true` by default.
 
-#### `NB_QUERY_URL_PATH`
+#### `NB_QUERY_APP_BASE_PATH`
 
-If you are using a custom configuration where the query tool is accessible via a path other than the root (`/`), you need to set the `NB_QUERY_URL_PATH` to your custom path. This ensures that the query tool is correctly rendered and accessible at the specified URL
+If you are using a custom configuration where the query tool is accessible via a path other than the root (`/`), you need to set the `NB_QUERY_APP_BASE_PATH` to your custom path. This ensures that the query tool is correctly rendered and accessible at the specified URL
 
 #### `NB_ENABLE_AUTH`
 
