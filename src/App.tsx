@@ -21,6 +21,7 @@ import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
+import ChatbotFeature from './components/Chatbot';
 import './App.css';
 
 function App() {
@@ -399,7 +400,7 @@ function App() {
           <br />
         </>
       )}
-
+      <ChatbotFeature setResult={setResult} />
       <div className="grid grid-cols-4 gap-4">
         <div>
           <QueryForm
