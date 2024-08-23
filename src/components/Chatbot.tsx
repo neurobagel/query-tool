@@ -42,9 +42,12 @@ function FetchAnswer({ steps, triggerNextStep, setResult }: FetchAnswerProps) {
       const fetchAnswerFromModel = async (question: string) => {
         setIsFetching(true);
         try {
-          const response = await axios.post('http://localhost:8080/generate_url/', {
-            query: question,
-          });
+          const response = await axios.post(
+            `${import.meta.env.NB_API_QUERY_AI_URL}/generate_url/`,
+            {
+              query: question,
+            }
+          );
 
           const { data } = response;
 
