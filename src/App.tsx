@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
-import { queryURL, attributesURL, nodesURL, enableAuth } from './utils/constants';
+import { queryURL, attributesURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
@@ -21,6 +21,7 @@ import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
+import ChatbotFeature from './components/Chatbot';
 import './App.css';
 
 function App() {
@@ -399,6 +400,8 @@ function App() {
           <br />
         </>
       )}
+
+      <div>{enableChatbot && <ChatbotFeature setResult={setResult} />}</div>
 
       <div className="grid grid-cols-4 gap-4">
         <div>

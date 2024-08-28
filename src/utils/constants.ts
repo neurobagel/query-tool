@@ -16,6 +16,11 @@ export const enableAuth: boolean =
     ? false
     : import.meta.env.NB_ENABLE_AUTH.toLowerCase() === 'true';
 
+export const enableChatbot: boolean =
+  import.meta.env.NB_ENABLE_CHATBOT === undefined
+    ? false
+    : import.meta.env.NB_ENABLE_CHATBOT.toLowerCase() === 'true';
+
 export const clientID: string = import.meta.env.NB_QUERY_CLIENT_ID ?? '';
 
 export const sexes: { [key: string]: string } = {
