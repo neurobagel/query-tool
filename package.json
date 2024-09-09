@@ -20,7 +20,7 @@
     "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.7",
     "@react-oauth/google": "^0.12.1",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "eslint-plugin-tsdoc": "^0.3.0",
     "jwt-decode": "^4.0.0",
     "notistack": "^3.0.1",
