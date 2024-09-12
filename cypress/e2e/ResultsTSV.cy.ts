@@ -1,9 +1,18 @@
 import { mixedResponse, unprotectedResponse } from '../fixtures/mocked-responses';
 
 describe('Results TSV', () => {
-  it('Removes a newline character from a dataset name in the downloaded dataset-level results file', () => {
-    cy.intercept('query?*', mixedResponse).as('call');
+  beforeEach(() => {
+    cy.intercept('GET', 'query*', (req) => {
+      req.reply(mixedResponse);
+    }).as('call');
     cy.visit('/');
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+  });
+  it('Removes a newline character from a dataset name in the downloaded dataset-level results file', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
@@ -11,8 +20,6 @@ describe('Results TSV', () => {
     cy.readFile('cypress/downloads/dataset-level-results.tsv').should('contain', 'some cool name');
   });
   it('Removes the unwanted whitespace from the downloaded results files', () => {
-    cy.intercept('query?*', mixedResponse).as('call');
-    cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
@@ -26,8 +33,6 @@ describe('Results TSV', () => {
     });
   });
   it('Checks whether the protected and unprotected datasets are correctly identified', () => {
-    cy.intercept('query?*', mixedResponse).as('call');
-    cy.visit('/');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
@@ -43,9 +48,17 @@ describe('Results TSV', () => {
       expect(datasetNotProtected.split('\t')[8]).to.equal('/ds004116/sub-300101');
     });
   });
+});
+describe('Unprotected response', () => {
   it('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
     cy.intercept('query?*', unprotectedResponse).as('call');
     cy.visit('/');
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();

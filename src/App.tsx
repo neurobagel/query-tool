@@ -49,7 +49,7 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [openAuthDialog, setOpenAuthDialog] = useState(false);
+  const [openAuthDialog, setOpenAuthDialog] = useState(true);
   const [name, setName] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>('');
   const [IDToken, setIDToken] = useState<string | undefined>('');

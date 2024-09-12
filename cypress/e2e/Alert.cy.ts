@@ -29,6 +29,11 @@ describe('Alert', () => {
     ).as('getAssessmentToolOptions');
     cy.visit('/?node=All');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
 
     // We need to wait for the fetch to complete and populate the
     // dropdown with nodes before searching for OpenNeuro

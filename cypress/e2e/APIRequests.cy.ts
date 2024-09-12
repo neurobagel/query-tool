@@ -185,6 +185,11 @@ describe('Successful API query requests', () => {
     ).as('getAssessmentToolOptions');
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
   it('Intercepts the request sent to the API and asserts over the request url', () => {
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
@@ -230,6 +235,11 @@ describe('Regression Tests', () => {
 
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
 
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
@@ -275,6 +285,11 @@ describe('Partially successful API query requests', () => {
 
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
   it('Shows a warning for nodes that failed to return any results', () => {
     cy.get('[data-cy="submit-query-button"]').click();
@@ -321,6 +336,11 @@ describe('Failed API query requests', () => {
 
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
   it('Shows an error toast and does not display results for a completely failed ', () => {
     cy.get('[data-cy="submit-query-button"]').click();
