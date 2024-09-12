@@ -1,8 +1,24 @@
 import { diagnosisOptions } from '../fixtures/mocked-responses';
 
 describe('App', () => {
-  it('Validates input to continuous field, displays the appropriate error, and disables the submit query button', () => {
+  beforeEach(() => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
     cy.visit('/');
+    cy.wait('@getDiagnosisOptions');
+
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+  });
+  it('Validates input to continuous field, displays the appropriate error, and disables the submit query button', () => {
     cy.get('[data-cy="submit-query-button"]').should('not.be.disabled');
     cy.get('[data-cy="Minimum age-continuous-field"]').type('some text');
     cy.get('[data-cy="Minimum age-continuous-field"] p')
@@ -20,16 +36,6 @@ describe('App', () => {
   });
 
   it('Displays the diagnosis options it retrieves from a node API', () => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Diagnosis',
-      },
-      diagnosisOptions
-    ).as('getDiagnosisOptions');
-    cy.visit('/');
-    cy.wait('@getDiagnosisOptions');
-
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should('not.be.disabled');
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
@@ -39,15 +45,6 @@ describe('App', () => {
   });
 
   it('Disables the diagnosis field if healthy control checkbox is checked', () => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/attributes/nb:Diagnosis',
-      },
-      diagnosisOptions
-    ).as('getDiagnosisOptions');
-    cy.visit('/');
-    cy.wait('@getDiagnosisOptions');
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should('not.be.disabled');
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should(

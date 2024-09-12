@@ -31,6 +31,11 @@ describe('Dataset result checkbox', () => {
     ).as('getAssessmentToolOptions');
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    // TODO: remove this
+    // Bit of a hacky way to close the auth dialog
+    // But we need to do it until we make auth an always-on feature
+    // Because the auth dialog will overlap a lot of the UI and thus fail the tests
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
 
     let isFirstClick = true;
 
