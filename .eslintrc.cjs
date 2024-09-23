@@ -8,7 +8,7 @@ module.exports = {
     'plugin:cypress/recommended',
     'airbnb',
     'airbnb/hooks',
-    'airbnb-typescript',
+    '@kesills/airbnb-typescript',
     'prettier',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs', 'component.ts'],
