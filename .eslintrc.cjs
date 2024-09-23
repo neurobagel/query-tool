@@ -8,7 +8,7 @@ module.exports = {
     'plugin:cypress/recommended',
     'airbnb',
     'airbnb/hooks',
-    'airbnb-typescript',
+    '@kesills/airbnb-typescript',
     'prettier',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs', 'component.ts'],
@@ -21,5 +21,7 @@ module.exports = {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'react/react-in-jsx-scope': 'off',
     'tsdoc/syntax': 'warn',
+    '@stylistic/indent': 'off',
+    '@stylistic/comma-dangle': 'off',
   },
 };
