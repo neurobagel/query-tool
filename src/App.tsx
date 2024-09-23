@@ -111,7 +111,7 @@ function App() {
           }
         }
         return response.data.responses[dataElementURI];
-      } catch {
+      } catch (err) {
         return null;
       }
     }
@@ -132,7 +132,7 @@ function App() {
       try {
         const response: AxiosResponse<NodeOption[]> = await axios.get(fetchURL);
         return response.data;
-      } catch {
+      } catch (err) {
         return null;
       }
     }
@@ -158,7 +158,9 @@ function App() {
         );
 
         // If there is no node in the search params, set it to All
-        if (matchedNodeNames.length === 0) setSearchParams({ node: ['All'] });
+        if (matchedNodeNames.length === 0) {
+          setSearchParams({ node: ['All'] });
+        }
         // If there is any node besides All selected, remove All from the list
         else if (matchedNodeNames.length > 1 && matchedNodeNames.includes('All')) {
           const filteredNodeNames = matchedNodeNames.filter((nodeName) => nodeName !== 'All');
@@ -325,7 +327,7 @@ function App() {
           break;
         }
       }
-    } catch {
+    } catch (error) {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
     }
     setLoading(false);
