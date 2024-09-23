@@ -41,7 +41,7 @@
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-react-swc": "^3.7.0",
-    "@vitest/ui": "^2.0.5",
+    "@vitest/ui": "^2.1.1",
     "autoprefixer": "^10.4.20",
     "cypress": "^13.13.3",
     "eslint": "^8.57.0",
