@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react-swc';
 export default defineConfig(({ mode }) => {
   const envVars = loadEnv(mode, process.cwd(), '');
   if (!envVars.NB_API_QUERY_URL) {
-    throw new Error(`Environment variable NB_API_QUERY_URL is not defined.`);
+    throw new Error('Environment variable NB_API_QUERY_URL is not defined.');
   }
 
   if (envVars.NB_ENABLE_AUTH && envVars.NB_ENABLE_AUTH.toLowerCase() === 'true') {
