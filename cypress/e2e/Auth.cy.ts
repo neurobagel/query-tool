@@ -1,4 +1,31 @@
+import { nodeOptions, diagnosisOptions, assessmentToolOptions } from '../fixtures/mocked-responses';
+
 describe('Authentication flow', () => {
+  beforeEach(() => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes',
+      },
+      nodeOptions
+    ).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Diagnosis',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/attributes/nb:Assessment',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.visit('/');
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+  });
   it('Auth dialog is visible by default and user is not logged in', () => {
     cy.visit('/');
     cy.get('[data-cy="auth-dialog"]').should('exist');
