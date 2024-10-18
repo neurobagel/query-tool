@@ -23,6 +23,7 @@ import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
 import './App.css';
+import logo from './assets/logo.png';
 
 function App() {
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
@@ -428,8 +429,14 @@ function App() {
             onSubmitQuery={() => submitQuery()}
           />
         </div>
-        <div className="col-span-3">
-          <ResultContainer response={sortedResults || null} />
+        <div
+          className={loading ? 'col-span-3 grid animate-pulse place-items-center' : 'col-span-3'}
+        >
+          {loading ? (
+            <img src={logo} alt="Logo" height="80" className="animate-spin" />
+          ) : (
+            <ResultContainer response={sortedResults || null} />
+          )}
         </div>
       </div>
     </>
