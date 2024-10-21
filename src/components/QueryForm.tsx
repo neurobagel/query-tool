@@ -9,7 +9,13 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { sexes, modalities } from '../utils/constants';
-import { NodeOption, AttributeOption, FieldInput, Pipelines } from '../utils/types';
+import {
+  NodeOption,
+  AttributeOption,
+  FieldInputOption,
+  FieldInput,
+  Pipelines,
+} from '../utils/types';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 
@@ -191,16 +197,10 @@ function QueryForm({
       <div className="col-span-2 row-start-9">
         <CategoricalField
           label="Pipeline name"
-          options={[
-            {
-              label: 'fmriprep',
-              id: 'np:fmriprep',
-            },
-            {
-              label: 'freesurfer',
-              id: 'np:freesurfer',
-            },
-          ]}
+          options={Object.keys(pipelines).map((p) => ({
+            label: p.slice(3),
+            id: p,
+          }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
           inputValue={pipelineName}
         />
@@ -213,13 +213,7 @@ function QueryForm({
           <div className="col-span-2 row-start-10">
             <CategoricalField
               label="Pipeline version"
-              options={[
-                {
-                  label: '3.2.1',
-                  id: '3.2.1',
-                },
-                // ...
-              ]}
+              options={[]}
               onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
               inputValue={pipelineVersion}
               disabled
@@ -230,13 +224,10 @@ function QueryForm({
         <div className="col-span-2 row-start-10">
           <CategoricalField
             label="Pipeline version"
-            options={[
-              {
-                label: '3.2.1',
-                id: '3.2.1',
-              },
-              // ...
-            ]}
+            options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
+              label: v,
+              id: v,
+            }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
             inputValue={pipelineVersion}
           />
