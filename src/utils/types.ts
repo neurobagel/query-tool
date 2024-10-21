@@ -26,6 +26,10 @@ export interface RetrievedAttributeOption {
   errors: NodeError[];
 }
 
+export interface Pipelines {
+  [key: string]: string[];
+}
+
 export interface Subject {
   sub_id: string;
   session_id: string;
@@ -37,6 +41,7 @@ export interface Subject {
   assessment: string[];
   image_modal: string[];
   session_file_path: string;
+  completed_pipelines: Pipelines;
 }
 
 export interface Result {
@@ -49,6 +54,7 @@ export interface Result {
   num_matching_subjects: number;
   subject_data: Subject[] | string;
   image_modals: string[];
+  available_pipelines: Pipelines;
 }
 
 export interface QueryResponse {
