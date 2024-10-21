@@ -10,6 +10,9 @@ const props = {
     'http://purl.org/nidash/nidm#ArterialSpinLabeling',
     'http://purl.org/nidash/nidm#DiffusionWeighted',
   ],
+  pipelines: {
+    'np:fmriprep': ['0.2.3', '23.1.3'],
+  },
   checked: true,
   onCheckboxChange: () => {},
 };
@@ -24,6 +27,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        pipelines={props.pipelines}
         checked={props.checked}
         onCheckboxChange={props.onCheckboxChange}
       />
@@ -37,7 +41,7 @@ describe('ResultCard', () => {
       .should('contain', 'ASL')
       .should('have.class', 'bg-zinc-800');
     cy.get('[data-cy="card-some uuid"] button')
-      .eq(1)
+      .eq(2)
       .should('contain', 'DWI')
       .should('have.class', 'bg-red-700');
   });
@@ -51,6 +55,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        pipelines={props.pipelines}
         checked={false}
         onCheckboxChange={onCheckboxChangeSpy}
       />

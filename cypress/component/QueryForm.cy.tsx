@@ -42,6 +42,11 @@ const props = {
   setIsControl: () => {},
   assessmentTool: null,
   imagingModality: null,
+  pipelineVersion: null,
+  pipelineName: null,
+  pipelines: {
+    'np:fmriprep': ['0.2.3', '23.1.3'],
+  },
   updateCategoricalQueryParams: () => {},
   updateContinuousQueryParams: () => {},
   loading: false,
@@ -66,6 +71,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
@@ -105,6 +113,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
@@ -136,6 +147,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
         updateContinuousQueryParams={updateContinuousQueryParamsSpy}
         loading={props.loading}
@@ -163,6 +177,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
