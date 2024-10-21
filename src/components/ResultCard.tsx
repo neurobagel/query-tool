@@ -5,6 +5,8 @@ import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
+import { Tooltip, Divider } from '@mui/material';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { modalities } from '../utils/constants';
 
 const ResultCard = memo(
@@ -15,6 +17,7 @@ const ResultCard = memo(
     datasetTotalSubjects,
     numMatchingSubjects,
     imageModals,
+    pipelines,
     checked,
     onCheckboxChange,
   }: {
@@ -24,6 +27,9 @@ const ResultCard = memo(
     datasetTotalSubjects: number;
     numMatchingSubjects: number;
     imageModals: string[];
+    pipelines: {
+      [key: string]: string[];
+    };
     checked: boolean;
     onCheckboxChange: (id: string) => void;
   }) => (
@@ -37,20 +43,44 @@ const ResultCard = memo(
               onChange={() => onCheckboxChange(datasetUUID)}
             />
           </div>
-          <div className="col-span-10 col-start-1">
+          <div className="col-span-6 col-start-1">
             <Typography variant="h5">{datasetName}</Typography>
             <Typography variant="subtitle1">from {nodeName}</Typography>
             <Typography variant="subtitle2">
               {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
             </Typography>
           </div>
-          <div className="col-span-2 justify-self-end">
+          <div className="col-span-2 col-start-7">
+            <Tooltip
+              title={
+                <Typography variant="body1">
+                  {Object.entries(pipelines)
+                    .flatMap(([name, versions]) =>
+                      versions.map((version) => `${name.slice(65)} ${version}`)
+                    )
+                    .map((pipeline) => (
+                      <Divider>{pipeline}</Divider>
+                    ))}
+                </Typography>
+              }
+              placement="top"
+            >
+              <Button
+                variant="contained"
+                className="shadow-none hover:shadow-none"
+                startIcon={<UnfoldMoreIcon />}
+              >
+                Available pipelines
+              </Button>
+            </Tooltip>
+          </div>
+          <div className="col-span-2 col-start-11 justify-self-end">
             <ButtonGroup>
               {imageModals.sort().map((modal) => (
                 <Button
                   key={modal}
                   variant="contained"
-                  className={`${modalities[modal].bgColor} hover:bg-gray-400`}
+                  className={`${modalities[modal].bgColor} shadow-none hover:bg-gray-400 hover:shadow-none`}
                 >
                   {modalities[modal].name}
                 </Button>
