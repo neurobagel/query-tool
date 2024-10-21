@@ -13,6 +13,7 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
+  Pipelines,
   NodeError,
   QueryResponse,
   GoogleJWT,
@@ -30,6 +31,7 @@ function App() {
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
+  const [pipelines, setPipelines] = useState<Pipelines>({});
 
   const [alertDismissed, setAlertDismissed] = useState<boolean>(false);
 
@@ -46,6 +48,8 @@ function App() {
   const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<number | null>(null);
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
+  const [pipelineVersion, setPipelineVersion] = useState<FieldInput>(null);
+  const [pipelineName, setPipelineName] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -206,6 +210,12 @@ function App() {
       case 'Imaging modality':
         setImagingModality(value);
         break;
+      case 'Pipeline version':
+        setPipelineVersion(value);
+        break;
+      case 'Pipeline name':
+        setPipelineName(value);
+        break;
       default:
         break;
     }
@@ -278,6 +288,8 @@ function App() {
     );
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
+    setQueryParam('pipeline_version', pipelineVersion, queryParams);
+    setQueryParam('pipeline_name', pipelineName, queryParams);
 
     // Remove keys with empty values
     const keysToDelete: string[] = [];
@@ -298,6 +310,9 @@ function App() {
 
   async function submitQuery() {
     setLoading(true);
+    setTimeout(() => {
+      console.log('waiting');
+    }, 3000);
     const url: string = constructQueryURL();
     try {
       const response = await axios.get(url, {
@@ -418,6 +433,9 @@ function App() {
             setIsControl={setIsControl}
             assessmentTool={assessmentTool}
             imagingModality={imagingModality}
+            pipelineVersion={pipelineVersion}
+            pipelineName={pipelineName}
+            pipelines={pipelines}
             updateCategoricalQueryParams={(label, value) =>
               updateCategoricalQueryParams(label, value)
             }
@@ -428,7 +446,7 @@ function App() {
             onSubmitQuery={() => submitQuery()}
           />
         </div>
-        <div className="col-span-3">
+        <div className={loading ? 'col-span-3 animate-pulse' : 'col-span-3'}>
           <ResultContainer response={sortedResults || null} />
         </div>
       </div>
