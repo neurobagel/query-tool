@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
-import { queryURL, attributesURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
+import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
@@ -80,35 +80,35 @@ function App() {
   );
 
   useEffect(() => {
-    async function getAttributes(dataElementURI: string) {
+    async function getAttributes(NBClass: string, dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
-          `${attributesURL}${dataElementURI}`
+          `${baseAPIURL}${NBClass}/`
         );
         if (response.data.nodes_response_status === 'fail') {
-          enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
+          enqueueSnackbar(`Failed to retrieve ${NBClass} options`, {
             variant: 'error',
             action,
           });
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
-            enqueueSnackbar(
-              `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
-              { variant: 'warning', action }
-            );
+            enqueueSnackbar(`Failed to retrieve ${NBClass} options from ${error.node_name}`, {
+              variant: 'warning',
+              action,
+            });
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
-            enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
+            enqueueSnackbar(`No ${NBClass} options were available`, {
               variant: 'info',
               action,
             });
           } else if (response.data.responses[dataElementURI].some((item) => item.Label === null)) {
-            enqueueSnackbar(
-              `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
-              { variant: 'warning', action }
-            );
+            enqueueSnackbar(`Warning: Missing labels were removed for ${NBClass} `, {
+              variant: 'warning',
+              action,
+            });
             response.data.responses[dataElementURI] = response.data.responses[
               dataElementURI
             ].filter((item) => item.Label !== null);
@@ -120,13 +120,13 @@ function App() {
       }
     }
 
-    getAttributes('nb:Diagnosis').then((diagnosisResponse) => {
+    getAttributes('diagnoses', 'nb:Diagnosis').then((diagnosisResponse) => {
       if (diagnosisResponse !== null && diagnosisResponse.length !== 0) {
         setDiagnosisOptions(diagnosisResponse);
       }
     });
 
-    getAttributes('nb:Assessment').then((assessmentResponse) => {
+    getAttributes('assessments', 'nb:Assessment').then((assessmentResponse) => {
       if (assessmentResponse !== null && assessmentResponse.length !== 0) {
         setAssessmentOptions(assessmentResponse);
       }

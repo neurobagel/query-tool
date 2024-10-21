@@ -1,13 +1,10 @@
-const baseAPIURL: string = import.meta.env.NB_API_QUERY_URL;
-export const queryURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}query?`
-  : `${baseAPIURL}/query?`;
-export const attributesURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}attributes/`
-  : `${baseAPIURL}/attributes/`;
-export const nodesURL: string = baseAPIURL.endsWith('/')
-  ? `${baseAPIURL}nodes`
-  : `${baseAPIURL}/nodes`;
+export const baseAPIURL: string = import.meta.env.NB_API_QUERY_URL.endsWith('/')
+  ? import.meta.env.NB_API_QUERY_URL
+  : `${import.meta.env.NB_API_QUERY_URL}/`;
+
+export const queryURL: string = `${baseAPIURL}query?`;
+
+export const nodesURL: string = `${baseAPIURL}nodes`;
 
 export const appBasePath: string = import.meta.env.NB_QUERY_APP_BASE_PATH ?? '/';
 
