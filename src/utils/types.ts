@@ -26,6 +26,14 @@ export interface RetrievedAttributeOption {
   errors: NodeError[];
 }
 
+export interface RetrievedPipelineVersions {
+  responses: {
+    [key: string]: string[];
+  };
+  nodes_response_status: string;
+  errors: NodeError[];
+}
+
 export interface Pipelines {
   [key: string]: string[];
 }
