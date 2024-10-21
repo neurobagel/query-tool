@@ -77,6 +77,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           'NumPhenotypicSessions',
           'NumImagingSessions',
           'Modality',
+          'CompletedPipelines',
         ].join('\t');
         tsvRows.push(headers);
 
@@ -96,6 +97,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                 'protected', // num_phenotypic_sessions
                 'protected', // num_imaging_sessions
                 'protected', // image_modal
+                'protected', // completed_pipelines
               ].join('\t')
             );
           } else {
@@ -115,6 +117,13 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                   subject.num_matching_phenotypic_sessions,
                   subject.num_matching_imaging_sessions,
                   subject.image_modal?.join(', '),
+                  subject.completed_pipelines
+                    ? Object.entries(subject.completed_pipelines)
+                        .flatMap(([name, versions]) =>
+                          (versions as string[]).map((version: string) => `${name} ${version}`)
+                        )
+                        .join(', ')
+                    : {},
                 ].join('\t')
               );
             });
@@ -127,6 +136,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           'PortalURI',
           'NumMatchingSubjects',
           'AvailableImageModalities',
+          'AvailablePipelines',
         ].join('\t');
         tsvRows.push(headers);
 
@@ -138,6 +148,11 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
               res.dataset_portal_uri,
               res.num_matching_subjects,
               res.image_modals?.join(', '),
+              res.available_pipelines
+                ? Object.entries(res.available_pipelines).flatMap(([name, versions]) =>
+                    versions.map((version) => `${name} ${version}`).join(', ')
+                  )
+                : {},
             ].join('\t')
           );
         });
@@ -219,6 +234,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
               datasetTotalSubjects={item.dataset_total_subjects}
               numMatchingSubjects={item.num_matching_subjects}
               imageModals={item.image_modals}
+              pipelines={item.available_pipelines}
               checked={download.includes(item.dataset_uuid)}
               onCheckboxChange={updateDownload}
             />
