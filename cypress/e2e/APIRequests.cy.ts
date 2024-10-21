@@ -12,6 +12,14 @@ import {
   emptyAssessmentToolOptions,
   partiallyFailedAssessmentToolOptions,
   failedAssessmentToolOptions,
+  pipelineOptions,
+  emptyPipelineOPtions,
+  partiallyFailedPipelineOptions,
+  failedPipelineOptions,
+  emptyPipelineVersionOptions,
+  partiallyFailedPipelineVersionOptions,
+  failedPipelineVersionOptions,
+  pipelineVersionOptions,
 } from '../fixtures/mocked-responses';
 
 describe('Successful API attribute responses', () => {
@@ -26,28 +34,53 @@ describe('Successful API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       diagnosisOptions
     ).as('getDiagnosisOptions');
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'pipelines/np:fmriprep/versions',
+      },
+      pipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
   });
   it('Loads correctly if all node responses are successful', () => {
     cy.get('.notistack-SnackbarContainer').should('not.exist');
+  });
+  it.only('Loads pipeline versions correctly if all node responses are successful', () => {
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
+    cy.wait('@getPipelineVersionsOptions');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').type('23.1.3{downarrow}{enter}');
   });
   it('Empty diagnosis response makes info toast appear', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       emptyDiagnosisOptions
     ).as('getDiagnosisOptions');
@@ -55,13 +88,13 @@ describe('Successful API attribute responses', () => {
     cy.wait('@getDiagnosisOptions');
     cy.get('.notistack-SnackbarContainer')
       .find('.notistack-MuiContent-info')
-      .should('contain', 'No Diagnosis options were available');
+      .should('contain', 'No diagnoses options were available');
   });
   it('Empty assessment response makes info toast appear', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       emptyAssessmentToolOptions
     ).as('getAssessmentToolOptions');
@@ -70,7 +103,37 @@ describe('Successful API attribute responses', () => {
 
     cy.get('.notistack-SnackbarContainer')
       .find('.notistack-MuiContent-info')
-      .should('contain', 'No Assessment options were available');
+      .should('contain', 'No assessments options were available');
+  });
+  it('Empty pipeline response makes info toast appear', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      emptyPipelineOPtions
+    ).as('getPipelineOptions');
+    cy.visit('/');
+    cy.wait('@getPipelineOptions');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-info')
+      .should('contain', 'No pipelines options were available');
+  });
+  it('Empty pipeline version response makes info toast appear', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'pipelines/np:fmriprep/versions',
+      },
+      emptyPipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
+    cy.visit('/');
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
+    cy.wait('@getPipelineVersionsOptions');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-info')
+      .should('contain', 'No fmriprep versions were available');
   });
 });
 
@@ -86,19 +149,38 @@ describe('Partially successful API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       partiallyFailedDiagnosisToolOptions
     ).as('getDiagnosisOptions');
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       partiallyFailedAssessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      partiallyFailedPipelineOptions
+    ).as('getPipelineOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'pipelines/np:fmriprep/versions',
+      },
+      partiallyFailedPipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
   });
   it('Shows warning for node that failed Assessment tool option request', () => {
     cy.get('.notistack-SnackbarContainer')
@@ -109,6 +191,19 @@ describe('Partially successful API attribute responses', () => {
     cy.get('.notistack-SnackbarContainer')
       .find('.notistack-MuiContent-warning')
       .should('contain', 'NoDiagnosisNode');
+  });
+  it('Shows warning for node that failed Pipeline option request', () => {
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-warning')
+      .should('contain', 'NoPipelineNode');
+  });
+  it('Shows warning for node that failed Pipeline version option request', () => {
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
+    cy.wait('@getPipelineVersionsOptions');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-warning')
+      .should('contain', 'NoPipelineVersionNode');
   });
 });
 
@@ -124,29 +219,61 @@ describe('Failed API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       failedDiagnosisToolOptions
     ).as('getDiagnosisOptions');
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       failedAssessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      failedPipelineOptions
+    ).as('getPipelineOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'pipelines/np:fmriprep/versions',
+      },
+      failedPipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
   });
   it('Shows error toast for failed Assessment tool options', () => {
     cy.get('.notistack-SnackbarContainer')
       .find('.notistack-MuiContent-error')
-      .should('contain', 'Assessment');
+      .should('contain', 'assessments');
   });
   it('Shows error toast for failed Diagnosis options', () => {
     cy.get('.notistack-SnackbarContainer')
       .find('.notistack-MuiContent-error')
-      .should('contain', 'Diagnosis');
+      .should('contain', 'diagnoses');
+  });
+  it('Shows error toast for failed Pipeline options', () => {
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-error')
+      .should('contain', 'pipelines');
+  });
+  it('Shows error toast for failed Pipeline version options', () => {
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
+    cy.wait('@getPipelineVersionsOptions');
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-error')
+      .should('contain', 'versions');
   });
 });
 
@@ -172,19 +299,31 @@ describe('Successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       diagnosisOptions
     ).as('getDiagnosisOptions');
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
@@ -220,7 +359,7 @@ describe('Regression Tests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       badDiagnosisOptions
     ).as('getDiagnosisOptions');
@@ -228,13 +367,26 @@ describe('Regression Tests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
 
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
+
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
@@ -270,7 +422,7 @@ describe('Partially successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       diagnosisOptions
     ).as('getDiagnosisOptions');
@@ -278,13 +430,26 @@ describe('Partially successful API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
 
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
+
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
@@ -321,7 +486,7 @@ describe('Failed API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       diagnosisOptions
     ).as('getDiagnosisOptions');
@@ -329,13 +494,26 @@ describe('Failed API query requests', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
 
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
+
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
