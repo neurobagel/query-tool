@@ -10,6 +10,7 @@ import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './uti
 import {
   RetrievedAttributeOption,
   AttributeOption,
+  RetrievedPipelineVersions,
   NodeOption,
   FieldInput,
   FieldInputOption,
@@ -104,7 +105,11 @@ function App() {
               variant: 'info',
               action,
             });
-          } else if (response.data.responses[dataElementURI].some((item) => item.Label === null)) {
+            // TODO: remove the second condition once pipeline labels are added
+          } else if (
+            response.data.responses[dataElementURI].some((item) => item.Label === null) &&
+            NBClass !== 'pipelines'
+          ) {
             enqueueSnackbar(`Warning: Missing labels were removed for ${NBClass} `, {
               variant: 'warning',
               action,
@@ -132,6 +137,14 @@ function App() {
       }
     });
 
+    getAttributes('pipelines', 'nb:Pipeline').then((pipelineResponse) => {
+      if (pipelineResponse !== null && pipelineResponse.length !== 0) {
+        pipelineResponse.forEach((option) => {
+          setPipelines((prevPipelines) => ({ ...prevPipelines, [option.TermURL]: [] }));
+        });
+      }
+    });
+
     async function getNodeOptions(fetchURL: string) {
       try {
         const response: AxiosResponse<NodeOption[]> = await axios.get(fetchURL);
@@ -151,6 +164,58 @@ function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    async function getPipelineVersions(pipelineURI: FieldInputOption) {
+      try {
+        const response: AxiosResponse<RetrievedPipelineVersions> = await axios.get(
+          `${baseAPIURL}pipelines/${pipelineURI.id}/versions`
+        );
+        if (response.data.nodes_response_status === 'fail') {
+          enqueueSnackbar(`Failed to retrieve ${pipelineURI.label} options`, {
+            variant: 'error',
+            action,
+          });
+        } else {
+          // If any errors occurred, report them
+          response.data.errors.forEach((error) => {
+            enqueueSnackbar(
+              `Failed to retrieve ${pipelineURI.label} options from ${error.node_name}`,
+              {
+                variant: 'warning',
+                action,
+              }
+            );
+          });
+          // If the results are empty, report that
+          if (Object.keys(response.data.responses[pipelineURI.id]).length === 0) {
+            enqueueSnackbar(`No ${pipelineURI.label} options were available`, {
+              variant: 'info',
+              action,
+            });
+          }
+        }
+        return response.data.responses[pipelineURI.id];
+      } catch {
+        return [];
+      }
+    }
+    // Get pipeline versions if
+    // 1. A pipeline has been selected (this implementation only works for single value for pipeline name field)
+    // 2. This is the first time its being selected (i.e., we haven't retrieved pipeline versions before)
+    if (
+      pipelineName !== null &&
+      !Array.isArray(pipelineName) &&
+      pipelines[pipelineName.id].length === 0
+    ) {
+      getPipelineVersions(pipelineName).then((pipelineVersionsRespnse) => {
+        setPipelines((prevPipelines) => ({
+          ...prevPipelines,
+          [pipelineName.id]: pipelineVersionsRespnse,
+        }));
+      });
+    }
+  }, [pipelines, pipelineName]);
 
   useEffect(() => {
     if (availableNodes.length > 1) {
@@ -310,9 +375,6 @@ function App() {
 
   async function submitQuery() {
     setLoading(true);
-    setTimeout(() => {
-      console.log('waiting');
-    }, 3000);
     const url: string = constructQueryURL();
     try {
       const response = await axios.get(url, {
