@@ -18,14 +18,14 @@ describe('Dataset result checkbox', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       failedDiagnosisToolOptions
     ).as('getDiagnosisOptions');
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       failedAssessmentToolOptions
     ).as('getAssessmentToolOptions');

@@ -12,14 +12,14 @@ describe('Authentication flow', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       diagnosisOptions
     ).as('getDiagnosisOptions');
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');

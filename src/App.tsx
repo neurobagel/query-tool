@@ -172,7 +172,7 @@ function App() {
           `${baseAPIURL}pipelines/${pipelineURI.id}/versions`
         );
         if (response.data.nodes_response_status === 'fail') {
-          enqueueSnackbar(`Failed to retrieve ${pipelineURI.label} options`, {
+          enqueueSnackbar(`Failed to retrieve ${pipelineURI.label} versions`, {
             variant: 'error',
             action,
           });
@@ -180,7 +180,7 @@ function App() {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
             enqueueSnackbar(
-              `Failed to retrieve ${pipelineURI.label} options from ${error.node_name}`,
+              `Failed to retrieve ${pipelineURI.label} versions from ${error.node_name}`,
               {
                 variant: 'warning',
                 action,
@@ -189,7 +189,7 @@ function App() {
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[pipelineURI.id]).length === 0) {
-            enqueueSnackbar(`No ${pipelineURI.label} options were available`, {
+            enqueueSnackbar(`No ${pipelineURI.label} versions were available`, {
               variant: 'info',
               action,
             });

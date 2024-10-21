@@ -5,7 +5,7 @@ describe('App', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: '/diagnoses',
       },
       diagnosisOptions
     ).as('getDiagnosisOptions');
