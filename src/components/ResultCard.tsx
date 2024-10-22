@@ -52,6 +52,7 @@ const ResultCard = memo(
           </div>
           <div className="col-span-2 col-start-7">
             <Tooltip
+              data-cy={`card-${datasetUUID}-available-pipelines-tooltip`}
               title={
                 <Typography variant="body1">
                   {Object.entries(pipelines)
@@ -66,6 +67,7 @@ const ResultCard = memo(
               placement="top"
             >
               <Button
+                data-cy={`card-${datasetUUID}-available-pipelines-button`}
                 variant="contained"
                 className="shadow-none hover:shadow-none"
                 startIcon={<UnfoldMoreIcon />}
