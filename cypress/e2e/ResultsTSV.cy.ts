@@ -95,6 +95,9 @@ describe('Unprotected response', () => {
       expect(imagingSession.split('\t')[11]).to.equal(
         'http://purl.org/nidash/nidm#FlowWeighted, http://purl.org/nidash/nidm#T2Weighted'
       );
+      expect(imagingSession.split('\t')[12]).to.equal(
+        'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep 23.1.3, https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer 7.3.2'
+      );
     });
   });
 });
