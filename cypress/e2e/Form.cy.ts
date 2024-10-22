@@ -1,4 +1,8 @@
-import { diagnosisOptions } from '../fixtures/mocked-responses';
+import {
+  diagnosisOptions,
+  pipelineOptions,
+  pipelineVersionOptions,
+} from '../fixtures/mocked-responses';
 
 describe('App', () => {
   beforeEach(() => {
@@ -9,8 +13,15 @@ describe('App', () => {
       },
       diagnosisOptions
     ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
     cy.visit('/');
-    cy.wait('@getDiagnosisOptions');
+    cy.wait(['@getDiagnosisOptions', '@getPipelineOptions']);
 
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
@@ -59,5 +70,20 @@ describe('App', () => {
       'have.value',
       "Parkinson's disease"
     );
+  });
+  it.only('Enables the pipeline version field once a pipeline name is selected', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines/np:fmriprep/versions',
+      },
+      pipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
+    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
+    cy.wait('@getPipelineVersionsOptions');
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('not.be.disabled');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
   });
 });
