@@ -224,10 +224,13 @@ function QueryForm({
         <div className="col-span-2 row-start-10">
           <CategoricalField
             label="Pipeline version"
-            options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
-              label: v,
-              id: v,
-            }))}
+            options={[
+              { label: 'All', id: '' },
+              ...Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
+                label: v,
+                id: v,
+              })),
+            ]}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
             inputValue={pipelineVersion}
           />
