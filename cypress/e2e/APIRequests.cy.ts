@@ -70,7 +70,7 @@ describe('Successful API attribute responses', () => {
   it('Loads correctly if all node responses are successful', () => {
     cy.get('.notistack-SnackbarContainer').should('not.exist');
   });
-  it.only('Loads pipeline versions correctly if all node responses are successful', () => {
+  it('Loads pipeline versions correctly if all node responses are successful', () => {
     cy.get('[data-cy="close-auth-dialog-button"]').click();
     cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
     cy.wait('@getPipelineVersionsOptions');
@@ -267,7 +267,53 @@ describe('Failed API attribute responses', () => {
       .find('.notistack-MuiContent-error')
       .should('contain', 'pipelines');
   });
+});
+
+// We need to do this separately for the pipeline versions as it requires selecting a pipeline (name)
+describe('Failed API attribute responses continued', () => {
   it('Shows error toast for failed Pipeline version options', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes',
+      },
+      nodeOptions
+    ).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/diagnoses',
+      },
+      failedDiagnosisToolOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/assessments',
+      },
+      failedAssessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'pipelines/np:fmriprep/versions',
+      },
+      failedPipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
+    cy.visit('/');
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
     cy.get('[data-cy="close-auth-dialog-button"]').click();
     cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
     cy.wait('@getPipelineVersionsOptions');
