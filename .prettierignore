@@ -3,3 +3,7 @@ CHANGELOG.md
 
 # Ignore workflow files
 .github/
+
+# Ignore our submodules
+recipes
+neurobagel_examples
