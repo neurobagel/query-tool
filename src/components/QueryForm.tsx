@@ -197,9 +197,10 @@ function QueryForm({
       <div className="col-span-2 row-start-9">
         <CategoricalField
           label="Pipeline name"
-          options={Object.keys(pipelines).map((p) => ({
-            label: p.slice(3),
-            id: p,
+          options={Object.keys(pipelines).map((pipelineURI) => ({
+            // Remove the `np:` prefix
+            label: pipelineURI.slice(3),
+            id: pipelineURI,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
           inputValue={pipelineName}
@@ -224,13 +225,10 @@ function QueryForm({
         <div className="col-span-2 row-start-10">
           <CategoricalField
             label="Pipeline version"
-            options={[
-              { label: 'All', id: '' },
-              ...Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
-                label: v,
-                id: v,
-              })),
-            ]}
+            options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
+              label: v,
+              id: v,
+            }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
             inputValue={pipelineVersion}
           />

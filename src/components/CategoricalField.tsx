@@ -12,10 +12,7 @@ function CategoricalField({
   return (
     <Autocomplete
       data-cy={`${label}-categorical-field`}
-      options={options.sort((a, b) => {
-        if (a.label === 'All') return -1;
-        return a.label.localeCompare(b.label);
-      })}
+      options={options.sort((a, b) => a.label.localeCompare(b.label))}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       value={inputValue}
       renderInput={(params) => (

@@ -81,36 +81,36 @@ function App() {
   );
 
   useEffect(() => {
-    async function getAttributes(NBClass: string, dataElementURI: string) {
+    async function getAttributes(NBResource: string, dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
-          `${baseAPIURL}${NBClass}/`
+          `${baseAPIURL}${NBResource}/`
         );
         if (response.data.nodes_response_status === 'fail') {
-          enqueueSnackbar(`Failed to retrieve ${NBClass} options`, {
+          enqueueSnackbar(`Failed to retrieve ${NBResource} options`, {
             variant: 'error',
             action,
           });
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
-            enqueueSnackbar(`Failed to retrieve ${NBClass} options from ${error.node_name}`, {
+            enqueueSnackbar(`Failed to retrieve ${NBResource} options from ${error.node_name}`, {
               variant: 'warning',
               action,
             });
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
-            enqueueSnackbar(`No ${NBClass} options were available`, {
+            enqueueSnackbar(`No ${NBResource} options were available`, {
               variant: 'info',
               action,
             });
             // TODO: remove the second condition once pipeline labels are added
           } else if (
             response.data.responses[dataElementURI].some((item) => item.Label === null) &&
-            NBClass !== 'pipelines'
+            NBResource !== 'pipelines'
           ) {
-            enqueueSnackbar(`Warning: Missing labels were removed for ${NBClass} `, {
+            enqueueSnackbar(`Warning: Missing labels were removed for ${NBResource} `, {
               variant: 'warning',
               action,
             });

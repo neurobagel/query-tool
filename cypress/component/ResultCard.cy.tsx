@@ -21,7 +21,7 @@ const props = {
 };
 
 describe('ResultCard', () => {
-  it('Displays a MUI card with node name, dataset name, number of matched subjects, total number of subjects, and a checkbox', () => {
+  it('Displays a MUI card with node name, dataset name, number of matched subjects, total number of subjects, available pipelines, and a checkbox', () => {
     cy.mount(
       <ResultCard
         nodeName={props.nodeName}

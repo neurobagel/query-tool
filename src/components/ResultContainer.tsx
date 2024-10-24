@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
-import { QueryResponse } from '../utils/types';
+import { QueryResponse, Pipelines } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import GetDataDialog from './GetDataDialog';
 
@@ -57,6 +57,16 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
       );
     }
   }, [response]);
+
+  function parsePipelinesInfoToString(pipelines: Pipelines) {
+    return pipelines
+      ? Object.entries(pipelines)
+          .flatMap(([name, versions]) =>
+            (versions as string[]).map((version: string) => `${name} ${version}`)
+          )
+          .join(', ')
+      : {};
+  }
 
   function generateTSVString(buttonIdentifier: string) {
     if (response) {
@@ -117,13 +127,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                   subject.num_matching_phenotypic_sessions,
                   subject.num_matching_imaging_sessions,
                   subject.image_modal?.join(', '),
-                  subject.completed_pipelines
-                    ? Object.entries(subject.completed_pipelines)
-                        .flatMap(([name, versions]) =>
-                          (versions as string[]).map((version: string) => `${name} ${version}`)
-                        )
-                        .join(', ')
-                    : {},
+                  parsePipelinesInfoToString(subject.completed_pipelines),
                 ].join('\t')
               );
             });
@@ -148,11 +152,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
               res.dataset_portal_uri,
               res.num_matching_subjects,
               res.image_modals?.join(', '),
-              res.available_pipelines
-                ? Object.entries(res.available_pipelines).flatMap(([name, versions]) =>
-                    versions.map((version) => `${name} ${version}`).join(', ')
-                  )
-                : {},
+              parsePipelinesInfoToString(res.available_pipelines),
             ].join('\t')
           );
         });
