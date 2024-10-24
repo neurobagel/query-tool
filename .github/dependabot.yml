@@ -18,6 +18,10 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    labels:
+      - "_bot"
+      - "maint:dependency"
+      - "type:maintenance" 
 
   - package-ecosystem: 'npm'
     directory: '/'
