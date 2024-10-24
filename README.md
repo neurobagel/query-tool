@@ -184,6 +184,23 @@ To run the tests execute the following command:
 npx cypress open
 ```
 
+## Docker compose testing environment for development
+
+Since the query tool relies on other neurobagel tools to function, their presence is often required during development. To facilitate this, a docker compose containing a complete testing environment has been created. To use it follow the steps below:
+
+1. Install `recipes` and `neurobagel_examples` submodules:
+
+```bash
+git submodule init
+git submodule update
+```
+
+2. Bring up the stack using the `test` profile:
+
+```bash
+docker compose --profile test up -d
+```
+
 ## License
 
 The query tool is released under the terms of the [MIT License](LICENSE)
