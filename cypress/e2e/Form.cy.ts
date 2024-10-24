@@ -71,7 +71,7 @@ describe('App', () => {
       "Parkinson's disease"
     );
   });
-  it.only('Enables the pipeline version field once a pipeline name is selected', () => {
+  it('Enables the pipeline version field once a pipeline name is selected', () => {
     cy.intercept(
       {
         method: 'GET',
