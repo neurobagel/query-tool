@@ -10,12 +10,18 @@ const props = {
     'http://purl.org/nidash/nidm#ArterialSpinLabeling',
     'http://purl.org/nidash/nidm#DiffusionWeighted',
   ],
+  pipelines: {
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': [
+      '0.2.3',
+      '23.1.3',
+    ],
+  },
   checked: true,
   onCheckboxChange: () => {},
 };
 
 describe('ResultCard', () => {
-  it('Displays a MUI card with node name, dataset name, number of matched subjects, total number of subjects, and a checkbox', () => {
+  it('Displays a MUI card with node name, dataset name, number of matched subjects, total number of subjects, available pipelines, and a checkbox', () => {
     cy.mount(
       <ResultCard
         nodeName={props.nodeName}
@@ -24,6 +30,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        pipelines={props.pipelines}
         checked={props.checked}
         onCheckboxChange={props.onCheckboxChange}
       />
@@ -37,9 +44,14 @@ describe('ResultCard', () => {
       .should('contain', 'ASL')
       .should('have.class', 'bg-zinc-800');
     cy.get('[data-cy="card-some uuid"] button')
-      .eq(1)
+      .eq(2)
       .should('contain', 'DWI')
       .should('have.class', 'bg-red-700');
+
+    cy.get('[data-cy="card-some uuid-available-pipelines-button"]').trigger('mouseover', {
+      force: true,
+    });
+    cy.get('.MuiTooltip-tooltip').should('contain', 'fmriprep 0.2.3');
   });
   it('Fires onCheckboxChange event handler with the appropriate payload when the checkbox is clicked', () => {
     const onCheckboxChangeSpy = cy.spy().as('onCheckboxChangeSpy');
@@ -51,6 +63,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        pipelines={props.pipelines}
         checked={false}
         onCheckboxChange={onCheckboxChangeSpy}
       />

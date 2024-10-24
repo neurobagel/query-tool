@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
-import { QueryResponse } from '../utils/types';
+import { QueryResponse, Pipelines } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import GetDataDialog from './GetDataDialog';
 
@@ -58,6 +58,16 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
     }
   }, [response]);
 
+  function parsePipelinesInfoToString(pipelines: Pipelines) {
+    return pipelines
+      ? Object.entries(pipelines)
+          .flatMap(([name, versions]) =>
+            (versions as string[]).map((version: string) => `${name} ${version}`)
+          )
+          .join(', ')
+      : {};
+  }
+
   function generateTSVString(buttonIdentifier: string) {
     if (response) {
       const tsvRows = [];
@@ -77,6 +87,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           'NumPhenotypicSessions',
           'NumImagingSessions',
           'Modality',
+          'CompletedPipelines',
         ].join('\t');
         tsvRows.push(headers);
 
@@ -96,6 +107,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                 'protected', // num_phenotypic_sessions
                 'protected', // num_imaging_sessions
                 'protected', // image_modal
+                'protected', // completed_pipelines
               ].join('\t')
             );
           } else {
@@ -115,6 +127,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                   subject.num_matching_phenotypic_sessions,
                   subject.num_matching_imaging_sessions,
                   subject.image_modal?.join(', '),
+                  parsePipelinesInfoToString(subject.completed_pipelines),
                 ].join('\t')
               );
             });
@@ -127,6 +140,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           'PortalURI',
           'NumMatchingSubjects',
           'AvailableImageModalities',
+          'AvailablePipelines',
         ].join('\t');
         tsvRows.push(headers);
 
@@ -138,6 +152,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
               res.dataset_portal_uri,
               res.num_matching_subjects,
               res.image_modals?.join(', '),
+              parsePipelinesInfoToString(res.available_pipelines),
             ].join('\t')
           );
         });
@@ -219,6 +234,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
               datasetTotalSubjects={item.dataset_total_subjects}
               numMatchingSubjects={item.num_matching_subjects}
               imageModals={item.image_modals}
+              pipelines={item.available_pipelines}
               checked={download.includes(item.dataset_uuid)}
               onCheckboxChange={updateDownload}
             />
