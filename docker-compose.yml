@@ -7,7 +7,6 @@ services:
       - 'test'
     environment:
       NB_GRAPH_USERNAME: 'DBUSER'
-      NB_GRAPH_ADDRESS: graph
       NB_RETURN_AGG: false
     volumes:
       - './recipes/scripts/api_entrypoint.sh:/usr/src/api_entrypoint.sh'
