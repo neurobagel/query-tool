@@ -4,10 +4,18 @@ import {
   Checkbox,
   CircularProgress,
   FormHelperText,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { sexes, modalities } from '../utils/constants';
-import { NodeOption, AttributeOption, FieldInput } from '../utils/types';
+import {
+  NodeOption,
+  AttributeOption,
+  FieldInputOption,
+  FieldInput,
+  Pipelines,
+} from '../utils/types';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 
@@ -26,6 +34,9 @@ function QueryForm({
   setIsControl,
   assessmentTool,
   imagingModality,
+  pipelineVersion,
+  pipelineName,
+  pipelines,
   updateCategoricalQueryParams,
   updateContinuousQueryParams,
   loading,
@@ -45,6 +56,9 @@ function QueryForm({
   minNumPhenotypicSessions: number | null;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
+  pipelineVersion: FieldInput;
+  pipelineName: FieldInput;
+  pipelines: Pipelines;
   updateCategoricalQueryParams: (label: string, value: FieldInput) => void;
   updateContinuousQueryParams: (label: string, value: number | null) => void;
   loading: boolean;
@@ -78,7 +92,7 @@ function QueryForm({
     minNumImagingSessionsHelperText !== '';
 
   return (
-    <div className="grid grid-cols-2 grid-rows-10 gap-2">
+    <div className="grid grid-cols-2 grid-rows-12 gap-2">
       <div className="col-span-2">
         <CategoricalField
           label="Neurobagel graph"
@@ -123,7 +137,7 @@ function QueryForm({
           inputValue={sex}
         />
       </div>
-      <div className="col-span-2 row-start-5">
+      <div className="col-span-2 row-start-4">
         <div className="grid grid-cols-12 items-center gap-4">
           <div className="col-span-9">
             <CategoricalField
@@ -147,21 +161,21 @@ function QueryForm({
           </div>
         </div>
       </div>
-      <div className="col-span-2 row-start-6">
+      <div className="col-span-2 row-start-5">
         <ContinuousField
           helperText={minNumImagingSessionsHelperText}
           label="Minimum number of imaging sessions"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      <div className="col-span-2 row-start-7">
+      <div className="col-span-2 row-start-6">
         <ContinuousField
           helperText={minNumPhenotypicSessionsHelperText}
           label="Minimum number of phenotypic sessions"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      <div className="col-span-2 row-start-8">
+      <div className="col-span-2 row-start-7">
         <CategoricalField
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label, id: a.TermURL }))}
@@ -169,7 +183,7 @@ function QueryForm({
           inputValue={assessmentTool}
         />
       </div>
-      <div className="col-span-2 row-start-9">
+      <div className="col-span-2 row-start-8">
         <CategoricalField
           label="Imaging modality"
           options={Object.entries(modalities).map(([, value]) => ({
@@ -180,7 +194,48 @@ function QueryForm({
           inputValue={imagingModality}
         />
       </div>
-      <div className="row-start-10">
+      <div className="col-span-2 row-start-9">
+        <CategoricalField
+          label="Pipeline name"
+          options={Object.keys(pipelines).map((pipelineURI) => ({
+            // Remove the `np:` prefix
+            label: pipelineURI.slice(3),
+            id: pipelineURI,
+          }))}
+          onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          inputValue={pipelineName}
+        />
+      </div>
+      {pipelineName === null ? (
+        <Tooltip
+          title={<Typography variant="body1">Please select a pipeline name</Typography>}
+          placement="right"
+        >
+          <div className="col-span-2 row-start-10">
+            <CategoricalField
+              label="Pipeline version"
+              options={[]}
+              onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+              inputValue={pipelineVersion}
+              disabled
+            />
+          </div>
+        </Tooltip>
+      ) : (
+        <div className="col-span-2 row-start-10">
+          <CategoricalField
+            label="Pipeline version"
+            options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
+              label: v,
+              id: v,
+            }))}
+            onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+            inputValue={pipelineVersion}
+          />
+        </div>
+      )}
+
+      <div className={pipelineName ? 'col-span-2 row-start-11' : 'row-start-11'}>
         <Button
           data-cy="submit-query-button"
           disabled={disableSubmit}

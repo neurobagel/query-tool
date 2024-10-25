@@ -1,3 +1,36 @@
+# v0.5.0 (Thu Oct 24 2024)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Raya Chakravarty ([@Raya679](https://github.com/Raya679)), for all your work!
+
+#### 💥 Breaking Changes
+
+- [ENH] Implemented logic to allow for querying pipeline name and version [#322](https://github.com/neurobagel/query-tool/pull/322) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🚀 Enhancements
+
+- [FIX] Always prompt login if auth is enabled [#277](https://github.com/neurobagel/query-tool/pull/277) ([@surchs](https://github.com/surchs))
+- [ENH] Query tool ai UI integration [#261](https://github.com/neurobagel/query-tool/pull/261) (yourayachakravarty5@gmail.com [@Raya679](https://github.com/Raya679))
+- [MNT] Revert `Bump @typescript-eslint/eslint-plugin from 7.16.1 to 8.6.0` [#288](https://github.com/neurobagel/query-tool/pull/288) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [MNT] Removed build docker nightly workflow file [#292](https://github.com/neurobagel/query-tool/pull/292) ([@rmanaem](https://github.com/rmanaem))
+
+####  🧪 Tests
+
+- [MNT] Mocked API calls in `Auth` e2e test [#309](https://github.com/neurobagel/query-tool/pull/309) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 4
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Raya Chakravarty ([@Raya679](https://github.com/Raya679))
+- Raya679 (yourayachakravarty5@gmail.com)
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.4.0 (Fri Aug 09 2024)
 
 #### 💥 Breaking Changes
