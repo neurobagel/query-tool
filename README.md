@@ -148,9 +148,28 @@ You can verify the tool is running by watching for the` info messages from Vite 
 
 Having installed the dependencies, run the following command to enable husky `pre-commit` and `post-merge` hooks:
 
-```
+```bash
 npx husky install
 ```
+
+##### Docker compose testing environment for development
+
+Since the query tool relies on other neurobagel tools to function, their presence is often required during development. To facilitate this, a docker compose containing a complete testing environment has been created. To use it follow the steps below:
+
+1. Install `recipes` and `neurobagel_examples` submodules:
+
+```bash
+git submodule init
+git submodule update
+```
+
+2. Bring up the stack using the `test` profile:
+
+```bash
+docker compose --profile test up -d
+```
+
+_NOTE: Make sure your .env file in the root directory doesn't contain any of the environment variables used in the docker compose file as it will conflict with the configuration, since docker compose will try to use .env by default._
 
 ## Usage
 
