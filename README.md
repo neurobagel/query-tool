@@ -163,10 +163,10 @@ git submodule init
 git submodule update
 ```
 
-2. Bring up the stack using the `test` profile:
+2. Pull the latest images and bring up the stack using the `test` profile:
 
 ```bash
-docker compose --profile test up -d
+docker compose --profile test pull && docker compose --profile test up -d
 ```
 
 _NOTE: Make sure your .env file in the root directory doesn't contain any of the environment variables used in the docker compose file as it will conflict with the configuration, since docker compose will try to use .env by default._
