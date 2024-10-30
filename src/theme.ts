@@ -9,6 +9,13 @@ const NBTheme = createTheme({
       contrastText: '#fff',
     },
   },
+  components: {
+    MuiButton: {
+      defaultProps: {
+        sx: { textTransform: 'none' },
+      },
+    },
+  },
 });
 
 export default NBTheme;
