@@ -51,30 +51,43 @@ const ResultCard = memo(
             </Typography>
           </div>
           <div className="col-span-2 col-start-7">
-            <Tooltip
-              data-cy={`card-${datasetUUID}-available-pipelines-tooltip`}
-              title={
-                <Typography variant="body1">
-                  {Object.entries(pipelines)
-                    .flatMap(([name, versions]) =>
-                      versions.map((version) => `${name.slice(65)} ${version}`)
-                    )
-                    .map((pipeline) => (
-                      <Divider>{pipeline}</Divider>
-                    ))}
-                </Typography>
-              }
-              placement="top"
-            >
+            {Object.entries(pipelines).length === 0 ? (
               <Button
                 data-cy={`card-${datasetUUID}-available-pipelines-button`}
                 variant="contained"
+                disabled
                 className="shadow-none hover:shadow-none"
-                startIcon={<UnfoldMoreIcon />}
+                sx={{ textTransform: 'none' }}
               >
-                Available pipelines
+                No pipelines
               </Button>
-            </Tooltip>
+            ) : (
+              <Tooltip
+                data-cy={`card-${datasetUUID}-available-pipelines-tooltip`}
+                title={
+                  <Typography variant="body1">
+                    {Object.entries(pipelines)
+                      .flatMap(([name, versions]) =>
+                        versions.map((version) => `${name.slice(65)} ${version}`)
+                      )
+                      .map((pipeline) => (
+                        <Divider>{pipeline}</Divider>
+                      ))}
+                  </Typography>
+                }
+                placement="top"
+              >
+                <Button
+                  data-cy={`card-${datasetUUID}-available-pipelines-button`}
+                  variant="contained"
+                  className="shadow-none hover:shadow-none"
+                  startIcon={<UnfoldMoreIcon />}
+                  sx={{ textTransform: 'none' }}
+                >
+                  Available pipelines
+                </Button>
+              </Tooltip>
+            )}
           </div>
           <div className="col-span-2 col-start-11 justify-self-end">
             <ButtonGroup>
