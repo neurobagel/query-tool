@@ -4,19 +4,15 @@
 
 <div>
     <a href="https://github.com/neurobagel/query-tool/actions/workflows/pages/pages-build-deployment">
-        <img src="https://img.shields.io/website?down_color=CD5C5C&down_message=down&label=deployed%20app&style=flat-square&up_color=B0C4DE&up_message=live&url=https%3A%2F%2Fquery.neurobagel.org%2F" alt="deployed app">
-    </a>
+        <img src="https://img.shields.io/website?down_color=CD5C5C&down_message=down&label=deployed%20app&style=flat-square&up_color=B0C4DE&up_message=live&url=https%3A%2F%2Fquery.neurobagel.org%2F" alt="deployed app"></a>
     <a href="https://github.com/neurobagel/query-tool/actions/workflows/component-test.yaml">
-        <img src="https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/component-test.yaml?color=BDB76B&label=component test&style=flat-square" alt="component test">
-    </a>
+        <img src="https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/component-test.yaml?color=BDB76B&label=component test&style=flat-square" alt="component test"></a>
     <a href="https://github.com/neurobagel/query-tool/actions/workflows/e2e-test.yaml">
-        <img src="https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/e2e-test.yaml?color=8FBC8F&label=e2e test&style=flat-square" alt="e2e test">
-    </a>
+        <img src="https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/e2e-test.yaml?color=8FBC8F&label=e2e test&style=flat-square" alt="e2e test"></a>
     <a href="https://nodejs.org/en//">
-        <img src="https://img.shields.io/badge/node-20.9-CD5C5C?style=flat-square" alt="Node">
+        <img src="https://img.shields.io/badge/node-20.9-CD5C5C?style=flat-square" alt="Node"></a>
     <a href="LICENSE">
-        <img src="https://img.shields.io/github/license/neurobagel/query-tool?color=4682B4&style=flat-square" alt="GitHub license">
-    </a>
+        <img src="https://img.shields.io/github/license/neurobagel/query-tool?color=4682B4&style=flat-square" alt="GitHub license"></a>
 </div>
 <br>
 
@@ -152,9 +148,28 @@ You can verify the tool is running by watching for the` info messages from Vite 
 
 Having installed the dependencies, run the following command to enable husky `pre-commit` and `post-merge` hooks:
 
-```
+```bash
 npx husky install
 ```
+
+##### Docker compose testing environment for development
+
+Since the query tool relies on other neurobagel tools to function, their presence is often required during development. To facilitate this, a docker compose containing a complete testing environment has been created. To use it follow the steps below:
+
+1. Install `recipes` and `neurobagel_examples` submodules:
+
+```bash
+git submodule init
+git submodule update
+```
+
+2. Pull the latest images and bring up the stack using the `test` profile:
+
+```bash
+docker compose --profile test pull && docker compose --profile test up -d
+```
+
+_NOTE: Make sure your .env file in the root directory doesn't contain any of the environment variables used in the docker compose file as it will conflict with the configuration, since docker compose will try to use .env by default._
 
 ## Usage
 

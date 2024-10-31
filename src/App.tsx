@@ -6,13 +6,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
-import { queryURL, attributesURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
+import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
+  RetrievedPipelineVersions,
   NodeOption,
   FieldInput,
   FieldInputOption,
+  Pipelines,
   NodeError,
   QueryResponse,
   GoogleJWT,
@@ -31,6 +33,7 @@ function App() {
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
+  const [pipelines, setPipelines] = useState<Pipelines>({});
 
   const [alertDismissed, setAlertDismissed] = useState<boolean>(false);
 
@@ -47,6 +50,8 @@ function App() {
   const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<number | null>(null);
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
+  const [pipelineVersion, setPipelineVersion] = useState<FieldInput>(null);
+  const [pipelineName, setPipelineName] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -77,35 +82,39 @@ function App() {
   );
 
   useEffect(() => {
-    async function getAttributes(dataElementURI: string) {
+    async function getAttributes(NBResource: string, dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
-          `${attributesURL}${dataElementURI}`
+          `${baseAPIURL}${NBResource}/`
         );
         if (response.data.nodes_response_status === 'fail') {
-          enqueueSnackbar(`Failed to retrieve ${dataElementURI.slice(3)} options`, {
+          enqueueSnackbar(`Failed to retrieve ${NBResource} options`, {
             variant: 'error',
             action,
           });
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
-            enqueueSnackbar(
-              `Failed to retrieve ${dataElementURI.slice(3)} options from ${error.node_name}`,
-              { variant: 'warning', action }
-            );
+            enqueueSnackbar(`Failed to retrieve ${NBResource} options from ${error.node_name}`, {
+              variant: 'warning',
+              action,
+            });
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
-            enqueueSnackbar(`No ${dataElementURI.slice(3)} options were available`, {
+            enqueueSnackbar(`No ${NBResource} options were available`, {
               variant: 'info',
               action,
             });
-          } else if (response.data.responses[dataElementURI].some((item) => item.Label === null)) {
-            enqueueSnackbar(
-              `Warning: Missing labels were removed for ${dataElementURI.slice(3)} `,
-              { variant: 'warning', action }
-            );
+            // TODO: remove the second condition once pipeline labels are added
+          } else if (
+            response.data.responses[dataElementURI].some((item) => item.Label === null) &&
+            NBResource !== 'pipelines'
+          ) {
+            enqueueSnackbar(`Warning: Missing labels were removed for ${NBResource} `, {
+              variant: 'warning',
+              action,
+            });
             response.data.responses[dataElementURI] = response.data.responses[
               dataElementURI
             ].filter((item) => item.Label !== null);
@@ -117,15 +126,23 @@ function App() {
       }
     }
 
-    getAttributes('nb:Diagnosis').then((diagnosisResponse) => {
+    getAttributes('diagnoses', 'nb:Diagnosis').then((diagnosisResponse) => {
       if (diagnosisResponse !== null && diagnosisResponse.length !== 0) {
         setDiagnosisOptions(diagnosisResponse);
       }
     });
 
-    getAttributes('nb:Assessment').then((assessmentResponse) => {
+    getAttributes('assessments', 'nb:Assessment').then((assessmentResponse) => {
       if (assessmentResponse !== null && assessmentResponse.length !== 0) {
         setAssessmentOptions(assessmentResponse);
+      }
+    });
+
+    getAttributes('pipelines', 'nb:Pipeline').then((pipelineResponse) => {
+      if (pipelineResponse !== null && pipelineResponse.length !== 0) {
+        pipelineResponse.forEach((option) => {
+          setPipelines((prevPipelines) => ({ ...prevPipelines, [option.TermURL]: [] }));
+        });
       }
     });
 
@@ -148,6 +165,58 @@ function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    async function getPipelineVersions(pipelineURI: FieldInputOption) {
+      try {
+        const response: AxiosResponse<RetrievedPipelineVersions> = await axios.get(
+          `${baseAPIURL}pipelines/${pipelineURI.id}/versions`
+        );
+        if (response.data.nodes_response_status === 'fail') {
+          enqueueSnackbar(`Failed to retrieve ${pipelineURI.label} versions`, {
+            variant: 'error',
+            action,
+          });
+        } else {
+          // If any errors occurred, report them
+          response.data.errors.forEach((error) => {
+            enqueueSnackbar(
+              `Failed to retrieve ${pipelineURI.label} versions from ${error.node_name}`,
+              {
+                variant: 'warning',
+                action,
+              }
+            );
+          });
+          // If the results are empty, report that
+          if (Object.keys(response.data.responses[pipelineURI.id]).length === 0) {
+            enqueueSnackbar(`No ${pipelineURI.label} versions were available`, {
+              variant: 'info',
+              action,
+            });
+          }
+        }
+        return response.data.responses[pipelineURI.id];
+      } catch {
+        return [];
+      }
+    }
+    // Get pipeline versions if
+    // 1. A pipeline has been selected (this implementation only works for single value for pipeline name field)
+    // 2. This is the first time its being selected (i.e., we haven't retrieved pipeline versions before)
+    if (
+      pipelineName !== null &&
+      !Array.isArray(pipelineName) &&
+      pipelines[pipelineName.id].length === 0
+    ) {
+      getPipelineVersions(pipelineName).then((pipelineVersionsRespnse) => {
+        setPipelines((prevPipelines) => ({
+          ...prevPipelines,
+          [pipelineName.id]: pipelineVersionsRespnse,
+        }));
+      });
+    }
+  }, [pipelines, pipelineName]);
 
   useEffect(() => {
     if (availableNodes.length > 1) {
@@ -206,6 +275,12 @@ function App() {
         break;
       case 'Imaging modality':
         setImagingModality(value);
+        break;
+      case 'Pipeline version':
+        setPipelineVersion(value);
+        break;
+      case 'Pipeline name':
+        setPipelineName(value);
         break;
       default:
         break;
@@ -279,6 +354,8 @@ function App() {
     );
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
+    setQueryParam('pipeline_version', pipelineVersion, queryParams);
+    setQueryParam('pipeline_name', pipelineName, queryParams);
 
     // Remove keys with empty values
     const keysToDelete: string[] = [];
@@ -419,6 +496,9 @@ function App() {
             setIsControl={setIsControl}
             assessmentTool={assessmentTool}
             imagingModality={imagingModality}
+            pipelineVersion={pipelineVersion}
+            pipelineName={pipelineName}
+            pipelines={pipelines}
             updateCategoricalQueryParams={(label, value) =>
               updateCategoricalQueryParams(label, value)
             }

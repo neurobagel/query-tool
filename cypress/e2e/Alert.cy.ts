@@ -1,6 +1,7 @@
 import {
   failedAssessmentToolOptions,
   failedDiagnosisToolOptions,
+  pipelineOptions,
   nodeOptions,
 } from '../fixtures/mocked-responses';
 
@@ -16,19 +17,31 @@ describe('Alert', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Diagnosis',
+        url: 'diagnoses',
       },
       failedDiagnosisToolOptions
     ).as('getDiagnosisOptions');
     cy.intercept(
       {
         method: 'GET',
-        url: '/attributes/nb:Assessment',
+        url: '/assessments',
       },
       failedAssessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
     cy.visit('/?node=All');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature

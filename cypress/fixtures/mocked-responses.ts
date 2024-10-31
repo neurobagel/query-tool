@@ -15,6 +15,10 @@ const protectedDatasetSnippet = {
     'http://purl.org/nidash/nidm#FlowWeighted',
     'http://purl.org/nidash/nidm#T1Weighted',
   ],
+  available_pipelines: {
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
+  },
 };
 
 const unprotectedDatasetSnippet = {
@@ -39,6 +43,7 @@ const unprotectedDatasetSnippet = {
       assessment: ['https://www.cognitiveatlas.org/task/id/trm_4f2419c4a1646'],
       image_modal: [null],
       session_file_path: null,
+      completed_pipelines: {},
     },
     {
       sub_id: 'sub-300101',
@@ -56,12 +61,20 @@ const unprotectedDatasetSnippet = {
         'http://purl.org/nidash/nidm#T2Weighted',
       ],
       session_file_path: '/ds004116/sub-300101',
+      completed_pipelines: {
+        'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
+        'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
+      },
     },
   ],
   image_modals: [
     'http://purl.org/nidash/nidm#T2Weighted',
     'http://purl.org/nidash/nidm#FlowWeighted',
   ],
+  available_pipelines: {
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
+  },
 };
 
 // doesn't care
@@ -245,6 +258,82 @@ export const failedAssessmentToolOptions = {
   errors: [
     {
       node_name: 'NoAssessmentNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const pipelineOptions = {
+  errors: [],
+  responses: {
+    'nb:Pipeline': [
+      {
+        TermURL: 'np:fmriprep',
+        Label: 'fmriprep',
+      },
+      {
+        TermURL: 'np:freesurfer',
+        Label: 'freesurfer',
+      },
+    ],
+  },
+  nodes_response_status: 'success',
+};
+
+export const emptyPipelineOPtions = { ...pipelineOptions, responses: { 'nb:Pipeline': [] } };
+
+export const partiallyFailedPipelineOptions = {
+  ...pipelineOptions,
+  nodes_response_status: 'partial success',
+  errors: [
+    {
+      node_name: 'NoPipelineNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const failedPipelineOptions = {
+  ...emptyPipelineOPtions,
+  nodes_response_status: 'fail',
+  errors: [
+    {
+      node_name: 'NoPipelineNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const pipelineVersionOptions = {
+  errors: [],
+  responses: {
+    'np:fmriprep': ['0.2.3', '23.1.3'],
+  },
+  nodes_response_status: 'success',
+};
+
+export const emptyPipelineVersionOptions = {
+  ...pipelineVersionOptions,
+  responses: { 'np:fmriprep': [] },
+};
+
+export const partiallyFailedPipelineVersionOptions = {
+  ...pipelineVersionOptions,
+  nodes_response_status: 'partial success',
+  errors: [
+    {
+      node_name: 'NoPipelineVersionNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const failedPipelineVersionOptions = {
+  ...emptyPipelineVersionOptions,
+  nodes_response_status: 'fail',
+  errors: [
+    {
+      node_name: 'NoPipelineVersionNode',
       error: 'some error message',
     },
   ],

@@ -42,6 +42,11 @@ const props = {
   setIsControl: () => {},
   assessmentTool: null,
   imagingModality: null,
+  pipelineVersion: null,
+  pipelineName: null,
+  pipelines: {
+    'np:fmriprep': ['0.2.3', '23.1.3'],
+  },
   updateCategoricalQueryParams: () => {},
   updateContinuousQueryParams: () => {},
   loading: false,
@@ -66,6 +71,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
@@ -85,6 +93,8 @@ describe('QueryForm', () => {
     );
     cy.get('[data-cy="Assessment tool-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Imaging modality-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Pipeline name-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').should('be.visible');
     cy.get('[data-cy="submit-query-button"]').should('be.visible');
   });
   it('Fires updateCategoricalQueryParams event handler with the appropriate payload when a categorical field is selected', () => {
@@ -105,6 +115,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
@@ -136,6 +149,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
         updateContinuousQueryParams={updateContinuousQueryParamsSpy}
         loading={props.loading}
@@ -163,6 +179,9 @@ describe('QueryForm', () => {
         setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
         updateCategoricalQueryParams={props.updateCategoricalQueryParams}
         updateContinuousQueryParams={props.updateContinuousQueryParams}
         loading={props.loading}
