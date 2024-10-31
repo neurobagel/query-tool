@@ -71,4 +71,22 @@ describe('ResultCard', () => {
     cy.get('[data-cy="card-some uuid-checkbox"] input').check();
     cy.get('@onCheckboxChangeSpy').should('have.been.calledWith', props.datasetUUID);
   });
+  it('Displays a disabled button with "No pipelines" text when no pipelines are available', () => {
+    cy.mount(
+      <ResultCard
+        nodeName={props.nodeName}
+        datasetUUID={props.datasetUUID}
+        datasetName={props.datasetName}
+        datasetTotalSubjects={props.datasetTotalSubjects}
+        numMatchingSubjects={props.numMatchingSubjects}
+        imageModals={props.imageModals}
+        pipelines={{}}
+        checked={false}
+        onCheckboxChange={props.onCheckboxChange}
+      />
+    );
+    cy.get('[data-cy="card-some uuid-available-pipelines-button"]')
+      .should('be.disabled')
+      .should('contain', 'No pipelines');
+  });
 });
