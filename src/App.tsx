@@ -478,8 +478,8 @@ function App() {
 
       <div>{enableChatbot && <ChatbotFeature setResult={setResult} />}</div>
 
-      <div className="grid grid-cols-4 gap-4">
-        <div>
+      <div className="flex flex-wrap gap-3">
+        <div className="min-w-[380px] max-w-sm flex-1">
           <QueryForm
             availableNodes={availableNodes}
             diagnosisOptions={diagnosisOptions}
@@ -508,7 +508,7 @@ function App() {
             onSubmitQuery={() => submitQuery()}
           />
         </div>
-        <div className={loading ? 'col-span-3 animate-pulse' : 'col-span-3'}>
+        <div className="min-w-[640px] flex-1">
           <ResultContainer response={sortedResults || null} />
         </div>
       </div>
