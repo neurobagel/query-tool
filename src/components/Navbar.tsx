@@ -16,6 +16,7 @@ import Logout from '@mui/icons-material/Logout';
 import Login from '@mui/icons-material/Login';
 import Avatar from '@mui/material/Avatar';
 import { enableAuth } from '../utils/constants';
+import logo from '../assets/logo.png';
 
 function Navbar({
   isLoggedIn,
@@ -58,11 +59,7 @@ function Navbar({
     <Toolbar className="my-4" data-cy="navbar">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center">
-          <img
-            src="https://raw.githubusercontent.com/neurobagel/documentation/main/docs/imgs/logo/neurobagel_logo.png"
-            alt="Logo"
-            height="60"
-          />
+          <img src={logo} alt="Logo" height="60" />
           <div className="ml-4">
             <Badge badgeContent={latestReleaseTag}>
               <Typography variant="h5">Neurobagel Query</Typography>

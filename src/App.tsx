@@ -25,8 +25,9 @@ import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
-import './App.css';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
+import './App.css';
+import logo from './assets/logo.png';
 
 function App() {
   // Screen is considered small if the width is less than 768px (according to tailwind docs)
@@ -513,8 +514,18 @@ function App() {
             onSubmitQuery={() => submitQuery()}
           />
         </div>
-        <div className="min-w-[640px] flex-1">
-          <ResultContainer response={sortedResults || null} />
+        <div
+          className={
+            loading
+              ? 'flex flex-1 animate-pulse items-center justify-center'
+              : 'min-w-[600px] flex-1'
+          }
+        >
+          {loading ? (
+            <img src={logo} alt="Logo" className="max-h-20 animate-bounce" />
+          ) : (
+            <ResultContainer response={sortedResults || null} />
+          )}
         </div>
       </div>
     </>
