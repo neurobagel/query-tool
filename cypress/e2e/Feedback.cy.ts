@@ -5,7 +5,7 @@ import {
   nodeOptions,
 } from '../fixtures/mocked-responses';
 
-describe('Alerts', () => {
+describe('Feedback', () => {
   it('Correctly displays and dismisses the alert', () => {
     cy.intercept(
       {
