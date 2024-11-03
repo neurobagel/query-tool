@@ -10,7 +10,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 
 function SmallScreenSizeDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <Dialog open={open} onClose={onClose} data-cy="screen-size-dialog">
+    <Dialog open={open} onClose={onClose} data-cy="small-screen-size-dialog">
       <DialogTitle className="flex flex-row gap-x-1">
         <WarningIcon color="warning" /> Unsupported Screen Size!
       </DialogTitle>
@@ -22,7 +22,7 @@ function SmallScreenSizeDialog({ open, onClose }: { open: boolean; onClose: () =
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} data-cy="close-screen-size-dialog-button">
+        <Button onClick={onClose} data-cy="close-small-screen-size-dialog-button">
           Continue
         </Button>
       </DialogActions>
