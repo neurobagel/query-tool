@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Grow, IconButton } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
@@ -25,8 +26,13 @@ import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
 import './App.css';
+import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 
 function App() {
+  // Screen is considered small if the width is less than 768px (according to tailwind docs)
+  const [isScreenSizeSmall, setIsScreenSizeSmall] = useState<boolean>(
+    useMediaQuery('(max-width: 767px)')
+  );
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
@@ -427,15 +433,14 @@ function App() {
 
   return (
     <>
-      <div>
-        {enableAuth && (
-          <AuthDialog
-            open={openAuthDialog}
-            onAuth={(credential) => login(credential)}
-            onClose={() => setOpenAuthDialog(false)}
-          />
-        )}
-      </div>
+      {enableAuth && (
+        <AuthDialog
+          open={openAuthDialog}
+          onAuth={(credential) => login(credential)}
+          onClose={() => setOpenAuthDialog(false)}
+        />
+      )}
+      <SmallScreenSizeDialog open={isScreenSizeSmall} onClose={() => setIsScreenSizeSmall(false)} />
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -476,7 +481,7 @@ function App() {
         </>
       )}
 
-      <div>{enableChatbot && <ChatbotFeature setResult={setResult} />}</div>
+      {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
       <div className="flex flex-wrap gap-3">
         <div className="min-w-[380px] max-w-sm flex-1">
