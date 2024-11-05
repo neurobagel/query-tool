@@ -21,7 +21,6 @@ function CategoricalField({
           {...params}
           label={label}
           placeholder="Select an option"
-          className="w-full"
         />
       )}
       multiple={multiple}
