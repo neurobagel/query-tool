@@ -92,8 +92,8 @@ function QueryForm({
     minNumImagingSessionsHelperText !== '';
 
   return (
-    <div className="grid grid-cols-2 grid-rows-12 gap-2">
-      <div className="col-span-2">
+    <div className="flex flex-col gap-2">
+      <div>
         <CategoricalField
           label="Neurobagel graph"
           options={availableNodes.map((n) => ({
@@ -105,14 +105,14 @@ function QueryForm({
           inputValue={selectedNode}
         />
       </div>
-      <div className="row-start-2">
+      <div>
         <ContinuousField
           helperText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
           label="Minimum age"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      <div className="row-start-2">
+      <div>
         <ContinuousField
           helperText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
           label="Maximum age"
@@ -120,13 +120,13 @@ function QueryForm({
         />
       </div>
       {minAgeExceedsMaxAge && (
-        <div className="col-span-2">
+        <div>
           <FormHelperText error>
             Value of maximum age must be greater than or equal to value of minimum age
           </FormHelperText>
         </div>
       )}
-      <div className="col-span-2">
+      <div>
         <CategoricalField
           label="Sex"
           options={Object.entries(sexes).map(([key, value]) => ({
@@ -137,9 +137,9 @@ function QueryForm({
           inputValue={sex}
         />
       </div>
-      <div className="col-span-2 row-start-4">
-        <div className="grid grid-cols-12 items-center gap-4">
-          <div className="col-span-9">
+      <div>
+        <div className="flex flex-row items-center gap-3">
+          <div className="flex-1">
             <CategoricalField
               label="Diagnosis"
               options={diagnosisOptions.map((d) => ({
@@ -151,7 +151,7 @@ function QueryForm({
               disabled={isControl}
             />
           </div>
-          <div>
+          <div className="flex-1">
             <FormControlLabel
               data-cy="healthy-control-checkbox"
               control={<Checkbox name="healthyControl" />}
@@ -161,21 +161,21 @@ function QueryForm({
           </div>
         </div>
       </div>
-      <div className="col-span-2 row-start-5">
+      <div>
         <ContinuousField
           helperText={minNumImagingSessionsHelperText}
           label="Minimum number of imaging sessions"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      <div className="col-span-2 row-start-6">
+      <div>
         <ContinuousField
           helperText={minNumPhenotypicSessionsHelperText}
           label="Minimum number of phenotypic sessions"
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
-      <div className="col-span-2 row-start-7">
+      <div>
         <CategoricalField
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label, id: a.TermURL }))}
@@ -183,7 +183,7 @@ function QueryForm({
           inputValue={assessmentTool}
         />
       </div>
-      <div className="col-span-2 row-start-8">
+      <div>
         <CategoricalField
           label="Imaging modality"
           options={Object.entries(modalities).map(([, value]) => ({
@@ -194,7 +194,7 @@ function QueryForm({
           inputValue={imagingModality}
         />
       </div>
-      <div className="col-span-2 row-start-9">
+      <div>
         <CategoricalField
           label="Pipeline name"
           options={Object.keys(pipelines).map((pipelineURI) => ({
@@ -211,7 +211,7 @@ function QueryForm({
           title={<Typography variant="body1">Please select a pipeline name</Typography>}
           placement="right"
         >
-          <div className="col-span-2 row-start-10">
+          <div>
             <CategoricalField
               label="Pipeline version"
               options={[]}
@@ -222,7 +222,7 @@ function QueryForm({
           </div>
         </Tooltip>
       ) : (
-        <div className="col-span-2 row-start-10">
+        <div>
           <CategoricalField
             label="Pipeline version"
             options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
@@ -235,7 +235,7 @@ function QueryForm({
         </div>
       )}
 
-      <div className={pipelineName ? 'col-span-2 row-start-11' : 'row-start-11'}>
+      <div>
         <Button
           data-cy="submit-query-button"
           disabled={disableSubmit}
