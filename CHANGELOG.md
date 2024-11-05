@@ -1,3 +1,20 @@
+# v0.6.0 (Tue Nov 05 2024)
+
+#### 🚀 Enhancements
+
+- [ENH] Made UI responsive for smaller screens [#339](https://github.com/neurobagel/query-tool/pull/339) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Implemented "no pipelines" button [#336](https://github.com/neurobagel/query-tool/pull/336) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [MNT] Created a complete test environment with docker compose [#325](https://github.com/neurobagel/query-tool/pull/325) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 1
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.5.0 (Thu Oct 24 2024)
 
 :tada: This release contains work from a new contributor! :tada:
