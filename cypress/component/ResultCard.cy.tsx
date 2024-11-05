@@ -41,12 +41,13 @@ describe('ResultCard', () => {
     cy.get('[data-cy="card-some uuid"]').should('contain', '5 subjects match / 10 total subjects');
     cy.get('[data-cy="card-some uuid-checkbox"] input').should('be.checked');
     cy.get('[data-cy="card-some uuid"] button')
+      .eq(1)
       .should('contain', 'ASL')
-      .should('have.class', 'bg-zinc-800');
+      .should('have.css', 'background-color', 'rgb(113, 113, 122)');
     cy.get('[data-cy="card-some uuid"] button')
       .eq(2)
       .should('contain', 'DWI')
-      .should('have.class', 'bg-red-700');
+      .should('have.css', 'background-color', 'rgb(205, 92, 92)');
 
     cy.get('[data-cy="card-some uuid-available-pipelines-button"]').trigger('mouseover', {
       force: true,

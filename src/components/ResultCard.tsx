@@ -35,22 +35,24 @@ const ResultCard = memo(
   }) => (
     <Card data-cy={`card-${datasetUUID}`}>
       <CardContent>
-        <div className="grid grid-cols-12 items-center gap-2">
-          <div className="col-end-1">
-            <Checkbox
-              data-cy={`card-${datasetUUID}-checkbox`}
-              checked={checked}
-              onChange={() => onCheckboxChange(datasetUUID)}
-            />
+        <div className="grid grid-cols-3 items-center">
+          <div className="flex flex-row items-center">
+            <div>
+              <Checkbox
+                data-cy={`card-${datasetUUID}-checkbox`}
+                checked={checked}
+                onChange={() => onCheckboxChange(datasetUUID)}
+              />
+            </div>
+            <div>
+              <Typography variant="h5">{datasetName}</Typography>
+              <Typography variant="subtitle1">from {nodeName}</Typography>
+              <Typography variant="subtitle2">
+                {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
+              </Typography>
+            </div>
           </div>
-          <div className="col-span-6 col-start-1">
-            <Typography variant="h5">{datasetName}</Typography>
-            <Typography variant="subtitle1">from {nodeName}</Typography>
-            <Typography variant="subtitle2">
-              {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
-            </Typography>
-          </div>
-          <div className="col-span-2 col-start-7">
+          <div className="justify-self-center">
             {Object.entries(pipelines).length === 0 ? (
               <Button
                 data-cy={`card-${datasetUUID}-available-pipelines-button`}
@@ -89,13 +91,20 @@ const ResultCard = memo(
               </Tooltip>
             )}
           </div>
-          <div className="col-span-2 col-start-11 justify-self-end">
+          <div className="justify-self-end">
             <ButtonGroup>
               {imageModals.sort().map((modal) => (
                 <Button
                   key={modal}
                   variant="contained"
-                  className={`${modalities[modal].bgColor} shadow-none hover:bg-gray-400 hover:shadow-none`}
+                  disableElevation
+                  sx={{
+                    backgroundColor: modalities[modal].bgColor,
+                    '&:hover': {
+                      backgroundColor: modalities[modal].bgColor,
+                      cursor: 'default',
+                    },
+                  }}
                 >
                   {modalities[modal].name}
                 </Button>

@@ -207,24 +207,26 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
 
     return (
       <>
-        <div>
-          <FormControlLabel
-            data-cy="select-all-checkbox"
-            label="Select all datasets"
-            control={
-              <Checkbox
-                onChange={(event) => handleSelectAll(event.target.checked)}
-                checked={selectAll}
-              />
-            }
-          />
+        <div className="flex flex-row items-baseline justify-between">
+          <div>
+            <FormControlLabel
+              data-cy="select-all-checkbox"
+              label="Select all datasets"
+              control={
+                <Checkbox
+                  onChange={(event) => handleSelectAll(event.target.checked)}
+                  checked={selectAll}
+                />
+              }
+            />
+          </div>
+          <div>
+            <Typography variant="body1" data-cy="summary-stats">
+              {summaryStats}
+            </Typography>
+          </div>
         </div>
-        <div className="col-end-5 justify-self-end">
-          <Typography variant="body1" data-cy="summary-stats">
-            {summaryStats}
-          </Typography>
-        </div>
-        <div className="col-span-4 h-[70vh] space-y-2 overflow-auto">
+        <div className="h-[70vh] space-y-1 overflow-auto">
           {response.responses.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
@@ -240,37 +242,36 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
             />
           ))}
         </div>
-        <div className="col-span-1">
-          <Button
-            variant="contained"
-            data-cy="how-to-get-data-dialog-button"
-            onClick={() => setOpenDialog(true)}
-          >
-            How to get data
-          </Button>
-          <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
-        </div>
-        <div className="col-span-3 space-x-2 justify-self-end">
-          <DownloadResultButton
-            identifier="participant-level"
-            disabled={download.length === 0}
-            handleClick={(identifier) => downloadResults(identifier)}
-          />
-          <DownloadResultButton
-            identifier="dataset-level"
-            disabled={download.length === 0}
-            handleClick={(identifier) => downloadResults(identifier)}
-          />
+        <div className="mt-[2px] flex flex-row flex-wrap justify-between">
+          <div>
+            <Button
+              variant="contained"
+              data-cy="how-to-get-data-dialog-button"
+              onClick={() => setOpenDialog(true)}
+            >
+              How to get data
+            </Button>
+            <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
+          </div>
+          <div className="space-x-1">
+            <DownloadResultButton
+              identifier="participant-level"
+              disabled={download.length === 0}
+              handleClick={(identifier) => downloadResults(identifier)}
+            />
+            <DownloadResultButton
+              identifier="dataset-level"
+              disabled={download.length === 0}
+              handleClick={(identifier) => downloadResults(identifier)}
+            />
+          </div>
         </div>
       </>
     );
   }
 
   return (
-    <div className="grid grid-cols-4 grid-rows-2" data-cy="result-container">
-      <div className="col-span-4">
-        <Typography variant="h5">Results</Typography>
-      </div>
+    <div className="flex flex-col" data-cy="result-container">
       {renderResults()}
     </div>
   );
