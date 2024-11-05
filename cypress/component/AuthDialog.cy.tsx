@@ -6,7 +6,7 @@ const props = {
   onClose: () => {},
 };
 
-describe('ContinuousField', () => {
+describe('AuthDialog', () => {
   it('Displays a MUI dialog with the title and "sing in with google" button', () => {
     cy.mount(
       <GoogleOAuthProvider clientId="mock-client-id">

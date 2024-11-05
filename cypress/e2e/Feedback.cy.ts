@@ -5,7 +5,7 @@ import {
   nodeOptions,
 } from '../fixtures/mocked-responses';
 
-describe('Alert', () => {
+describe('Feedback', () => {
   it('Correctly displays and dismisses the alert', () => {
     cy.intercept(
       {
@@ -70,5 +70,12 @@ describe('Alert', () => {
 
     cy.get('[data-cy="openneuro-alert"]').find('[data-testid="CloseIcon"]').click();
     cy.get('[data-cy="openneuro-alert"]').should('not.exist');
+  });
+  it.only('Displays and closes small screen size dialog', () => {
+    cy.viewport(766, 500);
+    cy.visit('/');
+    cy.get('[data-cy="small-screen-size-dialog"]').should('be.visible');
+    cy.get('[data-cy="close-small-screen-size-dialog-button"]').click();
+    cy.get('[data-cy="small-screen-size-dialog"]').should('not.exist');
   });
 });

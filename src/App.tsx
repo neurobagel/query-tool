@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Grow, IconButton } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
@@ -24,9 +25,15 @@ import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
+import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import './App.css';
+import logo from './assets/logo.png';
 
 function App() {
+  // Screen is considered small if the width is less than 768px (according to tailwind docs)
+  const [isScreenSizeSmall, setIsScreenSizeSmall] = useState<boolean>(
+    useMediaQuery('(max-width: 767px)')
+  );
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
@@ -427,15 +434,14 @@ function App() {
 
   return (
     <>
-      <div>
-        {enableAuth && (
-          <AuthDialog
-            open={openAuthDialog}
-            onAuth={(credential) => login(credential)}
-            onClose={() => setOpenAuthDialog(false)}
-          />
-        )}
-      </div>
+      {enableAuth && (
+        <AuthDialog
+          open={openAuthDialog}
+          onAuth={(credential) => login(credential)}
+          onClose={() => setOpenAuthDialog(false)}
+        />
+      )}
+      <SmallScreenSizeDialog open={isScreenSizeSmall} onClose={() => setIsScreenSizeSmall(false)} />
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -476,10 +482,11 @@ function App() {
         </>
       )}
 
-      <div>{enableChatbot && <ChatbotFeature setResult={setResult} />}</div>
+      {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
-      <div className="grid grid-cols-4 gap-4">
-        <div>
+      <div className="flex flex-wrap gap-3">
+        {/* 380px is currently the smallest width for the query form without dropdowns being affected */}
+        <div className="min-w-[380px] max-w-sm flex-1">
           <QueryForm
             availableNodes={availableNodes}
             diagnosisOptions={diagnosisOptions}
@@ -508,8 +515,18 @@ function App() {
             onSubmitQuery={() => submitQuery()}
           />
         </div>
-        <div className={loading ? 'col-span-3 animate-pulse' : 'col-span-3'}>
-          <ResultContainer response={sortedResults || null} />
+        <div
+          className={
+            loading
+              ? 'flex flex-1 animate-pulse items-center justify-center'
+              : 'min-w-[600px] flex-1'
+          }
+        >
+          {loading ? (
+            <img src={logo} alt="Logo" className="max-h-20 animate-bounce" />
+          ) : (
+            <ResultContainer response={sortedResults || null} />
+          )}
         </div>
       </div>
     </>
