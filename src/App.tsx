@@ -485,6 +485,7 @@ function App() {
       {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
       <div className="flex flex-wrap gap-3">
+        {/* 380px is currently the smallest width for the query form without dropdowns being affected */}
         <div className="min-w-[380px] max-w-sm flex-1">
           <QueryForm
             availableNodes={availableNodes}
