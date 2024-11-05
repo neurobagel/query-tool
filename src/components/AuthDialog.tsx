@@ -3,8 +3,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import { GoogleLogin } from '@react-oauth/google';
 
 function AuthDialog({
@@ -16,11 +14,8 @@ function AuthDialog({
   onAuth: (credential: string | undefined) => void;
   onClose: () => void;
 }) {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
   return (
-    <Dialog fullScreen={fullScreen} open={open} onClose={onClose} data-cy="auth-dialog">
+    <Dialog open={open} onClose={onClose} data-cy="auth-dialog">
       <DialogTitle>
         You must log in to a trusted identity provider in order to query all available nodes!
       </DialogTitle>
