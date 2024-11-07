@@ -34,7 +34,6 @@ _This section is for the PR reviewer_
 - [ ] PR links to GitHub issue with mention `Closes #XXXX`
 - [ ] Tests pass
 - [ ] Checks pass
-- [ ] If the PR changes the participant-level and/or the dataset-level result file, the [`query-tool-results` files](https://github.com/neurobagel/neurobagel_examples/tree/main/query-tool-results) in the  [neurobagel_examples repo](https://github.com/neurobagel/neurobagel_examples/) have been regenerated
 
 For new features:
 - [ ] Tests have been added
