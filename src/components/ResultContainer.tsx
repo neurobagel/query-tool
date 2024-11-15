@@ -73,21 +73,25 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
       const tsvRows = [];
       const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
 
-      if (buttonIdentifier === 'participant-level') {
+      if (buttonIdentifier === 'cohort-participant') {
         const headers = [
-          'DatasetID',
+          'DatasetName',
+          'PortalURI',
+          'NumMatchingSubjects',
           'SubjectID',
           'SessionID',
+          'SessionFilePath',
           'SessionType',
           'Age',
           'Sex',
           'Diagnosis',
           'Assessment',
-          'SessionFilePath',
-          'NumPhenotypicSessions',
-          'NumImagingSessions',
-          'Modality',
-          'CompletedPipelines',
+          'NumMatchingPhenotypicSessions',
+          'NumMatchingImagingSessions',
+          'SessionImagingModalities',
+          'SessionCompletedPipelines',
+          'DatasetImagingModalities',
+          'DatasetPipelines',
         ].join('\t');
         tsvRows.push(headers);
 
@@ -95,19 +99,23 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           if (res.records_protected) {
             tsvRows.push(
               [
-                res.dataset_uuid,
+                res.dataset_name.replace('\n', ' '),
+                res.dataset_portal_uri,
+                res.num_matching_subjects,
                 'protected', // subject_id
                 'protected', // session_id
+                'protected', // session_file_path
                 'protected', // session_type
                 'protected', // age
                 'protected', // sex
                 'protected', // diagnosis
                 'protected', // assessment
-                'protected', // session_file_path
-                'protected', // num_phenotypic_sessions
-                'protected', // num_imaging_sessions
-                'protected', // image_modal
-                'protected', // completed_pipelines
+                'protected', // num_matching_phenotypic_sessions
+                'protected', // num_matching_imaging_sessions
+                'protected', // session_imaging_modality
+                'protected', // session_completed_pipelines
+                res.image_modals?.join(', '),
+                parsePipelinesInfoToString(res.available_pipelines),
               ].join('\t')
             );
           } else {
@@ -115,19 +123,23 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
             res.subject_data.forEach((subject) => {
               tsvRows.push(
                 [
-                  res.dataset_uuid,
+                  res.dataset_name.replace('\n', ' '),
+                  res.dataset_portal_uri,
+                  res.num_matching_subjects,
                   subject.sub_id,
                   subject.session_id,
+                  subject.session_file_path,
                   subject.session_type,
                   subject.age,
                   subject.sex,
                   subject.diagnosis?.join(', '),
                   subject.assessment?.join(', '),
-                  subject.session_file_path,
                   subject.num_matching_phenotypic_sessions,
                   subject.num_matching_imaging_sessions,
                   subject.image_modal?.join(', '),
                   parsePipelinesInfoToString(subject.completed_pipelines),
+                  res.image_modals?.join(', '),
+                  parsePipelinesInfoToString(res.available_pipelines),
                 ].join('\t')
               );
             });
@@ -135,26 +147,60 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
         });
       } else {
         const headers = [
-          'DatasetID',
           'DatasetName',
           'PortalURI',
-          'NumMatchingSubjects',
-          'AvailableImageModalities',
-          'AvailablePipelines',
+          'SubjectID',
+          'SessionID',
+          'SessionFilePath',
+          'SessionType',
+          'NumMatchingPhenotypicSessions',
+          'NumMatchingImagingSessions',
+          'SessionImagingModalities',
+          'SessionCompletedPipelines',
+          'DatasetImagingModalities',
+          'DatasetPipelines',
         ].join('\t');
         tsvRows.push(headers);
 
         datasets.forEach((res) => {
-          tsvRows.push(
-            [
-              res.dataset_uuid,
-              res.dataset_name.replace('\n', ' '),
-              res.dataset_portal_uri,
-              res.num_matching_subjects,
-              res.image_modals?.join(', '),
-              parsePipelinesInfoToString(res.available_pipelines),
-            ].join('\t')
-          );
+          if (res.records_protected) {
+            tsvRows.push(
+              [
+                res.dataset_name.replace('\n', ' '),
+                res.dataset_portal_uri,
+                'protected', // subject_id
+                'protected', // session_id
+                'protected', // session_file_path
+                'protected', // session_type
+                'protected', // num_matching_phenotypic_sessions
+                'protected', // num_matching_imaging_sessions
+                'protected', // session_imaging_modality
+                'protected', // session_completed_pipelines
+                res.image_modals?.join(', '),
+                parsePipelinesInfoToString(res.available_pipelines),
+              ].join('\t')
+            );
+          } else {
+            // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
+            res.subject_data.forEach((subject) => {
+              tsvRows.push(
+                [
+                  res.dataset_name.replace('\n', ' '),
+                  res.dataset_portal_uri,
+                  subject.sub_id,
+                  subject.session_id,
+                  subject.session_file_path,
+                  subject.session_type,
+                  subject.num_matching_phenotypic_sessions,
+                  subject.num_matching_imaging_sessions,
+                  subject.image_modal?.join(', '),
+                  parsePipelinesInfoToString(subject.completed_pipelines),
+                  res.image_modals?.join(', '),
+                  parsePipelinesInfoToString(res.available_pipelines),
+                ].join('\t')
+              );
+            });
+          }
         });
       }
 
@@ -255,7 +301,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           </div>
           <div className="space-x-1">
             <DownloadResultButton
-              identifier="participant-level"
+              identifier="cohort-participant"
               disabled={download.length === 0}
               handleClick={(identifier) => downloadResults(identifier)}
             />
