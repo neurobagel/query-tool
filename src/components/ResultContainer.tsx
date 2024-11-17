@@ -142,7 +142,7 @@ function ResultContainer({
       const tsvRows = [];
       const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
 
-      if (buttonIdentifier === 'cohort-participant') {
+      if (buttonIdentifier === 'cohort participant') {
         const headers = [
           'DatasetName',
           'PortalURI',
@@ -292,7 +292,7 @@ function ResultContainer({
     const element = document.createElement('a');
     const encodedTSV = encodeURIComponent(generateTSVString(buttonIdentifier));
     element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
-    element.setAttribute('download', `${buttonIdentifier}-results.tsv`);
+    element.setAttribute('download', `${buttonIdentifier} results.tsv`);
 
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -375,16 +375,16 @@ function ResultContainer({
             >
               How to get data
             </Button>
-            <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
+            <GetDataDialog
+              open={openDialog}
+              onClose={() => setOpenDialog(false)}
+              disableDownloadResultsButton={download.length === 0}
+              handleDownloadResultButtonClick={(identifier) => downloadResults(identifier)}
+            />
           </div>
           <div className="space-x-1">
             <DownloadResultButton
-              identifier="cohort-participant"
-              disabled={download.length === 0}
-              handleClick={(identifier) => downloadResults(identifier)}
-            />
-            <DownloadResultButton
-              identifier="dataset-level"
+              identifier="cohort participant"
               disabled={download.length === 0}
               handleClick={(identifier) => downloadResults(identifier)}
             />
