@@ -12,7 +12,7 @@ describe('Results TSV', () => {
     // Because the auth dialog will overlap a lot of the UI and thus fail the tests
     cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
-  it.only('Removes a newline character from a dataset name in the downloaded dataset-level results file', () => {
+  it('Removes a newline character from a dataset name in the downloaded dataset-level results file', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
