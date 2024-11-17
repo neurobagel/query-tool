@@ -56,7 +56,7 @@ describe('Results TSV', () => {
   });
 });
 describe('Unprotected response', () => {
-  it.only('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
+  it('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
     cy.intercept('query?*', unprotectedResponse).as('call');
     cy.visit('/');
     // TODO: remove this
