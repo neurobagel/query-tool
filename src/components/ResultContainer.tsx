@@ -1,11 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
-import { QueryResponse, Pipelines } from '../utils/types';
+import { QueryResponse, Pipelines, AttributeOption } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import GetDataDialog from './GetDataDialog';
+import { sexes, modalities } from '../utils/constants';
 
-function ResultContainer({ response }: { response: QueryResponse | null }) {
+function ResultContainer({
+  diagnosisOptions,
+  assessmentOptions,
+  response,
+}: {
+  diagnosisOptions: AttributeOption[];
+  assessmentOptions: AttributeOption[];
+  response: QueryResponse | null;
+}) {
   const [download, setDownload] = useState<string[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const selectAll: boolean = response
@@ -58,6 +67,66 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
     }
   }, [response]);
 
+  function convertURIToLabel(
+    type: string,
+    uri: string | string[] | null
+  ): string | string[] | null {
+    // Handle array of URIs
+    if (Array.isArray(uri)) {
+      return uri.map((singleUri) => convertURIToLabel(type, singleUri)).join(', ');
+    }
+
+    if (!uri) {
+      return uri;
+    }
+
+    switch (type) {
+      case 'sex': {
+        const entry = Object.entries(sexes).find(([, value]) => {
+          const [, id] = value.split(':');
+          return uri.includes(id);
+        });
+        return entry ? entry[0] : uri;
+      }
+
+      case 'sessionType':
+        if (uri.includes('Imaging')) {
+          return 'Imaging';
+        }
+        if (uri.includes('Phenotypic')) {
+          return 'Phenotypic';
+        }
+        return uri;
+
+      case 'diagnosis': {
+        const diagnosis = diagnosisOptions.find((d) => {
+          const [, id] = d.TermURL.split(':');
+          return uri.includes(id);
+        });
+        return diagnosis ? diagnosis.Label : uri;
+      }
+
+      case 'assessment': {
+        const assessment = assessmentOptions.find((a) => {
+          const [, id] = a.TermURL.split(':');
+          return uri.includes(id);
+        });
+        return assessment ? assessment.Label : uri;
+      }
+
+      case 'modality': {
+        const modalityKey = Object.keys(modalities).find((key) => key === uri);
+        return modalityKey ? modalities[modalityKey].label : uri;
+      }
+
+      case 'pipeline':
+        return uri.slice(65);
+
+      default:
+        return uri;
+    }
+  }
+
   function parsePipelinesInfoToString(pipelines: Pipelines) {
     return pipelines
       ? Object.entries(pipelines)
@@ -65,7 +134,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
             (versions as string[]).map((version: string) => `${name} ${version}`)
           )
           .join(', ')
-      : {};
+      : '';
   }
 
   function generateTSVString(buttonIdentifier: string) {
@@ -114,8 +183,11 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                 'protected', // num_matching_imaging_sessions
                 'protected', // session_imaging_modality
                 'protected', // session_completed_pipelines
-                res.image_modals?.join(', '),
-                parsePipelinesInfoToString(res.available_pipelines),
+                convertURIToLabel('modality', res.image_modals),
+                convertURIToLabel(
+                  'pipeline',
+                  parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                ),
               ].join('\t')
             );
           } else {
@@ -129,17 +201,23 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
                   subject.sub_id,
                   subject.session_id,
                   subject.session_file_path,
-                  subject.session_type,
+                  convertURIToLabel('sessionType', subject.session_type),
                   subject.age,
-                  subject.sex,
-                  subject.diagnosis?.join(', '),
-                  subject.assessment?.join(', '),
+                  convertURIToLabel('sex', subject.sex),
+                  convertURIToLabel('diagnosis', subject.diagnosis),
+                  convertURIToLabel('assessment', subject.assessment),
                   subject.num_matching_phenotypic_sessions,
                   subject.num_matching_imaging_sessions,
-                  subject.image_modal?.join(', '),
-                  parsePipelinesInfoToString(subject.completed_pipelines),
-                  res.image_modals?.join(', '),
-                  parsePipelinesInfoToString(res.available_pipelines),
+                  convertURIToLabel('modality', subject.image_modal),
+                  convertURIToLabel(
+                    'pipeline',
+                    parsePipelinesInfoToString(subject.completed_pipelines).split(', ')
+                  ),
+                  convertURIToLabel('modality', res.image_modals),
+                  convertURIToLabel(
+                    'pipeline',
+                    parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                  ),
                 ].join('\t')
               );
             });

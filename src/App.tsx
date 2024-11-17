@@ -525,7 +525,11 @@ function App() {
           {loading ? (
             <img src={logo} alt="Logo" className="max-h-20 animate-bounce" />
           ) : (
-            <ResultContainer response={sortedResults || null} />
+            <ResultContainer
+              response={sortedResults || null}
+              diagnosisOptions={diagnosisOptions}
+              assessmentOptions={assessmentOptions}
+            />
           )}
         </div>
       </div>
