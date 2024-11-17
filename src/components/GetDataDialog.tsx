@@ -57,7 +57,7 @@ function GetDataDialog({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => onClose()} autoFocus>
+        <Button data-cy="get-data-dialog-close-button" onClick={() => onClose()} autoFocus>
           Close
         </Button>
       </DialogActions>
