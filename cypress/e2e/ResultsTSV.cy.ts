@@ -10,22 +10,7 @@ describe('Results TSV', () => {
     cy.intercept('GET', 'query*', (req) => {
       req.reply(mixedResponse);
     }).as('call');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/diagnoses',
-      },
-      diagnosisOptions
-    ).as('getDiagnosisOptions');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/assessments',
-      },
-      assessmentToolOptions
-    ).as('getAssessmentToolOptions');
     cy.visit('/');
-    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
@@ -78,7 +63,22 @@ describe('Results TSV', () => {
 describe('Unprotected response', () => {
   it('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
     cy.intercept('query?*', unprotectedResponse).as('call');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/diagnoses',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/assessments',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
     cy.visit('/');
+    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
