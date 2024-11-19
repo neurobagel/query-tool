@@ -154,6 +154,10 @@ export const diagnosisOptions = {
         TermURL: 'snomed:127295002',
         Label: 'Traumatic brain injury',
       },
+      {
+        TermURL: 'snomed:370143000',
+        Label: 'Major depressive disorder',
+      },
     ],
   },
   nodes_response_status: 'success',
@@ -230,6 +234,10 @@ export const assessmentToolOptions = {
       {
         TermURL: 'cogatlas:tsk_4a57abb949e1a',
         Label: 'stop signal task',
+      },
+      {
+        TermURL: 'cogatlas:trm_4f2419c4a1646',
+        Label: 'multisource interference task',
       },
     ],
   },

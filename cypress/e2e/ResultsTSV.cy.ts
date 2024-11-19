@@ -1,11 +1,31 @@
-import { mixedResponse, unprotectedResponse } from '../fixtures/mocked-responses';
+import {
+  mixedResponse,
+  unprotectedResponse,
+  diagnosisOptions,
+  assessmentToolOptions,
+} from '../fixtures/mocked-responses';
 
 describe('Results TSV', () => {
   beforeEach(() => {
     cy.intercept('GET', 'query*', (req) => {
       req.reply(mixedResponse);
     }).as('call');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/diagnoses',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/assessments',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
     cy.visit('/');
+    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
