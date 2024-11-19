@@ -82,9 +82,9 @@ function ResultContainer({
 
     switch (type) {
       case 'sex': {
-        const entry = Object.entries(sexes).find(([, value]) => {
-          const [, id] = value.split(':');
-          return uri.includes(id);
+        const entry = Object.entries(sexes).find(([, term_IRI]) => {
+          const [, uniqueIdentifier] = term_IRI.split(':');
+          return uri.includes(uniqueIdentifier);
         });
         return entry ? entry[0] : uri;
       }
@@ -119,8 +119,10 @@ function ResultContainer({
         return modalityKey ? modalities[modalityKey].label : uri;
       }
 
-      case 'pipeline':
-        return uri.slice(65);
+      case 'pipeline': {
+        const segments = uri.split('/');
+        return segments[segments.length - 1];
+      }
 
       default:
         return uri;

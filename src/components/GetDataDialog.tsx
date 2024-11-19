@@ -30,9 +30,9 @@ function GetDataDialog({
           Please follow the steps below
           <ol>
             <li>Select at least one dataset</li>
-            <li>Download the cohort participant machine results files using the button below</li>
+            <li>Download the cohort results for machines using the button below</li>
             <li>Change directory to the location of the downloaded files</li>
-            <li>Copy and run the following command</li>
+            <li>Copy and run the command below</li>
           </ol>
         </DialogContentText>
         <div className="mb-4 flex justify-center">
