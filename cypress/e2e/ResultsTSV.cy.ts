@@ -22,8 +22,8 @@ describe('Results TSV', () => {
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort participant machine-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort participant machine results.tsv').should(
+    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
+    cy.readFile('cypress/downloads/cohort-participant-machine-results.tsv').should(
       'contain',
       'some cool name'
     );
@@ -32,13 +32,13 @@ describe('Results TSV', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    cy.get('[data-cy="cohort participant-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort participant results.tsv').then((fileContent) => {
+    cy.get('[data-cy="cohort-participant-download-results-button"]').click();
+    cy.readFile('cypress/downloads/cohort-participant-results.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
     cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort participant machine-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort participant machine results.tsv').then((fileContent) => {
+    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
+    cy.readFile('cypress/downloads/cohort-participant-machine-results.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
   });
@@ -46,10 +46,10 @@ describe('Results TSV', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    cy.get('[data-cy="cohort participant-download-results-button"]').click();
+    cy.get('[data-cy="cohort-participant-download-results-button"]').click();
     cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort participant machine-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort participant results.tsv').then((fileContent) => {
+    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
+    cy.readFile('cypress/downloads/cohort-participant-results.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const datasetProtected = rows[1];
@@ -88,11 +88,11 @@ describe('Unprotected response', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    cy.get('[data-cy="cohort participant-download-results-button"]').click();
+    cy.get('[data-cy="cohort-participant-download-results-button"]').click();
     cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort participant machine-download-results-button"]').click();
+    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
 
-    cy.readFile('cypress/downloads/cohort participant results.tsv').then((fileContent) => {
+    cy.readFile('cypress/downloads/cohort-participant-results.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const phenotypicSession = rows[1];

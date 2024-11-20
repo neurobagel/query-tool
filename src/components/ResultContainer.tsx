@@ -82,11 +82,12 @@ function ResultContainer({
 
     switch (type) {
       case 'sex': {
-        const entry = Object.entries(sexes).find(([, term_IRI]) => {
+        const matchedSex = Object.entries(sexes).find(([, term_IRI]) => {
           const [, uniqueIdentifier] = term_IRI.split(':');
           return uri.includes(uniqueIdentifier);
         });
-        return entry ? entry[0] : uri;
+        // If a match is found, return the label, otherwise return the original URI
+        return matchedSex ? matchedSex[0] : uri;
       }
 
       case 'sessionType':
@@ -144,7 +145,7 @@ function ResultContainer({
       const tsvRows = [];
       const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
 
-      if (buttonIdentifier === 'cohort participant') {
+      if (buttonIdentifier === 'cohort-participant') {
         const headers = [
           'DatasetName',
           'PortalURI',
@@ -294,7 +295,7 @@ function ResultContainer({
     const element = document.createElement('a');
     const encodedTSV = encodeURIComponent(generateTSVString(buttonIdentifier));
     element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
-    element.setAttribute('download', `${buttonIdentifier} results.tsv`);
+    element.setAttribute('download', `${buttonIdentifier}-results.tsv`);
 
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -386,7 +387,7 @@ function ResultContainer({
           </div>
           <div className="space-x-1">
             <DownloadResultButton
-              identifier="cohort participant"
+              identifier="cohort-participant"
               disabled={download.length === 0}
               handleClick={(identifier) => downloadResults(identifier)}
             />

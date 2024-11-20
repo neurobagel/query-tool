@@ -18,7 +18,7 @@ function DownloadResultButton({
       onClick={() => handleClick(identifier)}
       disabled={disabled}
     >
-      Download {identifier} result
+      Download {identifier.split('-').join(' ')} result
     </Button>
   );
 

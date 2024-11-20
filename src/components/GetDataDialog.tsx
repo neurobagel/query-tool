@@ -37,7 +37,7 @@ function GetDataDialog({
         </DialogContentText>
         <div className="mb-4 flex justify-center">
           <DownloadResultButton
-            identifier="cohort participant machine"
+            identifier="cohort-participant-machine"
             disabled={disableDownloadResultsButton}
             handleClick={(identifier) => handleDownloadResultButtonClick(identifier)}
           />

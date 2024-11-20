@@ -12,7 +12,7 @@ describe('ResultContainer', () => {
     cy.get('[data-cy="summary-stats"]')
       .should('be.visible')
       .should('contain', 'Summary stats: 2 datasets, 4 subjects');
-    cy.get('[data-cy="cohort participant-download-results-button"]')
+    cy.get('[data-cy="cohort-participant-download-results-button"]')
       .should('be.visible')
       .should('be.disabled');
     cy.get('[data-cy="how-to-get-data-dialog-button"]').should('be.visible');
@@ -22,7 +22,7 @@ describe('ResultContainer', () => {
       <ResultContainer response={protectedResponse2} assessmentOptions={[]} diagnosisOptions={[]} />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
-    cy.get('[data-cy="cohort participant-download-results-button"]')
+    cy.get('[data-cy="cohort-participant-download-results-button"]')
       .should('be.visible')
       .should('not.be.disabled');
   });

@@ -23,7 +23,7 @@ describe('GetDataDialog', () => {
       'contain',
       'The command for automatically getting the data currently only applies to datasets available through datalad.'
     );
-    cy.get('[data-cy="cohort participant machine-download-results-button"]').should('be.visible');
+    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').should('be.visible');
   });
   it("Doesn't display the dialog when open prop is set to false", () => {
     cy.mount(
@@ -59,7 +59,7 @@ describe('GetDataDialog', () => {
         handleDownloadResultButtonClick={handleDownloadResultButtonClickSpy}
       />
     );
-    cy.get('[data-cy="cohort participant machine-download-results-button"]').click();
+    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
     cy.get('@handleDownloadResultButtonClickSpy').should('have.been.called');
   });
 });
