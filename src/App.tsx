@@ -466,16 +466,12 @@ function App() {
             >
               The OpenNeuro node is being actively annotated at the participant level and does not
               include all datasets yet. Check back soon to find more data. If you would like to
-              contribute annotations for existing OpenNeuro datasets, please get in touch
-              through&nbsp;
-              <a
-                href="https://github.com/OpenNeuroDatasets-JSONLD/.github/issues"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
+              contribute annotations for existing OpenNeuro datasets, please head over to&nbsp;
+              <a href="https://upload-ui.neurobagel.org/" target="_blank" rel="noreferrer">
+                Neurobagel&apos;s OpenNeuro utility service
               </a>
-              .
+              &nbsp;which is designed to download and upload OpenNeuro datasets within Neurobagel
+              ecosystem.
             </Alert>
           </Grow>
           <br />
