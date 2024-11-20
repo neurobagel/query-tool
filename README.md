@@ -26,7 +26,7 @@ The query tool is a React application, developed in [TypeScript](https://www.typ
 
 </div>
 
-Please refer to our [**official documentation**](https://neurobagel.org/query_tool/) for more detailed information on how to use the query tool.
+Please refer to our [**official documentation**](https://neurobagel.org/user_guide/query_tool/) for more detailed information on how to use the query tool.
 
 ## Quickstart
 
@@ -193,7 +193,7 @@ The query tool offers two different TSV files for results:
 
 - cohort participant machine results TSV contains: dataset name, dataset portal uri, subject id, session id, session file path, session type, number of matching phenotypic sessions, number of matching imaging sessions, session imaging modality, session completed pipelines, dataset imaging modality, and dataset pipeline
 
-You can refer to [the neurobagel documentation](https://neurobagel.org/query_tool/#downloading-query-results) to see what the outputs of the query tool look like and how they are structured. You can also download the raw example output files [here](https://github.com/neurobagel/neurobagel_examples/tree/main/query-tool-results).
+You can refer to [the neurobagel documentation](https://neurobagel.org/user_guide/query_tool/#downloading-query-results) to see what the outputs of the query tool look like and how they are structured. You can also download the raw example output files [here](https://github.com/neurobagel/neurobagel_examples/tree/main/query-tool-results).
 
 ## Testing
 

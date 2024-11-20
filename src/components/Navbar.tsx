@@ -71,11 +71,15 @@ function Navbar({
         </div>
         <div className="flex">
           <Tooltip title="Documentation">
-            <IconButton size="small" href="https://neurobagel.org/query_tool/" target="_blank">
+            <IconButton
+              size="small"
+              href="https://neurobagel.org/user_guide/query_tool/"
+              target="_blank"
+            >
               <Article />
             </IconButton>
           </Tooltip>
-          <IconButton href="https://github.com/neurobagel/react-query-tool/" target="_blank">
+          <IconButton href="https://github.com/neurobagel/query-tool" target="_blank">
             <GitHub />
           </IconButton>
           {enableAuth && (

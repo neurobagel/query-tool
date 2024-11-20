@@ -30,7 +30,7 @@ describe('Navbar', () => {
     cy.get("[data-cy='navbar'] a").eq(0).find('svg').should('be.visible');
     cy.get("[data-cy='navbar'] a")
       .eq(0)
-      .should('have.attr', 'href', 'https://neurobagel.org/query_tool/');
+      .should('have.attr', 'href', 'https://neurobagel.org/user_guide/query_tool/');
     cy.get("[data-cy='navbar'] a").eq(1).find('svg').should('be.visible');
     cy.get("[data-cy='navbar'] a")
       .eq(1)
