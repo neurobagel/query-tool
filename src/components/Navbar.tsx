@@ -79,7 +79,7 @@ function Navbar({
               <Article />
             </IconButton>
           </Tooltip>
-          <IconButton href="https://github.com/neurobagel/query-tool" target="_blank">
+          <IconButton href="https://github.com/neurobagel/query-tool/" target="_blank">
             <GitHub />
           </IconButton>
           {enableAuth && (
