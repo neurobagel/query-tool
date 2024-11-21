@@ -26,7 +26,7 @@ The query tool is a React application, developed in [TypeScript](https://www.typ
 
 </div>
 
-Please refer to our [**official documentation**](https://neurobagel.org/query_tool/) for more detailed information on how to use the query tool.
+Please refer to our [**official documentation**](https://neurobagel.org/user_guide/query_tool/) for more detailed information on how to use the query tool.
 
 ## Quickstart
 
@@ -179,19 +179,21 @@ To define a cohort, set your inclusion criteria using the following:
 - Sex: Sex of participant that should be included in the results.
 - Diagnosis: Diagnosis of participant that should be included in the results
 - Healthy control: Whether healthy participants should be included in the results. Once healthy control checkbox is selected, diagnosis field will be disabled since a participant cannot be both a healthy control and have a diagnosis.
-- Minimum number of sessions: Minimum number of imaging sessions that participant should have to be included in the results.
+- Minimum number of imaging sessions: Minimum number of imaging sessions that participant should have to be included in the results.
+- Minimum number of phenotypic sessions: Minimum number of phenotypic sessions that participant should have to be included in the results.
 - Assessment tool: Non-imaging assessment completed by participant that should be included in the results.
-- Modality: Imaging modality of participant scans that should be included in the results.
+- Imaging modality: Imaging modality of participant scans that should be included in the results.
+- Pipeline name: Name of the pipeline used to process subject scans.
+- Pipeline version: Version of the pipeline used to process subject scans.
 
 Once you've defined your criteria, submit them as a query and the query tool will display the results.\
 The query tool offers two different TSV files for results:
 
-- Dataset-level results TSV contains: dataset id, dataset name, dataset portal uri, number of matching subjects, and available imaging modalities
-- Participant-level results TSV contains: dataset id, subject id, age, sex, diagnosis, assessment, session id, session file path, number of sessions, and imaging modality
+- cohort participant results TSV contains: dataset name, portal uri, number of matching subjects, subject id, session id, session file path, session type, age, sex, diagnosis, assessment, number of matching phenotypic sessions, number of matching imaging sessions, session imaging modality, session completed pipelines, dataset imaging modality, and dataset pipelines
 
-The output files can be joined using `DatasetID` as key.
+- cohort participant machine results TSV contains: dataset name, dataset portal uri, subject id, session id, session file path, session type, number of matching phenotypic sessions, number of matching imaging sessions, session imaging modality, session completed pipelines, dataset imaging modality, and dataset pipeline
 
-You can refer to [the neurobagel documentation](https://neurobagel.org/query_tool/#downloading-query-results) to see what the outputs of the query tool look like and how they are structured. You can also download the raw example output files [here](https://github.com/neurobagel/neurobagel_examples/tree/main/query-tool-results).
+You can refer to [the neurobagel documentation](https://neurobagel.org/user_guide/query_tool/#downloading-query-results) to see what the outputs of the query tool look like and how they are structured. You can also download the raw example output files [here](https://github.com/neurobagel/neurobagel_examples/tree/main/query-tool-results).
 
 ## Testing
 

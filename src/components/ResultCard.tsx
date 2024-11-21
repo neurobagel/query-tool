@@ -70,7 +70,7 @@ const ResultCard = memo(
                   <Typography variant="body1">
                     {Object.entries(pipelines)
                       .flatMap(([name, versions]) =>
-                        versions.map((version) => `${name.slice(65)} ${version}`)
+                        versions.map((version) => `${name.split('/').slice(-1)[0]} ${version}`)
                       )
                       .map((pipeline) => (
                         <Divider>{pipeline}</Divider>
