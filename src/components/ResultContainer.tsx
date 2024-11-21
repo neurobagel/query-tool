@@ -1,11 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
-import { QueryResponse, Pipelines } from '../utils/types';
+import { QueryResponse, Pipelines, AttributeOption } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import GetDataDialog from './GetDataDialog';
+import { sexes, modalities } from '../utils/constants';
 
-function ResultContainer({ response }: { response: QueryResponse | null }) {
+function ResultContainer({
+  diagnosisOptions,
+  assessmentOptions,
+  response,
+}: {
+  diagnosisOptions: AttributeOption[];
+  assessmentOptions: AttributeOption[];
+  response: QueryResponse | null;
+}) {
   const [download, setDownload] = useState<string[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const selectAll: boolean = response
@@ -58,6 +67,69 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
     }
   }, [response]);
 
+  function convertURIToLabel(
+    type: string,
+    uri: string | string[] | null
+  ): string | string[] | null {
+    // Handle array of URIs
+    if (Array.isArray(uri)) {
+      return uri.map((singleUri) => convertURIToLabel(type, singleUri)).join(', ');
+    }
+
+    if (!uri) {
+      return uri;
+    }
+
+    switch (type) {
+      case 'sex': {
+        const matchedSex = Object.entries(sexes).find(([, term_IRI]) => {
+          const [, uniqueIdentifier] = term_IRI.split(':');
+          return uri.includes(uniqueIdentifier);
+        });
+        // If a match is found, return the label, otherwise return the original URI
+        return matchedSex ? matchedSex[0] : uri;
+      }
+
+      case 'sessionType':
+        if (uri.includes('Imaging')) {
+          return 'Imaging';
+        }
+        if (uri.includes('Phenotypic')) {
+          return 'Phenotypic';
+        }
+        return uri;
+
+      case 'diagnosis': {
+        const diagnosis = diagnosisOptions.find((d) => {
+          const [, id] = d.TermURL.split(':');
+          return uri.includes(id);
+        });
+        return diagnosis ? diagnosis.Label : uri;
+      }
+
+      case 'assessment': {
+        const assessment = assessmentOptions.find((a) => {
+          const [, id] = a.TermURL.split(':');
+          return uri.includes(id);
+        });
+        return assessment ? assessment.Label : uri;
+      }
+
+      case 'modality': {
+        const modalityKey = Object.keys(modalities).find((key) => key === uri);
+        return modalityKey ? modalities[modalityKey].label : uri;
+      }
+
+      case 'pipeline': {
+        const segments = uri.split('/');
+        return segments[segments.length - 1];
+      }
+
+      default:
+        return uri;
+    }
+  }
+
   function parsePipelinesInfoToString(pipelines: Pipelines) {
     return pipelines
       ? Object.entries(pipelines)
@@ -65,7 +137,7 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
             (versions as string[]).map((version: string) => `${name} ${version}`)
           )
           .join(', ')
-      : {};
+      : '';
   }
 
   function generateTSVString(buttonIdentifier: string) {
@@ -73,21 +145,25 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
       const tsvRows = [];
       const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
 
-      if (buttonIdentifier === 'participant-level') {
+      if (buttonIdentifier === 'cohort-participant') {
         const headers = [
-          'DatasetID',
+          'DatasetName',
+          'PortalURI',
+          'NumMatchingSubjects',
           'SubjectID',
           'SessionID',
+          'SessionFilePath',
           'SessionType',
           'Age',
           'Sex',
           'Diagnosis',
           'Assessment',
-          'SessionFilePath',
-          'NumPhenotypicSessions',
-          'NumImagingSessions',
-          'Modality',
-          'CompletedPipelines',
+          'NumMatchingPhenotypicSessions',
+          'NumMatchingImagingSessions',
+          'SessionImagingModalities',
+          'SessionCompletedPipelines',
+          'DatasetImagingModalities',
+          'DatasetPipelines',
         ].join('\t');
         tsvRows.push(headers);
 
@@ -95,19 +171,26 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
           if (res.records_protected) {
             tsvRows.push(
               [
-                res.dataset_uuid,
+                res.dataset_name.replace('\n', ' '),
+                res.dataset_portal_uri,
+                res.num_matching_subjects,
                 'protected', // subject_id
                 'protected', // session_id
+                'protected', // session_file_path
                 'protected', // session_type
                 'protected', // age
                 'protected', // sex
                 'protected', // diagnosis
                 'protected', // assessment
-                'protected', // session_file_path
-                'protected', // num_phenotypic_sessions
-                'protected', // num_imaging_sessions
-                'protected', // image_modal
-                'protected', // completed_pipelines
+                'protected', // num_matching_phenotypic_sessions
+                'protected', // num_matching_imaging_sessions
+                'protected', // session_imaging_modality
+                'protected', // session_completed_pipelines
+                convertURIToLabel('modality', res.image_modals),
+                convertURIToLabel(
+                  'pipeline',
+                  parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                ),
               ].join('\t')
             );
           } else {
@@ -115,19 +198,29 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
             res.subject_data.forEach((subject) => {
               tsvRows.push(
                 [
-                  res.dataset_uuid,
+                  res.dataset_name.replace('\n', ' '),
+                  res.dataset_portal_uri,
+                  res.num_matching_subjects,
                   subject.sub_id,
                   subject.session_id,
-                  subject.session_type,
-                  subject.age,
-                  subject.sex,
-                  subject.diagnosis?.join(', '),
-                  subject.assessment?.join(', '),
                   subject.session_file_path,
+                  convertURIToLabel('sessionType', subject.session_type),
+                  subject.age,
+                  convertURIToLabel('sex', subject.sex),
+                  convertURIToLabel('diagnosis', subject.diagnosis),
+                  convertURIToLabel('assessment', subject.assessment),
                   subject.num_matching_phenotypic_sessions,
                   subject.num_matching_imaging_sessions,
-                  subject.image_modal?.join(', '),
-                  parsePipelinesInfoToString(subject.completed_pipelines),
+                  convertURIToLabel('modality', subject.image_modal),
+                  convertURIToLabel(
+                    'pipeline',
+                    parsePipelinesInfoToString(subject.completed_pipelines).split(', ')
+                  ),
+                  convertURIToLabel('modality', res.image_modals),
+                  convertURIToLabel(
+                    'pipeline',
+                    parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                  ),
                 ].join('\t')
               );
             });
@@ -135,26 +228,60 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
         });
       } else {
         const headers = [
-          'DatasetID',
           'DatasetName',
           'PortalURI',
-          'NumMatchingSubjects',
-          'AvailableImageModalities',
-          'AvailablePipelines',
+          'SubjectID',
+          'SessionID',
+          'SessionFilePath',
+          'SessionType',
+          'NumMatchingPhenotypicSessions',
+          'NumMatchingImagingSessions',
+          'SessionImagingModalities',
+          'SessionCompletedPipelines',
+          'DatasetImagingModalities',
+          'DatasetPipelines',
         ].join('\t');
         tsvRows.push(headers);
 
         datasets.forEach((res) => {
-          tsvRows.push(
-            [
-              res.dataset_uuid,
-              res.dataset_name.replace('\n', ' '),
-              res.dataset_portal_uri,
-              res.num_matching_subjects,
-              res.image_modals?.join(', '),
-              parsePipelinesInfoToString(res.available_pipelines),
-            ].join('\t')
-          );
+          if (res.records_protected) {
+            tsvRows.push(
+              [
+                res.dataset_name.replace('\n', ' '),
+                res.dataset_portal_uri,
+                'protected', // subject_id
+                'protected', // session_id
+                'protected', // session_file_path
+                'protected', // session_type
+                'protected', // num_matching_phenotypic_sessions
+                'protected', // num_matching_imaging_sessions
+                'protected', // session_imaging_modality
+                'protected', // session_completed_pipelines
+                res.image_modals?.join(', '),
+                parsePipelinesInfoToString(res.available_pipelines),
+              ].join('\t')
+            );
+          } else {
+            // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
+            res.subject_data.forEach((subject) => {
+              tsvRows.push(
+                [
+                  res.dataset_name.replace('\n', ' '),
+                  res.dataset_portal_uri,
+                  subject.sub_id,
+                  subject.session_id,
+                  subject.session_file_path,
+                  subject.session_type,
+                  subject.num_matching_phenotypic_sessions,
+                  subject.num_matching_imaging_sessions,
+                  subject.image_modal?.join(', '),
+                  parsePipelinesInfoToString(subject.completed_pipelines),
+                  res.image_modals?.join(', '),
+                  parsePipelinesInfoToString(res.available_pipelines),
+                ].join('\t')
+              );
+            });
+          }
         });
       }
 
@@ -251,16 +378,16 @@ function ResultContainer({ response }: { response: QueryResponse | null }) {
             >
               How to get data
             </Button>
-            <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
+            <GetDataDialog
+              open={openDialog}
+              onClose={() => setOpenDialog(false)}
+              disableDownloadResultsButton={download.length === 0}
+              handleDownloadResultButtonClick={(identifier) => downloadResults(identifier)}
+            />
           </div>
           <div className="space-x-1">
             <DownloadResultButton
-              identifier="participant-level"
-              disabled={download.length === 0}
-              handleClick={(identifier) => downloadResults(identifier)}
-            />
-            <DownloadResultButton
-              identifier="dataset-level"
+              identifier="cohort-participant"
               disabled={download.length === 0}
               handleClick={(identifier) => downloadResults(identifier)}
             />
