@@ -16,7 +16,7 @@ describe('DownloadResultButton', () => {
       />
     );
     cy.get('[data-cy="test-download-results-button"]').should('be.visible');
-    cy.get('[data-cy="test-download-results-button"]').should('contain', 'Download test Result');
+    cy.get('[data-cy="test-download-results-button"]').should('contain', 'Download test result');
     cy.get('[data-cy="test-download-results-button"]').should('not.be', 'disabled');
   });
   it('Displays a disabled MUI Button and a tooltip when the button is hovered over', () => {
