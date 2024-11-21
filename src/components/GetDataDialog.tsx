@@ -6,8 +6,19 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import DownloadResultButton from './DownloadResultButton';
 
-function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+function GetDataDialog({
+  open,
+  onClose,
+  disableDownloadResultsButton,
+  handleDownloadResultButtonClick,
+}: {
+  open: boolean;
+  onClose: () => void;
+  disableDownloadResultsButton: boolean;
+  handleDownloadResultButtonClick: (identifier: string) => void;
+}) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -19,10 +30,19 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
           Please follow the steps below
           <ol>
             <li>Select at least one dataset</li>
-            <li>Download the participant-level and dataset-level results files</li>
+            <li>Download the cohort results for machines using the button below</li>
             <li>Change directory to the location of the downloaded files</li>
-            <li>Copy and run the following command:</li>
+            <li>Copy and run the command below</li>
           </ol>
+        </DialogContentText>
+        <div className="mb-4 flex justify-center">
+          <DownloadResultButton
+            identifier="cohort-participant-machine"
+            disabled={disableDownloadResultsButton}
+            handleClick={(identifier) => handleDownloadResultButtonClick(identifier)}
+          />
+        </div>
+        <DialogContentText>
           <code className="text-black">
             docker run -t -v $(pwd):/data neurobagel/dataget:latest /data/dataset-level-results.tsv
             /data/participant-level-results.tsv /data/output
@@ -37,7 +57,7 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => onClose()} autoFocus>
+        <Button data-cy="get-data-dialog-close-button" onClick={() => onClose()} autoFocus>
           Close
         </Button>
       </DialogActions>
