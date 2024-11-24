@@ -8,7 +8,7 @@ const props = {
 };
 
 describe('GetDataDialog', () => {
-  it('Displays a MUI Diaglog with the title and content', () => {
+  it('Displays a MUI Diaglog with content', () => {
     cy.mount(
       <GetDataDialog
         open={props.open}
@@ -18,10 +18,10 @@ describe('GetDataDialog', () => {
       />
     );
     cy.get('[data-cy="get-data-dialog"]').should('be.visible');
-    cy.get('[data-cy="get-data-dialog"] h2').should('contain', 'Example usage');
+    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').should('be.visible');
     cy.get('[data-cy="get-data-dialog"] p').should(
       'contain',
-      'The command for automatically getting the data currently only applies to datasets available through datalad.'
+      'The above command currently only gets data for datasets available through DataLad.'
     );
     cy.get('[data-cy="cohort-participant-machine-download-results-button"]').should('be.visible');
   });
