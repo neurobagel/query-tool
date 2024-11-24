@@ -1,12 +1,19 @@
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import React, { useState } from 'react';
+import {
+  Button,
+  IconButton,
+  Popover,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  useMediaQuery,
+} from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useTheme } from '@mui/material/styles';
 import DownloadResultButton from './DownloadResultButton';
+import NBTheme from '../theme';
 
 function GetDataDialog({
   open,
@@ -19,15 +26,53 @@ function GetDataDialog({
   disableDownloadResultsButton: boolean;
   handleDownloadResultButtonClick: (identifier: string) => void;
 }) {
+  const DOCKER_RUN_COMMAND =
+    'docker run -t -v $(pwd):/data neurobagel/dataget:latest /data/cohort-participant-machine-results.tsv /data/output';
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [showPopover, setShowPopover] = useState(false);
+
+  const handleCopyClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    navigator.clipboard.writeText(DOCKER_RUN_COMMAND);
+    setAnchorEl(event.currentTarget);
+    setShowPopover(true);
+
+    setTimeout(() => {
+      setShowPopover(false);
+    }, 2000);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setShowPopover(false);
+  };
+
   return (
     <Dialog fullScreen={fullScreen} open={open} onClose={onClose} data-cy="get-data-dialog">
-      <DialogTitle>Example usage</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Please follow the steps below
+          <Typography variant="h6" className="font-bold">
+            Query results for programmatic use/download
+          </Typography>
+          To download data of matching subject-sessions for a query to your local filesystem, or to
+          use your query results further in other automated data workflows, we recommend using the
+          following machine-optimized version of your selected query results. This file contains
+          URIs instead of human-readable labels, making it ideal for scripts or integration with
+          other tools for linked or structured data:
+          <div className="m-4 flex justify-center">
+            <DownloadResultButton
+              identifier="cohort-participant-machine"
+              disabled={disableDownloadResultsButton}
+              handleClick={(identifier) => handleDownloadResultButtonClick(identifier)}
+            />
+          </div>
+          <Typography variant="h6" className="font-bold">
+            Download matching results from DataLad datasets
+          </Typography>
+          We have a small helper tool to automatically download matching subject-sessions from
+          datasets available through DataLad. To do so, follow the steps below:
           <ol>
             <li>Select at least one dataset</li>
             <li>Download the cohort results for machines using the button below</li>
@@ -35,29 +80,49 @@ function GetDataDialog({
             <li>Copy and run the command below</li>
           </ol>
         </DialogContentText>
-        <div className="mb-4 flex justify-center">
-          <DownloadResultButton
-            identifier="cohort-participant-machine"
-            disabled={disableDownloadResultsButton}
-            handleClick={(identifier) => handleDownloadResultButtonClick(identifier)}
-          />
-        </div>
         <DialogContentText>
-          <code className="text-black">
-            docker run -t -v $(pwd):/data neurobagel/dataget:latest /data/dataset-level-results.tsv
-            /data/participant-level-results.tsv /data/output
-          </code>
+          <div className="flex items-center rounded bg-gray-200 px-2 py-1 text-sm">
+            <code className="flex-grow text-black">{DOCKER_RUN_COMMAND}</code>
+            <IconButton
+              color="primary"
+              onClick={handleCopyClick}
+              sx={{
+                '&:hover': {
+                  backgroundColor: theme.palette.action.hover,
+                },
+              }}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+            <Popover
+              open={showPopover}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <Typography
+                className="rounded px-2 py-1 text-sm text-white shadow"
+                sx={{ backgroundColor: NBTheme.palette.primary.main }}
+              >
+                Copied!
+              </Typography>
+            </Popover>
+          </div>
           <br />
+          The downloaded data will be saved in the current directory, inside a directory called
+          &quot;output&quot;. Note that the &quot;output&quot; directory will be created if it does
+          not exist.
           <br />
-          The downloaded data will be saved in a directory called output in the current directory.
-          Note that the output directory will be created if it does not exist already.
-          <br />
-          ⚠️ The command for automatically getting the data currently only applies to datasets
-          available through datalad.
+          ⚠️ The above command currently only gets data for datasets available through DataLad. To
+          download a cohort from other remote filesystems you have access to, you may need to create
+          your own script that uses the absolute paths found in the machine readable results file.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button data-cy="get-data-dialog-close-button" onClick={() => onClose()} autoFocus>
+        <Button data-cy="get-data-dialog-close-button" onClick={onClose} autoFocus>
           Close
         </Button>
       </DialogActions>
