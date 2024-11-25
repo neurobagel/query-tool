@@ -21,7 +21,7 @@ describe('GetDataDialog', () => {
     cy.get('[data-cy="cohort-participant-machine-download-results-button"]').should('be.visible');
     cy.get('[data-cy="get-data-dialog"] p').should(
       'contain',
-      'The above command currently only gets data for datasets available through DataLad.'
+      'The above command currently only gets data for DataLad datasets'
     );
     cy.get('[data-cy="cohort-participant-machine-download-results-button"]').should('be.visible');
   });
