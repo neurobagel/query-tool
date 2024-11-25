@@ -1,3 +1,19 @@
+# v0.7.0 (Mon Nov 25 2024)
+
+#### 🚀 Enhancements
+
+- [ENH] Updated `How to get data` modal [#370](https://github.com/neurobagel/query-tool/pull/370) ([@rmanaem](https://github.com/rmanaem) [@alyssadai](https://github.com/alyssadai))
+- [ENH] Modified the result tables for humans and machines [#357](https://github.com/neurobagel/query-tool/pull/357) ([@rmanaem](https://github.com/rmanaem))
+- [ENH] Updated OpenNeuro alert with a link to Neurobagel OpenNeuro utility service [#364](https://github.com/neurobagel/query-tool/pull/364) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Revert "🔄 synced local '.github/pull_request_template.md' with remote… [#348](https://github.com/neurobagel/query-tool/pull/348) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Alyssa Dai ([@alyssadai](https://github.com/alyssadai))
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.6.0 (Tue Nov 05 2024)
 
 #### 🚀 Enhancements
