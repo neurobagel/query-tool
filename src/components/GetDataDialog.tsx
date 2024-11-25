@@ -54,12 +54,11 @@ function GetDataDialog({
       <DialogContent>
         <DialogContentText>
           <Typography variant="h6" className="font-bold">
-            Query results for programmatic use/download
+            Results file for data access or programmatic use
           </Typography>
-          To download data of matching subject-sessions for a query to your local filesystem, or to
-          use your query results further in other automated data workflows, we recommend using the
-          following machine-optimized version of your selected query results. This file contains
-          URIs instead of human-readable labels, making it ideal for scripts or integration with
+          Below is a machine-optimized version of your selected query results, which we recommend using as 
+          input to scripts for downloading the data of matching subjects to your local filesystem. This file also 
+          contains URIs instead of descriptive labels, making it ideal for integration with 
           other tools for linked or structured data:
           <div className="m-4 flex justify-center">
             <DownloadResultButton
@@ -71,8 +70,8 @@ function GetDataDialog({
           <Typography variant="h6" className="font-bold">
             Download matching results from DataLad datasets
           </Typography>
-          We have a small helper tool to automatically download matching subject-sessions from
-          datasets available through DataLad. To do so, follow the steps below:
+          We have a helper tool to automatically download matching subjects from
+          datasets available through DataLad. To do so:
           <ol>
             <li>Select at least one dataset</li>
             <li>Download the cohort results for machines using the button below</li>
@@ -113,12 +112,12 @@ function GetDataDialog({
           </div>
           <br />
           The downloaded data will be saved in the current directory, inside a directory called
-          &quot;output&quot;. Note that the &quot;output&quot; directory will be created if it does
+          &quot;output&quot;. Note that this directory will be created if it does
           not exist.
           <br />
-          ⚠️ The above command currently only gets data for datasets available through DataLad. To
+          ⚠️ The above command currently only gets data for DataLad datasets. To
           download a cohort from other remote filesystems you have access to, you may need to create
-          your own script that uses the absolute paths found in the machine readable results file.
+          your own script that uses the paths found in the results file downloadable above.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
