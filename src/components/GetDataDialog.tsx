@@ -56,10 +56,10 @@ function GetDataDialog({
           <Typography variant="h6" className="font-bold">
             Results file for data access or programmatic use
           </Typography>
-          Below is a machine-optimized version of your selected query results, which we recommend using as 
-          input to scripts for downloading the data of matching subjects to your local filesystem. This file also 
-          contains URIs instead of descriptive labels, making it ideal for integration with 
-          other tools for linked or structured data:
+          Below is a machine-optimized version of your selected query results, which we recommend
+          using as input to scripts for downloading the data of matching subjects to your local
+          filesystem. This file also contains URIs instead of descriptive labels, making it ideal
+          for integration with other tools for linked or structured data:
           <div className="m-4 flex justify-center">
             <DownloadResultButton
               identifier="cohort-participant-machine"
@@ -70,12 +70,12 @@ function GetDataDialog({
           <Typography variant="h6" className="font-bold">
             Download matching results from DataLad datasets
           </Typography>
-          We have a helper tool to automatically download matching subjects from
-          datasets available through DataLad. To do so:
+          We have a helper tool to automatically download matching subjects from datasets available
+          through DataLad. To do so:
           <ol>
             <li>Select at least one dataset</li>
-            <li>Download the cohort results for machines using the button below</li>
-            <li>Change directory to the location of the downloaded files</li>
+            <li>Download the cohort results for machines using the above button</li>
+            <li>Change directory to the location of the downloaded TSV</li>
             <li>Copy and run the command below</li>
           </ol>
         </DialogContentText>
@@ -111,13 +111,12 @@ function GetDataDialog({
             </Popover>
           </div>
           <br />
-          The downloaded data will be saved in the current directory, inside a directory called
-          &quot;output&quot;. Note that this directory will be created if it does
-          not exist.
+          The downloaded data will be saved in the current directory, in a subdirectory called
+          &quot;output&quot;. (Note: this directory will be created if it does not already exist)
           <br />
-          ⚠️ The above command currently only gets data for DataLad datasets. To
-          download a cohort from other remote filesystems you have access to, you may need to create
-          your own script that uses the paths found in the results file downloadable above.
+          ⚠️ The above command currently only gets data for DataLad datasets. To download a cohort
+          from other remote filesystems you have access to, you may need to write your own script
+          that uses the paths from the results file downloadable above.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
