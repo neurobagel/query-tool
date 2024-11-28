@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { jwtDecode } from 'jwt-decode';
 import { googleLogout } from '@react-oauth/google';
+import { useAuth0 } from '@auth0/auth0-react';
 import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -60,11 +61,57 @@ function App() {
   const [pipelineName, setPipelineName] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // This whole thing handles Auth
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [openAuthDialog, setOpenAuthDialog] = useState(true);
   const [name, setName] = useState<string>('');
   const [profilePic, setProfilePic] = useState<string>('');
   const [IDToken, setIDToken] = useState<string | undefined>('');
+
+  function login(credential: string | undefined) {
+    setIsLoggedIn(true);
+    setOpenAuthDialog(false);
+    const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
+    setIDToken(credential);
+    setName(jwt.given_name);
+    setProfilePic(jwt.picture);
+  }
+
+  function logout() {
+    googleLogout();
+    setIsLoggedIn(false);
+    setIDToken('');
+    setName('');
+    setProfilePic('');
+  }
+
+  // End of Google Auth block
+
+  // This is Auth0
+
+  const { isAuthenticated, getIdTokenClaims } = useAuth0();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      (async () => {
+        const tokenClaims = await getIdTokenClaims();
+        // eslint-disable-next-line no-underscore-dangle
+        setIDToken(tokenClaims?.__raw);
+      })();
+    }
+  }, [isAuthenticated, getIdTokenClaims]);
+
+  // If enableAuth is true, set openAuthDialog to true when the app first loads
+  useEffect(() => {
+    if (enableAuth) {
+      setOpenAuthDialog(true);
+    } else {
+      // TODO: maybe just make the default false for openAuthDialog
+      setOpenAuthDialog(false);
+    }
+  }, []);
+
+  // End of Auth0
 
   const selectedNode: FieldInputOption[] = availableNodes
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
@@ -413,23 +460,6 @@ function App() {
       enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
     }
     setLoading(false);
-  }
-
-  function login(credential: string | undefined) {
-    setIsLoggedIn(true);
-    setOpenAuthDialog(false);
-    const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
-    setIDToken(credential);
-    setName(jwt.given_name);
-    setProfilePic(jwt.picture);
-  }
-
-  function logout() {
-    googleLogout();
-    setIsLoggedIn(false);
-    setIDToken('');
-    setName('');
-    setProfilePic('');
   }
 
   return (
