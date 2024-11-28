@@ -3,17 +3,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import { GoogleLogin } from '@react-oauth/google';
+import { useAuth0 } from '@auth0/auth0-react';
 
-function AuthDialog({
-  open,
-  onAuth,
-  onClose,
-}: {
-  open: boolean;
-  onAuth: (credential: string | undefined) => void;
-  onClose: () => void;
-}) {
+function AuthDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { loginWithRedirect } = useAuth0();
+
   return (
     <Dialog open={open} onClose={onClose} data-cy="auth-dialog">
       <DialogTitle>
@@ -21,7 +15,9 @@ function AuthDialog({
       </DialogTitle>
       <DialogContent>
         <div className="flex flex-col items-center justify-center">
-          <GoogleLogin onSuccess={(response) => onAuth(response.credential)} />
+          <button type="button" onClick={() => loginWithRedirect()}>
+            Log In
+          </button>
         </div>
       </DialogContent>
       <DialogActions>
