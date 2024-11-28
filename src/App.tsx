@@ -61,15 +61,11 @@ function App() {
 
   // This whole thing handles Auth
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
-  const [name, setName] = useState<string>('');
-  const [profilePic, setProfilePic] = useState<string>('');
   const [IDToken, setIDToken] = useState<string | undefined>('');
 
   function logout() {
     googleLogout();
     setIDToken('');
-    setName('');
-    setProfilePic('');
   }
 
   // End of Google Auth block
@@ -459,8 +455,6 @@ function App() {
       />
       <Navbar
         isLoggedIn={isAuthenticated}
-        name={name}
-        profilePic={profilePic}
         onLogout={() => logout()}
         onLogin={() => setOpenAuthDialog(true)}
       />
