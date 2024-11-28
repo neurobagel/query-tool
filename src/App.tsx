@@ -5,7 +5,6 @@ import { Alert, Grow, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
-import { googleLogout } from '@react-oauth/google';
 import { useAuth0 } from '@auth0/auth0-react';
 import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
@@ -59,19 +58,8 @@ function App() {
   const [pipelineName, setPipelineName] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // This whole thing handles Auth
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [IDToken, setIDToken] = useState<string | undefined>('');
-
-  function logout() {
-    googleLogout();
-    setIDToken('');
-  }
-
-  // End of Google Auth block
-
-  // This is Auth0
-
   const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
 
   // Extract the raw OIDC ID token from the Auth0 SDK
@@ -92,8 +80,6 @@ function App() {
       }
     }
   }, [isAuthenticated, isLoading, getIdTokenClaims]);
-
-  // End of Auth0
 
   const selectedNode: FieldInputOption[] = availableNodes
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
@@ -453,11 +439,7 @@ function App() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         maxSnack={7}
       />
-      <Navbar
-        isLoggedIn={isAuthenticated}
-        onLogout={() => logout()}
-        onLogin={() => setOpenAuthDialog(true)}
-      />
+      <Navbar isLoggedIn={isAuthenticated} onLogin={() => setOpenAuthDialog(true)} />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>

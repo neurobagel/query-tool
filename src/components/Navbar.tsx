@@ -19,20 +19,12 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { enableAuth } from '../utils/constants';
 import logo from '../assets/logo.png';
 
-function Navbar({
-  isLoggedIn,
-  onLogout,
-  onLogin,
-}: {
-  isLoggedIn: boolean;
-  onLogout: () => void;
-  onLogin: () => void;
-}) {
+function Navbar({ isLoggedIn, onLogin }: { isLoggedIn: boolean; onLogin: () => void }) {
   const [latestReleaseTag, setLatestReleaseTag] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openAccountMenu = Boolean(anchorEl);
 
-  const { user } = useAuth0();
+  const { user, logout } = useAuth0();
 
   useEffect(() => {
     const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
@@ -114,7 +106,9 @@ function Navbar({
                     <MenuItem>
                       <Typography>Logged in as {user?.name ?? ''}</Typography>
                     </MenuItem>
-                    <MenuItem onClick={onLogout}>
+                    <MenuItem
+                      onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                    >
                       <ListItemIcon className="mr-[-8px]">
                         <Logout fontSize="small" />
                       </ListItemIcon>
