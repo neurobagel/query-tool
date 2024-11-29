@@ -10,7 +10,7 @@ describe('AuthDialog', () => {
   it('Displays a MUI dialog with the title and "sing in with google" button', () => {
     cy.mount(
       <GoogleOAuthProvider clientId="mock-client-id">
-        <AuthDialog open onClose={props.onClose} onAuth={props.onAuth} />
+        <AuthDialog open onClose={props.onClose} />
       </GoogleOAuthProvider>
     );
     cy.get('[data-cy="auth-dialog"]').should('be.visible');
