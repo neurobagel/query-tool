@@ -16,7 +16,7 @@ describe('AuthDialog', () => {
     cy.get('[data-cy="auth-dialog"]').should('be.visible');
     cy.get('[data-cy="auth-dialog"]').should('contain', 'You must log in');
     cy.get('[data-cy="auth-dialog"]').within(() => {
-      cy.contains('Google');
+      cy.contains('Log In');
     });
     cy.get('[data-cy="close-auth-dialog-button"]').should('be.visible');
   });

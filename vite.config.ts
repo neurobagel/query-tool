@@ -23,5 +23,10 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     envPrefix: 'NB_',
+    // Excluding the Auth0 library from the bundle to avoid issues with
+    // Cypress component tests. TODO: understand why this is necessary
+    optimizeDeps: {
+      exclude: ['@auth0/auth0-react'],
+    },
   };
 });
