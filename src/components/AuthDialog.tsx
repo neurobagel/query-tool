@@ -15,13 +15,13 @@ function AuthDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
       </DialogTitle>
       <DialogContent>
         <div className="flex flex-col items-center justify-center">
-          <button type="button" onClick={() => loginWithRedirect()}>
-            Log In
-          </button>
+          <Button variant="contained" onClick={() => loginWithRedirect()}>
+            Sign in to Neurobagel
+          </Button>
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} data-cy="close-auth-dialog-button">
+        <Button variant="outlined" onClick={onClose} data-cy="close-auth-dialog-button">
           Close
         </Button>
       </DialogActions>
