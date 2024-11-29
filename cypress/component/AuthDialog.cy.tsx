@@ -1,18 +1,8 @@
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import AuthDialog from '../../src/components/AuthDialog';
-
-const props = {
-  onAuth: () => {},
-  onClose: () => {},
-};
 
 describe('AuthDialog', () => {
   it('Displays a MUI dialog with the title and "sing in with google" button', () => {
-    cy.mount(
-      <GoogleOAuthProvider clientId="mock-client-id">
-        <AuthDialog open onClose={props.onClose} />
-      </GoogleOAuthProvider>
-    );
+    cy.mount(<AuthDialog open onClose={() => {}} />);
     cy.get('[data-cy="auth-dialog"]').should('be.visible');
     cy.get('[data-cy="auth-dialog"]').should('contain', 'You must log in');
     cy.get('[data-cy="auth-dialog"]').within(() => {
