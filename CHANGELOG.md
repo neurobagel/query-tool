@@ -1,3 +1,16 @@
+# v0.7.1 (Mon Dec 02 2024)
+
+#### 🏠 Internal
+
+- [REF] Switch experimental auth to auth0 [#380](https://github.com/neurobagel/query-tool/pull/380) ([@surchs](https://github.com/surchs) [@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.7.0 (Mon Nov 25 2024)
 
 #### 🚀 Enhancements
