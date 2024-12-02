@@ -15,25 +15,16 @@ import Article from '@mui/icons-material/Article';
 import Logout from '@mui/icons-material/Logout';
 import Login from '@mui/icons-material/Login';
 import Avatar from '@mui/material/Avatar';
+import { useAuth0 } from '@auth0/auth0-react';
 import { enableAuth } from '../utils/constants';
 import logo from '../assets/logo.png';
 
-function Navbar({
-  isLoggedIn,
-  name,
-  profilePic,
-  onLogout,
-  onLogin,
-}: {
-  isLoggedIn: boolean;
-  name: string;
-  profilePic: string;
-  onLogout: () => void;
-  onLogin: () => void;
-}) {
+function Navbar({ isLoggedIn, onLogin }: { isLoggedIn: boolean; onLogin: () => void }) {
   const [latestReleaseTag, setLatestReleaseTag] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openAccountMenu = Boolean(anchorEl);
+
+  const { user, logout } = useAuth0();
 
   useEffect(() => {
     const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
@@ -85,7 +76,11 @@ function Navbar({
           {enableAuth && (
             <>
               <IconButton onClick={handleClick}>
-                <Avatar src={profilePic} sx={{ width: 30, height: 30 }} alt={name} />
+                <Avatar
+                  src={user?.picture ?? ''}
+                  sx={{ width: 30, height: 30 }}
+                  alt={user?.name ?? ''}
+                />
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
@@ -103,15 +98,17 @@ function Navbar({
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <MenuItem>
-                    <Avatar src={profilePic} alt={name} />
+                    <Avatar src={user?.picture ?? ''} alt={user?.name ?? ''} />
                   </MenuItem>
                 </div>
                 {isLoggedIn ? (
                   <>
                     <MenuItem>
-                      <Typography>Logged in as {name}</Typography>
+                      <Typography>Logged in as {user?.name ?? ''}</Typography>
                     </MenuItem>
-                    <MenuItem onClick={onLogout}>
+                    <MenuItem
+                      onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                    >
                       <ListItemIcon className="mr-[-8px]">
                         <Logout fontSize="small" />
                       </ListItemIcon>

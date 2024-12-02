@@ -2,23 +2,12 @@ import Navbar from '../../src/components/Navbar';
 
 const props = {
   isLoggedIn: true,
-  name: 'john doe',
-  profilePic: 'johndoe.png',
-  onLogout: () => {},
   onLogin: () => {},
 };
 
 describe('Navbar', () => {
   it('Displays a MUI Toolbar with logo, title, subtitle, documentation link, and GitHub link', () => {
-    cy.mount(
-      <Navbar
-        isLoggedIn={props.isLoggedIn}
-        name={props.name}
-        profilePic={props.profilePic}
-        onLogout={props.onLogout}
-        onLogin={props.onLogin}
-      />
-    );
+    cy.mount(<Navbar isLoggedIn={props.isLoggedIn} onLogin={props.onLogin} />);
     cy.get("[data-cy='navbar']").should('be.visible');
     cy.get("[data-cy='navbar'] img").should('exist');
     cy.get("[data-cy='navbar'] h5").should('contain', 'Neurobagel Query');

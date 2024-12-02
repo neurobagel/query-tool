@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App';
 import { appBasePath, enableAuth, clientID } from './utils/constants';
 import './index.css';
@@ -27,5 +27,17 @@ const app = (
 );
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  enableAuth ? <GoogleOAuthProvider clientId={clientID}>{app}</GoogleOAuthProvider> : app
+  enableAuth ? (
+    <Auth0Provider
+      domain="neurobagel.ca.auth0.com" // TODO: Replace with customizable domain
+      clientId={clientID}
+      authorizationParams={{
+        redirect_uri: window.location.origin, // TODO: ensure that users end up where they started, including query params
+      }}
+    >
+      {app}
+    </Auth0Provider>
+  ) : (
+    app
+  )
 );

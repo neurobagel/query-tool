@@ -5,8 +5,7 @@ import { Alert, Grow, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
-import { jwtDecode } from 'jwt-decode';
-import { googleLogout } from '@react-oauth/google';
+import { useAuth0 } from '@auth0/auth0-react';
 import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -18,7 +17,6 @@ import {
   Pipelines,
   NodeError,
   QueryResponse,
-  GoogleJWT,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -60,11 +58,28 @@ function App() {
   const [pipelineName, setPipelineName] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [openAuthDialog, setOpenAuthDialog] = useState(true);
-  const [name, setName] = useState<string>('');
-  const [profilePic, setProfilePic] = useState<string>('');
+  const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [IDToken, setIDToken] = useState<string | undefined>('');
+  const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
+
+  // Extract the raw OIDC ID token from the Auth0 SDK
+  useEffect(() => {
+    if (enableAuth && !isLoading) {
+      if (isAuthenticated) {
+        (async () => {
+          const tokenClaims = await getIdTokenClaims();
+          // eslint-disable-next-line no-underscore-dangle
+          setIDToken(tokenClaims?.__raw);
+        })();
+        setOpenAuthDialog(false);
+      }
+      if (!isAuthenticated) {
+        setOpenAuthDialog(true);
+      } else {
+        setOpenAuthDialog(false);
+      }
+    }
+  }, [isAuthenticated, isLoading, getIdTokenClaims]);
 
   const selectedNode: FieldInputOption[] = availableNodes
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
@@ -415,45 +430,16 @@ function App() {
     setLoading(false);
   }
 
-  function login(credential: string | undefined) {
-    setIsLoggedIn(true);
-    setOpenAuthDialog(false);
-    const jwt: GoogleJWT = credential ? jwtDecode(credential) : ({} as GoogleJWT);
-    setIDToken(credential);
-    setName(jwt.given_name);
-    setProfilePic(jwt.picture);
-  }
-
-  function logout() {
-    googleLogout();
-    setIsLoggedIn(false);
-    setIDToken('');
-    setName('');
-    setProfilePic('');
-  }
-
   return (
     <>
-      {enableAuth && (
-        <AuthDialog
-          open={openAuthDialog}
-          onAuth={(credential) => login(credential)}
-          onClose={() => setOpenAuthDialog(false)}
-        />
-      )}
+      <AuthDialog open={openAuthDialog} onClose={() => setOpenAuthDialog(false)} />
       <SmallScreenSizeDialog open={isScreenSizeSmall} onClose={() => setIsScreenSizeSmall(false)} />
       <SnackbarProvider
         autoHideDuration={6000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         maxSnack={7}
       />
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        name={name}
-        profilePic={profilePic}
-        onLogout={() => logout()}
-        onLogin={() => setOpenAuthDialog(true)}
-      />
+      <Navbar isLoggedIn={isAuthenticated} onLogin={() => setOpenAuthDialog(true)} />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>
