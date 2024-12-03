@@ -20,7 +20,7 @@ jobs:
         id: fetch_sha
         run: |
           git fetch origin main
-          LATEST_SHA=$(git rev-parse origin/main)
+          LATEST_SHA=$(git rev-parse --short=7 origin/main)
           echo "LATEST_SHA=$LATEST_SHA" >> $GITHUB_ENV
 
       - name: Update package.json version
