@@ -15,12 +15,42 @@ jobs:
         # Some repos have submodules that need to be part of the Docker image
         with:
           submodules: recursive
+      
+      - name: Get PR number
+        id: get_pr_number
+        run: |
+          PR_NUMBER=$(gh pr list --state merged --base main --head $GITHUB_SHA --json number --jq .[0].number)
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+
+      - name: Check PR labels
+        id: check_labels
+        if: env.PR_NUMBER != ''
+        run: |
+          LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name')
+          echo "Labels: $LABELS"
+          if echo "$LABELS" | grep -q 'release'; then
+            echo "::set-output name=should_skip::true"
+          else
+            echo "::set-output name=should_skip::false"
+          fi
+
+      - name: Skip Workflow if release label is present
+        if: steps.check_labels.outputs.should_skip == 'true'
+        run: |
+          echo "Skipping workflow because PR is labeled with 'release'."
+          exit 0
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Update package.json version
+        run: |
+          SHA=${{ needs.check-pr-label.outputs.sha }}
+          jq ".version = \"build:${SHA}\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+          cat package.json
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
