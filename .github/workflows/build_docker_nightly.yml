@@ -15,52 +15,25 @@ jobs:
         # Some repos have submodules that need to be part of the Docker image
         with:
           submodules: recursive
-        
-      - name: Generate a token
-        id: generate-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.NB_BOT_ID }}
-          private-key: ${{ secrets.NB_BOT_KEY }}
 
-      - name: Set GH_TOKEN
-        run: echo "GH_TOKEN=${{ steps.generate-token.outputs.token }}" >> $GITHUB_ENV
-      
-      - name: Get PR number
-        id: get_pr_number
+      - name: Fetch latest commit SHA from main branch
+        id: fetch_sha
         run: |
-          PR_NUMBER=$(gh pr list --state merged --base main --head $GITHUB_SHA --json number --jq .[0].number)
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          git fetch origin main
+          LATEST_SHA=$(git rev-parse origin/main)
+          echo "LATEST_SHA=$LATEST_SHA" >> $GITHUB_ENV
 
-      - name: Check PR labels
-        id: check_labels
-        if: env.PR_NUMBER != ''
+      - name: Update package.json version
         run: |
-          LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name')
-          echo "Labels: $LABELS"
-          if echo "$LABELS" | grep -q 'release'; then
-            echo "::set-output name=should_skip::true"
-          else
-            echo "::set-output name=should_skip::false"
-          fi
-
-      - name: Skip Workflow if release label is present
-        if: steps.check_labels.outputs.should_skip == 'true'
-        run: |
-          echo "Skipping workflow because PR is labeled with 'release'."
-          exit 0
+          SHA=${{ env.LATEST_SHA }}
+          jq ".version = \"build:${SHA}\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+          cat package.json
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Update package.json version
-        run: |
-          SHA=${{ needs.check-pr-label.outputs.sha }}
-          jq ".version = \"build:${SHA}\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
-          cat package.json
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
