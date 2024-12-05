@@ -36,11 +36,11 @@ jobs:
           wget -O- "$auto_download_url" | gunzip > ~/auto
           chmod a+x ~/auto
 
-      - name: test auto version --quiet
-        run: ~/auto version --quiet
+      # - name: test auto version --quiet
+      #   run: ~/auto version
 
       - name: test auto canary --quiet
-        run: ~/auto canary --quiet
+        run: ~/auto canary
 
       # - name: Update package.json
       #   run: |
