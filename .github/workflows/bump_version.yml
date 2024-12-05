@@ -15,7 +15,7 @@ permissions:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    if: ${{ github.event.label.name == 'release' }}
+    # if: ${{ github.event.label.name == 'release' }}
     steps:
       - name: Generate a token
         id: generate-token
