@@ -41,6 +41,9 @@ jobs:
 
       - name: test auto canary --quiet
         run: ~/auto canary
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+
 
       # - name: Update package.json
       #   run: |
