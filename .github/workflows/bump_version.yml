@@ -39,8 +39,13 @@ jobs:
       # - name: test auto version --quiet
       #   run: ~/auto version
 
-      - name: test auto canary --quiet
-        run: ~/auto canary
+      - name: test auto shipit
+        run: ~/auto version
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+
+      - name: test auto shipit
+        run: ~/auto shipit -d -q
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
