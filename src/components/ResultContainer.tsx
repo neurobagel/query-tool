@@ -145,104 +145,146 @@ function ResultContainer({
       const tsvRows = [];
       const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
 
-      const isHumanFile = buttonIdentifier === 'cohort-participant';
+      if (buttonIdentifier === 'cohort-participant') {
+        const headers = [
+          'DatasetName',
+          'PortalURI',
+          'NumMatchingSubjects',
+          'SubjectID',
+          'SessionID',
+          'SessionFilePath',
+          'SessionType',
+          'Age',
+          'Sex',
+          'Diagnosis',
+          'Assessment',
+          'NumMatchingPhenotypicSessions',
+          'NumMatchingImagingSessions',
+          'SessionImagingModalities',
+          'SessionCompletedPipelines',
+          'DatasetImagingModalities',
+          'DatasetPipelines',
+        ].join('\t');
+        tsvRows.push(headers);
 
-      const headers = [
-        'DatasetName',
-        'PortalURI',
-        'NumMatchingSubjects',
-        'SubjectID',
-        'SessionID',
-        'ImagingSessionPath',
-        'SessionType',
-        'NumMatchingPhenotypicSessions',
-        'NumMatchingImagingSessions',
-        'Age',
-        'Sex',
-        'Diagnosis',
-        'Assessment',
-        'SessionImagingModalities',
-        'SessionCompletedPipelines',
-        'DatasetImagingModalities',
-        'DatasetPipelines',
-      ].join('\t');
-      tsvRows.push(headers);
-
-      datasets.forEach((res) => {
-        if (res.records_protected) {
-          tsvRows.push(
-            [
-              res.dataset_name.replace('\n', ' '),
-              res.dataset_portal_uri,
-              res.num_matching_subjects,
-              'protected', // subject_id
-              'protected', // session_id
-              'protected', // session_file_path
-              'protected', // session_type
-              'protected', // num_matching_phenotypic_sessions
-              'protected', // num_matching_imaging_sessions
-              'protected', // age
-              'protected', // sex
-              'protected', // diagnosis
-              'protected', // assessment
-              'protected', // session_imaging_modality
-              'protected', // session_completed_pipelines
-              isHumanFile
-                ? convertURIToLabel('modality', res.image_modals)
-                : res.image_modals?.join(', '),
-              isHumanFile
-                ? convertURIToLabel(
-                    'pipeline',
-                    parsePipelinesInfoToString(res.available_pipelines).split(', ')
-                  )
-                : parsePipelinesInfoToString(res.available_pipelines),
-            ].join('\t')
-          );
-        } else {
-          // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
-          res.subject_data.forEach((subject) => {
+        datasets.forEach((res) => {
+          if (res.records_protected) {
             tsvRows.push(
               [
                 res.dataset_name.replace('\n', ' '),
                 res.dataset_portal_uri,
                 res.num_matching_subjects,
-                subject.sub_id,
-                subject.session_id,
-                subject.session_file_path,
-                isHumanFile
-                  ? convertURIToLabel('sessionType', subject.session_type)
-                  : subject.session_type,
-                subject.num_matching_phenotypic_sessions,
-                subject.num_matching_imaging_sessions,
-                subject.age,
-                isHumanFile ? convertURIToLabel('sex', subject.sex) : subject.sex,
-                isHumanFile ? convertURIToLabel('diagnosis', subject.diagnosis) : subject.diagnosis,
-                isHumanFile
-                  ? convertURIToLabel('assessment', subject.assessment)
-                  : subject.assessment,
-                isHumanFile
-                  ? convertURIToLabel('modality', subject.image_modal)
-                  : subject.image_modal?.join(', '),
-                isHumanFile
-                  ? convertURIToLabel(
-                      'pipeline',
-                      parsePipelinesInfoToString(subject.completed_pipelines).split(', ')
-                    )
-                  : parsePipelinesInfoToString(subject.completed_pipelines),
-                isHumanFile
-                  ? convertURIToLabel('modality', res.image_modals)
-                  : res.image_modals?.join(', '),
-                isHumanFile
-                  ? convertURIToLabel(
-                      'pipeline',
-                      parsePipelinesInfoToString(res.available_pipelines).split(', ')
-                    )
-                  : parsePipelinesInfoToString(res.available_pipelines),
+                'protected', // subject_id
+                'protected', // session_id
+                'protected', // session_file_path
+                'protected', // session_type
+                'protected', // age
+                'protected', // sex
+                'protected', // diagnosis
+                'protected', // assessment
+                'protected', // num_matching_phenotypic_sessions
+                'protected', // num_matching_imaging_sessions
+                'protected', // session_imaging_modality
+                'protected', // session_completed_pipelines
+                convertURIToLabel('modality', res.image_modals),
+                convertURIToLabel(
+                  'pipeline',
+                  parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                ),
               ].join('\t')
             );
-          });
-        }
-      });
+          } else {
+            // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
+            res.subject_data.forEach((subject) => {
+              tsvRows.push(
+                [
+                  res.dataset_name.replace('\n', ' '),
+                  res.dataset_portal_uri,
+                  res.num_matching_subjects,
+                  subject.sub_id,
+                  subject.session_id,
+                  subject.session_file_path,
+                  convertURIToLabel('sessionType', subject.session_type),
+                  subject.age,
+                  convertURIToLabel('sex', subject.sex),
+                  convertURIToLabel('diagnosis', subject.diagnosis),
+                  convertURIToLabel('assessment', subject.assessment),
+                  subject.num_matching_phenotypic_sessions,
+                  subject.num_matching_imaging_sessions,
+                  convertURIToLabel('modality', subject.image_modal),
+                  convertURIToLabel(
+                    'pipeline',
+                    parsePipelinesInfoToString(subject.completed_pipelines).split(', ')
+                  ),
+                  convertURIToLabel('modality', res.image_modals),
+                  convertURIToLabel(
+                    'pipeline',
+                    parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                  ),
+                ].join('\t')
+              );
+            });
+          }
+        });
+      } else {
+        const headers = [
+          'DatasetName',
+          'PortalURI',
+          'SubjectID',
+          'SessionID',
+          'SessionFilePath',
+          'SessionType',
+          'NumMatchingPhenotypicSessions',
+          'NumMatchingImagingSessions',
+          'SessionImagingModalities',
+          'SessionCompletedPipelines',
+          'DatasetImagingModalities',
+          'DatasetPipelines',
+        ].join('\t');
+        tsvRows.push(headers);
+
+        datasets.forEach((res) => {
+          if (res.records_protected) {
+            tsvRows.push(
+              [
+                res.dataset_name.replace('\n', ' '),
+                res.dataset_portal_uri,
+                'protected', // subject_id
+                'protected', // session_id
+                'protected', // session_file_path
+                'protected', // session_type
+                'protected', // num_matching_phenotypic_sessions
+                'protected', // num_matching_imaging_sessions
+                'protected', // session_imaging_modality
+                'protected', // session_completed_pipelines
+                res.image_modals?.join(', '),
+                parsePipelinesInfoToString(res.available_pipelines),
+              ].join('\t')
+            );
+          } else {
+            // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
+            res.subject_data.forEach((subject) => {
+              tsvRows.push(
+                [
+                  res.dataset_name.replace('\n', ' '),
+                  res.dataset_portal_uri,
+                  subject.sub_id,
+                  subject.session_id,
+                  subject.session_file_path,
+                  subject.session_type,
+                  subject.num_matching_phenotypic_sessions,
+                  subject.num_matching_imaging_sessions,
+                  subject.image_modal?.join(', '),
+                  parsePipelinesInfoToString(subject.completed_pipelines),
+                  res.image_modals?.join(', '),
+                  parsePipelinesInfoToString(res.available_pipelines),
+                ].join('\t')
+              );
+            });
+          }
+        });
+      }
+
       return tsvRows.join('\n');
     }
 
