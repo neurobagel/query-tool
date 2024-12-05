@@ -1,12 +1,12 @@
-name: bump version
+name: Bump Version
 
 on:
   pull_request:
-    types: [ labeled ]
   workflow_dispatch:
 
 permissions:
   contents: write
+  pull-requests: write  # Required to commit changes to PR branches
 
 jobs:
   bump-version:
@@ -32,9 +32,20 @@ jobs:
           wget -O- "$auto_download_url" | gunzip > ~/auto
           chmod a+x ~/auto
 
-      - name: Check version
-        run: ~/auto version -vv
+      - name: Update package.json
+        run: |
+          new_version=$(~/auto version --quiet)
+          echo "New version: $new_version"
+          jq ".version = \"$new_version\"" package.json > package.json.tmp && mv package.json.tmp package.json
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-  
-    
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "Neurobagel Bot"
+          git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "Bumped version to $new_version"
+          git push origin HEAD
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
