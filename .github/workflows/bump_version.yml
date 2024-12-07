@@ -48,6 +48,12 @@ jobs:
           echo "INCREMENT=$INCREMENT" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+
+      - name: Skip if INCREMENT is empty
+        if: ${{ steps.compute-increment.outputs.increment == '' }}
+        run: |
+          echo "Skipping version bump because the computed increment is empty."
+          exit 0
       
       - name: Bump version
         id: bump-version
