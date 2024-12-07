@@ -35,19 +35,43 @@ jobs:
           auto_download_url="$(curl -fsSL https://api.github.com/repos/intuit/auto/releases/latest | jq -r '.assets[] | select(.name == "auto-linux.gz") | .browser_download_url')"
           wget -O- "$auto_download_url" | gunzip > ~/auto
           chmod a+x ~/auto
+
+      - name: Get latest release version
+        id: latest-release
+        run: |
+          LATEST_TAG=$(curl -fsSL https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
         
       - name: Compute Version
         id: compute-version
         run: |
-          ~/auto version
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          # Run auto to determine version increment (patch, minor, major)
+          INCREMENT=$(~/auto version)
+          echo "Increment: $INCREMENT"
+          echo "INCREMENT=$INCREMENT" >> $GITHUB_ENV
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          
+          # Increment based on the auto output
+          if [ "${{ env.INCREMENT }}" == "major" ]; then
+            ((MAJOR++))
+            MINOR=0
+            PATCH=0
+          elif [ "${{ env.INCREMENT }}" == "minor" ]; then
+            ((MINOR++))
+            PATCH=0
+          elif [ "${{ env.INCREMENT }}" == "patch" ]; then
+            ((PATCH++))
+          fi
+
+          # Construct the new version
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          echo "New version: $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       # - name: Update package.json
       #   run: |
-      #     new_version=$(~/auto version --quiet)
-      #     echo "New version: $new_version"
-      #     jq ".version = \"$new_version\"" package.json > package.json.tmp && mv package.json.tmp package.json
+      #     jq ".version = \"$NEW_VERSION\"" package.json > package.json.tmp && mv package.json.tmp package.json
       #   env:
       #     GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
@@ -56,7 +80,7 @@ jobs:
       #     git config --global user.name "Neurobagel Bot"
       #     git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
       #     git add package.json
-      #     git commit -m "Bumped version to $new_version"
+      #     git commit -m "Bumped version to $NEW_VERSION"
       #     git push origin HEAD
       #   env:
       #     GH_TOKEN: ${{ steps.generate-token.outputs.token }}
