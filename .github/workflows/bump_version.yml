@@ -35,6 +35,7 @@ jobs:
         uses: craig-day/compute-tag@v10
         with:
           github_token: ${{ steps.generate-token.outputs.token }}
+          version_schema: semantic
 
 
       # - name: Update package.json
