@@ -46,6 +46,8 @@ jobs:
           INCREMENT=$(~/auto version)
           echo "Increment: $INCREMENT"
           echo "INCREMENT=$INCREMENT" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
       
       - name: Increment version
         id: increment-version
@@ -72,8 +74,6 @@ jobs:
           NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
           echo "New version: $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       # - name: Update package.json
       #   run: |
