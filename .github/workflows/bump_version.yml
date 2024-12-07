@@ -30,29 +30,13 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
       
-      - name: Set up node env
-        uses: actions/setup-node@v4
+      - name: Compute next version
+        id: compute-tag
+        uses: craig-day/compute-tag@v18
         with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Compute version using auto
-        id: auto-version
-        run: |
-          VERSION=$(npx auto version)
-          echo "Computed version: $VERSION"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      
-      # - name: Compute next version
-      #   id: compute-tag
-      #   uses: craig-day/compute-tag@v18
-      #   with:
-      #     github_token: ${{ steps.generate-token.outputs.token }}
-      #     prerelease_suffix: ''
-      #     prerelease: false
+          github_token: ${{ steps.generate-token.outputs.token }}
+          prerelease_suffix: ''
+          prerelease: false
 
 
       # - name: Update package.json
