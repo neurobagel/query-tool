@@ -29,25 +29,12 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
-
-      - name: Download latest auto
-        run: |
-          auto_download_url="$(curl -fsSL https://api.github.com/repos/intuit/auto/releases/latest | jq -r '.assets[] | select(.name == "auto-linux.gz") | .browser_download_url')"
-          wget -O- "$auto_download_url" | gunzip > ~/auto
-          chmod a+x ~/auto
-      
-      - name: Get version bump type
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          VERSION_TYPE=$(~/auto version) && echo "VERSION_TYPE=${VERSION_TYPE}" >> "${GITHUB_ENV}"
       
       - id: compute_tag
         name: Compute next tag
         uses: craig-day/compute-tag@v10
         with:
           github_token: ${{ steps.generate-token.outputs.token }}
-          version_type: ${{ env.VERSION_TYPE }}
 
 
       # - name: Update package.json
