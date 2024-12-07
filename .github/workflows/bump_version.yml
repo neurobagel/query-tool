@@ -2,7 +2,7 @@ name: bump version
 
 on:
   pull_request:
-    # types: [labeled]
+    types: [labeled]
   workflow_dispatch:
 
 permissions:
@@ -12,7 +12,7 @@ permissions:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    # if: ${{ github.event.label.name == 'release' }}
+    if: ${{ github.event.label.name == 'release' }}
     steps:
       - name: Generate a token
         id: generate-token
@@ -48,12 +48,6 @@ jobs:
           echo "INCREMENT=$INCREMENT" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-
-      - name: Skip if computed increment is empty
-        if: ${{ steps.compute-increment.outputs.increment == '' }}
-        run: |
-          echo "Skipping version bump because the computed increment is empty."
-          exit 0
       
       - name: Bump version
         id: bump-version
