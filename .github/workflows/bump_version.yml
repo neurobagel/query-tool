@@ -39,7 +39,7 @@ jobs:
       - name: Compute Version
         id: compute-version
         run: |
-          ~/auto version -vv
+          ~/auto version
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
