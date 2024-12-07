@@ -34,9 +34,6 @@
     "uuid": "^11.0.3"
   },
   "devDependencies": {
-    "@auto-it/first-time-contributor": "^11.3.0",
-    "@auto-it/git-tag": "^11.3.0",
-    "@auto-it/omit-commits": "^11.3.0",
     "@kesills/eslint-config-airbnb-typescript": "^20.0.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/react": "^18.3.12",
