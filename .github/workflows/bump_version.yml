@@ -44,8 +44,6 @@ jobs:
           VERSION=$(npx auto version)
           echo "Computed version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       
       # - name: Compute next version
