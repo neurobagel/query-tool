@@ -1,4 +1,4 @@
-name: Bump Version
+name: bump version
 
 on:
   pull_request:
@@ -39,8 +39,8 @@ jobs:
           LATEST_TAG=$(curl -fsSL https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
         
-      - name: Compute bump
-        id: compute-bump
+      - name: Compute increment
+        id: compute-increment
         run: |
           # Run auto to determine version increment (patch, minor, major)
           INCREMENT=$(~/auto version)
@@ -49,8 +49,8 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
       
-      - name: Increment version
-        id: increment-version
+      - name: Bump version
+        id: bump-version
         run: |
           # Extract the current version from the latest release
           VERSION=${{ env.LATEST_TAG }}
@@ -87,6 +87,6 @@ jobs:
           git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
           git add package.json
           git commit -m "Bumped version to $NEW_VERSION"
-          git push origin HEAD
+          git push origin HEAD:refs/heads/${GITHUB_REF#refs/heads/}
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
