@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import {
   Toolbar,
   Typography,
@@ -17,27 +16,14 @@ import Login from '@mui/icons-material/Login';
 import Avatar from '@mui/material/Avatar';
 import { useAuth0 } from '@auth0/auth0-react';
 import { enableAuth } from '../utils/constants';
+import packageJson from '../../package.json';
 import logo from '../assets/logo.png';
 
 function Navbar({ isLoggedIn, onLogin }: { isLoggedIn: boolean; onLogin: () => void }) {
-  const [latestReleaseTag, setLatestReleaseTag] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openAccountMenu = Boolean(anchorEl);
 
   const { user, logout } = useAuth0();
-
-  useEffect(() => {
-    const GHApiURL = 'https://api.github.com/repos/neurobagel/query-tool/releases/latest';
-    axios
-      .get(GHApiURL)
-      .then((response) => {
-        const { data } = response;
-        setLatestReleaseTag(data.tag_name);
-      })
-      .catch(() => {
-        setLatestReleaseTag('beta');
-      });
-  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -52,7 +38,7 @@ function Navbar({ isLoggedIn, onLogin }: { isLoggedIn: boolean; onLogin: () => v
         <div className="flex items-center">
           <img src={logo} alt="Logo" height="60" />
           <div className="ml-4">
-            <Badge badgeContent={latestReleaseTag}>
+            <Badge badgeContent={packageJson.version || 'beta'}>
               <Typography variant="h5">Neurobagel Query</Typography>
             </Badge>
             <Typography className="text-gray-500">
