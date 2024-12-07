@@ -49,7 +49,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
-      - name: Skip if INCREMENT is empty
+      - name: Skip if computed increment is empty
         if: ${{ steps.compute-increment.outputs.increment == '' }}
         run: |
           echo "Skipping version bump because the computed increment is empty."
