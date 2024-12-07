@@ -41,7 +41,7 @@ jobs:
       - name: Compute version using auto
         id: auto-version
         run: |
-          VERSION=$(npx auto version)
+          VERSION=$(npx auto version | tail -n 1)
           echo "Computed version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
         env:
