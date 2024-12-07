@@ -25,7 +25,7 @@ Changes proposed in this pull request:
 -
 -
 
-**NOTE: If this pull request is to be released, the release label must be applied once the review process is done to avoid the local and remote from going out of sync as a consquence of the `bump version` workflow run**
+**NOTE: If this pull request is to be released, the release label must be applied once the review process is done to avoid the local and remote from going out of sync as a consequence of the `bump version` workflow run**
 
 <!-- To be checked off by reviewers -->
 ## Checklist
