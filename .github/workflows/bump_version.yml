@@ -1,11 +1,11 @@
 name: Bump Version
 
 on:
-  # pull_request:
-  #   types: [labeled]
-  push:
-    branches:
-      - bug-291
+  pull_request:
+    types: [labeled]
+  # push:
+  #   branches:
+  #     - bug-291
   workflow_dispatch:
 
 permissions:
