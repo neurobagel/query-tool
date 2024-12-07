@@ -39,10 +39,7 @@ jobs:
       - name: Compute Version
         id: compute-version
         run: |
-          VERSION=$(~/auto version | tail -n 1)
-          echo "Computed version: $VERSION"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "::set-output name=version::$VERSION "
+          ~/auto version -vv
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
