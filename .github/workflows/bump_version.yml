@@ -37,7 +37,9 @@ jobs:
           chmod a+x ~/auto
         
       - name: Bump Version
-        run: ~/auto version
+        run: |
+          ~/auto version > version_output.txt
+          cat version_output.txt
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
