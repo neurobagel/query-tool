@@ -39,9 +39,11 @@ jobs:
       - name: Bump Version
         run: |
           ~/auto version > version_output.txt
-          cat version_output.txt
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        
+      - name: Display Version Output
+        run: cat version_output.txt
 
       # - name: Update package.json
       #   run: |
