@@ -36,14 +36,18 @@ jobs:
           wget -O- "$auto_download_url" | gunzip > ~/auto
           chmod a+x ~/auto
         
-      - name: Bump Version
+      - name: Compute Version
+        id: compute-version
         run: |
-          ~/auto version > version_output.txt
+          VERSION=$("~/auto" version | tail -n 1)
+          echo "Computed version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=version::$VERSION"
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        
-      - name: Display Version Output
-        run: cat version_output.txt
+
+      - name: Display Version
+        run: echo "Version:" ${{ steps.compute-version.outputs.version }}
 
       # - name: Update package.json
       #   run: |
