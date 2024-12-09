@@ -61,7 +61,7 @@ describe('Results TSV', () => {
   });
 });
 describe('Unprotected response', () => {
-  it.only('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
+  it('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
     cy.intercept('query?*', unprotectedResponse).as('call');
     cy.intercept(
       {
@@ -107,12 +107,12 @@ describe('Unprotected response', () => {
       expect(phenotypicSession.split('\t')[4]).to.equal('ses-nb01');
       expect(phenotypicSession.split('\t')[5]).to.equal('');
       expect(phenotypicSession.split('\t')[6]).to.equal('Phenotypic');
-      expect(phenotypicSession.split('\t')[7]).to.equal('1');
-      expect(phenotypicSession.split('\t')[8]).to.equal('0');
-      expect(phenotypicSession.split('\t')[9]).to.equal('10.4');
-      expect(phenotypicSession.split('\t')[10]).to.equal('female');
-      expect(phenotypicSession.split('\t')[11]).to.equal('Major depressive disorder');
-      expect(phenotypicSession.split('\t')[12]).to.equal('multisource interference task');
+      expect(phenotypicSession.split('\t')[7]).to.equal('10.4');
+      expect(phenotypicSession.split('\t')[8]).to.equal('female');
+      expect(phenotypicSession.split('\t')[9]).to.equal('Major depressive disorder');
+      expect(phenotypicSession.split('\t')[10]).to.equal('multisource interference task');
+      expect(phenotypicSession.split('\t')[11]).to.equal('1');
+      expect(phenotypicSession.split('\t')[12]).to.equal('0');
       expect(phenotypicSession.split('\t')[13]).to.equal('');
       expect(phenotypicSession.split('\t')[14]).to.equal('');
       expect(phenotypicSession.split('\t')[15]).to.equal('Flow Weighted, T2 Weighted');
@@ -127,12 +127,12 @@ describe('Unprotected response', () => {
       expect(imagingSession.split('\t')[4]).to.equal('ses-nb01');
       expect(imagingSession.split('\t')[5]).to.equal('/ds004116/sub-300101');
       expect(imagingSession.split('\t')[6]).to.equal('Imaging');
-      expect(imagingSession.split('\t')[7]).to.equal('0');
-      expect(imagingSession.split('\t')[8]).to.equal('1');
+      expect(imagingSession.split('\t')[7]).to.equal('');
+      expect(imagingSession.split('\t')[8]).to.equal('');
       expect(imagingSession.split('\t')[9]).to.equal('');
       expect(imagingSession.split('\t')[10]).to.equal('');
-      expect(imagingSession.split('\t')[11]).to.equal('');
-      expect(imagingSession.split('\t')[12]).to.equal('');
+      expect(imagingSession.split('\t')[11]).to.equal('0');
+      expect(imagingSession.split('\t')[12]).to.equal('1');
       expect(imagingSession.split('\t')[13]).to.equal('Flow Weighted, T2 Weighted');
       expect(imagingSession.split('\t')[14]).to.equal('fmriprep 23.1.3, freesurfer 7.3.2');
       expect(imagingSession.split('\t')[15]).to.equal('Flow Weighted, T2 Weighted');
