@@ -1,3 +1,26 @@
+# v0.7.2 (Tue Dec 10 2024)
+
+#### 🚀 Enhancements
+
+- Revert "Updated formatting of download result files" ([@rmanaem](https://github.com/rmanaem))
+- Revert "Updated the `ResultsTSV` e2e test" ([@rmanaem](https://github.com/rmanaem))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Replaced the latest version tag with a baked-in version [#390](https://github.com/neurobagel/query-tool/pull/390) ([@rmanaem](https://github.com/rmanaem) [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot]))
+
+#### ⚠️ Pushed to `main`
+
+- Updated the `ResultsTSV` e2e test ([@rmanaem](https://github.com/rmanaem))
+- Updated formatting of download result files ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot])
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.7.1 (Mon Dec 02 2024)
 
 #### 🏠 Internal
