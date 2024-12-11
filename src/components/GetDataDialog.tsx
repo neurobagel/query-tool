@@ -12,20 +12,9 @@ import {
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useTheme } from '@mui/material/styles';
-import DownloadResultButton from './DownloadResultButton';
 import NBTheme from '../theme';
 
-function GetDataDialog({
-  open,
-  onClose,
-  disableDownloadResultsButton,
-  handleDownloadResultButtonClick,
-}: {
-  open: boolean;
-  onClose: () => void;
-  disableDownloadResultsButton: boolean;
-  handleDownloadResultButtonClick: (identifier: string) => void;
-}) {
+function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const DOCKER_RUN_COMMAND =
     'docker run -t -v $(pwd):/data neurobagel/dataget:latest /data/cohort-participant-machine-results.tsv /data/output';
   const theme = useTheme();
@@ -56,25 +45,14 @@ function GetDataDialog({
           <Typography variant="h6" className="font-bold">
             Results file for data access or programmatic use
           </Typography>
-          Below is a machine-optimized version of your selected query results, which we recommend
-          using as input to scripts for downloading the data of matching subjects to your local
-          filesystem. This file also contains URIs instead of descriptive labels, making it ideal
-          for integration with other tools for linked or structured data:
-          <div className="m-4 flex justify-center">
-            <DownloadResultButton
-              identifier="cohort-participant-machine"
-              disabled={disableDownloadResultsButton}
-              handleClick={(identifier) => handleDownloadResultButtonClick(identifier)}
-            />
-          </div>
-          <Typography variant="h6" className="font-bold">
-            Download matching results from DataLad datasets
-          </Typography>
-          We have a helper tool to automatically download matching subjects from datasets available
-          through DataLad. To do so:
+          Download the query results file with URIs to use as input to scripts for downloading the
+          data of matching subjects to your local filesystem. This file contains URIs instead of
+          descriptive labels making it ideal for integration with other tools for linked or
+          structured data. We have a helper tool to automatically download matching subjects from
+          datasets available through DataLad. To do so:
           <ol>
             <li>Select at least one dataset</li>
-            <li>Download the cohort results for machines using the above button</li>
+            <li>Download the results file with URIs using the dropdown download button</li>
             <li>Change directory to the location of the downloaded TSV</li>
             <li>Copy and run the command below</li>
           </ol>
