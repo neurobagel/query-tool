@@ -140,12 +140,12 @@ function ResultContainer({
       : '';
   }
 
-  function generateTSVString(buttonIdentifier: string) {
+  function generateTSVString(buttonIndex: number) {
     if (response) {
       const tsvRows = [];
       const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
 
-      if (buttonIdentifier === 'cohort-participant') {
+      if (buttonIndex === 0) {
         const headers = [
           'DatasetName',
           'PortalURI',
@@ -291,11 +291,13 @@ function ResultContainer({
     return '';
   }
 
-  function downloadResults(buttonIdentifier: string) {
+  function downloadResults(buttonIndex: number) {
+    const fileName =
+      buttonIndex === 0 ? 'neurobagel-query-results.tsv' : 'neurobagel-query-results-with-URIs.tsv';
     const element = document.createElement('a');
-    const encodedTSV = encodeURIComponent(generateTSVString(buttonIdentifier));
+    const encodedTSV = encodeURIComponent(generateTSVString(buttonIndex));
     element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
-    element.setAttribute('download', `${buttonIdentifier}-results.tsv`);
+    element.setAttribute('download', fileName);
 
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -378,18 +380,12 @@ function ResultContainer({
             >
               How to get data
             </Button>
-            <GetDataDialog
-              open={openDialog}
-              onClose={() => setOpenDialog(false)}
-              disableDownloadResultsButton={download.length === 0}
-              handleDownloadResultButtonClick={(identifier) => downloadResults(identifier)}
-            />
+            <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
           </div>
           <div className="space-x-1">
             <DownloadResultButton
-              identifier="cohort-participant"
               disabled={download.length === 0}
-              handleClick={(identifier) => downloadResults(identifier)}
+              handleClick={(index) => downloadResults(index)}
             />
           </div>
         </div>

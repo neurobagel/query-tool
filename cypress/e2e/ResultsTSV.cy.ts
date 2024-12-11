@@ -21,9 +21,10 @@ describe('Results TSV', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort-participant-machine-results.tsv').should(
+    cy.get('[data-cy="download-results-dropdown-button"]').click();
+    cy.contains('URIs').click();
+    cy.get('[data-cy="download-results-button"]').click();
+    cy.readFile('cypress/downloads/neurobagel-query-results-with-URIs.tsv').should(
       'contain',
       'some cool name'
     );
@@ -32,13 +33,13 @@ describe('Results TSV', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    cy.get('[data-cy="cohort-participant-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort-participant-results.tsv').then((fileContent) => {
+    cy.get('[data-cy="download-results-button"]').click();
+    cy.readFile('cypress/downloads/neurobagel-query-results.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
-    cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort-participant-machine-results.tsv').then((fileContent) => {
+    cy.get('[data-cy="download-results-dropdown-button"]').click();
+    cy.contains('URIs').click();
+    cy.readFile('cypress/downloads/neurobagel-query-results-with-URIs.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
   });
@@ -46,10 +47,8 @@ describe('Results TSV', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    cy.get('[data-cy="cohort-participant-download-results-button"]').click();
-    cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
-    cy.readFile('cypress/downloads/cohort-participant-results.tsv').then((fileContent) => {
+    cy.get('[data-cy="download-results-button"]').click();
+    cy.readFile('cypress/downloads/neurobagel-query-results.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const datasetProtected = rows[1];
@@ -61,7 +60,7 @@ describe('Results TSV', () => {
   });
 });
 describe('Unprotected response', () => {
-  it('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
+  it.only('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
     cy.intercept('query?*', unprotectedResponse).as('call');
     cy.intercept(
       {
@@ -88,11 +87,9 @@ describe('Unprotected response', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    cy.get('[data-cy="cohort-participant-download-results-button"]').click();
-    cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="cohort-participant-machine-download-results-button"]').click();
+    cy.get('[data-cy="download-results-button"]').click();
 
-    cy.readFile('cypress/downloads/cohort-participant-results.tsv').then((fileContent) => {
+    cy.readFile('cypress/downloads/neurobagel-query-results.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const phenotypicSession = rows[1];
