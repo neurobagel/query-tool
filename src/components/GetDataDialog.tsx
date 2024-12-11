@@ -16,7 +16,7 @@ import NBTheme from '../theme';
 
 function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const DOCKER_RUN_COMMAND =
-    'docker run -t -v $(pwd):/data neurobagel/dataget:latest /data/cohort-participant-machine-results.tsv /data/output';
+    'docker run -t -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results-with-URIs.tsv /data/output';
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
