@@ -73,7 +73,7 @@ function ResultContainer({
   ): string | string[] | null {
     // Handle array of URIs
     if (Array.isArray(uri)) {
-      return uri.map((singleUri) => convertURIToLabel(type, singleUri)).join(', ');
+      return uri.map((singleUri) => convertURIToLabel(type, singleUri)).join(',');
     }
 
     if (!uri) {
@@ -136,7 +136,7 @@ function ResultContainer({
           .flatMap(([name, versions]) =>
             (versions as string[]).map((version: string) => `${name} ${version}`)
           )
-          .join(', ')
+          .join(',')
       : '';
   }
 
@@ -187,11 +187,11 @@ function ResultContainer({
               'protected', // session_completed_pipelines
               isHumanFile
                 ? convertURIToLabel('modality', res.image_modals)
-                : res.image_modals?.join(', '),
+                : res.image_modals?.join(','),
               isHumanFile
                 ? convertURIToLabel(
                     'pipeline',
-                    parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                    parsePipelinesInfoToString(res.available_pipelines).split(',')
                   )
                 : parsePipelinesInfoToString(res.available_pipelines),
             ].join('\t')
@@ -220,20 +220,20 @@ function ResultContainer({
                   : subject.assessment,
                 isHumanFile
                   ? convertURIToLabel('modality', subject.image_modal)
-                  : subject.image_modal?.join(', '),
+                  : subject.image_modal?.join(','),
                 isHumanFile
                   ? convertURIToLabel(
                       'pipeline',
-                      parsePipelinesInfoToString(subject.completed_pipelines).split(', ')
+                      parsePipelinesInfoToString(subject.completed_pipelines).split(',')
                     )
                   : parsePipelinesInfoToString(subject.completed_pipelines),
                 isHumanFile
                   ? convertURIToLabel('modality', res.image_modals)
-                  : res.image_modals?.join(', '),
+                  : res.image_modals?.join(','),
                 isHumanFile
                   ? convertURIToLabel(
                       'pipeline',
-                      parsePipelinesInfoToString(res.available_pipelines).split(', ')
+                      parsePipelinesInfoToString(res.available_pipelines).split(',')
                     )
                   : parsePipelinesInfoToString(res.available_pipelines),
               ].join('\t')

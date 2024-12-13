@@ -115,8 +115,8 @@ describe('Unprotected response', () => {
       expect(phenotypicSession.split('\t')[12]).to.equal('multisource interference task');
       expect(phenotypicSession.split('\t')[13]).to.equal('');
       expect(phenotypicSession.split('\t')[14]).to.equal('');
-      expect(phenotypicSession.split('\t')[15]).to.equal('Flow Weighted, T2 Weighted');
-      expect(phenotypicSession.split('\t')[16]).to.equal('fmriprep 23.1.3, freesurfer 7.3.2');
+      expect(phenotypicSession.split('\t')[15]).to.equal('Flow Weighted,T2 Weighted');
+      expect(phenotypicSession.split('\t')[16]).to.equal('fmriprep 23.1.3,freesurfer 7.3.2');
 
       expect(imagingSession.split('\t')[0]).to.equal('some dataset');
       expect(imagingSession.split('\t')[1]).to.equal(
@@ -133,10 +133,10 @@ describe('Unprotected response', () => {
       expect(imagingSession.split('\t')[10]).to.equal('');
       expect(imagingSession.split('\t')[11]).to.equal('');
       expect(imagingSession.split('\t')[12]).to.equal('');
-      expect(imagingSession.split('\t')[13]).to.equal('Flow Weighted, T2 Weighted');
-      expect(imagingSession.split('\t')[14]).to.equal('fmriprep 23.1.3, freesurfer 7.3.2');
-      expect(imagingSession.split('\t')[15]).to.equal('Flow Weighted, T2 Weighted');
-      expect(imagingSession.split('\t')[16]).to.equal('fmriprep 23.1.3, freesurfer 7.3.2');
+      expect(imagingSession.split('\t')[13]).to.equal('Flow Weighted,T2 Weighted');
+      expect(imagingSession.split('\t')[14]).to.equal('fmriprep 23.1.3,freesurfer 7.3.2');
+      expect(imagingSession.split('\t')[15]).to.equal('Flow Weighted,T2 Weighted');
+      expect(imagingSession.split('\t')[16]).to.equal('fmriprep 23.1.3,freesurfer 7.3.2');
     });
   });
 });
