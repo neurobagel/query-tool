@@ -214,7 +214,9 @@ function ResultContainer({
                 subject.num_matching_imaging_sessions,
                 subject.age,
                 isFileWithLabels ? convertURIToLabel('sex', subject.sex) : subject.sex,
-                isFileWithLabels ? convertURIToLabel('diagnosis', subject.diagnosis) : subject.diagnosis,
+                isFileWithLabels
+                  ? convertURIToLabel('diagnosis', subject.diagnosis)
+                  : subject.diagnosis,
                 isFileWithLabels
                   ? convertURIToLabel('assessment', subject.assessment)
                   : subject.assessment,
