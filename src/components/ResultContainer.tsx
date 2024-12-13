@@ -140,11 +140,11 @@ function ResultContainer({
       : '';
   }
 
-  function generateTSVString(buttonIdentifier: string) {
+  function generateTSVString(buttonIndex: number) {
     if (response) {
       const tsvRows = [];
       const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
-      const isHumanFile = buttonIdentifier === 'cohort-participant';
+      const isFileWithLabels = buttonIndex === 0;
 
       const headers = [
         'DatasetName',
@@ -185,10 +185,10 @@ function ResultContainer({
               'protected', // assessment
               'protected', // session_imaging_modality
               'protected', // session_completed_pipelines
-              isHumanFile
+              isFileWithLabels
                 ? convertURIToLabel('modality', res.image_modals)
                 : res.image_modals?.join(','),
-              isHumanFile
+              isFileWithLabels
                 ? convertURIToLabel(
                     'pipeline',
                     parsePipelinesInfoToString(res.available_pipelines).split(',')
@@ -207,30 +207,32 @@ function ResultContainer({
                 subject.sub_id,
                 subject.session_id,
                 subject.session_file_path,
-                isHumanFile
+                isFileWithLabels
                   ? convertURIToLabel('sessionType', subject.session_type)
                   : subject.session_type,
                 subject.num_matching_phenotypic_sessions,
                 subject.num_matching_imaging_sessions,
                 subject.age,
-                isHumanFile ? convertURIToLabel('sex', subject.sex) : subject.sex,
-                isHumanFile ? convertURIToLabel('diagnosis', subject.diagnosis) : subject.diagnosis,
-                isHumanFile
+                isFileWithLabels ? convertURIToLabel('sex', subject.sex) : subject.sex,
+                isFileWithLabels
+                  ? convertURIToLabel('diagnosis', subject.diagnosis)
+                  : subject.diagnosis,
+                isFileWithLabels
                   ? convertURIToLabel('assessment', subject.assessment)
                   : subject.assessment,
-                isHumanFile
+                isFileWithLabels
                   ? convertURIToLabel('modality', subject.image_modal)
                   : subject.image_modal?.join(','),
-                isHumanFile
+                isFileWithLabels
                   ? convertURIToLabel(
                       'pipeline',
                       parsePipelinesInfoToString(subject.completed_pipelines).split(',')
                     )
                   : parsePipelinesInfoToString(subject.completed_pipelines),
-                isHumanFile
+                isFileWithLabels
                   ? convertURIToLabel('modality', res.image_modals)
                   : res.image_modals?.join(','),
-                isHumanFile
+                isFileWithLabels
                   ? convertURIToLabel(
                       'pipeline',
                       parsePipelinesInfoToString(res.available_pipelines).split(',')
@@ -247,11 +249,13 @@ function ResultContainer({
     return '';
   }
 
-  function downloadResults(buttonIdentifier: string) {
+  function downloadResults(buttonIndex: number) {
+    const fileName =
+      buttonIndex === 0 ? 'neurobagel-query-results.tsv' : 'neurobagel-query-results-with-URIs.tsv';
     const element = document.createElement('a');
-    const encodedTSV = encodeURIComponent(generateTSVString(buttonIdentifier));
+    const encodedTSV = encodeURIComponent(generateTSVString(buttonIndex));
     element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
-    element.setAttribute('download', `${buttonIdentifier}-results.tsv`);
+    element.setAttribute('download', fileName);
 
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -334,18 +338,12 @@ function ResultContainer({
             >
               How to get data
             </Button>
-            <GetDataDialog
-              open={openDialog}
-              onClose={() => setOpenDialog(false)}
-              disableDownloadResultsButton={download.length === 0}
-              handleDownloadResultButtonClick={(identifier) => downloadResults(identifier)}
-            />
+            <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
           </div>
           <div className="space-x-1">
             <DownloadResultButton
-              identifier="cohort-participant"
               disabled={download.length === 0}
-              handleClick={(identifier) => downloadResults(identifier)}
+              handleClick={(index) => downloadResults(index)}
             />
           </div>
         </div>
