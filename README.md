@@ -2,19 +2,16 @@
 
 # Query Tool
 
-<div>
-    <a href="https://github.com/neurobagel/query-tool/actions/workflows/pages/pages-build-deployment">
-        <img src="https://img.shields.io/website?down_color=CD5C5C&down_message=down&label=deployed%20app&style=flat-square&up_color=B0C4DE&up_message=live&url=https%3A%2F%2Fquery.neurobagel.org%2F" alt="deployed app"></a>
-    <a href="https://github.com/neurobagel/query-tool/actions/workflows/component-test.yaml">
-        <img src="https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/component-test.yaml?color=BDB76B&label=component test&style=flat-square" alt="component test"></a>
-    <a href="https://github.com/neurobagel/query-tool/actions/workflows/e2e-test.yaml">
-        <img src="https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/e2e-test.yaml?color=8FBC8F&label=e2e test&style=flat-square" alt="e2e test"></a>
-    <a href="https://nodejs.org/en//">
-        <img src="https://img.shields.io/badge/node-20.9-CD5C5C?style=flat-square" alt="Node"></a>
-    <a href="LICENSE">
-        <img src="https://img.shields.io/github/license/neurobagel/query-tool?color=4682B4&style=flat-square" alt="GitHub license"></a>
-</div>
-<br>
+![GitHub branch check runs](https://img.shields.io/github/check-runs/neurobagel/query-tool/main?style=flat-square)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/e2e-test.yaml?branch=main&style=flat-square&label=e2e%20tests&link=https%3A%2F%2Fgithub.com%2Fneurobagel%2Fquery-tool%2Factions%2Fworkflows%2Fe2e-test.yaml)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/component-test.yaml?branch=main&style=flat-square&label=component%20tests&link=https%3A%2F%2Fgithub.com%2Fneurobagel%2Fquery-tool%2Factions%2Fworkflows%2Fcomponent-test.yaml)
+![Static Badge](https://img.shields.io/badge/node-20.9-red?style=flat-square&logo=nodedotjs&color=CD5C5C)
+![GitHub License](https://img.shields.io/github/license/neurobagel/query-tool?style=flat-square&color=purple&link=LICENSE)
+![Docker Image Version (tag)](https://img.shields.io/docker/v/neurobagel/query_tool/latest?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)
+![Docker Pulls](https://img.shields.io/docker/pulls/neurobagel/query_tool?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)
+
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fneurobagel-query.netlify.app&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=staging%20app&link=https%3A%2F%2Fneurobagel-query.netlify.app)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fquery.neurobagel.org&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=deployed%20app&link=https%3A%2F%2Fquery.neurobagel.org)
 
 The query tool is a React application, developed in [TypeScript](https://www.typescriptlang.org/) using a variety of tools including [Vite](https://vitejs.dev/), [Cypress](https://www.cypress.io/), and [MUI](https://mui.com/).
 
