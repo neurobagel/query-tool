@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     return { hasError: true };
   }
 
-  // Diasbling the eslint rule for this method since as a lifecycle method
+  // Disabling the eslint rule for this method since as a lifecycle method
   // it cannot be static and it's not using the `this` keyword
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   componentDidCatch(error: Error, info: React.ErrorInfo): void {
