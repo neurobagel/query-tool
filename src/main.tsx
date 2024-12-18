@@ -20,11 +20,11 @@ const app = (
   <React.StrictMode>
     {/* CSS injection order for MUI and tailwind: https://mui.com/material-ui/guides/interoperability/#tailwind-css */}
     <StyledEngineProvider injectFirst>
-      <ErrorBoundary>
-        <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <ErrorBoundary>
           <RouterProvider router={router} />
-        </ThemeProvider>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </ThemeProvider>
     </StyledEngineProvider>
   </React.StrictMode>
 );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Typography, Button, Collapse } from '@mui/material';
 import logo from '../assets/logo.png';
 
 type ErrorBoundaryProps = {
@@ -8,30 +8,31 @@ type ErrorBoundaryProps = {
 
 type ErrorBoundaryState = {
   hasError: boolean;
+  error?: Error | null;
+  errorInfo?: React.ErrorInfo | null;
+  showDetails: boolean;
 };
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null, errorInfo: null, showDetails: false };
   }
 
   static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true };
+    return { hasError: true, showDetails: false };
   }
 
-  // Disabling the eslint rule for this method since as a lifecycle method
-  // it cannot be static and it's not using the `this` keyword
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   componentDidCatch(error: Error, info: React.ErrorInfo): void {
-    /* eslint-disable no-console */
-    console.error('Error caught by ErrorBoundary:', error);
-    console.error('Component stack:', info.componentStack);
+    this.setState({ error, errorInfo: info });
   }
+
+  toggleDetails = () => {
+    this.setState((prevState) => ({ showDetails: !prevState.showDetails }));
+  };
 
   render() {
-    // Eslint rule react/destructuring-assignment requires state and props to be destructed
-    const { hasError } = this.state;
+    const { hasError, error, errorInfo, showDetails } = this.state;
     const { children } = this.props;
 
     if (hasError) {
@@ -50,6 +51,25 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             </a>
             .
           </Typography>
+          <Button variant="outlined" color="primary" onClick={this.toggleDetails}>
+            {showDetails ? 'Hide Details' : 'Show Details'}
+          </Button>
+          <Collapse in={showDetails}>
+            <div className="mt-4 w-11/12 max-w-lg overflow-auto rounded bg-gray-100 p-4 text-left shadow">
+              {error && (
+                <Typography variant="body1" className="mb-2">
+                  <strong>Error:</strong> {error.message}
+                </Typography>
+              )}
+              {errorInfo && (
+                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>
+                  <strong>Component Stack:</strong>
+                  {'\n'}
+                  {errorInfo.componentStack}
+                </Typography>
+              )}
+            </div>
+          </Collapse>
         </div>
       );
     }
