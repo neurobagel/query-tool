@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Button,
   FormControlLabel,
@@ -18,6 +19,7 @@ import {
 } from '../utils/types';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
+import GetDataDialog from './GetDataDialog';
 
 function QueryForm({
   availableNodes,
@@ -64,6 +66,8 @@ function QueryForm({
   loading: boolean;
   onSubmitQuery: () => void;
 }) {
+  const [openDialog, setOpenDialog] = useState(false);
+
   function validateContinuousValue(value: number | null) {
     if (value === null) {
       // Value is default, user has not entered anything yet
@@ -235,7 +239,7 @@ function QueryForm({
         </div>
       )}
 
-      <div>
+      <div className="flex justify-between">
         <Button
           data-cy="submit-query-button"
           disabled={disableSubmit}
@@ -253,6 +257,14 @@ function QueryForm({
         >
           Submit Query
         </Button>
+        <Button
+          variant="contained"
+          data-cy="how-to-get-data-dialog-button"
+          onClick={() => setOpenDialog(true)}
+        >
+          How to access data
+        </Button>
+        <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
       </div>
     </div>
   );

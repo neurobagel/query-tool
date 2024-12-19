@@ -96,6 +96,37 @@ describe('QueryForm', () => {
     cy.get('[data-cy="Pipeline name-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Pipeline version-categorical-field"]').should('be.visible');
     cy.get('[data-cy="submit-query-button"]').should('be.visible');
+    cy.get('[data-cy="how-to-get-data-dialog-button"]').should('be.visible');
+  });
+  it('Clicking the how to get data dialog button should open the dialog', () => {
+    cy.mount(
+      <QueryForm
+        availableNodes={props.availableNodes}
+        diagnosisOptions={props.diagnosisOptions}
+        assessmentOptions={props.assessmentOptions}
+        selectedNode={props.selectedNode}
+        minAge={props.minAge}
+        maxAge={props.maxAge}
+        sex={props.sex}
+        diagnosis={props.diagnosis}
+        isControl={props.isControl}
+        minNumImagingSessions={props.minNumImagingSessions}
+        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
+        setIsControl={props.setIsControl}
+        assessmentTool={props.assessmentTool}
+        imagingModality={props.imagingModality}
+        pipelineVersion={props.pipelineVersion}
+        pipelineName={props.pipelineName}
+        pipelines={props.pipelines}
+        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
+        updateContinuousQueryParams={props.updateContinuousQueryParams}
+        loading={props.loading}
+        onSubmitQuery={props.onSubmitQuery}
+      />
+    );
+    cy.get('[data-cy="get-data-dialog"]').should('not.exist');
+    cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
+    cy.get('[data-cy="get-data-dialog"]').should('be.visible');
   });
   it('Fires updateCategoricalQueryParams event handler with the appropriate payload when a categorical field is selected', () => {
     const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
