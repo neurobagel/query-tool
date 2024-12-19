@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Button, FormControlLabel, Checkbox, Typography } from '@mui/material';
+import { FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
 import { QueryResponse, Pipelines, AttributeOption } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
-import GetDataDialog from './GetDataDialog';
 import { sexes, modalities } from '../utils/constants';
 
 function ResultContainer({
@@ -16,7 +15,6 @@ function ResultContainer({
   response: QueryResponse | null;
 }) {
   const [download, setDownload] = useState<string[]>([]);
-  const [openDialog, setOpenDialog] = useState(false);
   const selectAll: boolean = response
     ? response.responses.length === download.length &&
       response.responses.every((r) => download.includes(r.dataset_uuid))
@@ -313,7 +311,7 @@ function ResultContainer({
             </Typography>
           </div>
         </div>
-        <div className="h-[70vh] space-y-1 overflow-auto">
+        <div className="h-[65vh] space-y-1 overflow-auto">
           {response.responses.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
@@ -329,23 +327,11 @@ function ResultContainer({
             />
           ))}
         </div>
-        <div className="mt-[2px] flex flex-row flex-wrap justify-between">
-          <div>
-            <Button
-              variant="contained"
-              data-cy="how-to-get-data-dialog-button"
-              onClick={() => setOpenDialog(true)}
-            >
-              How to get data
-            </Button>
-            <GetDataDialog open={openDialog} onClose={() => setOpenDialog(false)} />
-          </div>
-          <div className="space-x-1">
-            <DownloadResultButton
-              disabled={download.length === 0}
-              handleClick={(index) => downloadResults(index)}
-            />
-          </div>
+        <div className="flex flex-wrap justify-end">
+          <DownloadResultButton
+            disabled={download.length === 0}
+            handleClick={(index) => downloadResults(index)}
+          />
         </div>
       </>
     );
