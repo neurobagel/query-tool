@@ -14,6 +14,7 @@ const ResultCard = memo(
     nodeName,
     datasetUUID,
     datasetName,
+    datasetPortalURI,
     datasetTotalSubjects,
     numMatchingSubjects,
     imageModals,
@@ -24,6 +25,7 @@ const ResultCard = memo(
     nodeName: string;
     datasetName: string;
     datasetUUID: string;
+    datasetPortalURI: string;
     datasetTotalSubjects: number;
     numMatchingSubjects: number;
     imageModals: string[];
@@ -45,7 +47,16 @@ const ResultCard = memo(
               />
             </div>
             <div>
-              <Typography variant="h5">{datasetName}</Typography>
+              {datasetPortalURI ? (
+                <Typography variant="h5">
+                  <a href={datasetPortalURI} target="_blank" rel="noopener noreferrer">
+                    {datasetName}
+                  </a>
+                </Typography>
+              ) : (
+                <Typography variant="h5">{datasetName}</Typography>
+              )}
+
               <Typography variant="subtitle1">from {nodeName}</Typography>
               <Typography variant="subtitle2">
                 {numMatchingSubjects} subjects match / {datasetTotalSubjects} total subjects
