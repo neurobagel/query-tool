@@ -43,16 +43,16 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
       <DialogContent>
         <DialogContentText>
           <Typography variant="h6" className="font-bold">
-            Results file for data access or programmatic use
+            Download matching source data results using Datalad
           </Typography>
-          Download the query results file with URIs to use as input to scripts for downloading the
-          data of matching subjects to your local filesystem. This file contains URIs instead of
-          descriptive labels making it ideal for integration with other tools for linked or
-          structured data. We have a helper tool to automatically download matching subjects from
-          datasets available through DataLad. To do so:
+          We have a helper tool to automatically download matching subjects from datasets available
+          through DataLad. To do so:
           <ol>
             <li>Select at least one dataset</li>
-            <li>Download the results file with URIs using the dropdown download button</li>
+            <li>
+              Download one of the query results files using the &rdquo;Download selected query
+              results&rdquo; dropdown
+            </li>
             <li>Change directory to the location of the downloaded TSV</li>
             <li>Copy and run the command below</li>
           </ol>
@@ -94,7 +94,7 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
           <br />
           ⚠️ The above command currently only gets data for DataLad datasets. To download a cohort
           from other remote filesystems you have access to, you may need to write your own script
-          that uses the paths from the results file downloadable above.
+          that uses the paths from a results file.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
