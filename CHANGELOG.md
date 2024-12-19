@@ -1,3 +1,20 @@
+# v0.8.0 (Thu Dec 19 2024)
+
+#### 🚀 Enhancements
+
+- [MNT] Implemented error boundary [#406](https://github.com/neurobagel/query-tool/pull/406) ([@rmanaem](https://github.com/rmanaem) [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot]))
+- [REF] Move appzi and plausible to the gh pages build [#400](https://github.com/neurobagel/query-tool/pull/400) ([@surchs](https://github.com/surchs))
+- [MNT] Refactored the `DownloadResultButton` [#396](https://github.com/neurobagel/query-tool/pull/396) ([@rmanaem](https://github.com/rmanaem))
+- [ENH] Standardized query result files [#398](https://github.com/neurobagel/query-tool/pull/398) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 3
+
+- [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot])
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.7.2 (Tue Dec 10 2024)
 
 #### 🚀 Enhancements

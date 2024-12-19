@@ -31,11 +31,9 @@ jobs:
         # TODO: Make this cleaner by for example using a custom hook and adding to document
       - name: Add prod scripts
         run: |
-          add_script='
-          <script async src="https://w.appzi.io/w.js?token=YVTHd"></script>
-          <script defer data-domain="query.neurobagel.org" src="https://plausible.neurobagel.org/js/script.js"></script>
-          '
-          sed -i "s|<!-- Additional script tags -->|${add_script}|" index.html
+          add_script='<script async src="https://w.appzi.io/w.js?token=YVTHd"></script><script defer data-domain="query.neurobagel.org" src="https://plausible.neurobagel.org/js/script.js"></script>'
+          # Need to use single quotes around sed to avoid ! to be interpreted as a history expansion character
+          sed -i 's|<!-- Additional script tags -->|'"${add_script}"'|' index.html
 
       - name: Set up Node
         uses: actions/setup-node@v4
