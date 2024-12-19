@@ -320,6 +320,7 @@ function ResultContainer({
               nodeName={item.node_name}
               datasetUUID={item.dataset_uuid}
               datasetName={item.dataset_name}
+              datasetPortalURI={item.dataset_portal_uri}
               datasetTotalSubjects={item.dataset_total_subjects}
               numMatchingSubjects={item.num_matching_subjects}
               imageModals={item.image_modals}
