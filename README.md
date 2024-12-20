@@ -146,7 +146,7 @@ You can verify the tool is running by watching for the` info messages from Vite 
 Having installed the dependencies, run the following command to enable husky `pre-commit` and `post-merge` hooks:
 
 ```bash
-npx husky install
+npx husky init
 ```
 
 ##### Docker compose testing environment for development
