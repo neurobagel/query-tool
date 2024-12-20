@@ -1,7 +1,7 @@
 {
   "name": "react-query-tool",
   "private": true,
-  "version": "v0.7.2",
+  "version": "v0.8.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -21,7 +21,7 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "axios": "^1.7.7",
-    "eslint-plugin-tsdoc": "^0.3.0",
+    "eslint-plugin-tsdoc": "^0.4.0",
     "jwt-decode": "^4.0.0",
     "notistack": "^3.0.1",
     "react": "^18.2.0",
@@ -40,7 +40,7 @@
     "@types/react-dom": "^18.3.1",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.16.0",
-    "@typescript-eslint/parser": "^8.14.0",
+    "@typescript-eslint/parser": "^8.18.1",
     "@vitejs/plugin-react-swc": "^3.7.1",
     "@vitest/ui": "^2.1.8",
     "autoprefixer": "^10.4.20",

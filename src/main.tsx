@@ -7,6 +7,7 @@ import App from './App';
 import { appBasePath, enableAuth, clientID } from './utils/constants';
 import './index.css';
 import theme from './theme';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,9 @@ const app = (
     {/* CSS injection order for MUI and tailwind: https://mui.com/material-ui/guides/interoperability/#tailwind-css */}
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
+        <ErrorBoundary>
+          <RouterProvider router={router} />
+        </ErrorBoundary>
       </ThemeProvider>
     </StyledEngineProvider>
   </React.StrictMode>
