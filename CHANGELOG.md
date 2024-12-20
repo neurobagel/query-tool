@@ -1,3 +1,23 @@
+# v0.8.1 (Fri Dec 20 2024)
+
+#### 🚀 Enhancements
+
+- [MNT] Updated husky scripts [#419](https://github.com/neurobagel/query-tool/pull/419) ([@rmanaem](https://github.com/rmanaem) [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot]))
+- [ENH] Made dataset name hyperlink to dataset `PortalURI` [#411](https://github.com/neurobagel/query-tool/pull/411) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
+- [ENH] Refined content and location of `How to access data` button [#409](https://github.com/neurobagel/query-tool/pull/409) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
+
+#### 🏠 Internal
+
+- [FIX] Fix deploy workflow [#412](https://github.com/neurobagel/query-tool/pull/412) ([@surchs](https://github.com/surchs))
+
+#### Authors: 3
+
+- [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot])
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.8.0 (Thu Dec 19 2024)
 
 #### 🚀 Enhancements
