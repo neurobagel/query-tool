@@ -4,6 +4,7 @@ const props = {
   nodeName: 'some node name',
   datasetUUID: 'some uuid',
   datasetName: 'some dataset name',
+  datasetPortalURI: 'some portal uri',
   datasetTotalSubjects: 10,
   numMatchingSubjects: 5,
   imageModals: [
@@ -27,6 +28,7 @@ describe('ResultCard', () => {
         nodeName={props.nodeName}
         datasetUUID={props.datasetUUID}
         datasetName={props.datasetName}
+        datasetPortalURI={props.datasetPortalURI}
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
@@ -61,6 +63,7 @@ describe('ResultCard', () => {
         nodeName={props.nodeName}
         datasetUUID={props.datasetUUID}
         datasetName={props.datasetName}
+        datasetPortalURI={props.datasetPortalURI}
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
@@ -78,6 +81,7 @@ describe('ResultCard', () => {
         nodeName={props.nodeName}
         datasetUUID={props.datasetUUID}
         datasetName={props.datasetName}
+        datasetPortalURI={props.datasetPortalURI}
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
