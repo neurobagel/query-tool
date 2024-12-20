@@ -1,7 +1,7 @@
 {
   "name": "react-query-tool",
   "private": true,
-  "version": "v0.8.0",
+  "version": "v0.8.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "format:fix": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
