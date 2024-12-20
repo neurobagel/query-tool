@@ -60,14 +60,14 @@ jobs:
           
           # Increment based on the auto output
           if [ "${{ env.INCREMENT }}" == "major" ]; then
-            ((MAJOR++))
+            MAJOR=$((MAJOR + 1))
             MINOR=0
             PATCH=0
           elif [ "${{ env.INCREMENT }}" == "minor" ]; then
-            ((MINOR++))
+            MINOR=$((MINOR + 1))
             PATCH=0
           elif [ "${{ env.INCREMENT }}" == "patch" ]; then
-            ((PATCH++))
+            PATCH=$((PATCH + 1))
           fi
 
           # Construct the new version
