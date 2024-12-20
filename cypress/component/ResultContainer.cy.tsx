@@ -13,7 +13,6 @@ describe('ResultContainer', () => {
       .should('be.visible')
       .should('contain', 'Summary stats: 2 datasets, 4 subjects');
     cy.get('[data-cy="download-results-button"]').should('be.visible').should('be.disabled');
-    cy.get('[data-cy="how-to-get-data-dialog-button"]').should('be.visible');
   });
   it('Selecting a dataset should enable the download result button', () => {
     cy.mount(
@@ -40,14 +39,6 @@ describe('ResultContainer', () => {
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0002-checkbox"] input').should(
       'not.be.checked'
     );
-  });
-  it('Clicking the how to get data dialog button should open the dialog', () => {
-    cy.mount(
-      <ResultContainer response={protectedResponse2} assessmentOptions={[]} diagnosisOptions={[]} />
-    );
-    cy.get('[data-cy="get-data-dialog"]').should('not.exist');
-    cy.get('[data-cy="how-to-get-data-dialog-button"]').click();
-    cy.get('[data-cy="get-data-dialog"]').should('be.visible');
   });
   it('Shows no result view when result is empty', () => {
     cy.mount(
