@@ -11,8 +11,7 @@ updates:
       interval: 'weekly'
     labels:
       - '_bot'
-      - 'maint:dependency'
-      - 'type:maintenance'
+      - 'dependencies'
 
   - package-ecosystem: 'gitsubmodule'
     directory: '/'
@@ -20,8 +19,7 @@ updates:
       interval: 'weekly'
     labels:
       - "_bot"
-      - "maint:dependency"
-      - "type:maintenance" 
+      - "dependencies"
 
   - package-ecosystem: 'npm'
     directory: '/'
@@ -29,5 +27,4 @@ updates:
       interval: 'weekly'
     labels:
       - '_bot'
-      - 'maint:dependency'
-      - 'type:maintenance'
+      - 'dependencies'
