@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "format:fix": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
