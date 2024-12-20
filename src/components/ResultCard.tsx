@@ -48,11 +48,21 @@ const ResultCard = memo(
             </div>
             <div>
               {datasetPortalURI ? (
-                <Typography variant="h5">
-                  <a href={datasetPortalURI} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={datasetPortalURI}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      color: 'primary.main',
+                    }}
+                  >
                     {datasetName}
-                  </a>
-                </Typography>
+                  </Typography>
+                </a>
               ) : (
                 <Typography variant="h5">{datasetName}</Typography>
               )}
