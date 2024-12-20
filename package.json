@@ -1,7 +1,7 @@
 {
   "name": "react-query-tool",
   "private": true,
-  "version": "v0.8.0",
+  "version": "v1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
