@@ -61,6 +61,7 @@ function App() {
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [IDToken, setIDToken] = useState<string | undefined>('');
   const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
+  const [warnings, setWarnings] = useState<string[]>([]);
 
   // Extract the raw OIDC ID token from the Auth0 SDK
   useEffect(() => {
@@ -116,10 +117,10 @@ function App() {
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
-            enqueueSnackbar(`Failed to retrieve ${NBResource} options from ${error.node_name}`, {
-              variant: 'warning',
-              action,
-            });
+            setWarnings((prev) => [
+              ...(prev ?? []),
+              `Failed to retrieve ${NBResource} options from ${error.node_name}`,
+            ]);
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
@@ -132,10 +133,10 @@ function App() {
             response.data.responses[dataElementURI].some((item) => item.Label === null) &&
             NBResource !== 'pipelines'
           ) {
-            enqueueSnackbar(`Warning: Missing labels were removed for ${NBResource} `, {
-              variant: 'warning',
-              action,
-            });
+            setWarnings((prev) => [
+              ...(prev ?? []),
+              `Warning: Missing labels were removed for ${NBResource}`,
+            ]);
             response.data.responses[dataElementURI] = response.data.responses[
               dataElementURI
             ].filter((item) => item.Label !== null);
@@ -201,13 +202,10 @@ function App() {
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
-            enqueueSnackbar(
+            setWarnings((prev) => [
+              ...(prev ?? []),
               `Failed to retrieve ${pipelineURI.label} versions from ${error.node_name}`,
-              {
-                variant: 'warning',
-                action,
-              }
-            );
+            ]);
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[pipelineURI.id]).length === 0) {
@@ -439,7 +437,11 @@ function App() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         maxSnack={7}
       />
-      <Navbar isLoggedIn={isAuthenticated} onLogin={() => setOpenAuthDialog(true)} />
+      <Navbar
+        isLoggedIn={isAuthenticated}
+        onLogin={() => setOpenAuthDialog(true)}
+        notifications={warnings}
+      />
       {showAlert() && (
         <>
           <Grow in={!alertDismissed}>
