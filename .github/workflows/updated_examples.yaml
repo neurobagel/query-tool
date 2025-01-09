@@ -33,7 +33,7 @@ jobs:
         with:
           wait-on: http://localhost:5173
           start: npm run preview
-          spec: cypress/e2e/UpdateExamples.cy.js
+          spec: cypress/e2e/UpdateExamples.cy.ts
           component: false
 
       - name: Upload test artifacts
