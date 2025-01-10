@@ -65,10 +65,6 @@ jobs:
           name: e2e-test-results
           path: neurobagel_examples/query-tool-results
 
-      - name: debug
-        run: |
-          ls
-
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v5
