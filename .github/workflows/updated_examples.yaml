@@ -41,3 +41,52 @@ jobs:
         with:
           name: e2e-test-results
           path: cypress/downloads/*
+
+  update-query-tool-results:
+    runs-on: ubuntu-latest
+    needs: e2e-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          submodules_recursive: true
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: e2e-test-results
+          path: neurobagel_examples/query-tool-results
+
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.NB_BOT_ID }}
+          private-key: ${{ secrets.NB_BOT_KEY }}
+
+      - name: Check for changes and commit if there are any
+        run: |
+          git config --global user.name "neurobagel bot"
+          git config --global user.email "neurobagel@example.com"
+          cd neurobagel_examples
+          git checkout -b update-query-tool-results
+          git add query-tool-results
+          if [[ -n $(git diff --staged) ]]; then
+            git commit -m "Update query-tool-results with new e2e test results"
+            git push origin update-query-tool-results
+          else
+            echo "No changes to commit"
+          cd ..
+
+      - name: Create Pull Request
+        id: create_pr
+        if: steps.commit.outputs.changes
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: Update `query-tool-results` files
+          branch: neurobagel_examples/update-query-tool-results
+          title: Update `query-tool-results` files
+          body: "This PR updates the `query-tool-results` files with the latest changes."
+          labels: _bot
