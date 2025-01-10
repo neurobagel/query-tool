@@ -55,7 +55,7 @@ jobs:
           private-key: ${{ secrets.NB_BOT_KEY }}
 
       - name: Checkout neurobagel_examples repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           repository: neurobagel/neurobagel_examples
           token: ${{ steps.generate-token.outputs.token }}
