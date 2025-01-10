@@ -68,9 +68,8 @@ jobs:
 
       - name: Check for changes and commit if there are any
         run: |
-          git config --global user.name "neurobagel bot"
-          git config --global user.email "neurobagel@example.com"
-          cd neurobagel_examples
+          git config --global user.name "Neurobagel Bot"
+          git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
           git checkout -b update-query-tool-results
           git add query-tool-results
           if [[ -n $(git diff --staged) ]]; then
