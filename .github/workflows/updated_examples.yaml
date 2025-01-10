@@ -66,22 +66,8 @@ jobs:
           name: e2e-test-results
           path: neurobagel_examples/query-tool-results
 
-      - name: Check for changes and commit if there are any
-        run: |
-          git config --global user.name "Neurobagel Bot"
-          git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
-          git checkout -b update-query-tool-results
-          git add query-tool-results
-          if [[ -n $(git diff --staged) ]]; then
-            git commit -m "Update query-tool-results with new e2e test results"
-            git push origin update-query-tool-results
-          else
-            echo "No changes to commit"
-          fi
-
       - name: Create Pull Request
         id: create_pr
-        if: steps.commit.outputs.changes
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ steps.generate-token.outputs.token }}
