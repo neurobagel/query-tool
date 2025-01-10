@@ -4,10 +4,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   generate-example-files:
     runs-on: ubuntu-latest
@@ -77,4 +73,5 @@ jobs:
           body: "This PR updates the `query-tool-results` files with the latest changes."
           base: main
           branch: update-query-tool-results
+          committer: NeuroBagel Bot <neurobagel-bot[bot]@users.noreply.github.com>
           labels: _bot
