@@ -79,4 +79,3 @@ jobs:
           body: "This PR updates the `query-tool-results` files with the latest changes."
           base: main
           branch: update-query-tool-results
-          labels: _bot
