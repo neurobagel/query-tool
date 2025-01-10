@@ -66,14 +66,16 @@ jobs:
           name: query-tool-results
           path: neurobagel_examples/query-tool-results
 
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
+
+      - name: Authenticate GitHub CLI
+        run: echo "${{ steps.generate-token.outputs.token }}" | gh auth login --with-token
+
       - name: Create Pull Request
-        id: create_pr
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          commit-message: Update `query-tool-results` files
-          title: Update `query-tool-results` files
-          body: "This PR updates the `query-tool-results` files with the latest changes."
-          base: main
-          branch: update-query-tool-results
-          labels: _bot
+        run: |
+          git checkout -b update-query-tool-results
+          git add .
+          git commit -m "Update query-tool-results files"
+          git push origin update-query-tool-results
+          gh pr create --title "Update query-tool-results files" --body "This PR updates the query-tool-results files with the latest changes." --base main --head update-query-tool-results
