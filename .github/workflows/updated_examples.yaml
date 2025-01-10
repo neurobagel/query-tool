@@ -74,6 +74,8 @@ jobs:
 
       - name: Create Pull Request
         run: |
+          git config --global user.name "Neurobagel Bot"
+          git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
           git checkout -b update-query-tool-results
           git add .
           git commit -m "Update query-tool-results files"
