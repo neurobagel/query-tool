@@ -55,13 +55,13 @@ jobs:
           private-key: ${{ secrets.NB_BOT_KEY }}
 
       - name: Checkout neurobagel_examples repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: neurobagel/neurobagel_examples
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: query-tool-results
           path: neurobagel_examples/query-tool-results
