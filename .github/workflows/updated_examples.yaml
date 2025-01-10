@@ -57,7 +57,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: neurobagel/neurobagel_examples
-          path: neurobagel_examples
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Download artifacts
@@ -66,13 +65,18 @@ jobs:
           name: e2e-test-results
           path: neurobagel_examples/query-tool-results
 
+      - name: debug
+        run: |
+          ls
+
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: Update `query-tool-results` files
-          branch: neurobagel_examples/update-query-tool-results
+          branch: update-query-tool-results
           title: Update `query-tool-results` files
           body: "This PR updates the `query-tool-results` files with the latest changes."
+          base: main
           labels: _bot
