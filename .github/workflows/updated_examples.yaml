@@ -38,7 +38,7 @@ jobs:
           component: false
 
       - name: Upload test artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: query-tool-results
           path: cypress/downloads/*
@@ -61,7 +61,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: query-tool-results
           path: neurobagel_examples/query-tool-results
