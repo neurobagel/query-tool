@@ -12,7 +12,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  e2e-test:
+  generate-example-files:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -75,8 +75,8 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: Update `query-tool-results` files
-          branch: update-query-tool-results
           title: Update `query-tool-results` files
           body: "This PR updates the `query-tool-results` files with the latest changes."
           base: main
+          branch: create-pull-request/query-tool-results
           labels: _bot
