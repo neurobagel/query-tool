@@ -1,7 +1,8 @@
+// This file automates the process of generating the query tool example files.
 import fapiQuerySuccess200 from '../../neurobagel_examples/api-responses/fapi_query_success_200.json';
 
 describe('Update Examples', () => {
-  it('Removes a newline character from a dataset name in the downloaded dataset-level results file', () => {
+  it('Generates result files using a successful FAPI query', () => {
     cy.intercept('GET', 'query*', (req) => {
       req.reply(fapiQuerySuccess200);
     }).as('call');
