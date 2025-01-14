@@ -16,7 +16,7 @@ import NBTheme from '../theme';
 
 function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const DOCKER_RUN_COMMAND =
-    'docker run -t -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results-with-URIs.tsv /data/output';
+    'docker run -t -u $(id -u):$(id -g) -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results.tsv /data/output';
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -90,7 +90,8 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
           </div>
           <br />
           The downloaded data will be saved in the current directory, in a subdirectory called
-          &quot;output&quot;. (Note: this directory will be created if it does not already exist)
+          &quot;output&quot;. (Note: this directory will be created if it does not already exist).
+          The -u flag ensures that the downloaded data is owned by the current user.
           <br />
           ⚠️ The above command currently only gets data for DataLad datasets. To download a cohort
           from other remote filesystems you have access to, you may need to write your own script
