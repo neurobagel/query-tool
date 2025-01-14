@@ -18,7 +18,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",
-    "@mui/icons-material": "^5.16.13",
+    "@mui/icons-material": "^5.16.14",
     "@mui/material": "^5.16.7",
     "axios": "^1.7.7",
     "eslint-plugin-tsdoc": "^0.4.0",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@kesills/eslint-config-airbnb-typescript": "^20.0.0",
-    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/uuid": "^10.0.0",
