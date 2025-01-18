@@ -17,6 +17,7 @@ import {
   Pipelines,
   NodeError,
   QueryResponse,
+  Notification,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -61,7 +62,8 @@ function App() {
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [IDToken, setIDToken] = useState<string | undefined>('');
   const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
-  const [warnings, setWarnings] = useState<string[]>([]);
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   // Extract the raw OIDC ID token from the Auth0 SDK
   useEffect(() => {
@@ -117,25 +119,37 @@ function App() {
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
-            setWarnings((prev) => [
-              ...(prev ?? []),
-              `Failed to retrieve ${NBResource} options from ${error.node_name}`,
+            setNotifications((prev) => [
+              ...prev,
+              {
+                id: prev.length + 1,
+                type: 'warning',
+                message: `Failed to retrieve ${NBResource} options from ${error.node_name}`,
+              },
             ]);
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
-            enqueueSnackbar(`No ${NBResource} options were available`, {
-              variant: 'info',
-              action,
-            });
+            setNotifications((prev) => [
+              ...prev,
+              {
+                id: prev.length + 1,
+                type: 'info',
+                message: `No ${NBResource} options were available`,
+              },
+            ]);
             // TODO: remove the second condition once pipeline labels are added
           } else if (
             response.data.responses[dataElementURI].some((item) => item.Label === null) &&
             NBResource !== 'pipelines'
           ) {
-            setWarnings((prev) => [
-              ...(prev ?? []),
-              `Warning: Missing labels were removed for ${NBResource}`,
+            setNotifications((prev) => [
+              ...prev,
+              {
+                id: prev.length + 1,
+                type: 'warning',
+                message: `Warning: Missing labels were removed for ${NBResource}`,
+              },
             ]);
             response.data.responses[dataElementURI] = response.data.responses[
               dataElementURI
@@ -181,7 +195,14 @@ function App() {
       if (nodeResponse === null) {
         enqueueSnackbar('Failed to retrieve Node options', { variant: 'error', action });
       } else if (nodeResponse.length === 0) {
-        enqueueSnackbar('No options found for Node', { variant: 'info', action });
+        setNotifications((prev) => [
+          ...prev,
+          {
+            id: prev.length + 1,
+            type: 'info',
+            message: 'No options found for Node',
+          },
+        ]);
       } else {
         setAvailableNodes([...nodeResponse, { NodeName: 'All', ApiURL: 'allNodes' }]);
       }
@@ -202,17 +223,25 @@ function App() {
         } else {
           // If any errors occurred, report them
           response.data.errors.forEach((error) => {
-            setWarnings((prev) => [
-              ...(prev ?? []),
-              `Failed to retrieve ${pipelineURI.label} versions from ${error.node_name}`,
+            setNotifications((prev) => [
+              ...prev,
+              {
+                id: prev.length + 1,
+                type: 'warning',
+                message: `Failed to retrieve ${pipelineURI.label} versions from ${error.node_name}`,
+              },
             ]);
           });
           // If the results are empty, report that
           if (Object.keys(response.data.responses[pipelineURI.id]).length === 0) {
-            enqueueSnackbar(`No ${pipelineURI.label} versions were available`, {
-              variant: 'info',
-              action,
-            });
+            setNotifications((prev) => [
+              ...prev,
+              {
+                id: prev.length + 1,
+                type: 'info',
+                message: `No ${pipelineURI.label} versions were available`,
+              },
+            ]);
           }
         }
         return response.data.responses[pipelineURI.id];
@@ -407,10 +436,14 @@ function App() {
       switch (response.data.nodes_response_status) {
         case 'partial success': {
           response.data.errors.forEach((error: NodeError) => {
-            enqueueSnackbar(`${error.node_name} failed to respond`, {
-              variant: 'warning',
-              action,
-            });
+            setNotifications((prev) => [
+              ...prev,
+              {
+                id: prev.length + 1,
+                type: 'warning',
+                message: `${error.node_name} failed to respond`,
+              },
+            ]);
           });
           break;
         }
@@ -440,7 +473,8 @@ function App() {
       <Navbar
         isLoggedIn={isAuthenticated}
         onLogin={() => setOpenAuthDialog(true)}
-        notifications={warnings}
+        notifications={notifications}
+        setNotifications={setNotifications}
       />
       {showAlert() && (
         <>
