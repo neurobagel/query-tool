@@ -210,6 +210,7 @@ function Navbar({
                 anchorEl={anchorEl}
                 open={openAccountMenu}
                 onClose={handleClose}
+                onClick={handleClose}
                 anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'center',
