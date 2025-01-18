@@ -45,8 +45,8 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
     setShowPopover(false);
   };
 
-  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
-    setCommandType(newAlignment);
+  const handleChange = (_event: React.MouseEvent<HTMLElement>, newCommand: string) => {
+    setCommandType(newCommand);
   };
 
   return (
