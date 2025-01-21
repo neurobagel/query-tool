@@ -45,7 +45,7 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
     setShowPopover(false);
   };
 
-  const handleChange = (_event: React.MouseEvent<HTMLElement>, newCommand: string) => {
+  const handleToggle = (_event: React.MouseEvent<HTMLElement>, newCommand: string) => {
     setCommandType(newCommand);
   };
 
@@ -72,7 +72,7 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
           color="primary"
           value={commandType}
           exclusive
-          onChange={handleChange}
+          onChange={handleToggle}
           aria-label="Platform"
         >
           <ToggleButton value="docker">docker</ToggleButton>
