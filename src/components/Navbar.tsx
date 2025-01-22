@@ -61,7 +61,7 @@ function Navbar({
   const handleNotifClose = () => {
     setAnchorNotifEl(null);
   };
-  const removeNotification = (id: number) => {
+  const removeNotification = (id: string) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };
 
@@ -93,7 +93,7 @@ function Navbar({
             </IconButton>
           </Tooltip>
           <Tooltip title="Notifications">
-            <IconButton onClick={handleNotifClick}>
+            <IconButton onClick={handleNotifClick} data-cy="notification-button">
               <Badge badgeContent={notifications.length} color="primary">
                 <NotificationsIcon color="action" />
               </Badge>
@@ -125,7 +125,7 @@ function Navbar({
                 </Typography>
                 <Button
                   size="small"
-                  color="secondary"
+                  data-cy="clear-all-notifications"
                   onClick={clearAllNotifications}
                   sx={{
                     textTransform: 'none',
@@ -143,6 +143,7 @@ function Navbar({
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
                     <ListItem
+                      data-cy="notification-item"
                       key={notification.id}
                       className="border-b border-gray-200 hover:bg-gray-50"
                     >
@@ -165,6 +166,7 @@ function Navbar({
                       <ListItemSecondaryAction>
                         <IconButton
                           edge="end"
+                          data-cy="delete-notification"
                           aria-label="delete"
                           onClick={() => removeNotification(notification.id)}
                           sx={{

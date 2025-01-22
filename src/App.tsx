@@ -6,6 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { useAuth0 } from '@auth0/auth0-react';
+import { v4 as uuidv4 } from 'uuid';
 import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -122,7 +123,7 @@ function App() {
             setNotifications((prev) => [
               ...prev,
               {
-                id: prev.length + 1,
+                id: uuidv4(),
                 type: 'warning',
                 message: `Failed to retrieve ${NBResource} options from ${error.node_name}`,
               },
@@ -133,7 +134,7 @@ function App() {
             setNotifications((prev) => [
               ...prev,
               {
-                id: prev.length + 1,
+                id: uuidv4(),
                 type: 'info',
                 message: `No ${NBResource} options were available`,
               },
@@ -146,7 +147,7 @@ function App() {
             setNotifications((prev) => [
               ...prev,
               {
-                id: prev.length + 1,
+                id: uuidv4(),
                 type: 'warning',
                 message: `Warning: Missing labels were removed for ${NBResource}`,
               },
@@ -198,7 +199,7 @@ function App() {
         setNotifications((prev) => [
           ...prev,
           {
-            id: prev.length + 1,
+            id: uuidv4(),
             type: 'info',
             message: 'No options found for Node',
           },
@@ -226,7 +227,7 @@ function App() {
             setNotifications((prev) => [
               ...prev,
               {
-                id: prev.length + 1,
+                id: uuidv4(),
                 type: 'warning',
                 message: `Failed to retrieve ${pipelineURI.label} versions from ${error.node_name}`,
               },
@@ -237,7 +238,7 @@ function App() {
             setNotifications((prev) => [
               ...prev,
               {
-                id: prev.length + 1,
+                id: uuidv4(),
                 type: 'info',
                 message: `No ${pipelineURI.label} versions were available`,
               },
@@ -439,7 +440,7 @@ function App() {
             setNotifications((prev) => [
               ...prev,
               {
-                id: prev.length + 1,
+                id: uuidv4(),
                 type: 'warning',
                 message: `${error.node_name} failed to respond`,
               },

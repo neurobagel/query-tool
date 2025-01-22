@@ -114,7 +114,7 @@ export interface GoogleJWT {
 }
 
 export type Notification = {
-  id: number;
+  id: string;
   type: 'info' | 'warning';
   message: string;
 };

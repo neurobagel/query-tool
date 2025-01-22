@@ -1,28 +1,28 @@
+import { useState } from 'react';
 import Navbar from '../../src/components/Navbar';
 import { Notification } from '../../src/utils/types';
 
-const mockNotifications: Notification[] = [
-  { id: 1, type: 'info', message: 'This is an info notification.' },
-  { id: 2, type: 'warning', message: 'This is a warning notification.' },
-];
-
-const props = {
-  isLoggedIn: true,
-  onLogin: () => {},
-  notifications: mockNotifications,
-  setNotifications: () => {},
-};
-
 describe('Navbar', () => {
-  it('Displays a MUI Toolbar with logo, title, subtitle, documentation link, and GitHub link', () => {
-    cy.mount(
+  const mockNotifications: Notification[] = [
+    { id: '1', type: 'info', message: 'This is an info notification.' },
+    { id: '2', type: 'warning', message: 'This is a warning notification.' },
+  ];
+
+  function NavbarWrapper() {
+    const [notifications, setNotifications] = useState(mockNotifications);
+
+    return (
       <Navbar
-        isLoggedIn={props.isLoggedIn}
-        onLogin={props.onLogin}
-        notifications={props.notifications}
-        setNotifications={props.setNotifications}
+        isLoggedIn
+        onLogin={() => {}}
+        notifications={notifications}
+        setNotifications={setNotifications}
       />
     );
+  }
+
+  it('Displays a MUI Toolbar with logo, title, subtitle, documentation link, and GitHub link', () => {
+    cy.mount(<NavbarWrapper />);
     cy.get("[data-cy='navbar']").should('be.visible');
     cy.get("[data-cy='navbar'] img").should('exist');
     cy.get("[data-cy='navbar'] h5").should('contain', 'Neurobagel Query');
@@ -39,16 +39,20 @@ describe('Navbar', () => {
     cy.get("[data-cy='navbar'] a")
       .eq(1)
       .should('have.attr', 'href', 'https://github.com/neurobagel/query-tool/');
-    // Verify the visibility and functionality of the Navbar notifications feature
-    cy.get("[data-cy='navbar']").find('svg[data-testid="NotificationsIcon"]').should('exist');
+  });
+  // Verify that the visibility and texts match for each notification.
+  it('Verifies the visibility and functionality of the Navbar notifications feature', () => {
+    cy.mount(<NavbarWrapper />);
+    cy.get("[data-cy='notification-button']").should('exist');
     cy.get("[data-cy='navbar']")
       .find('.MuiBadge-badge')
-      .should('contain', props.notifications.length);
-    cy.get("[data-cy='navbar']").find('svg[data-testid="NotificationsIcon"]').click();
+      .should('contain', mockNotifications.length);
+    cy.get("[data-cy='notification-button']").click();
     cy.get('.MuiPopover-paper').should('be.visible');
+
     cy.get('.MuiList-root').within(() => {
-      cy.get('.MuiListItem-root').should('have.length', props.notifications.length);
-      props.notifications.forEach((notification, index) => {
+      cy.get('.MuiListItem-root').should('have.length', mockNotifications.length);
+      mockNotifications.forEach((notification, index) => {
         cy.get('.MuiListItem-root')
           .eq(index)
           .within(() => {
@@ -57,6 +61,26 @@ describe('Navbar', () => {
           });
       });
     });
+
+    cy.get('.MuiPopover-paper').trigger('keydown', { key: 'Escape' });
+    cy.get('.MuiPopover-paper').should('not.exist');
+  });
+  // Verify delete functionality
+  it('Deletes a notification', () => {
+    cy.mount(<NavbarWrapper />);
+    cy.get("[data-cy='notification-button']").click();
+    cy.get('.MuiPopover-paper').should('be.visible');
+    cy.get("[data-cy='delete-notification']").first().click();
+    cy.get("[data-cy='notification-item']").should('have.length', mockNotifications.length - 1);
+  });
+  // Verify clear all functionality
+  it('Clears all notifications', () => {
+    cy.mount(<NavbarWrapper />);
+    cy.get("[data-cy='notification-button']").click();
+    cy.get('.MuiPopover-paper').should('be.visible');
+    cy.get("[data-cy='clear-all-notifications']").click();
+    cy.get("[data-cy='notification-item']").should('have.length', 0);
+    cy.contains('No notifications').should('be.visible');
     cy.get('.MuiPopover-paper').trigger('keydown', { key: 'Escape' });
     cy.get('.MuiPopover-paper').should('not.exist');
   });
