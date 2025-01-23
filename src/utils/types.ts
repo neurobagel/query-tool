@@ -112,3 +112,9 @@ export interface GoogleJWT {
   picture: string;
   sub: string;
 }
+
+export type Notification = {
+  id: string;
+  type: 'info' | 'warning';
+  message: string;
+};
