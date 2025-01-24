@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
@@ -6,6 +6,18 @@ COPY . .
 
 RUN npm ci
 
-EXPOSE 5173
+RUN npm run build
 
-ENTRYPOINT npm run build && npm run preview
+
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 80
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+
+CMD ["nginx"]
