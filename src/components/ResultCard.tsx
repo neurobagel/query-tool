@@ -7,6 +7,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 import { Tooltip, Divider } from '@mui/material';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { modalities } from '../utils/constants';
 
 const ResultCard = memo(
@@ -52,16 +53,28 @@ const ResultCard = memo(
                   href={datasetPortalURI}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ textDecoration: 'none' }}
+                  style={{
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                  }}
                 >
                   <Typography
                     variant="h5"
                     sx={{
                       color: 'primary.main',
+                      textDecoration: 'underline',
                     }}
                   >
                     {datasetName}
                   </Typography>
+                  <OpenInNewIcon
+                    fontSize="medium"
+                    sx={{
+                      color: 'primary.main',
+                    }}
+                  />
                 </a>
               ) : (
                 <Typography variant="h5">{datasetName}</Typography>
