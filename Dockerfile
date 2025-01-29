@@ -24,7 +24,13 @@ RUN chmod +x /entrypoint.sh
 
 WORKDIR /usr/share/nginx/html
 
-EXPOSE 80
+# Now we will define a custom port for the webserver (NGINX)
+# to listen on INSIDE of the container. The default port would
+# be port 80.
+ENV NGINX_PORT=5173
+RUN sed -i "s/listen[[:space:]]*80/listen ${NGINX_PORT}/g" /etc/nginx/conf.d/default.conf
+EXPOSE ${NGINX_PORT}
+
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
