@@ -1,3 +1,15 @@
+# v0.9.2 (Wed Jan 29 2025)
+
+#### 🏠 Internal
+
+- [FIX] Change internal port to 5173 [#467](https://github.com/neurobagel/query-tool/pull/467) ([@surchs](https://github.com/surchs))
+
+#### Authors: 1
+
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.9.1 (Wed Jan 29 2025)
 
 #### 🏠 Internal
