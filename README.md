@@ -46,6 +46,7 @@ but before proceeding with either you need to set the environment variables.
 | `NB_QUERY_APP_BASE_PATH` | string  | No                                       | `/`                      | `/query/`                                                 |
 | `NB_ENABLE_AUTH`         | boolean | No                                       | `false`                  | `false`                                                   |
 | `NB_QUERY_CLIENT_ID`     | string  | Yes (if `NB_ENABLE_AUTH` is set to true) | -                        | `46923719231972-dhsahgasl3123.apps.googleusercontent.com` |
+| `NB_QUERY_HEADER_SCRIPT` | string  | No                                       | `""`                     | `'<script defer data-domain="mydomain" src="plausible">'` |
 
 #### `NB_API_QUERY_URL`
 
@@ -63,6 +64,12 @@ If the API you'd like to send queries to requires authentication, you need to se
 
 If the `NB_ENABLE_AUTH` is set to `true` (it is `false` by default), you need to provide a valid client ID for the authentication.
 _At the moment, query tool uses Google for authentication, so you need to obtain a client ID from Google developer console. See [documentation](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid) for more information._
+
+#### `NB_QUERY_HEADER_SCRIPT`
+
+If you want to add a custom script to the header of the query tool, you can set the `NB_QUERY_HEADER_SCRIPT` environment variable to the script you want to add.
+This script will be added to the header of the query tool. For example, in our production deployment we use the GDPR aware analytics tool [Plausible](https://plausible.io/),
+so we set the `NB_QUERY_HEADER_SCRIPT` to the script provided by Plausible.
 
 #### Set the environment variables
 
