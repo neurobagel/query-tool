@@ -1,3 +1,34 @@
+# v0.9.0 (Wed Jan 29 2025)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade)), for all your work!
+
+#### 🚀 Enhancements
+
+- [ENH] Add singularity command switcher [#442](https://github.com/neurobagel/query-tool/pull/442) ([@surchs](https://github.com/surchs) [@rmanaem](https://github.com/rmanaem))
+- [ENH] making dataset hyperlinks more recognizable [#457](https://github.com/neurobagel/query-tool/pull/457) ([@Tusharjamdade](https://github.com/Tusharjamdade))
+- [ENH] Implement Notification Icon with Badge for Warnings and Its Test [#432](https://github.com/neurobagel/query-tool/pull/432) ([@Tusharjamdade](https://github.com/Tusharjamdade) [@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [CI] Release the query tool [#462](https://github.com/neurobagel/query-tool/pull/462) ([@alyssadai](https://github.com/alyssadai))
+- [CI] Updated `update_examples workflow` to run on `pull_request_target` event [#460](https://github.com/neurobagel/query-tool/pull/460) ([@rmanaem](https://github.com/rmanaem))
+- [MNT] Automated generation of result examples [#434](https://github.com/neurobagel/query-tool/pull/434) ([@rmanaem](https://github.com/rmanaem))
+
+#### 📝 Documentation
+
+- [ENH] Add -u flag to dataget instruction [#435](https://github.com/neurobagel/query-tool/pull/435) ([@surchs](https://github.com/surchs))
+
+#### Authors: 4
+
+- Alyssa Dai ([@alyssadai](https://github.com/alyssadai))
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
 # v0.8.1 (Fri Dec 20 2024)
 
 #### 🚀 Enhancements
