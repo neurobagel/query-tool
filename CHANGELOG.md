@@ -1,3 +1,16 @@
+# v0.9.1 (Wed Jan 29 2025)
+
+#### 🏠 Internal
+
+- [CI] Updated `deploy` workflow to checkout with submodules [#465](https://github.com/neurobagel/query-tool/pull/465) ([@rmanaem](https://github.com/rmanaem) [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot]))
+
+#### Authors: 2
+
+- [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot])
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.9.0 (Wed Jan 29 2025)
 
 :tada: This release contains work from a new contributor! :tada:
