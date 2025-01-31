@@ -18,7 +18,7 @@ fi
 for file in $(find /usr/share/nginx/html -type f \( -name "*.js" -o -name "*.html" \)); do
   sed -i "s|REPLACE_ME_NB_API_QUERY_URL_REPLACE_ME|${NB_API_QUERY_URL}|g" "$file"
   sed -i "s|REPLACE_ME_NB_ENABLE_AUTH_REPLACE_ME|${NB_ENABLE_AUTH:-false}|g" "$file"
-  sed -i "s|REPLACE_ME_NB_QUERY_CLIENT_ID_REPLACE_ME|${NB_QUERY_CLIENT_ID:-testclient1234}|g" "$file"
+  sed -i "s|REPLACE_ME_NB_QUERY_CLIENT_ID_REPLACE_ME|${NB_QUERY_CLIENT_ID}|g" "$file"
   sed -i "s|REPLACE_ME_NB_ENABLE_CHATBOT_REPLACE_ME|${NB_ENABLE_CHATBOT:-false}|g" "$file"
   sed -i "s|REPLACE_ME_NB_QUERY_APP_BASE_PATH_REPLACE_ME|${NB_QUERY_APP_BASE_PATH:-/}|g" "$file"
   sed -i "s|<!-- REPLACE_ME_NB_QUERY_HEADER_SCRIPT_REPLACE_ME -->|${NB_QUERY_HEADER_SCRIPT}|g" "$file"
