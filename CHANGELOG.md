@@ -1,3 +1,16 @@
+# v0.9.3 (Thu Jan 30 2025)
+
+#### 🏠 Internal
+
+- [FIX] Custom script addition in header [#469](https://github.com/neurobagel/query-tool/pull/469) ([@surchs](https://github.com/surchs) [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot]))
+
+#### Authors: 2
+
+- [@neurobagel-bot[bot]](https://github.com/neurobagel-bot[bot])
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.9.2 (Wed Jan 29 2025)
 
 #### 🏠 Internal
