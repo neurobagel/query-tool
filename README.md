@@ -70,6 +70,11 @@ _At the moment, query tool uses Google for authentication, so you need to obtain
 If you want to add a custom script to the header of the query tool, you can set the `NB_QUERY_HEADER_SCRIPT` environment variable to the script you want to add.
 This script will be added to the header of the query tool. For example, in our production deployment we use the GDPR aware analytics tool [Plausible](https://plausible.io/),
 so we set the `NB_QUERY_HEADER_SCRIPT` to the script provided by Plausible.
+When you use this variable, make sure you use single quotes to include the script like so:
+
+```bash
+NB_QUERY_HEADER_SCRIPT='<script defer data-domain="mydomain" src="plausible">'
+```
 
 #### Set the environment variables
 
