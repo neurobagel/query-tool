@@ -90,13 +90,13 @@ describe('App', () => {
     cy.viewport(800, 600); // Mobile/tablet viewport
     cy.get('[data-cy="filter-toggle-button"]').should('be.visible');
     cy.get('[data-cy="query-form-container"]').should('be.visible');
-    cy.contains('[data-cy="filter-toggle-button"]', 'Hide Filter').should('exist');
+    cy.contains('[data-cy="filter-toggle-button"]', 'Hide Query Form').should('exist');
     cy.get('[data-cy="filter-toggle-button"]').click();
     cy.get('[data-cy="query-form-container"]').should('not.exist');
-    cy.contains('[data-cy="filter-toggle-button"]', 'Show Filter').should('exist');
+    cy.contains('[data-cy="filter-toggle-button"]', 'Show Query Form').should('exist');
     cy.get('[data-cy="filter-toggle-button"]').click();
     cy.get('[data-cy="query-form-container"]').should('be.visible');
-    cy.contains('[data-cy="filter-toggle-button"]', 'Hide Filter').should('exist');
+    cy.contains('[data-cy="filter-toggle-button"]', 'Hide Query Form').should('exist');
     cy.viewport(1200, 800); // Desktop viewport
     cy.get('[data-cy="filter-toggle-button"]').should('not.exist');
     cy.get('[data-cy="query-form-container"]').should('be.visible');
