@@ -511,6 +511,7 @@ function App() {
         {isMobileOrTablet && (
           <div className="flex w-full items-end justify-end p-2">
             <Button
+              data-cy="filter-toggle-button"
               className="flex items-center gap-2"
               onClick={() => setIsFormVisible(!isFormVisible)}
             >
@@ -519,7 +520,7 @@ function App() {
           </div>
         )}
         {(isFormVisible || !isMobileOrTablet) && (
-          <div className="min-w-[380px] max-w-sm flex-1">
+          <div data-cy="query-form-container" className="min-w-[380px] max-w-sm flex-1">
             <QueryForm
               availableNodes={availableNodes}
               diagnosisOptions={diagnosisOptions}

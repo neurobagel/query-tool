@@ -86,4 +86,19 @@ describe('App', () => {
     cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
     cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
   });
+  it('should toggle the filter form visibility when clicking the button', () => {
+    cy.viewport(800, 600); // Mobile/tablet viewport
+    cy.get('[data-cy="filter-toggle-button"]').should('be.visible');
+    cy.get('[data-cy="query-form-container"]').should('be.visible');
+    cy.contains('[data-cy="filter-toggle-button"]', 'Hide Filter').should('exist');
+    cy.get('[data-cy="filter-toggle-button"]').click();
+    cy.get('[data-cy="query-form-container"]').should('not.exist');
+    cy.contains('[data-cy="filter-toggle-button"]', 'Show Filter').should('exist');
+    cy.get('[data-cy="filter-toggle-button"]').click();
+    cy.get('[data-cy="query-form-container"]').should('be.visible');
+    cy.contains('[data-cy="filter-toggle-button"]', 'Hide Filter').should('exist');
+    cy.viewport(1200, 800); // Desktop viewport
+    cy.get('[data-cy="filter-toggle-button"]').should('not.exist');
+    cy.get('[data-cy="query-form-container"]').should('be.visible');
+  });
 });
