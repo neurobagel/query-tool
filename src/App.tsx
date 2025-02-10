@@ -66,8 +66,8 @@ function App() {
   const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isFormVisible, setIsFormVisible] = useState(true);
-  const isMobileOrTablet = useMediaQuery('(max-width: 1024px)');
+  const [isQueryFormOpen, setIsQueryFormOpen] = useState(true);
+  const isSmallViewport = useMediaQuery('(max-width: 1024px)');
 
   // Extract the raw OIDC ID token from the Auth0 SDK
   useEffect(() => {
@@ -508,18 +508,18 @@ function App() {
 
       <div className="flex flex-wrap gap-3">
         {/* 380px is currently the smallest width for the query form without dropdowns being affected */}
-        {isMobileOrTablet && (
+        {isSmallViewport && (
           <div className="flex w-full items-end justify-end p-2">
             <Button
               data-cy="filter-toggle-button"
               className="flex items-center gap-2"
-              onClick={() => setIsFormVisible(!isFormVisible)}
+              onClick={() => setIsQueryFormOpen(!isQueryFormOpen)}
             >
-              <FilterList /> <span>{isFormVisible ? 'Hide Filter' : 'Show Filter'}</span>
+              <FilterList /> <span>{isQueryFormOpen ? 'Hide Query Form' : 'Show Query Form'}</span>
             </Button>
           </div>
         )}
-        {(isFormVisible || !isMobileOrTablet) && (
+        {(isQueryFormOpen || !isSmallViewport) && (
           <div data-cy="query-form-container" className="min-w-[380px] max-w-sm flex-1">
             <QueryForm
               availableNodes={availableNodes}
