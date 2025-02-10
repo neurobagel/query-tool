@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Grow, IconButton } from '@mui/material';
+import { Alert, Button, Grow, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { useAuth0 } from '@auth0/auth0-react';
 import { v4 as uuidv4 } from 'uuid';
+import { FilterList } from '@mui/icons-material';
 import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
@@ -65,6 +66,8 @@ function App() {
   const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isQueryFormOpen, setIsQueryFormOpen] = useState(true);
+  const isSmallViewport = useMediaQuery('(max-width: 1024px)');
 
   // Extract the raw OIDC ID token from the Auth0 SDK
   useEffect(() => {
@@ -505,35 +508,48 @@ function App() {
 
       <div className="flex flex-wrap gap-3">
         {/* 380px is currently the smallest width for the query form without dropdowns being affected */}
-        <div className="min-w-[380px] max-w-sm flex-1">
-          <QueryForm
-            availableNodes={availableNodes}
-            diagnosisOptions={diagnosisOptions}
-            assessmentOptions={assessmentOptions}
-            selectedNode={selectedNode}
-            minAge={minAge}
-            maxAge={maxAge}
-            sex={sex}
-            diagnosis={diagnosis}
-            isControl={isControl}
-            minNumImagingSessions={minNumImagingSessions}
-            minNumPhenotypicSessions={minNumPhenotypicSessions}
-            setIsControl={setIsControl}
-            assessmentTool={assessmentTool}
-            imagingModality={imagingModality}
-            pipelineVersion={pipelineVersion}
-            pipelineName={pipelineName}
-            pipelines={pipelines}
-            updateCategoricalQueryParams={(label, value) =>
-              updateCategoricalQueryParams(label, value)
-            }
-            updateContinuousQueryParams={(label, value) =>
-              updateContinuousQueryParams(label, value)
-            }
-            loading={loading}
-            onSubmitQuery={() => submitQuery()}
-          />
-        </div>
+        {isSmallViewport && (
+          <div className="flex w-full items-end justify-end p-2">
+            <Button
+              data-cy="filter-toggle-button"
+              className="flex items-center gap-2"
+              onClick={() => setIsQueryFormOpen(!isQueryFormOpen)}
+            >
+              <FilterList /> <span>{isQueryFormOpen ? 'Hide Query Form' : 'Show Query Form'}</span>
+            </Button>
+          </div>
+        )}
+        {(isQueryFormOpen || !isSmallViewport) && (
+          <div data-cy="query-form-container" className="min-w-[380px] max-w-sm flex-1">
+            <QueryForm
+              availableNodes={availableNodes}
+              diagnosisOptions={diagnosisOptions}
+              assessmentOptions={assessmentOptions}
+              selectedNode={selectedNode}
+              minAge={minAge}
+              maxAge={maxAge}
+              sex={sex}
+              diagnosis={diagnosis}
+              isControl={isControl}
+              minNumImagingSessions={minNumImagingSessions}
+              minNumPhenotypicSessions={minNumPhenotypicSessions}
+              setIsControl={setIsControl}
+              assessmentTool={assessmentTool}
+              imagingModality={imagingModality}
+              pipelineVersion={pipelineVersion}
+              pipelineName={pipelineName}
+              pipelines={pipelines}
+              updateCategoricalQueryParams={(label, value) =>
+                updateCategoricalQueryParams(label, value)
+              }
+              updateContinuousQueryParams={(label, value) =>
+                updateContinuousQueryParams(label, value)
+              }
+              loading={loading}
+              onSubmitQuery={() => submitQuery()}
+            />
+          </div>
+        )}
         <div
           className={
             loading
