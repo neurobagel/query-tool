@@ -113,7 +113,7 @@ function App() {
     async function getAttributes(NBResource: string, dataElementURI: string) {
       try {
         const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
-          `${baseAPIURL}${NBResource}/`
+          `${baseAPIURL}${NBResource}`
         );
         if (response.data.nodes_response_status === 'fail') {
           enqueueSnackbar(`Failed to retrieve ${NBResource} options`, {
