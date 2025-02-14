@@ -71,7 +71,7 @@ describe('App', () => {
       "Parkinson's disease"
     );
   });
-  it('Enables the pipeline version field once a pipeline name is selected', () => {
+  it('Enables the pipeline version field once a pipeline name is selected and disables and empties it when the pipeline name field is cleared', () => {
     cy.intercept(
       {
         method: 'GET',
@@ -85,6 +85,9 @@ describe('App', () => {
     cy.get('[data-cy="Pipeline version-categorical-field"] input').should('not.be.disabled');
     cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
     cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
+    cy.get('[data-cy="Pipeline name-categorical-field"]').clear();
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').should('have.value', '');
   });
   it('should toggle the filter form visibility when clicking the button', () => {
     cy.viewport(800, 600); // Mobile/tablet viewport
