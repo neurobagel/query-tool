@@ -406,8 +406,8 @@ function App() {
     );
     setQueryParam('assessment', assessmentTool, queryParams);
     setQueryParam('image_modal', imagingModality, queryParams);
-    setQueryParam('pipeline_version', pipelineVersion, queryParams);
     setQueryParam('pipeline_name', pipelineName, queryParams);
+    setQueryParam('pipeline_version', pipelineName ? pipelineVersion : null, queryParams);
 
     // Remove keys with empty values
     const keysToDelete: string[] = [];
