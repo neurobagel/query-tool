@@ -71,7 +71,22 @@ describe('App', () => {
       "Parkinson's disease"
     );
   });
-  it('Enables the pipeline version field once a pipeline name is selected and disables and empties it when the pipeline name field is cleared', () => {
+  it('Enables the pipeline version field once a pipeline name is selected', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines/np:fmriprep/versions',
+      },
+      pipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
+    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
+    cy.wait('@getPipelineVersionsOptions');
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('not.be.disabled');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
+  });
+  it('Should disable and clear the pipeline version field when the pipeline name field is cleared', () => {
     cy.intercept(
       {
         method: 'GET',
