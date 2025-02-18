@@ -220,7 +220,7 @@ function QueryForm({
               label="Pipeline version"
               options={[]}
               onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-              inputValue={pipelineVersion}
+              inputValue={null}
               disabled
             />
           </div>

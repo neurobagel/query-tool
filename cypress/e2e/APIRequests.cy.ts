@@ -400,13 +400,21 @@ describe('Successful API query requests', () => {
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
     cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').type('2');
     cy.get('[data-cy="Minimum number of phenotypic sessions-continuous-field"]').type('3');
+    // Assert that pipeline version doesn't sneak into the query if pipeline name is cleared
+    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
+    cy.get('[data-cy="Pipeline name-categorical-field"]').clear();
+    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').should('have.value', '');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call')
       .its('request.url')
       .should('contain', 'min_age=10')
       .and('contain', 'max_age=30')
       .and('contain', 'min_num_imaging_sessions=2')
-      .and('contain', 'min_num_phenotypic_sessions=3');
+      .and('contain', 'min_num_phenotypic_sessions=3')
+      .and('not.contain', 'pipeline_version');
   });
 });
 
