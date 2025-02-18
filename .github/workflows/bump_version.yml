@@ -44,6 +44,8 @@ jobs:
         run: |
           NEW_VERSION="v$(~/auto version --from ${{ env.LATEST_TAG }})"
           echo "New version: $NEW_VERSION"
+          echo "Running auto shipit dry"
+          auto shipit --dry-run --quiet
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
       
