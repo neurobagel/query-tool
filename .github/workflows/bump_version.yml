@@ -38,7 +38,17 @@ jobs:
         run: |
           LATEST_TAG=$(curl -fsSL https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-        
+      
+      - name: Figure out new version
+        id: figure-out-version
+        run: |
+          NEW_VERSION="v$(~/auto version --from ${{ env.LATEST_TAG }})"
+          echo "New version: $NEW_VERSION"
+          echo "Running auto shipit dry"
+          ~/auto shipit --dry-run --quiet
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      
       - name: Compute increment
         id: compute-increment
         run: |
