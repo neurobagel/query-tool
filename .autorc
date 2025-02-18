@@ -5,9 +5,6 @@
     "author": "Neurobagel Bot <bot@neurobagel.org>",
     "noVersionPrefix": false,
     "plugins": [
-        "git-tag",
-        "released",
-        "first-time-contributor",
         [
             "omit-commits",
             {
