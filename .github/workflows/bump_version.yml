@@ -49,7 +49,7 @@ jobs:
         run: |
           my_version="$(~/auto version --from ${{ env.LATEST_TAG }})"
           my_release="$(~/auto release --dry-run)"
-          my_shipit="$(~/auto shipit --dry-run)"
+          my_shipit="$(~/auto shipit --prerelease true --dry-run)"
           echo "my_version=$my_version"
           echo "my_release=$my_release"
           echo "my_shipit=$my_shipit"
