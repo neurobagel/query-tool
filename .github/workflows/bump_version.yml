@@ -48,8 +48,6 @@ jobs:
         id: figure-out-version
         run: |
           my_version="$(~/auto version --from ${{ env.LATEST_TAG }})"
-          echo "New version: $NEW_VERSION"
-          echo "Running auto shipit dry"
           my_release="$(~/auto release --dry-run)"
           my_shipit="$(~/auto shipit --dry-run)"
           echo "my_version=$my_version"
