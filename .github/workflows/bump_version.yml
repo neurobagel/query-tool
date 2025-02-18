@@ -47,11 +47,14 @@ jobs:
       - name: Figure out new version
         id: figure-out-version
         run: |
-          NEW_VERSION="$(~/auto version --from ${{ env.LATEST_TAG }})"
+          my_version="$(~/auto version --from ${{ env.LATEST_TAG }})"
           echo "New version: $NEW_VERSION"
           echo "Running auto shipit dry"
-          my_version="$(~/auto release --dry-run)"
+          my_release="$(~/auto release --dry-run)"
+          my_shipit="$(~/auto shipit --dry-run)"
           echo "my_version=$my_version"
+          echo "my_release=$my_release"
+          echo "my_shipit=$my_shipit"
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
       
