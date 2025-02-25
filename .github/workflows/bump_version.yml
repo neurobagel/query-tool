@@ -26,6 +26,11 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Fetch all tags and branches
+        run: |
+          git fetch --tags
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*'
     
       - name: Download latest auto
         run: |
@@ -38,7 +43,19 @@ jobs:
         run: |
           LATEST_TAG=$(curl -fsSL https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-        
+      
+      - name: Figure out new version
+        id: figure-out-version
+        run: |
+          my_version="$(~/auto version --from ${{ env.LATEST_TAG }})"
+          my_release="$(~/auto release --dry-run)"
+          my_shipit="$(~/auto shipit --dry-run)"
+          echo "my_version=$my_version"
+          echo "my_release=$my_release"
+          echo "my_shipit=$my_shipit"
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      
       - name: Compute increment
         id: compute-increment
         run: |
