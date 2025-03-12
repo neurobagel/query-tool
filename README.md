@@ -2,16 +2,16 @@
 
 # Query Tool
 
-![GitHub branch check runs](https://img.shields.io/github/check-runs/neurobagel/query-tool/main?style=flat-square)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/e2e-test.yaml?branch=main&style=flat-square&label=e2e%20tests&link=https%3A%2F%2Fgithub.com%2Fneurobagel%2Fquery-tool%2Factions%2Fworkflows%2Fe2e-test.yaml)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/component-test.yaml?branch=main&style=flat-square&label=component%20tests&link=https%3A%2F%2Fgithub.com%2Fneurobagel%2Fquery-tool%2Factions%2Fworkflows%2Fcomponent-test.yaml)
-![Static Badge](https://img.shields.io/badge/node-20.9-red?style=flat-square&logo=nodedotjs&color=CD5C5C)
-![GitHub License](https://img.shields.io/github/license/neurobagel/query-tool?style=flat-square&color=purple&link=LICENSE)
-![Docker Image Version (tag)](https://img.shields.io/docker/v/neurobagel/query_tool/latest?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)
-![Docker Pulls](https://img.shields.io/docker/pulls/neurobagel/query_tool?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)
+[![Main branch checks status](https://img.shields.io/github/check-runs/neurobagel/query-tool/main?style=flat-square&logo=github)](https://github.com/neurobagel/query-tool/actions?query=branch:main)
+[![e2e tests status](https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/e2e-test.yaml?branch=main&style=flat-square&logo=github&label=e2e%20tests&link=https%3A%2F%2Fgithub.com%2Fneurobagel%2Fquery-tool%2Factions%2Fworkflows%2Fe2e-test.yaml)](https://github.com/neurobagel/query-tool/actions/workflows/e2e-test.yaml)
+[![Component tests status](https://img.shields.io/github/actions/workflow/status/neurobagel/query-tool/component-test.yaml?branch=main&style=flat-square&logo=github&label=component%20tests&link=https%3A%2F%2Fgithub.com%2Fneurobagel%2Fquery-tool%2Factions%2Fworkflows%2Fcomponent-test.yaml)](https://github.com/neurobagel/query-tool/actions/workflows/component-test.yaml)
+[![Node version](https://img.shields.io/badge/node-20.9-green?style=flat-square&logo=nodedotjs)](https://nodejs.org/en)
+[![License](https://img.shields.io/github/license/neurobagel/query-tool?style=flat-square&color=purple&link=LICENSE)](LICENSE)
+[![Docker Image Version (tag)](https://img.shields.io/docker/v/neurobagel/query_tool/latest?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)](https://hub.docker.com/r/neurobagel/query_tool/tags)
+[![Docker Pulls](https://img.shields.io/docker/pulls/neurobagel/query_tool?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)](https://hub.docker.com/r/neurobagel/query_tool/tags)
 
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fneurobagel-query.netlify.app&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=staging%20app&link=https%3A%2F%2Fneurobagel-query.netlify.app)
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fquery.neurobagel.org&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=deployed%20app&link=https%3A%2F%2Fquery.neurobagel.org)
+[![Staging app status](https://img.shields.io/website?url=https%3A%2F%2Fneurobagel-query.netlify.app&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=staging%20app&link=https%3A%2F%2Fneurobagel-query.netlify.app)](https://neurobagel-query.netlify.app/)
+[![Deployed app status](https://img.shields.io/website?url=https%3A%2F%2Fquery.neurobagel.org&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=deployed%20app&link=https%3A%2F%2Fquery.neurobagel.org)](https://query.neurobagel.org/)
 
 The query tool is a React application, developed in [TypeScript](https://www.typescriptlang.org/) using a variety of tools including [Vite](https://vitejs.dev/), [Cypress](https://www.cypress.io/), and [MUI](https://mui.com/).
 
