@@ -54,7 +54,7 @@ jobs:
         run: |
           # yarn install --frozen-lockfile
           # yarn build
-          npx auto shipit --dry-run
+          npx auto shipit --base-branch issue464 --dry-run
 
       # - name: Get latest release version
       #   id: latest-release
