@@ -29,7 +29,7 @@ jobs:
 
       - name: Fetch all tags and branches
         run: |
-          git fetch --unshallow --tags
+          git fetch --tags
           git fetch origin '+refs/heads/*:refs/remotes/origin/*'
 
       - name: Use Node.js
