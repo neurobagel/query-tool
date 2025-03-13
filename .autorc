@@ -6,6 +6,7 @@
     "noVersionPrefix": false,
     "plugins": [
         [
+            "npm",
             "omit-commits",
             {
                 "username": ["dependabot[bot]", "pre-commit-ci[bot]"],
