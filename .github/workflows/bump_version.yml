@@ -46,6 +46,8 @@ jobs:
       - name: Install auto
         run: |
           npm install auto
+          npm i --save-dev @auto-it/git-tag
+          npm i --save-dev @auto-it/omit-commits
 
       - name: Create Release
         env:
