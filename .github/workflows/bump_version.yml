@@ -29,79 +29,97 @@ jobs:
 
       - name: Fetch all tags and branches
         run: |
-          git fetch --tags
+          git fetch --unshallow --tags
           git fetch origin '+refs/heads/*:refs/remotes/origin/*'
-    
-      - name: Download latest auto
-        run: |
-          auto_download_url="$(curl -fsSL https://api.github.com/repos/intuit/auto/releases/latest | jq -r '.assets[] | select(.name == "auto-linux.gz") | .browser_download_url')"
-          wget -O- "$auto_download_url" | gunzip > ~/auto
-          chmod a+x ~/auto
 
-      - name: Get latest release version
-        id: latest-release
-        run: |
-          LATEST_TAG=$(curl -fsSL https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-      
-      - name: Figure out new version
-        id: figure-out-version
-        run: |
-          my_version="$(~/auto version --from ${{ env.LATEST_TAG }})"
-          my_release="$(~/auto release --dry-run)"
-          my_shipit="$(~/auto shipit --dry-run)"
-          echo "my_version=$my_version"
-          echo "my_release=$my_release"
-          echo "my_shipit=$my_shipit"
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-      
-      - name: Compute increment
-        id: compute-increment
-        run: |
-          # Run auto to determine version increment (patch, minor, major)
-          INCREMENT=$(~/auto version)
-          echo "Increment: $INCREMENT"
-          echo "INCREMENT=$INCREMENT" >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-      
-      - name: Bump version
-        id: bump-version
-        run: |
-          # Extract the current version from the latest release
-          VERSION=${{ env.LATEST_TAG }}
-          VERSION=${VERSION#v}  # Remove the "v" prefix if it exists
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+      # - name: Download latest auto
+      #   run: |
+      #     auto_download_url="$(curl -fsSL https://api.github.com/repos/intuit/auto/releases/latest | jq -r '.assets[] | select(.name == "auto-linux.gz") | .browser_download_url')"
+      #     wget -O- "$auto_download_url" | gunzip > ~/auto
+      #     chmod a+x ~/auto
+
+      - name: Install auto
+        run: |
+          npm install auto
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # yarn install --frozen-lockfile
+          # yarn build
+          npx auto shipit --dry-run
+
+      # - name: Get latest release version
+      #   id: latest-release
+      #   run: |
+      #     LATEST_TAG=$(curl -fsSL https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+      #     echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+      
+      # - name: Figure out new version
+      #   id: figure-out-version
+      #   run: |
+      #     my_version="$(~/auto version --from ${{ env.LATEST_TAG }})"
+      #     my_release="$(~/auto release --dry-run)"
+      #     my_shipit="$(~/auto shipit --dry-run)"
+      #     echo "my_version=$my_version"
+      #     echo "my_release=$my_release"
+      #     echo "my_shipit=$my_shipit"
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      
+      # - name: Compute increment
+      #   id: compute-increment
+      #   run: |
+      #     # Run auto to determine version increment (patch, minor, major)
+      #     INCREMENT=$(~/auto version)
+      #     echo "Increment: $INCREMENT"
+      #     echo "INCREMENT=$INCREMENT" >> $GITHUB_ENV
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      
+      # - name: Bump version
+      #   id: bump-version
+      #   run: |
+      #     # Extract the current version from the latest release
+      #     VERSION=${{ env.LATEST_TAG }}
+      #     VERSION=${VERSION#v}  # Remove the "v" prefix if it exists
+
+      #     IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
           
-          # Increment based on the auto output
-          if [ "${{ env.INCREMENT }}" == "major" ]; then
-            MAJOR=$((MAJOR + 1))
-            MINOR=0
-            PATCH=0
-          elif [ "${{ env.INCREMENT }}" == "minor" ]; then
-            MINOR=$((MINOR + 1))
-            PATCH=0
-          elif [ "${{ env.INCREMENT }}" == "patch" ]; then
-            PATCH=$((PATCH + 1))
-          fi
+      #     # Increment based on the auto output
+      #     if [ "${{ env.INCREMENT }}" == "major" ]; then
+      #       MAJOR=$((MAJOR + 1))
+      #       MINOR=0
+      #       PATCH=0
+      #     elif [ "${{ env.INCREMENT }}" == "minor" ]; then
+      #       MINOR=$((MINOR + 1))
+      #       PATCH=0
+      #     elif [ "${{ env.INCREMENT }}" == "patch" ]; then
+      #       PATCH=$((PATCH + 1))
+      #     fi
 
-          # Construct the new version
-          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
-          echo "New version: $NEW_VERSION"
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+      #     # Construct the new version
+      #     NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+      #     echo "New version: $NEW_VERSION"
+      #     echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-      - name: Update package.json
-        run: |
-          jq ".version = \"$NEW_VERSION\"" package.json > package.json.tmp && mv package.json.tmp package.json
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      # - name: Update package.json
+      #   run: |
+      #     jq ".version = \"$NEW_VERSION\"" package.json > package.json.tmp && mv package.json.tmp package.json
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
-      - name: Commit and Push Changes
-        run: |
-          git config --global user.name "Neurobagel Bot"
-          git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
-          git diff --quiet package.json || (git add package.json && git commit -m "Bumped version to $NEW_VERSION" && git push origin HEAD:${{ github.head_ref }})
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      # - name: Commit and Push Changes
+      #   run: |
+      #     git config --global user.name "Neurobagel Bot"
+      #     git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
+      #     git diff --quiet package.json || (git add package.json && git commit -m "Bumped version to $NEW_VERSION" && git push origin HEAD:${{ github.head_ref }})
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate-token.outputs.token }}
