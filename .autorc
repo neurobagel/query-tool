@@ -13,7 +13,8 @@
                 "labels": ["_bot", "skip-release"]
             }
         ],
-        "npm"
+        "npm",
+        "git-tag"
     ],
     "labels": [
         {

@@ -57,6 +57,8 @@ jobs:
           npx auto shipit --dry-run
           my_version="$(npx auto version)"
           my_latest="$(npx auto latest --dry-run)"
+          echo "my_version=$my_version"
+          echo "my_latest=$my_latest"
 
       # - name: Get latest release version
       #   id: latest-release
