@@ -520,7 +520,7 @@ function App() {
           </div>
         )}
         {(isQueryFormOpen || !isSmallViewport) && (
-          <div data-cy="query-form-container" className="min-w-[380px] max-w-sm flex-1">
+          <div data-cy="query-form-container" className="max-w-sm min-w-[380px] flex-1">
             <QueryForm
               availableNodes={availableNodes}
               diagnosisOptions={diagnosisOptions}

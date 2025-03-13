@@ -113,7 +113,7 @@ function ChatbotFeature({ setResult }: ChatbotFeatureProps) {
   ];
 
   return (
-    <div className="fixed bottom-5 right-9 z-40 flex flex-col items-end">
+    <div className="fixed right-9 bottom-5 z-40 flex flex-col items-end">
       <button
         type="button"
         aria-label="Toggle chatbot"
@@ -121,11 +121,11 @@ function ChatbotFeature({ setResult }: ChatbotFeatureProps) {
         onClick={() => setShowChatbot(!showChatbot)}
       >
         <FaRobot className="text-2xl" />
-        <span className="absolute right-8 top-0 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-white" />
+        <span className="absolute top-0 right-8 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-white" />
       </button>
       {showChatbot && (
         <Draggable>
-          <div className="fixed bottom-12 right-32 z-50 w-80 rounded-lg border border-gray-300 bg-white shadow-lg">
+          <div className="fixed right-32 bottom-12 z-50 w-80 rounded-lg border border-gray-300 bg-white shadow-lg">
             <ThemeProvider theme={theme}>
               <ChatBot
                 headerTitle="Neurobagel Chat"
