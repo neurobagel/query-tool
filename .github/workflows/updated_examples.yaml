@@ -61,7 +61,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: query-tool-results
-          path: neurobagel_examples/query-tool-results
+          path: query-tool-results
 
       - name: Create Pull Request
         id: create_pr
