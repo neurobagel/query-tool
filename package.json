@@ -19,7 +19,7 @@
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",
     "@mui/icons-material": "^5.16.14",
-    "@mui/material": "^5.16.7",
+    "@mui/material": "^6.4.7",
     "axios": "^1.8.2",
     "eslint-plugin-tsdoc": "^0.4.0",
     "jwt-decode": "^4.0.0",
