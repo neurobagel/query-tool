@@ -50,9 +50,9 @@ export const modalities: {
     bgColor: 'rgb(253, 164, 164)',
   },
   'http://purl.org/nidash/nidm#FlowWeighted': {
-    label: 'Flow Weighted',
+    label: 'Functional MRI',
     TermURL: 'nidm:FlowWeighted',
-    name: 'Flow',
+    name: 'fMRI',
     bgColor: 'rgb(70, 130, 180)',
   },
   'http://purl.org/nidash/nidm#T1Weighted': {
