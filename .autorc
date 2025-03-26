@@ -12,7 +12,7 @@
             "omit-commits",
             {
                 "username": ["dependabot[bot]", "pre-commit-ci[bot]"],
-                "subject": "[pre-commit.ci]",
+                "subject": ["[pre-commit.ci]", "[MNT] post-release version bump"],
                 "labels": ["_bot", "skip-release"]
             }
         ]
