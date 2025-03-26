@@ -1,3 +1,34 @@
+# v0.10.0 (Wed Mar 26 2025)
+
+#### 💥 Breaking Changes
+
+- [FIX] Stop appending trailing slash to f-API request [#484](https://github.com/neurobagel/query-tool/pull/484) ([@surchs](https://github.com/surchs))
+
+#### 🚀 Enhancements
+
+- [MNT] Changed `Flow Weighted` label and name to `Functional MRI` [#514](https://github.com/neurobagel/query-tool/pull/514) ([@rmanaem](https://github.com/rmanaem))
+- [ENH] Adjust form layout for small and tab screens [#476](https://github.com/neurobagel/query-tool/pull/476) ([@Tusharjamdade](https://github.com/Tusharjamdade) [@surchs](https://github.com/surchs))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Prevent previously selected pipeline version from appearing in the query after the field has been disabled [#487](https://github.com/neurobagel/query-tool/pull/487) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [REF] Revert to simple release workflow with post-release package.json bump [#523](https://github.com/neurobagel/query-tool/pull/523) ([@surchs](https://github.com/surchs))
+
+#### 📝 Documentation
+
+- [DOC] Document NB_QUERY_HEADER_SCRIPT [#468](https://github.com/neurobagel/query-tool/pull/468) ([@surchs](https://github.com/surchs))
+
+#### Authors: 3
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
 # v0.9.3 (Thu Jan 30 2025)
 
 #### 🏠 Internal
