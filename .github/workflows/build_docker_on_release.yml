@@ -75,13 +75,12 @@ jobs:
             org.opencontainers.image.revision=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
             org.opencontainers.image.version=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
 
-      # TODO: check if we can exclude this commit from the changelog
-      # by giving it a specific name
       - 
         name: Commit and Push Changes
         run: |
           git config --global user.name "Neurobagel Bot"
           git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
-          git diff --quiet package.json || (git add package.json && git commit -m "[MNT] post-release version bump to $NEW_VERSION" && git push origin HEAD:${{ github.head_ref }})
+          git pull
+          git diff --quiet package.json || (git add package.json && git commit -m "[MNT] post-release version bump to $NEW_VERSION" && git push origin main))
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
