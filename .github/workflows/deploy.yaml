@@ -37,6 +37,24 @@ jobs:
           # Need to use single quotes around sed to avoid ! to be interpreted as a history expansion character
           sed -i 's|<!-- REPLACE_ME_NB_QUERY_HEADER_SCRIPT_REPLACE_ME -->|'"${add_script}"'|' index.html
 
+      # For our GH pages deployment, which does not involve the Docker image, 
+      # we need to manually update the version in package.json if the deployment 
+      # was triggered by a release to ensure that the right version is displayed in the tool
+      - name: Set release version
+        id: set_version
+        run: |
+          # Ensure that if the workflow was started manually, we still have a release version here.
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "release_version=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+          else
+            latest_release=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+            echo "release_version=$latest_release" >> $GITHUB_ENV
+          fi
+      
+      - name: Replace version in package.json
+        run: |
+          jq ".version = \"$release_version\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
