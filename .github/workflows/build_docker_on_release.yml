@@ -1,3 +1,5 @@
+# After a release is triggered, this workflow launches a process to build a semver Docker image 
+# and at the end also updates and commits the version in package.json
 name: build Docker image on release
 
 on:
@@ -82,5 +84,3 @@ jobs:
           git config --global user.email "neurobagel-bot[bot]@users.noreply.github.com"
           git pull
           git diff --quiet package.json || (git add package.json && git commit -m "[MNT] post-release version bump to $NEW_VERSION" && git push origin main)
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
