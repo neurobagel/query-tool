@@ -1,3 +1,15 @@
+# v0.10.1 (Tue Apr 01 2025)
+
+#### 🏠 Internal
+
+- [FIX] Update version in release deployments [#526](https://github.com/neurobagel/query-tool/pull/526) ([@surchs](https://github.com/surchs))
+
+#### Authors: 1
+
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.10.0 (Wed Mar 26 2025)
 
 #### 💥 Breaking Changes
