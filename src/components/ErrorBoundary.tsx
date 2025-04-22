@@ -41,7 +41,15 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
         <div className="flex h-screen w-screen flex-col items-center justify-center space-y-5">
           <img src={logo} alt="Logo" className="max-h-20 animate-pulse" />
           <Typography variant="h5" className="text-center">
-            This is not supposed to happen. Please try again, or{' '}
+            This is not supposed to happen. Please try again,{' '}
+            <a
+              href="https://neurobagel.org/user_guide/query_tool/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              check out the documentation,
+            </a>{' '}
+            or{' '}
             <a
               href="https://github.com/neurobagel/query-tool/issues"
               target="_blank"
