@@ -8,14 +8,6 @@ export default defineConfig({
     specPattern: 'cypress/e2e/*',
     experimentalStudio: true,
     baseUrl: 'http://localhost:5173',
-    setupNodeEvents(on) {
-      on('task', {
-        log(message) {
-          console.log(message);
-          return null;
-        },
-      });
-    },
   },
 
   component: {
