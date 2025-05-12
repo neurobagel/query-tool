@@ -15,15 +15,7 @@ describe('Update Examples', () => {
       req.reply(fapiQuerySuccess200);
     }).as('call');
     cy.visit('/');
-    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']).then(
-      ([diagnosisIntercept, assessmentIntercept]) => {
-        const diagnosisOptions = diagnosisIntercept.response?.body;
-        const assessmentOptions = assessmentIntercept.response?.body;
-
-        console.log('Diagnosis options:', diagnosisOptions);
-        console.log('Assessment options:', assessmentOptions);
-      }
-    );
+    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
     cy.get('[data-cy="close-auth-dialog-button"]').click();
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
