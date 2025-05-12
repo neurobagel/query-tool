@@ -158,6 +158,10 @@ export const diagnosisOptions = {
         TermURL: 'snomed:370143000',
         Label: 'Major depressive disorder',
       },
+      {
+        TermURL: 'snomed:406506008',
+        Label: 'Attention deficit hyperactivity disorder',
+      },
     ],
   },
   nodes_response_status: 'success',
@@ -238,6 +242,14 @@ export const assessmentToolOptions = {
       {
         TermURL: 'cogatlas:trm_4f2419c4a1646',
         Label: 'multisource interference task',
+      },
+      {
+        TermURL: 'snomed:342061000000106',
+        Label: 'Unified Parkinsons disease rating scale score',
+      },
+      {
+        TermURL: 'snomed:859351000000102',
+        Label: 'Montreal cognitive assessment',
       },
     ],
   },
