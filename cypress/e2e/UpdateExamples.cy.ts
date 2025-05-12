@@ -20,8 +20,8 @@ describe('Update Examples', () => {
         const diagnosisOptions = diagnosisIntercept.response?.body;
         const assessmentOptions = assessmentIntercept.response?.body;
 
-        console.log('Diagnosis options:', diagnosisOptions);
-        console.log('Assessment options:', assessmentOptions);
+        cy.task('log', `Diagnosis options: ${JSON.stringify(diagnosisOptions)}`);
+        cy.task('log', `Assessment options: ${JSON.stringify(assessmentOptions)}`);
       }
     );
     cy.get('[data-cy="close-auth-dialog-button"]').click();
