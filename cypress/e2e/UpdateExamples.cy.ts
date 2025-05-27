@@ -3,10 +3,19 @@ import fapiQuerySuccess200 from '../../neurobagel_examples/api-responses/fapi_qu
 
 describe('Update Examples', () => {
   it('Generates result files using a successful FAPI query', () => {
+    cy.intercept({
+      method: 'GET',
+      url: '/diagnoses',
+    }).as('getDiagnosisOptions');
+    cy.intercept({
+      method: 'GET',
+      url: '/assessments',
+    }).as('getAssessmentToolOptions');
     cy.intercept('GET', 'query*', (req) => {
       req.reply(fapiQuerySuccess200);
     }).as('call');
     cy.visit('/');
+    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
     cy.get('[data-cy="close-auth-dialog-button"]').click();
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');

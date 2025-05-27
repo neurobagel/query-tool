@@ -8,9 +8,13 @@ jobs:
   generate-example-files:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout PR head branch
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false  
           submodules: true
 
       - name: Set up node env
