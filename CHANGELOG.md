@@ -6,6 +6,25 @@
 - [FIX] Fixed the query result examples missing SNOMED labels bug [#557](https://github.com/neurobagel/query-tool/pull/557) ([@rmanaem](https://github.com/rmanaem))
 - [FIX] Added link to docs on the error boundary [#546](https://github.com/neurobagel/query-tool/pull/546) ([@rmanaem](https://github.com/rmanaem))
 
+#### ⚠️ Pushed to `main`
+
+- test remove later (sebastian.urchs@gmail.com)
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs (sebastian.urchs@gmail.com)
+
+---
+
+# v0.10.2 (Thu Jul 24 2025)
+
+#### 🐛 Bug Fix
+
+- fix: hello world (sebastian.urchs@gmail.com)
+- [FIX] Fixed the query result examples missing SNOMED labels bug [#557](https://github.com/neurobagel/query-tool/pull/557) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Added link to docs on the error boundary [#546](https://github.com/neurobagel/query-tool/pull/546) ([@rmanaem](https://github.com/rmanaem))
+
 #### Authors: 2
 
 - Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
