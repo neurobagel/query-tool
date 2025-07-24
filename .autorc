@@ -1,12 +1,14 @@
 {
-    "onlyPublishWithReleaseLabel": true,
+    "onlyPublishWithReleaseLabel": false,
     "noDefaultLabels": true,
     "baseBranch": "main",
     "author": "Neurobagel Bot <bot@neurobagel.org>",
     "noVersionPrefix": false,
     "plugins": [
+        ["npm", { "setRcToken": false }],
         "git-tag",
         "released",
+        "conventional-commits",
         "first-time-contributor",
         [
             "omit-commits",
@@ -16,102 +18,5 @@
                 "labels": ["_bot", "skip-release"]
             }
         ]
-    ],
-    "labels": [
-        {
-            "name": "pr-major-breaking",
-            "changelogTitle": "💥 Breaking Changes",
-            "description": "Significant behaviour change that breaks compatibility, will increment major version (+1.0.0)",
-            "releaseType": "major",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-minor-breaking",
-            "changelogTitle": "💥 Breaking Changes",
-            "description": "Feature or enhancement that breaks compatibility, will increment minor version (0.+1.0)",
-            "releaseType": "minor",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-minor",
-            "changelogTitle": "🚀 Enhancements",
-            "description": "Non-breaking feature or enhancement, will increment minor version (0.+1.0)",
-            "releaseType": "minor",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-patch",
-            "changelogTitle": "🚀 Enhancements",
-            "description": "Incremental feature improvement, will increment patch version when merged (0.0.+1)",
-            "releaseType": "patch",
-            "overwrite": true,
-            "default": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-bug-fix",
-            "changelogTitle": "🐛 Bug Fixes",
-            "description": "Bug fix, will increment patch version when merged (0.0.+1)",
-            "releaseType": "patch",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-internal",
-            "changelogTitle": "🏠 Internal",
-            "description": "Non-user-facing code improvement, will increment patch version when merged (0.0.+1)",
-            "releaseType": "patch",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-performance",
-            "changelogTitle": "🏎 Performance Improvements",
-            "description": "Improve performance of an existing feature, will increment patch version when merged (0.0.+1)",
-            "releaseType": "patch",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-documentation",
-            "changelogTitle": "📝 Documentation",
-            "description": "Change that only affects user documentation",
-            "releaseType": "none",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-tests",
-            "changelogTitle": " 🧪 Tests",
-            "description": "Add or improve existing tests",
-            "releaseType": "none",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "pr-dependencies",
-            "changelogTitle": "🔩 Dependency Updates",
-            "description": "Update one or more dependencies version",
-            "releaseType": "none",
-            "overwrite": true,
-            "color": "#C1EF40"
-        },
-        {
-            "name": "skip-release",
-            "description": "PR doesn't appear in the changelog and preserves current version when merged",
-            "releaseType": "skip",
-            "overwrite": true,
-            "color": "#bf5416"
-        },
-        {
-            "name": "release",
-            "description": "Create a release when this PR is merged",
-            "releaseType": "release",
-            "overwrite": true,
-            "color": "#BFDADC"
-        }
     ]
 }
