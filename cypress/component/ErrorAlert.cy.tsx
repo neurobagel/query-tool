@@ -1,7 +1,8 @@
 import ErrorAlert from '../../src/components/ErrorAlert';
+import { failedQueryResponse } from '../fixtures/mocked-responses';
 
 const errorTitle = 'errorTitle';
-const errorMessage = 'errorMessage';
+const errorMessage = JSON.stringify(failedQueryResponse, null, 2);
 
 describe('ErrorAlert', () => {
   it('Render', () => {
