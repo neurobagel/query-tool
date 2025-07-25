@@ -593,13 +593,11 @@ describe('Failed API query requests', () => {
     // Because the auth dialog will overlap a lot of the UI and thus fail the tests
     cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
-  it('Shows an error toast and does not display results for a completely failed ', () => {
+
+  it('Shows the error alert', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('.notistack-SnackbarContainer')
-      .find('.notistack-MuiContent-error')
-      .should('contain', 'Error')
-      .and('contain', 'All nodes');
+    cy.get('[data-cy="error-alert"]').should('contain', 'wrong');
     cy.get('[data-cy="result-container"]')
       .should('contain', 'Query failed')
       .and('contain', 'Please try again');

@@ -17,7 +17,6 @@ import {
   FieldInput,
   FieldInputOption,
   Pipelines,
-  NodeError,
   QueryResponse,
   Notification,
 } from './utils/types';
@@ -27,6 +26,7 @@ import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
+import ErrorAlert from './components/ErrorAlert';
 import './App.css';
 import logo from './assets/logo.png';
 
@@ -47,6 +47,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [result, setResult] = useState<QueryResponse | null>(null);
+  const [resultStatus, setResultStatus] = useState<string>('success');
 
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
@@ -437,33 +438,14 @@ function App() {
         },
       });
       setResult(response.data);
-      switch (response.data.nodes_response_status) {
-        case 'partial success': {
-          response.data.errors.forEach((error: NodeError) => {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'warning',
-                message: `${error.node_name} failed to respond`,
-              },
-            ]);
-          });
-          break;
-        }
-        case 'fail': {
-          enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error', action });
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+      setResultStatus(response.data.nodes_response_status);
     } catch {
-      enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
+      setResultStatus('network error');
     }
     setLoading(false);
   }
+
+  const queryHasFailed = resultStatus !== 'success';
 
   return (
     <>
@@ -519,6 +501,7 @@ function App() {
             </Button>
           </div>
         )}
+
         {(isQueryFormOpen || !isSmallViewport) && (
           <div data-cy="query-form-container" className="min-w-[380px] max-w-sm flex-1">
             <QueryForm
@@ -560,11 +543,20 @@ function App() {
           {loading ? (
             <img src={logo} alt="Logo" className="max-h-20 animate-bounce" />
           ) : (
-            <ResultContainer
-              response={sortedResults || null}
-              diagnosisOptions={diagnosisOptions}
-              assessmentOptions={assessmentOptions}
-            />
+            <>
+              {queryHasFailed && (
+                <ErrorAlert
+                  errorTitle={resultStatus}
+                  errorMessage="hi"
+                  explanation="something went wrong"
+                />
+              )}
+              <ResultContainer
+                response={sortedResults || null}
+                diagnosisOptions={diagnosisOptions}
+                assessmentOptions={assessmentOptions}
+              />
+            </>
           )}
         </div>
       </div>
