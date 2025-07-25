@@ -446,6 +446,7 @@ function App() {
   }
 
   const queryHasFailed = resultStatus !== 'success';
+  const queryErrorMessage = result ? JSON.stringify(result.errors, null, 2) : '';
 
   return (
     <>
@@ -547,7 +548,7 @@ function App() {
               {queryHasFailed && (
                 <ErrorAlert
                   errorTitle={resultStatus}
-                  errorMessage="hi"
+                  errorMessage={queryErrorMessage}
                   explanation="something went wrong"
                 />
               )}

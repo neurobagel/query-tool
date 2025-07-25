@@ -532,9 +532,7 @@ describe('Partially successful API query requests', () => {
   it('Shows a warning for nodes that failed to return any results', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get("[data-cy='notification-button']").should('exist');
-    cy.get("[data-cy='notification-button']").click({ force: true });
-    cy.get('.MuiList-root').should('contain', 'DidNotWorkNode');
+    cy.get("[data-cy='error-alert']").should('contain', 'DidNotWorkNode');
   });
 });
 
