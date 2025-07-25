@@ -447,6 +447,25 @@ function App() {
 
   const queryHasFailed = resultStatus !== 'success';
   const queryErrorMessage = result ? JSON.stringify(result.errors, null, 2) : '';
+  const queryErrorMapping: {
+    [key: string]: { errorTitle: string; explanation: string; errorLevel: string };
+  } = {
+    'network error': {
+      errorTitle: 'Network Error',
+      explanation: 'Please check your internet connection and try again.',
+      errorLevel: 'error',
+    },
+    'partial success': {
+      errorTitle: 'Partial Success',
+      explanation: 'Some nodes failed to respond. Please try again later.',
+      errorLevel: 'warning',
+    },
+    failure: {
+      errorTitle: 'Query Failed',
+      explanation: 'Please check your query and try again.',
+      errorLevel: 'error',
+    },
+  };
 
   return (
     <>
@@ -547,9 +566,9 @@ function App() {
             <>
               {queryHasFailed && (
                 <ErrorAlert
-                  errorTitle={resultStatus}
+                  errorTitle={queryErrorMapping[resultStatus].errorTitle}
                   errorMessage={queryErrorMessage}
-                  explanation="something went wrong"
+                  explanation={queryErrorMapping[resultStatus].explanation}
                 />
               )}
               <ResultContainer
