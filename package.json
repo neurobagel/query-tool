@@ -6,10 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint:check": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings=0",
-    "lint:fix": "eslint --fix **/*.{ts,tsx}",
+    "lint:check:file": "eslint --report-unused-disable-directives --max-warnings=0 --ext ts,tsx",
+    "lint:check": "eslint --report-unused-disable-directives --max-warnings=0 --ext ts,tsx .",
+    "lint:fix:file": "eslint --fix --ext ts,tsx",
+    "lint:fix": "eslint --fix --ext ts,tsx .",
     "preview": "vite preview",
+    "format:fix:file": "prettier --write",
     "format:fix": "prettier --write .",
+    "format:check:file": "prettier --check",
     "format:check": "prettier --check .",
     "prepare": "husky"
   },
