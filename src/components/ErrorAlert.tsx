@@ -2,15 +2,18 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Typography from '@mui/material/Typography';
 
+import type { AlertColor } from '@mui/material/Alert';
+
 interface ErrorAlertProps {
   errorTitle: string;
   explanation: string;
   errorMessage?: string;
+  severity?: AlertColor;
 }
 
-function ErrorAlert({ errorTitle, explanation, errorMessage }: ErrorAlertProps) {
+function ErrorAlert({ errorTitle, explanation, errorMessage, severity }: ErrorAlertProps) {
   return (
-    <Alert severity="error" data-cy="error-alert">
+    <Alert severity={severity} data-cy="error-alert">
       <AlertTitle>{errorTitle}</AlertTitle>
 
       <Typography variant="body2" sx={{ marginBottom: 2 }}>
@@ -45,6 +48,7 @@ function ErrorAlert({ errorTitle, explanation, errorMessage }: ErrorAlertProps) 
 
 ErrorAlert.defaultProps = {
   errorMessage: undefined,
+  severity: 'error',
 };
 
 export default ErrorAlert;

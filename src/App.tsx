@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, Grow, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
+import type { AlertColor } from '@mui/material/Alert';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { useAuth0 } from '@auth0/auth0-react';
 import { v4 as uuidv4 } from 'uuid';
@@ -569,6 +570,7 @@ function App() {
                   errorTitle={queryErrorMapping[resultStatus].errorTitle}
                   errorMessage={queryErrorMessage}
                   explanation={queryErrorMapping[resultStatus].explanation}
+                  severity={queryErrorMapping[resultStatus].errorLevel as AlertColor}
                 />
               )}
               <ResultContainer

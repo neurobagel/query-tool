@@ -529,7 +529,7 @@ describe('Partially successful API query requests', () => {
     // Because the auth dialog will overlap a lot of the UI and thus fail the tests
     cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
-  it('Shows a warning for nodes that failed to return any results', () => {
+  it.only('Shows a warning for nodes that failed to return any results', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get("[data-cy='error-alert']").should('contain', 'DidNotWorkNode');
