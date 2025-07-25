@@ -4,32 +4,44 @@ import Typography from '@mui/material/Typography';
 
 interface ErrorAlertProps {
   errorTitle: string;
-  errorMessage: string;
+  explanation: string;
+  errorMessage?: string;
 }
 
-function ErrorAlert({ errorTitle, errorMessage }: ErrorAlertProps) {
+function ErrorAlert({ errorTitle, explanation, errorMessage }: ErrorAlertProps) {
   return (
     <Alert severity="error" data-cy="error-alert">
       <AlertTitle>{errorTitle}</AlertTitle>
-      <Typography
-        component="pre"
-        variant="body2"
-        sx={{
-          fontFamily: 'monospace',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-          backgroundColor: 'rgba(0, 0, 0, 0.04)',
-          padding: 1,
-          borderRadius: 1,
-          margin: 0,
-          fontSize: '0.875rem',
-          lineHeight: 1.4,
-        }}
-      >
-        {errorMessage}
-      </Typography>
+
+      {explanation}
+
+      {errorMessage && (
+        <Typography
+          data-cy="error-container"
+          component="pre"
+          sx={{
+            fontFamily: 'monospace',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+            padding: 1,
+            borderRadius: 1,
+            margin: 0,
+            fontSize: '0.6rem',
+            lineHeight: 1.4,
+            maxHeight: '30vh',
+            overflow: 'auto',
+          }}
+        >
+          {errorMessage}
+        </Typography>
+      )}
     </Alert>
   );
 }
+
+ErrorAlert.defaultProps = {
+  errorMessage: undefined,
+};
 
 export default ErrorAlert;
