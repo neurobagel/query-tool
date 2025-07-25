@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, Grow, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
+import type { AlertColor } from '@mui/material/Alert';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { useAuth0 } from '@auth0/auth0-react';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,7 +18,6 @@ import {
   FieldInput,
   FieldInputOption,
   Pipelines,
-  NodeError,
   QueryResponse,
   Notification,
 } from './utils/types';
@@ -27,6 +27,7 @@ import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
+import ErrorAlert from './components/ErrorAlert';
 import './App.css';
 import logo from './assets/logo.png';
 
@@ -47,6 +48,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [result, setResult] = useState<QueryResponse | null>(null);
+  const [resultStatus, setResultStatus] = useState<string>('success');
 
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
@@ -437,33 +439,34 @@ function App() {
         },
       });
       setResult(response.data);
-      switch (response.data.nodes_response_status) {
-        case 'partial success': {
-          response.data.errors.forEach((error: NodeError) => {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'warning',
-                message: `${error.node_name} failed to respond`,
-              },
-            ]);
-          });
-          break;
-        }
-        case 'fail': {
-          enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error', action });
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+      setResultStatus(response.data.nodes_response_status);
     } catch {
-      enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
+      setResultStatus('network error');
     }
     setLoading(false);
   }
+
+  const queryHasFailed = resultStatus !== 'success';
+  const queryErrorMessage = result ? JSON.stringify(result.errors, null, 2) : '';
+  const queryErrorMapping: {
+    [key: string]: { errorTitle: string; explanation: string; errorLevel: string };
+  } = {
+    'network error': {
+      errorTitle: 'Network Error',
+      explanation: 'Please check your internet connection and try again.',
+      errorLevel: 'error',
+    },
+    'partial success': {
+      errorTitle: 'Partial Success',
+      explanation: 'Some nodes failed to respond. Please try again later.',
+      errorLevel: 'warning',
+    },
+    failure: {
+      errorTitle: 'Query Failed',
+      explanation: 'Please check your query and try again.',
+      errorLevel: 'error',
+    },
+  };
 
   return (
     <>
@@ -519,6 +522,7 @@ function App() {
             </Button>
           </div>
         )}
+
         {(isQueryFormOpen || !isSmallViewport) && (
           <div data-cy="query-form-container" className="min-w-[380px] max-w-sm flex-1">
             <QueryForm
@@ -560,11 +564,21 @@ function App() {
           {loading ? (
             <img src={logo} alt="Logo" className="max-h-20 animate-bounce" />
           ) : (
-            <ResultContainer
-              response={sortedResults || null}
-              diagnosisOptions={diagnosisOptions}
-              assessmentOptions={assessmentOptions}
-            />
+            <>
+              {queryHasFailed && (
+                <ErrorAlert
+                  errorTitle={queryErrorMapping[resultStatus].errorTitle}
+                  errorMessage={queryErrorMessage}
+                  explanation={queryErrorMapping[resultStatus].explanation}
+                  severity={queryErrorMapping[resultStatus].errorLevel as AlertColor}
+                />
+              )}
+              <ResultContainer
+                response={sortedResults || null}
+                diagnosisOptions={diagnosisOptions}
+                assessmentOptions={assessmentOptions}
+              />
+            </>
           )}
         </div>
       </div>
