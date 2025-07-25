@@ -13,12 +13,15 @@ function ErrorAlert({ errorTitle, explanation, errorMessage }: ErrorAlertProps) 
     <Alert severity="error" data-cy="error-alert">
       <AlertTitle>{errorTitle}</AlertTitle>
 
-      {explanation}
+      <Typography variant="body2" sx={{ marginBottom: 2 }}>
+        {explanation}
+      </Typography>
 
       {errorMessage && (
         <Typography
           data-cy="error-container"
           component="pre"
+          variant="body2"
           sx={{
             fontFamily: 'monospace',
             whiteSpace: 'pre-wrap',
