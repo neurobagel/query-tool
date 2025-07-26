@@ -8,14 +8,18 @@ const errorMessage = JSON.stringify(failedQueryResponse, null, 2);
 describe('ErrorAlert', () => {
   it('Displays the error title and message', () => {
     cy.mount(
-      <ErrorAlert errorTitle={errorTitle} explanation={explanation} errorMessage={errorMessage} />
+      <ErrorAlert
+        errorTitle={errorTitle}
+        errorExplanation={explanation}
+        errorContent={errorMessage}
+      />
     );
     cy.get('[data-cy="error-alert"]').contains(errorTitle);
     cy.get('[data-cy="error-alert"]').contains(errorMessage);
   });
 
   it('Works if no error message is provided', () => {
-    cy.mount(<ErrorAlert errorTitle={errorTitle} explanation={explanation} />);
+    cy.mount(<ErrorAlert errorTitle={errorTitle} errorExplanation={explanation} />);
     cy.get('[data-cy="error-alert"]').contains(errorTitle);
     cy.get('[data-cy="error-alert"]').should('not.contain', errorMessage);
     cy.get('[data-cy="error-alert"]').contains(explanation);
@@ -25,8 +29,8 @@ describe('ErrorAlert', () => {
     cy.mount(
       <ErrorAlert
         errorTitle={errorTitle}
-        explanation={explanation}
-        errorMessage={errorMessage.repeat(5)}
+        errorExplanation={explanation}
+        errorContent={errorMessage.repeat(5)}
       />
     );
     cy.get('[data-cy="error-alert"]').contains(errorTitle);

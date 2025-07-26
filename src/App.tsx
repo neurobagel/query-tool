@@ -568,8 +568,8 @@ function App() {
               {queryHasFailed && (
                 <ErrorAlert
                   errorTitle={queryErrorMapping[resultStatus].errorTitle}
-                  errorMessage={queryErrorMessage}
-                  explanation={queryErrorMapping[resultStatus].explanation}
+                  errorContent={queryErrorMessage}
+                  errorExplanation={queryErrorMapping[resultStatus].explanation}
                   severity={queryErrorMapping[resultStatus].errorLevel as AlertColor}
                 />
               )}

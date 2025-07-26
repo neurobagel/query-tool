@@ -1,26 +1,35 @@
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 import type { AlertColor } from '@mui/material/Alert';
 
 interface ErrorAlertProps {
   errorTitle: string;
-  explanation: string;
-  errorMessage?: string;
+  errorExplanation: string;
+  errorContent?: string;
   severity?: AlertColor;
 }
 
-function ErrorAlert({ errorTitle, explanation, errorMessage, severity }: ErrorAlertProps) {
+function ErrorAlert({ errorTitle, errorExplanation, errorContent, severity }: ErrorAlertProps) {
   return (
-    <Alert severity={severity} data-cy="error-alert">
+    <Alert
+      severity={severity}
+      data-cy="error-alert"
+      action={
+        <Button color="inherit" size="small" variant="contained">
+          Expand
+        </Button>
+      }
+    >
       <AlertTitle>{errorTitle}</AlertTitle>
 
       <Typography variant="body2" sx={{ marginBottom: 2 }}>
-        {explanation}
+        {errorExplanation}
       </Typography>
 
-      {errorMessage && (
+      {errorContent && (
         <Typography
           data-cy="error-container"
           component="pre"
@@ -39,7 +48,7 @@ function ErrorAlert({ errorTitle, explanation, errorMessage, severity }: ErrorAl
             overflow: 'auto',
           }}
         >
-          {errorMessage}
+          {errorContent}
         </Typography>
       )}
     </Alert>
@@ -47,7 +56,7 @@ function ErrorAlert({ errorTitle, explanation, errorMessage, severity }: ErrorAl
 }
 
 ErrorAlert.defaultProps = {
-  errorMessage: undefined,
+  errorContent: undefined,
   severity: 'error',
 };
 
