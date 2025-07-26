@@ -49,4 +49,22 @@ describe('ErrorAlert', () => {
       expect($el[0].scrollTop).to.be.greaterThan(0);
     });
   });
+
+  it('has a button to expand and collapse the error message and explanation', () => {
+    cy.mount(
+      <ErrorAlert
+        errorTitle={errorTitle}
+        errorExplanation={explanation}
+        errorContent={errorMessage}
+        severity="error"
+      />
+    );
+    cy.get('[data-cy="error-alert"]').contains('Expand');
+    cy.get('[data-cy="error-container"]').should('not.be.visible');
+    cy.get('[data-cy="error-alert"]').find('button').click();
+    cy.get('[data-cy="error-container"]').should('be.visible');
+    cy.get('[data-cy="error-alert"]').contains('Collapse');
+    cy.get('[data-cy="error-alert"]').find('button').click();
+    cy.get('[data-cy="error-container"]').should('not.be.visible');
+  });
 });
