@@ -14,20 +14,22 @@ interface ErrorAlertProps {
 
 function ErrorAlert({ errorTitle, errorExplanation, errorContent, severity }: ErrorAlertProps) {
   return (
-    <Alert
-      severity={severity}
-      data-cy="error-alert"
-      action={
-        <Button color="inherit" size="small" variant="contained">
-          Expand
-        </Button>
-      }
-    >
-      <AlertTitle>{errorTitle}</AlertTitle>
+    <>
+      <Alert
+        severity={severity}
+        data-cy="error-alert"
+        action={
+          <Button color="inherit" size="small" variant="contained">
+            Expand
+          </Button>
+        }
+      >
+        <AlertTitle>{errorTitle}</AlertTitle>
 
-      <Typography variant="body2" sx={{ marginBottom: 2 }}>
-        {errorExplanation}
-      </Typography>
+        <Typography variant="body2" sx={{ marginBottom: 2 }}>
+          {errorExplanation}
+        </Typography>
+      </Alert>
 
       {errorContent && (
         <Typography
@@ -51,7 +53,7 @@ function ErrorAlert({ errorTitle, errorExplanation, errorContent, severity }: Er
           {errorContent}
         </Typography>
       )}
-    </Alert>
+    </>
   );
 }
 
