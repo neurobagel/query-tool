@@ -15,7 +15,7 @@ describe('ErrorAlert', () => {
       />
     );
     cy.get('[data-cy="error-alert"]').contains(errorTitle);
-    cy.get('[data-cy="error-alert"]').contains(errorMessage);
+    cy.get('[data-cy="error-container"]').contains(errorMessage);
   });
 
   it('Works if no error message is provided', () => {
@@ -34,7 +34,7 @@ describe('ErrorAlert', () => {
       />
     );
     cy.get('[data-cy="error-alert"]').contains(errorTitle);
-    cy.get('[data-cy="error-alert"]').contains(errorMessage);
+    cy.get('[data-cy="error-container"]').contains(errorMessage);
 
     cy.get('[data-cy="error-container"]').should('have.css', 'overflow', 'auto');
 
