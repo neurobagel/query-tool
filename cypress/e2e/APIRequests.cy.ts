@@ -532,7 +532,8 @@ describe('Partially successful API query requests', () => {
   it.only('Shows a warning for nodes that failed to return any results', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get("[data-cy='error-alert']").should('contain', 'DidNotWorkNode');
+    cy.get("[data-cy='error-alert']").find('button').should('contain', 'Expand').click();
+    cy.get("[data-cy='error-container']").should('contain', 'DidNotWorkNode');
   });
 });
 
