@@ -461,7 +461,7 @@ function App() {
       explanation: 'Some nodes failed to respond. Please try again later.',
       errorLevel: 'warning',
     },
-    failure: {
+    fail: {
       errorTitle: 'Query Failed',
       explanation: 'Please check your query and try again.',
       errorLevel: 'error',

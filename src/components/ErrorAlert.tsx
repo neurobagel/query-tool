@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 
 import type { AlertColor } from '@mui/material/Alert';
+import CodeBlock from './CodeBlock';
 
 interface ErrorAlertProps {
   errorTitle: string;
@@ -35,28 +36,7 @@ function ErrorAlert({ errorTitle, errorExplanation, errorContent, severity }: Er
       </Alert>
 
       <Collapse in={open}>
-        {errorContent && (
-          <Typography
-            data-cy="error-container"
-            component="pre"
-            variant="body2"
-            sx={{
-              fontFamily: 'monospace',
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-              backgroundColor: 'rgba(0, 0, 0, 0.04)',
-              padding: 1,
-              borderRadius: 1,
-              margin: 0,
-              fontSize: '0.6rem',
-              lineHeight: 1.4,
-              maxHeight: '30vh',
-              overflow: 'auto',
-            }}
-          >
-            {errorContent}
-          </Typography>
-        )}
+        {errorContent && <CodeBlock code={errorContent} data-cy="error-container" />}
       </Collapse>
     </>
   );
