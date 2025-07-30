@@ -25,13 +25,24 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
     setShowPopover(false);
     setAnchorEl(null);
   };
-  return (
-    <div className="flex items-center rounded bg-gray-200 px-2 py-1 text-sm">
-      <code className="flex-grow text-black">{code}</code>
-      <IconButton color="primary" onClick={handleCopyClick}>
-        <ContentCopyIcon />
-      </IconButton>
 
+  return (
+    <div className="relative overflow-hidden rounded bg-gray-200 text-sm">
+      <pre
+        data-cy="error-container"
+        className="overflow-auto whitespace-pre-wrap break-words px-2 py-1 pr-12 text-black"
+        style={{ maxHeight: '10vh', width: '100%', boxSizing: 'border-box', margin: 0 }}
+      >
+        {code}
+      </pre>
+      <IconButton
+        color="primary"
+        onClick={handleCopyClick}
+        className="absolute right-4 top-2"
+        size="small"
+      >
+        <ContentCopyIcon fontSize="small" />
+      </IconButton>
       <Popover
         open={showPopover}
         anchorEl={anchorEl}

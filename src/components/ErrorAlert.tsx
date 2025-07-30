@@ -35,9 +35,7 @@ function ErrorAlert({ errorTitle, errorExplanation, errorContent, severity }: Er
         </Collapse>
       </Alert>
 
-      <Collapse in={open}>
-        {errorContent && <CodeBlock code={errorContent} data-cy="error-container" />}
-      </Collapse>
+      <Collapse in={open}>{errorContent && <CodeBlock code={errorContent} />}</Collapse>
     </>
   );
 }

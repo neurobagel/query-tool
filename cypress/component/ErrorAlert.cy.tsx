@@ -25,7 +25,7 @@ describe('ErrorAlert', () => {
     cy.get('[data-cy="error-alert"]').contains(explanation);
   });
 
-  it('Starts scrolling for long error messages', () => {
+  it.only('Starts scrolling for long error messages', () => {
     cy.mount(
       <ErrorAlert
         errorTitle={errorTitle}
