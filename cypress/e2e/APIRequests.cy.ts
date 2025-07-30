@@ -596,7 +596,7 @@ describe('Failed API query requests', () => {
   it('Shows the error alert', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('[data-cy="error-alert"]').should('contain', 'wrong');
+    cy.get('[data-cy="error-alert"]').should('contain', 'Query Failed');
     cy.get('[data-cy="result-container"]')
       .should('contain', 'Query failed')
       .and('contain', 'Please try again');

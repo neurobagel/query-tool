@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IconButton, Popover, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import NBTheme from '../theme';
 
 interface CodeBlockProps {
   code?: string;
@@ -45,26 +44,15 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
           position: 'absolute',
           top: 0,
           right: 16,
-          color: NBTheme.palette.primary.main,
         }}
       >
         <ContentCopyIcon fontSize="small" />
       </IconButton>
       <Popover open={showPopover} anchorEl={buttonRef.current} onClose={handleClose}>
-        <Typography
-          className="rounded px-2 py-1 text-sm text-white shadow"
-          sx={{ backgroundColor: NBTheme.palette.primary.main }}
-        >
-          Copied!
-        </Typography>
+        <Typography className="rounded px-2 py-1 text-sm text-white shadow">Copied!</Typography>
       </Popover>
     </div>
   );
 }
-
-// TODO: remove this deprecated way of defining default props
-CodeBlock.defaultProps = {
-  code: '',
-};
 
 export default CodeBlock;

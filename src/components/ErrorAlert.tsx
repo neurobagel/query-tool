@@ -15,7 +15,12 @@ interface ErrorAlertProps {
   severity?: AlertColor;
 }
 
-function ErrorAlert({ errorTitle, errorExplanation, errorContent, severity }: ErrorAlertProps) {
+function ErrorAlert({
+  errorTitle,
+  errorExplanation,
+  errorContent = undefined,
+  severity = 'error',
+}: ErrorAlertProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -39,10 +44,5 @@ function ErrorAlert({ errorTitle, errorExplanation, errorContent, severity }: Er
     </>
   );
 }
-
-ErrorAlert.defaultProps = {
-  errorContent: undefined,
-  severity: 'error',
-};
 
 export default ErrorAlert;
