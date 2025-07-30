@@ -8,12 +8,11 @@ interface CodeBlockProps {
 }
 
 function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [showPopover, setShowPopover] = useState(false);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
-  const handleCopyClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCopyClick = async () => {
     await navigator.clipboard.writeText(code);
-    setAnchorEl(event.currentTarget);
     setShowPopover(true);
 
     setTimeout(() => {
@@ -23,11 +22,13 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
 
   const handleClose = () => {
     setShowPopover(false);
-    setAnchorEl(null);
   };
 
   return (
-    <div className="relative overflow-hidden rounded bg-gray-200 text-sm">
+    <div
+      className="relative rounded bg-gray-200 text-sm"
+      style={{ display: 'inline-block', minWidth: '100%' }}
+    >
       <pre
         data-cy="error-container"
         className="overflow-auto whitespace-pre-wrap break-words px-2 py-1 pr-12 text-black"
@@ -36,22 +37,20 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
         {code}
       </pre>
       <IconButton
+        ref={buttonRef}
         color="primary"
         onClick={handleCopyClick}
-        className="absolute right-4 top-2"
         size="small"
+        sx={{
+          position: 'absolute',
+          top: 0,
+          right: 16,
+          color: NBTheme.palette.primary.main,
+        }}
       >
         <ContentCopyIcon fontSize="small" />
       </IconButton>
-      <Popover
-        open={showPopover}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
+      <Popover open={showPopover} anchorEl={buttonRef.current} onClose={handleClose}>
         <Typography
           className="rounded px-2 py-1 text-sm text-white shadow"
           sx={{ backgroundColor: NBTheme.palette.primary.main }}
@@ -63,8 +62,9 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
   );
 }
 
+// TODO: remove this deprecated way of defining default props
 CodeBlock.defaultProps = {
-  code: 'Sample code content',
+  code: '',
 };
 
 export default CodeBlock;
