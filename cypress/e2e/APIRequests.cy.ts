@@ -474,7 +474,7 @@ describe('Regression Tests', () => {
   });
 });
 
-describe.only('Partially successful API query requests', () => {
+describe('Partially successful API query requests', () => {
   beforeEach(() => {
     cy.intercept(
       {
