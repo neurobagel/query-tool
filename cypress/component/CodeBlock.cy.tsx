@@ -1,11 +1,12 @@
 import CodeBlock from '../../src/components/CodeBlock';
 
 const props = {
-    codeExample : JSON.stringify(
-  { error: [{ key: 'value' }, { key: 'value' }, { key: 'value' }] },
-  null,
-  2
-)}
+  codeExample: JSON.stringify(
+    { error: [{ key: 'value' }, { key: 'value' }, { key: 'value' }] },
+    null,
+    2
+  ),
+};
 
 describe('CodeBlock', () => {
   beforeEach(() => {
@@ -16,13 +17,13 @@ describe('CodeBlock', () => {
   });
 
   it('renders the code block', () => {
-    cy.mount(<CodeBlock code={codeExample} />);
+    cy.mount(<CodeBlock code={props.codeExample} />);
 
     cy.get('[data-cy="error-container"]').contains('error');
   });
 
   it('displays the copy icon button', () => {
-    cy.mount(<CodeBlock code={codeExample} />);
+    cy.mount(<CodeBlock code={props.codeExample} />);
 
     cy.get('[data-testid="ContentCopyIcon"]').parent('button').should('exist').should('be.visible');
   });
@@ -34,7 +35,7 @@ describe('CodeBlock', () => {
   });
 
   it('shows popover when copy button is clicked', () => {
-    cy.mount(<CodeBlock code={codeExample} />);
+    cy.mount(<CodeBlock code={props.codeExample} />);
 
     cy.contains('Copied!').should('not.exist');
     cy.get('[data-testid="ContentCopyIcon"]').parent('button').click();

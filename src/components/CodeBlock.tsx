@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IconButton, Popover, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import NBTheme from '../theme';
+
 interface CodeBlockProps {
   code?: string;
 }
@@ -31,7 +32,7 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
       <pre
         data-cy="error-container"
         className="overflow-auto whitespace-pre-wrap break-words px-2 py-1 pr-12 text-black"
-        sx={{ maxHeight: '10vh', width: '100%', boxSizing: 'border-box', margin: 0 }}
+        style={{ maxHeight: '10vh', width: '100%', boxSizing: 'border-box', margin: 0 }}
       >
         {code}
       </pre>
@@ -44,12 +45,18 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
           position: 'absolute',
           top: 0,
           right: 16,
+          color: NBTheme.palette.primary.main,
         }}
       >
         <ContentCopyIcon fontSize="small" />
       </IconButton>
       <Popover open={showPopover} anchorEl={buttonRef.current} onClose={handleClose}>
-        <Typography className="rounded px-2 py-1 text-sm text-white shadow" sx={{ backgroundColor: NBTheme.palette.primary.main }}>Copied!</Typography>
+        <Typography
+          className="rounded px-2 py-1 text-sm text-white shadow"
+          sx={{ backgroundColor: NBTheme.palette.primary.main }}
+        >
+          Copied!
+        </Typography>
       </Popover>
     </div>
   );
