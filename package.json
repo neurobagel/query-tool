@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "type:check": "tsc --noEmit --skipLibCheck",
     "lint:check:file": "eslint --report-unused-disable-directives --max-warnings=0 --ext ts,tsx",
     "lint:check": "eslint --report-unused-disable-directives --max-warnings=0 --ext ts,tsx .",
     "lint:fix:file": "eslint --fix --ext ts,tsx",
@@ -15,7 +16,9 @@
     "format:fix": "prettier --write .",
     "format:check:file": "prettier --check",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:component": "cypress run --component",
+    "test:e2e": "cypress run --e2e"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.4.0",
