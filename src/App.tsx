@@ -562,7 +562,7 @@ function App() {
           }
         >
           {loading ? (
-            <img src={logo} alt="Logo" className="max-h-20 animate-bounce" />
+            <img src={logo} alt="Logo " className="max-h-20 animate-bounce" />
           ) : (
             <>
               {queryHasFailed && (
@@ -570,7 +570,7 @@ function App() {
                   errorTitle={queryErrorMapping[resultStatus].errorTitle}
                   errorContent={queryErrorMessage}
                   errorExplanation={queryErrorMapping[resultStatus].explanation}
-                  severity={queryErrorMapping[resultStatus].errorLevel as AlertColor}
+                  severity={queryErrorMapping[resultStatus].severity as AlertColor}
                 />
               )}
               <ResultContainer
