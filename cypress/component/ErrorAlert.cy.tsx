@@ -1,9 +1,11 @@
 import ErrorAlert from '../../src/components/ErrorAlert';
 import { failedQueryResponse } from '../fixtures/mocked-responses';
 
-const errorTitle = 'errorTitle';
-const explanation = 'something went wrong.';
-const errorMessage = JSON.stringify(failedQueryResponse, null, 2);
+const props = {
+    errorTitle : 'errorTitle',
+    explanation : 'something went wrong.',
+    errorMessage : JSON.stringify(failedQueryResponse, null, 2)
+}
 
 describe('ErrorAlert', () => {
   it('Displays the error title and message', () => {

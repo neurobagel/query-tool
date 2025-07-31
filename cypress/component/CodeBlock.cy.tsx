@@ -1,10 +1,11 @@
 import CodeBlock from '../../src/components/CodeBlock';
 
-const codeExample = JSON.stringify(
+const props = {
+    codeExample : JSON.stringify(
   { error: [{ key: 'value' }, { key: 'value' }, { key: 'value' }] },
   null,
   2
-);
+)}
 
 describe('CodeBlock', () => {
   beforeEach(() => {
