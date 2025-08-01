@@ -28,5 +28,8 @@ module.exports = {
     */
     '@stylistic/indent': 'off',
     '@stylistic/comma-dangle': 'off',
+    // Default props are deprecated for functional components
+    // TODO: consider replacing the eslint react library with something more modern like https://eslint-react.xyz/
+    'react/require-default-props': 'off',
   },
 };

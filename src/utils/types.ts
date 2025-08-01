@@ -18,20 +18,21 @@ export interface NodeError {
   error: string;
 }
 
-export interface RetrievedAttributeOption {
-  responses: {
-    [key: string]: AttributeOption[];
-  };
+export interface BaseAPIResponse {
   nodes_response_status: string;
   errors: NodeError[];
 }
 
-export interface RetrievedPipelineVersions {
+export interface RetrievedAttributeOption extends BaseAPIResponse {
+  responses: {
+    [key: string]: AttributeOption[];
+  };
+}
+
+export interface RetrievedPipelineVersions extends BaseAPIResponse {
   responses: {
     [key: string]: string[];
   };
-  nodes_response_status: string;
-  errors: NodeError[];
 }
 
 export interface Pipelines {
@@ -65,10 +66,8 @@ export interface Result {
   available_pipelines: Pipelines;
 }
 
-export interface QueryResponse {
-  errors: NodeError[];
+export interface QueryResponse extends BaseAPIResponse {
   responses: Result[];
-  nodes_response_status: string;
 }
 
 export interface CategoricalFieldProps {

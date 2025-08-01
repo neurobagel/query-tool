@@ -109,10 +109,11 @@ describe('App', () => {
     cy.get('[data-cy="filter-toggle-button"]').should('be.visible');
     cy.get('[data-cy="query-form-container"]').should('be.visible');
     cy.contains('[data-cy="filter-toggle-button"]', 'Hide Query Form').should('exist');
-    cy.get('[data-cy="filter-toggle-button"]').click();
+    // The node error popups may hide the button, so we force the click as a workaround
+    cy.get('[data-cy="filter-toggle-button"]').click({ force: true });
     cy.get('[data-cy="query-form-container"]').should('not.exist');
     cy.contains('[data-cy="filter-toggle-button"]', 'Show Query Form').should('exist');
-    cy.get('[data-cy="filter-toggle-button"]').click();
+    cy.get('[data-cy="filter-toggle-button"]').click({ force: true });
     cy.get('[data-cy="query-form-container"]').should('be.visible');
     cy.contains('[data-cy="filter-toggle-button"]', 'Hide Query Form').should('exist');
     cy.viewport(1200, 800); // Desktop viewport

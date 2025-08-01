@@ -31,12 +31,12 @@ describe('GetDataDialog', () => {
     cy.get('button').contains('docker').should('exist');
     cy.get('button').contains('singularity').should('exist');
 
-    cy.get('code').should('contain', 'docker run');
+    cy.get('pre').should('contain', 'docker run');
 
     cy.get('button').contains('singularity').click();
-    cy.get('code').should('contain', 'singularity run');
+    cy.get('pre').should('contain', 'singularity run');
 
     cy.get('button').contains('docker').click();
-    cy.get('code').should('contain', 'docker run');
+    cy.get('pre').should('contain', 'docker run');
   });
 });
