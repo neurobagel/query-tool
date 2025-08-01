@@ -596,9 +596,10 @@ describe('Failed API query requests', () => {
   it('Shows the error alert', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
-    cy.get('[data-cy="error-alert"]').should('contain', 'Query Failed');
-    cy.get('[data-cy="result-container"]')
-      .should('contain', 'Query failed')
-      .and('contain', 'Please try again');
+    cy.get('[data-cy="error-alert"]').should('contain', 'No nodes responded');
+    cy.get('[data-cy="result-container"]').should(
+      'contain',
+      'We were unable to establish a connection to the Neurobagel server'
+    );
   });
 });

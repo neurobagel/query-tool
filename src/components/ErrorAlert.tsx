@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Typography from '@mui/material/Typography';
@@ -10,7 +10,7 @@ import CodeBlock from './CodeBlock';
 
 interface ErrorAlertProps {
   errorTitle: string;
-  errorExplanation: string;
+  errorExplanation: React.ReactNode;
   errorContent?: string;
   severity?: AlertColor;
 }

@@ -449,21 +449,43 @@ function App() {
   const queryHasFailed = resultStatus !== 'success';
   const queryErrorMessage = result ? JSON.stringify(result.errors, null, 2) : '';
   const queryErrorMapping: {
-    [key: string]: { errorTitle: string; explanation: string; severity: string };
+    [key: string]: { errorTitle: string; explanation: React.ReactNode; severity: string };
   } = {
     'network error': {
-      errorTitle: 'Network Error',
-      explanation: 'Please check your internet connection and try again.',
+      errorTitle: 'Unable to reach Neurobagel server',
+      explanation: (
+        <>
+          We were unable to establish a connection to the Neurobagel server. This could indicate a
+          network issue or a temporary problem with the server. Please check our internet connection
+          and the Neurobagel status page at
+          <a href="https://status.neurobagel.org/">https://status.neurobagel.org/</a> and then try
+          again.
+        </>
+      ),
       severity: 'error',
     },
     'partial success': {
-      errorTitle: 'Partial Success',
-      explanation: 'Some nodes failed to respond. Please try again later.',
+      errorTitle: 'Only some nodes responded',
+      explanation: (
+        <>
+          Some of the selected nodes did not respond to the query. This could be a temporary issue,
+          so a good idea is to try running your query again. If the issue persists, copy the error
+          message below and open an issue on{' '}
+          <a href="https://github.com/neurobagel/query-tool/issues">our GitHub page</a>.
+        </>
+      ),
       severity: 'warning',
     },
     fail: {
-      errorTitle: 'Query Failed',
-      explanation: 'Please check your query and try again.',
+      errorTitle: 'No nodes responded',
+      explanation: (
+        <>
+          The query failed because none of the selected nodes responded. This could be a temporary
+          issue. Try to run your query again. If the issue persists, copy the error message below
+          and open an issue on{' '}
+          <a href="https://github.com/neurobagel/query-tool/issues/">our GitHub page</a>.
+        </>
+      ),
       severity: 'error',
     },
   };
@@ -573,11 +595,13 @@ function App() {
                   severity={queryErrorMapping[resultStatus].severity as AlertColor}
                 />
               )}
-              <ResultContainer
-                response={sortedResults || null}
-                diagnosisOptions={diagnosisOptions}
-                assessmentOptions={assessmentOptions}
-              />
+              {resultStatus !== 'network error' && resultStatus !== 'fail' && (
+                <ResultContainer
+                  response={sortedResults || null}
+                  diagnosisOptions={diagnosisOptions}
+                  assessmentOptions={assessmentOptions}
+                />
+              )}
             </>
           )}
         </div>
