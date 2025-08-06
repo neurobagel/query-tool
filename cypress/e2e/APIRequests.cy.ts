@@ -597,6 +597,6 @@ describe('Failed API query requests', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="error-alert"]').should('contain', 'No nodes responded');
-    cy.get('[data-cy="result-container"]').should('not.exist');
+    cy.get('[data-cy="failed-result-container-view"]').should('not.exist');
   });
 });

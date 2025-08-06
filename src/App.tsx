@@ -595,13 +595,11 @@ function App() {
                   severity={queryErrorMapping[resultStatus].severity as AlertColor}
                 />
               )}
-              {resultStatus !== 'network error' && resultStatus !== 'fail' && (
-                <ResultContainer
-                  response={sortedResults || null}
-                  diagnosisOptions={diagnosisOptions}
-                  assessmentOptions={assessmentOptions}
-                />
-              )}
+              <ResultContainer
+                response={sortedResults || null}
+                diagnosisOptions={diagnosisOptions}
+                assessmentOptions={assessmentOptions}
+              />
             </>
           )}
         </div>
