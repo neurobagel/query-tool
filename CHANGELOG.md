@@ -1,3 +1,26 @@
+# v0.11.0 (Wed Aug 06 2025)
+
+#### 🚀 Enhancements
+
+- [ENH] Add error alert component to display errors [#592](https://github.com/neurobagel/query-tool/pull/592) ([@surchs](https://github.com/surchs))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Added link to docs on the error boundary [#546](https://github.com/neurobagel/query-tool/pull/546) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [MNT] Ensure typescript checks run before commit [#600](https://github.com/neurobagel/query-tool/pull/600) ([@surchs](https://github.com/surchs))
+- [FIX] linting scripts for lintstaged [#591](https://github.com/neurobagel/query-tool/pull/591) ([@surchs](https://github.com/surchs))
+- [FIX] Fixed the query result examples missing SNOMED labels bug [#557](https://github.com/neurobagel/query-tool/pull/557) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.10.1 (Tue Apr 01 2025)
 
 #### 🏠 Internal
