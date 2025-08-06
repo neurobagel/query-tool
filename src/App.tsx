@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, Grow, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
+import type { AlertColor } from '@mui/material/Alert';
 import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'notistack';
 import { useAuth0 } from '@auth0/auth0-react';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,7 +18,6 @@ import {
   FieldInput,
   FieldInputOption,
   Pipelines,
-  NodeError,
   QueryResponse,
   Notification,
 } from './utils/types';
@@ -27,6 +27,7 @@ import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
+import ErrorAlert from './components/ErrorAlert';
 import './App.css';
 import logo from './assets/logo.png';
 
@@ -47,6 +48,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [result, setResult] = useState<QueryResponse | null>(null);
+  const [resultStatus, setResultStatus] = useState<string>('success');
 
   const [minAge, setMinAge] = useState<number | null>(null);
   const [maxAge, setMaxAge] = useState<number | null>(null);
@@ -437,33 +439,56 @@ function App() {
         },
       });
       setResult(response.data);
-      switch (response.data.nodes_response_status) {
-        case 'partial success': {
-          response.data.errors.forEach((error: NodeError) => {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'warning',
-                message: `${error.node_name} failed to respond`,
-              },
-            ]);
-          });
-          break;
-        }
-        case 'fail': {
-          enqueueSnackbar('Error: All nodes failed to respond', { variant: 'error', action });
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+      setResultStatus(response.data.nodes_response_status);
     } catch {
-      enqueueSnackbar('Failed to retrieve results', { variant: 'error', action });
+      setResultStatus('network error');
     }
     setLoading(false);
   }
+
+  const queryHasFailed = resultStatus !== 'success';
+  const queryErrorMessage = result ? JSON.stringify(result.errors, null, 2) : '';
+  const queryErrorMapping: {
+    [key: string]: { errorTitle: string; explanation: React.ReactNode; severity: string };
+  } = {
+    'network error': {
+      errorTitle: 'Unable to reach Neurobagel server',
+      explanation: (
+        <>
+          We were unable to establish a connection to the Neurobagel server. This could indicate a
+          network issue or a temporary problem with the server. Please check our internet connection
+          and the Neurobagel status page at
+          <a href="https://status.neurobagel.org/">https://status.neurobagel.org/</a> and then try
+          again.
+        </>
+      ),
+      severity: 'error',
+    },
+    'partial success': {
+      errorTitle: 'Only some nodes responded',
+      explanation: (
+        <>
+          Some of the selected nodes did not respond to the query. This could be a temporary issue,
+          so a good idea is to try running your query again. If the issue persists, copy the error
+          message below and open an issue on{' '}
+          <a href="https://github.com/neurobagel/query-tool/issues">our GitHub page</a>.
+        </>
+      ),
+      severity: 'warning',
+    },
+    fail: {
+      errorTitle: 'No nodes responded',
+      explanation: (
+        <>
+          The query failed because none of the selected nodes responded. This could be a temporary
+          issue. Try to run your query again. If the issue persists, copy the error message below
+          and open an issue on{' '}
+          <a href="https://github.com/neurobagel/query-tool/issues/">our GitHub page</a>.
+        </>
+      ),
+      severity: 'error',
+    },
+  };
 
   return (
     <>
@@ -519,6 +544,7 @@ function App() {
             </Button>
           </div>
         )}
+
         {(isQueryFormOpen || !isSmallViewport) && (
           <div data-cy="query-form-container" className="min-w-[380px] max-w-sm flex-1">
             <QueryForm
@@ -558,13 +584,23 @@ function App() {
           }
         >
           {loading ? (
-            <img src={logo} alt="Logo" className="max-h-20 animate-bounce" />
+            <img src={logo} alt="Logo " className="max-h-20 animate-bounce" />
           ) : (
-            <ResultContainer
-              response={sortedResults || null}
-              diagnosisOptions={diagnosisOptions}
-              assessmentOptions={assessmentOptions}
-            />
+            <>
+              {queryHasFailed && (
+                <ErrorAlert
+                  errorTitle={queryErrorMapping[resultStatus].errorTitle}
+                  errorContent={queryErrorMessage}
+                  errorExplanation={queryErrorMapping[resultStatus].explanation}
+                  severity={queryErrorMapping[resultStatus].severity as AlertColor}
+                />
+              )}
+              <ResultContainer
+                response={sortedResults || null}
+                diagnosisOptions={diagnosisOptions}
+                assessmentOptions={assessmentOptions}
+              />
+            </>
           )}
         </div>
       </div>
