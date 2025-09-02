@@ -36,10 +36,8 @@ const props = {
   maxAge: null,
   sex: null,
   diagnosis: null,
-  isControl: false,
   minNumImagingSessions: null,
   minNumPhenotypicSessions: null,
-  setIsControl: () => {},
   assessmentTool: null,
   imagingModality: null,
   pipelineVersion: null,
@@ -65,10 +63,8 @@ describe('QueryForm', () => {
         maxAge={props.maxAge}
         sex={props.sex}
         diagnosis={props.diagnosis}
-        isControl={props.isControl}
         minNumImagingSessions={props.minNumImagingSessions}
         minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
         pipelineVersion={props.pipelineVersion}
@@ -86,7 +82,6 @@ describe('QueryForm', () => {
     cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Sex-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Diagnosis-categorical-field"]').should('be.visible');
-    cy.get('[data-cy="healthy-control-checkbox"]').should('be.visible');
     cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').should('be.visible');
     cy.get('[data-cy="Minimum number of phenotypic sessions-continuous-field"]').should(
       'be.visible'
@@ -109,10 +104,8 @@ describe('QueryForm', () => {
         maxAge={props.maxAge}
         sex={props.sex}
         diagnosis={props.diagnosis}
-        isControl={props.isControl}
         minNumImagingSessions={props.minNumImagingSessions}
         minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
         pipelineVersion={props.pipelineVersion}
@@ -140,10 +133,8 @@ describe('QueryForm', () => {
         maxAge={props.maxAge}
         sex={props.sex}
         diagnosis={props.diagnosis}
-        isControl={props.isControl}
         minNumImagingSessions={props.minNumImagingSessions}
         minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
         pipelineVersion={props.pipelineVersion}
@@ -174,10 +165,8 @@ describe('QueryForm', () => {
         maxAge={props.maxAge}
         sex={props.sex}
         diagnosis={props.diagnosis}
-        isControl={props.isControl}
         minNumImagingSessions={props.minNumImagingSessions}
         minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
         pipelineVersion={props.pipelineVersion}
@@ -204,10 +193,8 @@ describe('QueryForm', () => {
         maxAge={props.maxAge}
         sex={props.sex}
         diagnosis={props.diagnosis}
-        isControl={props.isControl}
         minNumImagingSessions={props.minNumImagingSessions}
         minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        setIsControl={props.setIsControl}
         assessmentTool={props.assessmentTool}
         imagingModality={props.imagingModality}
         pipelineVersion={props.pipelineVersion}

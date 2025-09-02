@@ -54,7 +54,6 @@ function App() {
   const [maxAge, setMaxAge] = useState<number | null>(null);
   const [sex, setSex] = useState<FieldInput>(null);
   const [diagnosis, setDiagnosis] = useState<FieldInput>(null);
-  const [isControl, setIsControl] = useState<boolean>(false);
   const [minNumImagingSessions, setMinNumSessions] = useState<number | null>(null);
   const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<number | null>(null);
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
@@ -396,8 +395,7 @@ function App() {
     queryParams.set('min_age', minAge ? minAge.toString() : '');
     queryParams.set('max_age', maxAge ? maxAge.toString() : '');
     setQueryParam('sex', sex, queryParams);
-    setQueryParam('diagnosis', isControl ? null : diagnosis, queryParams);
-    queryParams.set('is_control', isControl ? 'true' : '');
+    setQueryParam('diagnosis', diagnosis, queryParams);
     queryParams.set(
       'min_num_imaging_sessions',
       minNumImagingSessions ? minNumImagingSessions.toString() : ''
@@ -556,10 +554,8 @@ function App() {
               maxAge={maxAge}
               sex={sex}
               diagnosis={diagnosis}
-              isControl={isControl}
               minNumImagingSessions={minNumImagingSessions}
               minNumPhenotypicSessions={minNumPhenotypicSessions}
-              setIsControl={setIsControl}
               assessmentTool={assessmentTool}
               imagingModality={imagingModality}
               pipelineVersion={pipelineVersion}

@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  Button,
-  FormControlLabel,
-  Checkbox,
-  CircularProgress,
-  FormHelperText,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Button, CircularProgress, FormHelperText, Tooltip, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { sexes, modalities } from '../utils/constants';
 import {
@@ -30,10 +22,8 @@ function QueryForm({
   maxAge,
   sex,
   diagnosis,
-  isControl,
   minNumImagingSessions,
   minNumPhenotypicSessions,
-  setIsControl,
   assessmentTool,
   imagingModality,
   pipelineVersion,
@@ -52,8 +42,6 @@ function QueryForm({
   maxAge: number | null;
   sex: FieldInput;
   diagnosis: FieldInput;
-  isControl: boolean;
-  setIsControl: (value: boolean) => void;
   minNumImagingSessions: number | null;
   minNumPhenotypicSessions: number | null;
   assessmentTool: FieldInput;
@@ -142,27 +130,16 @@ function QueryForm({
         />
       </div>
       <div>
-        <div className="flex flex-row items-center gap-3">
-          <div className="flex-1">
-            <CategoricalField
-              label="Diagnosis"
-              options={diagnosisOptions.map((d) => ({
-                label: d.Label,
-                id: d.TermURL,
-              }))}
-              onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-              inputValue={isControl ? null : diagnosis}
-              disabled={isControl}
-            />
-          </div>
-          <div className="flex-1">
-            <FormControlLabel
-              data-cy="healthy-control-checkbox"
-              control={<Checkbox name="healthyControl" />}
-              label="Healthy Control"
-              onChange={() => setIsControl(!isControl)}
-            />
-          </div>
+        <div>
+          <CategoricalField
+            label="Diagnosis"
+            options={diagnosisOptions.map((d) => ({
+              label: d.Label,
+              id: d.TermURL,
+            }))}
+            onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+            inputValue={diagnosis}
+          />
         </div>
       </div>
       <div>

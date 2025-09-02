@@ -54,23 +54,6 @@ describe('App', () => {
       "Parkinson's disease"
     );
   });
-
-  it('Disables the diagnosis field if healthy control checkbox is checked', () => {
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should('not.be.disabled');
-    cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
-      'have.value',
-      "Parkinson's disease"
-    );
-    cy.get('[data-cy="healthy-control-checkbox"]').click();
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should('be.disabled');
-    cy.get('[data-cy="healthy-control-checkbox"]').click();
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should('not.be.disabled');
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
-      'have.value',
-      "Parkinson's disease"
-    );
-  });
   it('Enables the pipeline version field once a pipeline name is selected', () => {
     cy.intercept(
       {
