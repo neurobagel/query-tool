@@ -187,7 +187,6 @@ To define a cohort, set your inclusion criteria using the following:
 - Age: Minimum and/or maximum age (in years) of participant that should be included in the results.
 - Sex: Sex of participant that should be included in the results.
 - Diagnosis: Diagnosis of participant that should be included in the results
-- Healthy control: Whether healthy participants should be included in the results. Once healthy control checkbox is selected, diagnosis field will be disabled since a participant cannot be both a healthy control and have a diagnosis.
 - Minimum number of imaging sessions: Minimum number of imaging sessions that participant should have to be included in the results.
 - Minimum number of phenotypic sessions: Minimum number of phenotypic sessions that participant should have to be included in the results.
 - Assessment tool: Non-imaging assessment completed by participant that should be included in the results.
