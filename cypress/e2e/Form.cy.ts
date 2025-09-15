@@ -1,4 +1,5 @@
 import {
+  nodeOptions,
   diagnosisOptions,
   pipelineOptions,
   pipelineVersionOptions,
@@ -6,6 +7,13 @@ import {
 
 describe('App', () => {
   beforeEach(() => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes',
+      },
+      nodeOptions
+    ).as('getNodes');
     cy.intercept(
       {
         method: 'GET',
@@ -21,7 +29,7 @@ describe('App', () => {
       pipelineOptions
     ).as('getPipelineOptions');
     cy.visit('/');
-    cy.wait(['@getDiagnosisOptions', '@getPipelineOptions']);
+    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getPipelineOptions']);
 
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
@@ -102,5 +110,29 @@ describe('App', () => {
     cy.viewport(1200, 800); // Desktop viewport
     cy.get('[data-cy="filter-toggle-button"]').should('not.exist');
     cy.get('[data-cy="query-form-container"]').should('be.visible');
+  });
+  it('Selects different values for nodes field', () => {
+    cy.get('[data-cy="Neurobagel graph-categorical-field"] input').type(
+      'OpenNeur{downarrow}{enter}'
+    );
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('contain', 'OpenNeuro');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"] input').type('Quebec{downarrow}{enter}');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+      .should('contain', 'Quebec')
+      .and('contain', 'OpenNeuro');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"] input').type('All{downarrow}{enter}');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+      .should('not.contain', 'Quebec')
+      .and('not.contain', 'OpenNeuro');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('contain', 'All');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"] input').type(
+      'OpenNeur{downarrow}{enter}'
+    );
+    cy.get('[data-cy="Neurobagel graph-categorical-field"] input').type('Quebec{downarrow}{enter}');
+    cy.get('.MuiAutocomplete-clearIndicator').click();
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+      .should('not.contain', 'Quebec')
+      .and('not.contain', 'OpenNeuro');
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('contain', 'All');
   });
 });

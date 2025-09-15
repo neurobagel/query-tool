@@ -306,15 +306,21 @@ function App() {
     switch (fieldLabel) {
       case 'Neurobagel graph':
         if (Array.isArray(value)) {
-          // If no option is selected default to All
+          // When “All” is selected, override any other options
+          if (value.length > 1 && value[value.length - 1].label === 'All') {
+            setSearchParams({ node: ['All'] });
+            break;
+          }
+
+          // default to “All” when nodes are cleared
           if (value.length === 0) {
             setSearchParams({ node: ['All'] });
-            // If any option beside All is selected, remove All
-          } else if (value.length > 1) {
-            setSearchParams({ node: value.filter((n) => n.label !== 'All').map((n) => n.label) });
-          } else {
-            setSearchParams({ node: value.map((n) => n.label) });
+            break;
           }
+
+          // strip "All" from the list if there are other options selected
+          const withoutAll = value.filter((n) => n.label !== 'All').map((n) => n.label);
+          setSearchParams({ node: withoutAll });
         }
         break;
       case 'Sex':
