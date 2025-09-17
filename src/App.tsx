@@ -306,7 +306,7 @@ function App() {
     switch (fieldLabel) {
       case 'Neurobagel graph':
         if (Array.isArray(value)) {
-          // When “All” is selected, override any other options
+          // When “All” is selected after some other nodes were already selected, strip all other options
           if (value.length > 1 && value[value.length - 1].label === 'All') {
             setSearchParams({ node: ['All'] });
             break;
@@ -318,7 +318,7 @@ function App() {
             break;
           }
 
-          // Since "All" is the default, we need to stip it from the list when other options selected
+          // Since "All" is the default, we need to strip it from the list when other options are selected
           const withoutAll = value.filter((n) => n.label !== 'All').map((n) => n.label);
           setSearchParams({ node: withoutAll });
         }
