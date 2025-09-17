@@ -111,7 +111,7 @@ describe('App', () => {
     cy.get('[data-cy="filter-toggle-button"]').should('not.exist');
     cy.get('[data-cy="query-form-container"]').should('be.visible');
   });
-  it('Selects different values for nodes field', () => {
+  it('Selects different nodes in the nodes field', () => {
     cy.get('[data-cy="Neurobagel graph-categorical-field"] input').type(
       'OpenNeur{downarrow}{enter}'
     );
