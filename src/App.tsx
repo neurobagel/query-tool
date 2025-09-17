@@ -305,6 +305,9 @@ function App() {
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
       case 'Neurobagel graph':
+        // Cases are to identify whether "All" was
+        // 1. explicitly selected (by the user) i.e., "All" is at the end of the array
+        // 2. selected by default on startup or when the field is cleared i.e., "All" is the only option in the array
         if (Array.isArray(value)) {
           // When “All” is selected after some other nodes were already selected, strip all other options
           if (value.length > 1 && value[value.length - 1].label === 'All') {
@@ -318,7 +321,7 @@ function App() {
             break;
           }
 
-          // Since "All" is the default, we need to strip it from the list when other options are selected
+          // Since "All" is the default, we need to strip "All" from the list when any other option is selected
           const withoutAll = value.filter((n) => n.label !== 'All').map((n) => n.label);
           setSearchParams({ node: withoutAll });
         }
