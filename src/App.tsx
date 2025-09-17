@@ -318,7 +318,7 @@ function App() {
             break;
           }
 
-          // strip "All" from the list if there are other options selected
+          // Since "All" is the default, we need to stip it from the list when other options selected
           const withoutAll = value.filter((n) => n.label !== 'All').map((n) => n.label);
           setSearchParams({ node: withoutAll });
         }
