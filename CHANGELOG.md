@@ -1,3 +1,16 @@
+# v0.11.1 (Thu Sep 18 2025)
+
+#### 🚀 Enhancements
+
+- [FIX] Fixed the `Cannot select "All"` bug [#628](https://github.com/neurobagel/query-tool/pull/628) ([@rmanaem](https://github.com/rmanaem))
+- [MNT] Removed Healthy control checkbox [#618](https://github.com/neurobagel/query-tool/pull/618) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 1
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.11.0 (Wed Aug 06 2025)
 
 #### 🚀 Enhancements
