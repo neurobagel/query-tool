@@ -306,7 +306,7 @@ function App() {
     switch (fieldLabel) {
       case 'Neurobagel graph':
         if (Array.isArray(value)) {
-          // Case 1: User explicitly selected "All" after some other nodes were already selected
+          // Case 1: User explicitly selected "All" after some other nodes were already selected.
           // in this case "All" would be the last option in the array
           // Approach: keep "All", remove all other options
           if (value.length > 1 && value[value.length - 1].label === 'All') {
@@ -314,7 +314,7 @@ function App() {
             break;
           }
 
-          // Case 2: User clicked the "x" dismiss button to clear all options
+          // Case 2: User clicked the "x" dismiss button to clear all options.
           // in this case the selected options array would be empty
           // Approach: set "All" as the only option
           if (value.length === 0) {
@@ -322,9 +322,10 @@ function App() {
             break;
           }
 
-          // Case 3: User selected some nodes, but not "All"
+          // Case 3: User selected some nodes, but not "All" option.
           // in this case if "All" is present in the selected options array,
-          // "All" would be the first option in the array as the default and fallback option
+          // "All" would be the first option in the array leftover from being initially
+          // set as the default or set as the fallback option when all options were cleared
           // Approach: Remove "All" if it was in the selected options and keep the rest
           const withoutAll = value.filter((n) => n.label !== 'All').map((n) => n.label);
           setSearchParams({ node: withoutAll });
