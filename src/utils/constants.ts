@@ -45,7 +45,7 @@ export const modalities: {
   },
   'http://purl.org/nidash/nidm#EEG': {
     label: 'Electroencephalogram',
-    TermURL: 'nidm:EEG',
+    TermURL: 'nidm:Electroencephalography',
     name: 'EEG',
     bgColor: 'rgb(253, 164, 164)',
   },
@@ -66,5 +66,17 @@ export const modalities: {
     TermURL: 'nidm:T2Weighted',
     name: 'T2',
     bgColor: 'rgb(143, 188, 143)',
+  },
+  'http://purl.org/nidash/nidm#Magnetoencephalography': {
+    label: 'Magnetoencephalography',
+    TermURL: 'nidm:Magnetoencephalography',
+    name: 'MEG',
+    bgColor: 'rgb(215,145,50)',
+  },
+  'http://purl.org/nidash/nidm#PositronEmissionTomography': {
+    label: 'Positron Emission Tomography',
+    TermURL: 'nidm:PositronEmissionTomography',
+    name: 'PET',
+    bgColor: 'rgb(78,20,186)',
   },
 };
