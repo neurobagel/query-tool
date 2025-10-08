@@ -43,7 +43,7 @@ export const modalities: {
     name: 'DWI',
     bgColor: 'rgb(205, 92, 92)',
   },
-  'http://purl.org/nidash/nidm#EEG': {
+  'http://purl.org/nidash/nidm#Electroencephalography': {
     label: 'Electroencephalogram',
     TermURL: 'nidm:Electroencephalography',
     name: 'EEG',
