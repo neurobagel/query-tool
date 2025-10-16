@@ -67,7 +67,7 @@ describe('ResultContainer', () => {
       />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0003"]').should('be.visible');
-    cy.get('[data-cy="card-https://someportal.org/datasets/ds0003"]').within(() => {
+    cy.get('[data-cy="modality-buttons"]').within(() => {
       // Should only show T1 button, not the unknown modality
       cy.contains('button', 'T1').should('be.visible');
       cy.get('button').should('have.length', 1);

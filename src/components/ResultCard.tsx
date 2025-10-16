@@ -125,11 +125,11 @@ const ResultCard = memo(
               </Tooltip>
             )}
           </div>
-          <div className="justify-self-end">
+          <div className="justify-self-end" data-cy="modality-buttons">
             <ButtonGroup>
               {imageModals
                 .sort()
-                .filter((modal) => modalities[modal])
+                .filter((modal) => Object.keys(modalities).includes(modal))
                 .map((modal) => (
                   <Button
                     key={modal}
