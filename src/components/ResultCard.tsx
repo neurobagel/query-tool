@@ -125,24 +125,27 @@ const ResultCard = memo(
               </Tooltip>
             )}
           </div>
-          <div className="justify-self-end">
+          <div className="justify-self-end" data-cy="modality-buttons">
             <ButtonGroup>
-              {imageModals.sort().map((modal) => (
-                <Button
-                  key={modal}
-                  variant="contained"
-                  disableElevation
-                  sx={{
-                    backgroundColor: modalities[modal].bgColor,
-                    '&:hover': {
+              {imageModals
+                .sort()
+                .filter((modal) => Object.keys(modalities).includes(modal))
+                .map((modal) => (
+                  <Button
+                    key={modal}
+                    variant="contained"
+                    disableElevation
+                    sx={{
                       backgroundColor: modalities[modal].bgColor,
-                      cursor: 'default',
-                    },
-                  }}
-                >
-                  {modalities[modal].name}
-                </Button>
-              ))}
+                      '&:hover': {
+                        backgroundColor: modalities[modal].bgColor,
+                        cursor: 'default',
+                      },
+                    }}
+                  >
+                    {modalities[modal].name}
+                  </Button>
+                ))}
             </ButtonGroup>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import ResultContainer from '../../src/components/ResultContainer';
-import { protectedResponse2 } from '../fixtures/mocked-responses';
+import { protectedResponse2, responseWithUnknownModality } from '../fixtures/mocked-responses';
 
 describe('ResultContainer', () => {
   it('Displays a set of Result Cards, select all checkbox, a disabled download result button, summary stats, and how to get data dialog button', () => {
@@ -57,5 +57,20 @@ describe('ResultContainer', () => {
     cy.get('[data-cy="default-result-container-view"]')
       .should('be.visible')
       .should('contain', "Click 'Submit Query' for results");
+  });
+  it('Handles unknown modalities gracefully without breaking', () => {
+    cy.mount(
+      <ResultContainer
+        response={responseWithUnknownModality}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+      />
+    );
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0003"]').should('be.visible');
+    cy.get('[data-cy="modality-buttons"]').within(() => {
+      // Should show only one button (T1) button, and not the unknown modality
+      cy.contains('button', 'T1').should('be.visible');
+      cy.get('button').should('have.length', 1);
+    });
   });
 });

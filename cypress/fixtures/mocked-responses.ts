@@ -346,3 +346,25 @@ export const failedPipelineVersionOptions = {
     },
   ],
 };
+
+export const datasetWithUnknownModality = {
+  records_protected: false,
+  node_name: 'some-node-name',
+  dataset_uuid: 'https://someportal.org/datasets/ds0003',
+  dataset_name: 'dataset with unknown modality',
+  dataset_portal_uri: 'https://example.com/dataset',
+  dataset_total_subjects: 50,
+  num_matching_subjects: 5,
+  subject_data: 'protected',
+  image_modals: [
+    'http://purl.org/nidash/nidm#T1Weighted',
+    'http://purl.org/nidash/nidm#UnknownModality',
+  ],
+  available_pipelines: {},
+};
+
+export const responseWithUnknownModality = {
+  errors: [],
+  responses: [datasetWithUnknownModality],
+  nodes_response_status: 'success',
+};
