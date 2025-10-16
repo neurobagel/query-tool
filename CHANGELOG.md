@@ -1,3 +1,20 @@
+# v0.12.0 (Thu Oct 16 2025)
+
+#### 🚀 Enhancements
+
+- [ENH] Add newly supported imaging types [#637](https://github.com/neurobagel/query-tool/pull/637) ([@surchs](https://github.com/surchs))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Handle unknown imageing modalities gracefully [#644](https://github.com/neurobagel/query-tool/pull/644) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.11.1 (Thu Sep 18 2025)
 
 #### 🚀 Enhancements
