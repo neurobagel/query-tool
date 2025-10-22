@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const options = ['Download selected query results', 'Download selected query results with URIs'];
 
@@ -18,11 +19,12 @@ function DownloadResultButton({
   handleClick,
 }: {
   disabled: boolean;
-  handleClick: (index: number) => void;
+  handleClick: (index: number) => Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleMenuItemClick = (index: number) => {
     setSelectedIndex(index);
@@ -41,11 +43,27 @@ function DownloadResultButton({
     setOpen(false);
   };
 
+  const handleDownloadClick = async () => {
+    setLoading(true);
+    try {
+      await handleClick(selectedIndex);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const button = (
     <>
-      <ButtonGroup disabled={disabled} variant="contained" ref={anchorRef}>
-        <Button onClick={() => handleClick(selectedIndex)} data-cy="download-results-button">
-          {options[selectedIndex]}
+      <ButtonGroup disabled={disabled || loading} variant="contained" ref={anchorRef}>
+        <Button onClick={handleDownloadClick} data-cy="download-results-button">
+          {loading ? (
+            <>
+              Downloading selected query results
+              <CircularProgress size={16} color="inherit" sx={{ ml: 1 }} />
+            </>
+          ) : (
+            options[selectedIndex]
+          )}
         </Button>
         <Button data-cy="download-results-dropdown-button" size="small" onClick={handleToggle}>
           <ArrowDropDownIcon />
