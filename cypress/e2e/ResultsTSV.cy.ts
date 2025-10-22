@@ -1,15 +1,20 @@
 import {
   mixedResponse,
+  mixedSubjectResponse,
   unprotectedResponse,
+  unprotectedSubjectResponse,
   diagnosisOptions,
   assessmentToolOptions,
 } from '../fixtures/mocked-responses';
 
 describe('Results TSV', () => {
   beforeEach(() => {
-    cy.intercept('GET', 'query*', (req) => {
+    cy.intercept('POST', '/datasets', (req) => {
       req.reply(mixedResponse);
     }).as('call');
+    cy.intercept('POST', '/subjects', (req) => {
+      req.reply(mixedSubjectResponse);
+    }).as('subjectsCall');
     cy.visit('/');
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
@@ -61,7 +66,8 @@ describe('Results TSV', () => {
 });
 describe('Unprotected response', () => {
   it('Checks whether the rows in the participant.tsv file generated according to session_type', () => {
-    cy.intercept('query?*', unprotectedResponse).as('call');
+    cy.intercept('POST', '/datasets', unprotectedResponse).as('call');
+    cy.intercept('POST', '/subjects', unprotectedSubjectResponse).as('subjectsCall');
     cy.intercept(
       {
         method: 'GET',

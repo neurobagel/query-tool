@@ -4,7 +4,14 @@ import { protectedResponse2 } from '../fixtures/mocked-responses';
 describe('ResultContainer', () => {
   it('Displays a set of Result Cards, select all checkbox, a disabled download result button, summary stats, and how to get data dialog button', () => {
     cy.mount(
-      <ResultContainer response={protectedResponse2} assessmentOptions={[]} diagnosisOptions={[]} />
+      <ResultContainer
+        response={protectedResponse2}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+        datasetsRequestBody={null}
+        availableNodes={[]}
+        IDToken={undefined}
+      />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001"]').should('be.visible');
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0002"]').should('be.visible');
@@ -16,14 +23,28 @@ describe('ResultContainer', () => {
   });
   it('Selecting a dataset should enable the download result button', () => {
     cy.mount(
-      <ResultContainer response={protectedResponse2} assessmentOptions={[]} diagnosisOptions={[]} />
+      <ResultContainer
+        response={protectedResponse2}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+        datasetsRequestBody={null}
+        availableNodes={[]}
+        IDToken={undefined}
+      />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
     cy.get('[data-cy="download-results-button"]').should('be.visible').should('not.be.disabled');
   });
   it('Selecting/unselecting select all datasets checkbox should check/uncheck all dataset cards', () => {
     cy.mount(
-      <ResultContainer response={protectedResponse2} assessmentOptions={[]} diagnosisOptions={[]} />
+      <ResultContainer
+        response={protectedResponse2}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+        datasetsRequestBody={null}
+        availableNodes={[]}
+        IDToken={undefined}
+      />
     );
     cy.get('[data-cy="select-all-checkbox"] input').check();
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').should(
@@ -46,6 +67,9 @@ describe('ResultContainer', () => {
         response={{ responses: [], errors: [], nodes_response_status: 'success' }}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        datasetsRequestBody={null}
+        availableNodes={[]}
+        IDToken={undefined}
       />
     );
     cy.get('[data-cy="empty-result-container-view"]')
@@ -53,7 +77,16 @@ describe('ResultContainer', () => {
       .should('contain', 'No results');
   });
   it('Shows Click Submit Query view when result is null', () => {
-    cy.mount(<ResultContainer response={null} assessmentOptions={[]} diagnosisOptions={[]} />);
+    cy.mount(
+      <ResultContainer
+        response={null}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+        datasetsRequestBody={null}
+        availableNodes={[]}
+        IDToken={undefined}
+      />
+    );
     cy.get('[data-cy="default-result-container-view"]')
       .should('be.visible')
       .should('contain', "Click 'Submit Query' for results");

@@ -39,7 +39,7 @@ describe('Dataset result checkbox', () => {
 
     let isFirstClick = true;
 
-    cy.intercept('GET', 'query*', (req) => {
+    cy.intercept('POST', '/datasets', (req) => {
       if (isFirstClick) {
         isFirstClick = false;
         req.reply(protectedResponse1);

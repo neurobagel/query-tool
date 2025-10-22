@@ -347,8 +347,8 @@ describe('Successful API query requests', () => {
   beforeEach(() => {
     cy.intercept(
       {
-        method: 'GET',
-        url: 'query?*',
+        method: 'POST',
+        url: '/datasets',
       },
       mixedResponse
     ).as('call');
@@ -395,7 +395,7 @@ describe('Successful API query requests', () => {
     // Because the auth dialog will overlap a lot of the UI and thus fail the tests
     cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
-  it('Intercepts the request sent to the API and asserts over the request url', () => {
+  it('Intercepts the request sent to the API and asserts over the request body', () => {
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
     cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').type('2');
@@ -408,13 +408,13 @@ describe('Successful API query requests', () => {
     cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
     cy.get('[data-cy="Pipeline version-categorical-field"]').should('have.value', '');
     cy.get('[data-cy="submit-query-button"]').click();
-    cy.wait('@call')
-      .its('request.url')
-      .should('contain', 'min_age=10')
-      .and('contain', 'max_age=30')
-      .and('contain', 'min_num_imaging_sessions=2')
-      .and('contain', 'min_num_phenotypic_sessions=3')
-      .and('not.contain', 'pipeline_version');
+    cy.wait('@call').then((interception) => {
+      expect(interception.request.body).to.have.property('min_age', 10);
+      expect(interception.request.body).to.have.property('max_age', 30);
+      expect(interception.request.body).to.have.property('min_num_imaging_sessions', 2);
+      expect(interception.request.body).to.have.property('min_num_phenotypic_sessions', 3);
+      expect(interception.request.body).to.not.have.property('pipeline_version');
+    });
   });
 });
 
@@ -478,8 +478,8 @@ describe('Partially successful API query requests', () => {
   beforeEach(() => {
     cy.intercept(
       {
-        method: 'GET',
-        url: 'query?*',
+        method: 'POST',
+        url: '/datasets',
       },
       partialSuccessMixedResponse
     ).as('call');
@@ -541,8 +541,8 @@ describe('Failed API query requests', () => {
   beforeEach(() => {
     cy.intercept(
       {
-        method: 'GET',
-        url: 'query?*',
+        method: 'POST',
+        url: '/datasets',
       },
       failedQueryResponse
     ).as('call');
