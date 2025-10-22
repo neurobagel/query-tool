@@ -97,6 +97,9 @@ describe('ResultContainer', () => {
         response={responseWithUnknownModality}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        datasetsRequestBody={null}
+        availableNodes={[]}
+        IDToken={undefined}
       />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0003"]').should('be.visible');
