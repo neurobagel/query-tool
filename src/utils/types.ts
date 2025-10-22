@@ -53,7 +53,7 @@ export interface Subject {
   completed_pipelines: Pipelines;
 }
 
-export interface DatasetResult {
+export interface DatasetsResult {
   node_name: string;
   dataset_uuid: string;
   dataset_name: string;
@@ -65,7 +65,7 @@ export interface DatasetResult {
   available_pipelines: Pipelines;
 }
 
-export interface SubjectResult {
+export interface SubjectsResult {
   dataset_uuid: string;
   dataset_name: string;
   dataset_portal_uri: string;
@@ -78,20 +78,20 @@ export interface SubjectResult {
 }
 
 export interface DatasetsResponse extends BaseAPIResponse {
-  responses: DatasetResult[];
+  responses: DatasetsResult[];
 }
 
 export interface SubjectsResponse extends BaseAPIResponse {
-  responses: SubjectResult[];
+  responses: SubjectsResult[];
 }
 
-export interface QueryRequestBody {
+export interface DatasetsRequestBody {
   min_age?: number;
   max_age?: number;
   sex?: string;
   diagnosis?: string;
   min_num_imaging_sessions?: number;
-  max_num_imaging_sessions?: number;
+  min_num_phenotypic_sessions?: number;
   assessment?: string;
   image_modal?: string;
   pipeline_name?: string;
@@ -99,7 +99,7 @@ export interface QueryRequestBody {
   nodes: Array<{ node_url: string }>;
 }
 
-export interface SubjectsRequestBody extends Omit<QueryRequestBody, 'nodes'> {
+export interface SubjectsRequestBody extends Omit<DatasetsRequestBody, 'nodes'> {
   nodes: Array<{ node_url: string; dataset_uuids: string[] }>;
 }
 
