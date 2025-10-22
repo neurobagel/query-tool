@@ -53,7 +53,7 @@ export interface Subject {
   completed_pipelines: Pipelines;
 }
 
-export interface Result {
+export interface DatasetResult {
   node_name: string;
   dataset_uuid: string;
   dataset_name: string;
@@ -61,13 +61,46 @@ export interface Result {
   dataset_total_subjects: number;
   records_protected: boolean;
   num_matching_subjects: number;
-  subject_data: Subject[] | string;
   image_modals: string[];
   available_pipelines: Pipelines;
 }
 
-export interface QueryResponse extends BaseAPIResponse {
-  responses: Result[];
+export interface SubjectResult {
+  dataset_uuid: string;
+  dataset_name: string;
+  dataset_portal_uri: string;
+  dataset_total_subjects: number;
+  records_protected: boolean;
+  num_matching_subjects: number;
+  image_modals: string[];
+  available_pipelines: Pipelines;
+  subject_data: Subject[] | string;
+}
+
+export interface DatasetsResponse extends BaseAPIResponse {
+  responses: DatasetResult[];
+}
+
+export interface SubjectsResponse extends BaseAPIResponse {
+  responses: SubjectResult[];
+}
+
+export interface QueryRequestBody {
+  min_age?: number;
+  max_age?: number;
+  sex?: string;
+  diagnosis?: string;
+  min_num_imaging_sessions?: number;
+  max_num_imaging_sessions?: number;
+  assessment?: string;
+  image_modal?: string;
+  pipeline_name?: string;
+  pipeline_version?: string;
+  nodes: Array<{ node_url: string }>;
+}
+
+export interface SubjectsRequestBody extends Omit<QueryRequestBody, 'nodes'> {
+  nodes: Array<{ node_url: string; dataset_uuids: string[] }>;
 }
 
 export interface CategoricalFieldProps {
