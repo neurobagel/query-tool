@@ -9,7 +9,7 @@ import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'n
 import { useAuth0 } from '@auth0/auth0-react';
 import { v4 as uuidv4 } from 'uuid';
 import { FilterList } from '@mui/icons-material';
-import { queryURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
+import { datasetsURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
@@ -18,7 +18,8 @@ import {
   FieldInput,
   FieldInputOption,
   Pipelines,
-  QueryResponse,
+  DatasetsResponse,
+  DatasetsRequestBody,
   Notification,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
@@ -47,7 +48,7 @@ function App() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [result, setResult] = useState<QueryResponse | null>(null);
+  const [result, setResult] = useState<DatasetsResponse | null>(null);
   const [resultStatus, setResultStatus] = useState<string>('success');
 
   const [minAge, setMinAge] = useState<number | null>(null);
@@ -93,7 +94,7 @@ function App() {
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
     .map((filteredOption) => ({ label: filteredOption.NodeName, id: filteredOption.ApiURL }));
 
-  const sortedResults: QueryResponse | null = result
+  const sortedResults: DatasetsResponse | null = result
     ? {
         ...result,
         responses: result.responses.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)),
@@ -374,77 +375,45 @@ function App() {
   }
 
   /**
-   * Sets the value of a query parameter on the query parameter object.
+   * Constructs the request body for the datasets endpoint.
    *
-   * @remarks
-   * This is a utility function to used to help construct the query URL using a URLSearchParams object.
-   *
-   * @param param - The name of the query parameter
-   * @param value - The value of the query parameter
-   * @param queryParamObject - The query parameter object which contains the query parameters
-   * @returns void
+   * @returns The request body object.
    */
-  function setQueryParam(param: string, value: FieldInput, queryParamObject: URLSearchParams) {
-    if (Array.isArray(value)) {
-      value.forEach((v) => {
-        queryParamObject.append(param, v.id);
-      });
-    } else {
-      queryParamObject.set(param, value?.id ?? '');
+  function constructDatasetsRequestBody(): DatasetsRequestBody {
+    const requestBody: DatasetsRequestBody = {
+      nodes: [],
+    };
+
+    // If "All" is selected send empty array
+    if (!selectedNode.some((n) => n.id === 'allNodes')) {
+      requestBody.nodes = selectedNode.map((node) => ({ node_url: node.id }));
     }
-  }
 
-  /**
-   * Creates the query URL from user input using a URLSearchParams object.
-   *
-   * @remarks
-   * This function utilizes the `setQueryParam` function to set categorical query parameters.
-   *
-   * @returns The query URL.
-   */
-  function constructQueryURL() {
-    const queryParams = new URLSearchParams();
+    // Add optional parameters only if they have values
+    if (minAge !== null) requestBody.min_age = minAge;
+    if (maxAge !== null) requestBody.max_age = maxAge;
+    if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
+    if (diagnosis && !Array.isArray(diagnosis)) requestBody.diagnosis = diagnosis.id;
+    if (minNumImagingSessions !== null)
+      requestBody.min_num_imaging_sessions = minNumImagingSessions;
+    if (minNumPhenotypicSessions !== null)
+      requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessions;
+    if (assessmentTool && !Array.isArray(assessmentTool))
+      requestBody.assessment = assessmentTool.id;
+    if (imagingModality && !Array.isArray(imagingModality))
+      requestBody.image_modal = imagingModality.id;
+    if (pipelineName && !Array.isArray(pipelineName)) requestBody.pipeline_name = pipelineName.id;
+    if (pipelineVersion && !Array.isArray(pipelineVersion) && pipelineName)
+      requestBody.pipeline_version = pipelineVersion.id;
 
-    setQueryParam('node_url', selectedNode, queryParams);
-    queryParams.set('min_age', minAge ? minAge.toString() : '');
-    queryParams.set('max_age', maxAge ? maxAge.toString() : '');
-    setQueryParam('sex', sex, queryParams);
-    setQueryParam('diagnosis', diagnosis, queryParams);
-    queryParams.set(
-      'min_num_imaging_sessions',
-      minNumImagingSessions ? minNumImagingSessions.toString() : ''
-    );
-    queryParams.set(
-      'min_num_phenotypic_sessions',
-      minNumPhenotypicSessions ? minNumPhenotypicSessions.toString() : ''
-    );
-    setQueryParam('assessment', assessmentTool, queryParams);
-    setQueryParam('image_modal', imagingModality, queryParams);
-    setQueryParam('pipeline_name', pipelineName, queryParams);
-    setQueryParam('pipeline_version', pipelineName ? pipelineVersion : null, queryParams);
-
-    // Remove keys with empty values
-    const keysToDelete: string[] = [];
-
-    queryParams.forEach((value, key) => {
-      // if All option is selected for nodes field, delete all node_urls
-      if (value === '' || value === 'allNodes') {
-        keysToDelete.push(key);
-      }
-    });
-
-    keysToDelete.forEach((key) => {
-      queryParams.delete(key);
-    });
-
-    return `${queryURL}${queryParams.toString()}`;
+    return requestBody;
   }
 
   async function submitQuery() {
     setLoading(true);
-    const url: string = constructQueryURL();
+    const requestBody = constructDatasetsRequestBody();
     try {
-      const response = await axios.get(url, {
+      const response = await axios.post(datasetsURL, requestBody, {
         headers: {
           Authorization: `Bearer ${IDToken}`,
           'Content-Type': 'application/json',
@@ -609,6 +578,9 @@ function App() {
                 response={sortedResults || null}
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
+                datasetsRequestBody={result ? constructDatasetsRequestBody() : null}
+                availableNodes={availableNodes}
+                IDToken={IDToken}
               />
             </>
           )}

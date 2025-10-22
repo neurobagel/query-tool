@@ -4,7 +4,7 @@ import ChatBot from 'react-simple-chatbot';
 import { ThemeProvider } from 'styled-components';
 import { FaRobot } from 'react-icons/fa';
 import Draggable from 'react-draggable';
-import { QueryResponse } from '../utils/types';
+import { DatasetsResponse } from '../utils/types';
 
 const theme = {
   background: '#f5f8fb',
@@ -27,7 +27,7 @@ interface Steps {
 interface FetchAnswerProps {
   steps: Steps;
   triggerNextStep: (step: { trigger: string }) => void;
-  setResult: (result: QueryResponse | null) => void;
+  setResult: (result: DatasetsResponse | null) => void;
 }
 
 function FetchAnswer({ steps, triggerNextStep, setResult }: FetchAnswerProps) {
@@ -88,7 +88,7 @@ function FetchAnswer({ steps, triggerNextStep, setResult }: FetchAnswerProps) {
 }
 
 interface ChatbotFeatureProps {
-  setResult: (result: QueryResponse | null) => void;
+  setResult: (result: DatasetsResponse | null) => void;
 }
 
 function ChatbotFeature({ setResult }: ChatbotFeatureProps) {

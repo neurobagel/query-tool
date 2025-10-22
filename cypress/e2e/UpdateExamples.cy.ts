@@ -11,9 +11,12 @@ describe('Update Examples', () => {
       method: 'GET',
       url: '/assessments',
     }).as('getAssessmentToolOptions');
-    cy.intercept('GET', 'query*', (req) => {
+    cy.intercept('POST', '/datasets', (req) => {
       req.reply(fapiQuerySuccess200);
     }).as('call');
+    cy.intercept('POST', '/subjects', (req) => {
+      req.reply(fapiQuerySuccess200);
+    }).as('subjectsCall');
     cy.visit('/');
     cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
     cy.get('[data-cy="close-auth-dialog-button"]').click();

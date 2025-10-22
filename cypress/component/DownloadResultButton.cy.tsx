@@ -2,7 +2,7 @@ import DownloadResultButton from '../../src/components/DownloadResultButton';
 
 const props = {
   disabled: false,
-  handleClick: () => {},
+  handleClick: async () => {},
 };
 
 describe('DownloadResultButton', () => {

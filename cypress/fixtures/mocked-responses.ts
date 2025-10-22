@@ -1,12 +1,47 @@
 // TODO: rename mocked responses to something more descriptive
 
-// QUERY RESPONSES
+// DATASETS RESPONSES
 const protectedDatasetSnippet = {
   node_name: 'some-node-name',
   dataset_portal_uri: 'https://hello.dataset.portal',
   records_protected: true,
   dataset_uuid: 'https://someportal.org/datasets/ds0001',
-  dataset_file_path: 'https://github.com/somethingDatasets/ds0001.git',
+  dataset_name: 'some\ncool name',
+  dataset_total_subjects: 10,
+  num_matching_subjects: 2,
+  image_modals: [
+    'http://purl.org/nidash/nidm#FlowWeighted',
+    'http://purl.org/nidash/nidm#T1Weighted',
+  ],
+  available_pipelines: {
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
+  },
+};
+
+const unprotectedDatasetSnippet = {
+  records_protected: false,
+  node_name: 'some-node-name',
+  dataset_uuid: 'http://neurobagel.org/vocab/1234',
+  dataset_name: 'some\ndataset',
+  dataset_portal_uri: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
+  dataset_total_subjects: 209,
+  num_matching_subjects: 2,
+  image_modals: [
+    'http://purl.org/nidash/nidm#FlowWeighted',
+    'http://purl.org/nidash/nidm#T2Weighted',
+  ],
+  available_pipelines: {
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
+    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
+  },
+};
+
+// SUBJECTS RESPONSES
+const protectedSubjectDataSnippet = {
+  dataset_portal_uri: 'https://hello.dataset.portal',
+  records_protected: true,
+  dataset_uuid: 'https://someportal.org/datasets/ds0001',
   dataset_name: 'some\ncool name',
   dataset_total_subjects: 10,
   num_matching_subjects: 2,
@@ -21,9 +56,8 @@ const protectedDatasetSnippet = {
   },
 };
 
-const unprotectedDatasetSnippet = {
+const unprotectedSubjectDataSnippet = {
   records_protected: false,
-  node_name: 'some-node-name',
   dataset_uuid: 'http://neurobagel.org/vocab/1234',
   dataset_name: 'some\ndataset',
   dataset_portal_uri: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
@@ -68,8 +102,8 @@ const unprotectedDatasetSnippet = {
     },
   ],
   image_modals: [
-    'http://purl.org/nidash/nidm#T2Weighted',
     'http://purl.org/nidash/nidm#FlowWeighted',
+    'http://purl.org/nidash/nidm#T2Weighted',
   ],
   available_pipelines: {
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
@@ -105,6 +139,25 @@ export const unprotectedResponse = {
 export const mixedResponse = {
   errors: [],
   responses: [protectedDatasetSnippet, unprotectedDatasetSnippet],
+  nodes_response_status: 'success',
+};
+
+// Subject responses (for testing download functionality)
+export const protectedSubjectResponse = {
+  errors: [],
+  responses: [protectedSubjectDataSnippet],
+  nodes_response_status: 'success',
+};
+
+export const unprotectedSubjectResponse = {
+  errors: [],
+  responses: [unprotectedSubjectDataSnippet],
+  nodes_response_status: 'success',
+};
+
+export const mixedSubjectResponse = {
+  errors: [],
+  responses: [protectedSubjectDataSnippet, unprotectedSubjectDataSnippet],
   nodes_response_status: 'success',
 };
 
