@@ -184,7 +184,7 @@ function ResultContainer({
       if (res.records_protected) {
         tsvRows.push(
           [
-            res.dataset_name.replace('\n', ' '),
+            res.dataset_name.replace(/\n/g, ' '),
             res.dataset_portal_uri,
             res.num_matching_subjects,
             'protected', // subject_id
@@ -215,7 +215,7 @@ function ResultContainer({
         res.subject_data.forEach((subject) => {
           tsvRows.push(
             [
-              res.dataset_name.replace('\n', ' '),
+              res.dataset_name.replace(/\n/g, ' '),
               res.dataset_portal_uri,
               res.num_matching_subjects,
               subject.sub_id,

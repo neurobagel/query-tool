@@ -94,6 +94,7 @@ describe('Unprotected response', () => {
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
+    cy.wait('@subjectsCall');
 
     cy.readFile('cypress/downloads/neurobagel-query-results.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
