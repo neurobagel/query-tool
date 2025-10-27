@@ -39,6 +39,20 @@ export interface Pipelines {
   [key: string]: string[];
 }
 
+export type QueryFormState = {
+  nodes: string[];
+  minAge: number | null;
+  maxAge: number | null;
+  sex: FieldInput;
+  diagnosis: FieldInput;
+  minNumImagingSessions: number | null;
+  minNumPhenotypicSessions: number | null;
+  assessmentTool: FieldInput;
+  imagingModality: FieldInput;
+  pipelineName: FieldInput;
+  pipelineVersion: FieldInput;
+};
+
 export interface Subject {
   sub_id: string;
   session_id: string;
@@ -51,6 +65,13 @@ export interface Subject {
   image_modal: string[];
   session_file_path: string;
   completed_pipelines: Pipelines;
+}
+
+export interface SubjectsQueryParams {
+  queryParams: QueryParams;
+  datasetSelection: string[];
+  datasetResponses: DatasetsResponse['responses'];
+  nodes: NodeOption[];
 }
 
 export interface DatasetsResult {
@@ -85,7 +106,7 @@ export interface SubjectsResponse extends BaseAPIResponse {
   responses: SubjectsResult[];
 }
 
-export interface DatasetsRequestBody {
+export interface QueryParams {
   min_age?: number;
   max_age?: number;
   sex?: string;
@@ -99,7 +120,17 @@ export interface DatasetsRequestBody {
   nodes: Array<{ node_url: string }>;
 }
 
-export interface SubjectsRequestBody extends Omit<DatasetsRequestBody, 'nodes'> {
+export interface SubjectsRequestBody {
+  min_age?: number;
+  max_age?: number;
+  sex?: string;
+  diagnosis?: string;
+  min_num_imaging_sessions?: number;
+  min_num_phenotypic_sessions?: number;
+  assessment?: string;
+  image_modal?: string;
+  pipeline_name?: string;
+  pipeline_version?: string;
   nodes: Array<{ node_url: string; dataset_uuids: string[] }>;
 }
 
