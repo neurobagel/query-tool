@@ -1,35 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FormControlLabel, Checkbox, Typography, IconButton } from '@mui/material';
-import axios from 'axios';
-import { SnackbarKey, closeSnackbar, enqueueSnackbar } from 'notistack';
-import CloseIcon from '@mui/icons-material/Close';
+import { FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
 import {
   DatasetsResponse,
   SubjectsResponse,
-  DatasetsRequestBody,
-  SubjectsRequestBody,
+  QueryParams,
   Pipelines,
   AttributeOption,
-  NodeOption,
 } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
-import { sexes, modalities, subjectsURL } from '../utils/constants';
+import { sexes, modalities } from '../utils/constants';
+import ErrorAlert from './ErrorAlert';
+
+type DownloadHandler = (buttonIndex: number, selection: string[]) => Promise<SubjectsResponse>;
 
 function ResultContainer({
   diagnosisOptions,
   assessmentOptions,
   response,
-  datasetsRequestBody,
-  availableNodes,
-  IDToken,
+  queryForm,
+  disableDownloads,
+  onDownload,
 }: {
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
   response: DatasetsResponse | null;
-  datasetsRequestBody: DatasetsRequestBody | null;
-  availableNodes: NodeOption[];
-  IDToken: string | undefined;
+  queryForm: QueryParams | null;
+  disableDownloads: boolean;
+  onDownload: DownloadHandler;
 }) {
   const [download, setDownload] = useState<string[]>([]);
   const selectAll: boolean = response
@@ -46,6 +44,8 @@ function ResultContainer({
     });
   }
   const summaryStats = `Summary stats: ${numOfMatchedDatasets} datasets, ${numOfMatchedSubjects} subjects`;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   /**
    * Updates the download array.
@@ -260,79 +260,21 @@ function ResultContainer({
     return tsvRows.join('\n');
   }
 
-  function constructSubjectsRequestBody(
-    requestBody: DatasetsRequestBody,
-    selectedDatasetUuids: string[],
-    datasetResponses: DatasetsResponse['responses'],
-    nodes: NodeOption[]
-  ): SubjectsRequestBody {
-    // Create a mapping from node_name to node_url (ApiURL)
-    const nodeNameToUrlMap = new Map<string, string>();
-    nodes.forEach((node) => {
-      nodeNameToUrlMap.set(node.NodeName, node.ApiURL);
-    });
-
-    // Group selected datasets by their node_url (mapped from node_name)
-    const nodeDatasetMap = new Map<string, string[]>();
-
-    datasetResponses
-      .filter((res) => selectedDatasetUuids.includes(res.dataset_uuid))
-      .forEach((res) => {
-        const nodeUrl = nodeNameToUrlMap.get(res.node_name);
-        if (!nodeUrl) return;
-
-        const datasets = nodeDatasetMap.get(nodeUrl) ?? [];
-        datasets.push(res.dataset_uuid);
-        nodeDatasetMap.set(nodeUrl, datasets);
-      });
-
-    return {
-      ...requestBody,
-      nodes: Array.from(nodeDatasetMap.entries()).map(([nodeUrl, datasetUuids]) => ({
-        node_url: nodeUrl,
-        dataset_uuids: datasetUuids,
-      })),
-    };
-  }
-
-  const action = (snackbarId: SnackbarKey) => (
-    <IconButton
-      onClick={() => {
-        closeSnackbar(snackbarId);
-      }}
-    >
-      <CloseIcon className="text-white" />
-    </IconButton>
-  );
-
   async function downloadResults(buttonIndex: number) {
-    if (!datasetsRequestBody || !response) return;
+    if (!queryForm || !response || loading) return;
+
+    setLoading(true);
 
     try {
-      const subjectsRequestBody = constructSubjectsRequestBody(
-        datasetsRequestBody,
-        download,
-        response.responses,
-        availableNodes
-      );
-
-      const subjectsResponse = await axios.post<SubjectsResponse>(
-        subjectsURL,
-        subjectsRequestBody,
-        {
-          headers: {
-            Authorization: `Bearer ${IDToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const subjectsResponse = await onDownload(buttonIndex, download);
+      setDownloadError(null);
 
       const fileName =
         buttonIndex === 0
           ? 'neurobagel-query-results.tsv'
           : 'neurobagel-query-results-with-URIs.tsv';
       const element = document.createElement('a');
-      const encodedTSV = encodeURIComponent(generateTSVString(subjectsResponse.data, buttonIndex));
+      const encodedTSV = encodeURIComponent(generateTSVString(subjectsResponse, buttonIndex));
       element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
       element.setAttribute('download', fileName);
 
@@ -342,10 +284,9 @@ function ResultContainer({
       element.click();
       document.body.removeChild(element);
     } catch {
-      enqueueSnackbar('Failed to download results.', {
-        variant: 'error',
-        action,
-      });
+      setDownloadError('We were unable to download the selected query results. Please try again.');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -406,8 +347,9 @@ function ResultContainer({
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
           <DownloadResultButton
-            disabled={download.length === 0}
+            disabled={download.length === 0 || disableDownloads || !queryForm}
             handleClick={(index) => downloadResults(index)}
+            loading={loading}
           />
         </div>
       </>
@@ -416,6 +358,15 @@ function ResultContainer({
 
   return (
     <div className="flex flex-col" data-cy="result-container">
+      {downloadError && (
+        <div className="mb-2">
+          <ErrorAlert
+            errorTitle="Download failed"
+            errorExplanation="We couldn't download the selected results. Try running the download again."
+            severity="error"
+          />
+        </div>
+      )}
       {renderResults()}
     </div>
   );

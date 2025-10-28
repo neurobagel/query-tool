@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, Grow, IconButton } from '@mui/material';
@@ -9,7 +9,7 @@ import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'n
 import { useAuth0 } from '@auth0/auth0-react';
 import { v4 as uuidv4 } from 'uuid';
 import { FilterList } from '@mui/icons-material';
-import { datasetsURL, baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
+import { baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
   RetrievedAttributeOption,
   AttributeOption,
@@ -19,8 +19,9 @@ import {
   FieldInputOption,
   Pipelines,
   DatasetsResponse,
-  DatasetsRequestBody,
+  QueryParams,
   Notification,
+  QueryFormState,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -31,6 +32,8 @@ import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
 import './App.css';
 import logo from './assets/logo.png';
+import areFormStatesEqual from './utils/utils';
+import useSendQueries from './hooks/useSendQueries';
 
 function App() {
   // Screen is considered small if the width is less than 768px (according to tailwind docs)
@@ -51,21 +54,26 @@ function App() {
   const [result, setResult] = useState<DatasetsResponse | null>(null);
   const [resultStatus, setResultStatus] = useState<string>('success');
 
-  const [minAge, setMinAge] = useState<number | null>(null);
-  const [maxAge, setMaxAge] = useState<number | null>(null);
+  const [minAge, setMinAge] = useState<string>('');
+  const [maxAge, setMaxAge] = useState<string>('');
   const [sex, setSex] = useState<FieldInput>(null);
   const [diagnosis, setDiagnosis] = useState<FieldInput>(null);
-  const [minNumImagingSessions, setMinNumSessions] = useState<number | null>(null);
-  const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<number | null>(null);
+  const [minNumImagingSessions, setMinNumSessions] = useState<string>('');
+  const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<string>('');
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
   const [pipelineVersion, setPipelineVersion] = useState<FieldInput>(null);
   const [pipelineName, setPipelineName] = useState<FieldInput>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [activeQueryParams, setActiveQueryParams] = useState<QueryParams | null>(null);
+  const [activeQueryParamsState, setActiveQueryParamsState] = useState<QueryFormState | null>(null);
+  const [hasFormChanged, setHasFormChanged] = useState<boolean>(false);
+
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [IDToken, setIDToken] = useState<string | undefined>('');
   const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
+  const { sendDatasetsQuery, sendSubjectsQuery } = useSendQueries(IDToken);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isQueryFormOpen, setIsQueryFormOpen] = useState(true);
@@ -109,6 +117,35 @@ function App() {
     >
       <CloseIcon className="text-white" />
     </IconButton>
+  );
+
+  const currentQueryFormState: QueryFormState = useMemo(
+    () => ({
+      nodes: [...searchParams.getAll('node')],
+      minAge,
+      maxAge,
+      sex,
+      diagnosis,
+      minNumImagingSessions,
+      minNumPhenotypicSessions,
+      assessmentTool,
+      imagingModality,
+      pipelineName,
+      pipelineVersion,
+    }),
+    [
+      searchParams,
+      minAge,
+      maxAge,
+      sex,
+      diagnosis,
+      minNumImagingSessions,
+      minNumPhenotypicSessions,
+      assessmentTool,
+      imagingModality,
+      pipelineName,
+      pipelineVersion,
+    ]
   );
 
   useEffect(() => {
@@ -292,6 +329,15 @@ function App() {
     }
   }, [searchParams, setSearchParams, availableNodes]);
 
+  useEffect(() => {
+    if (!activeQueryParams || !activeQueryParamsState) {
+      setHasFormChanged(false);
+      return;
+    }
+
+    setHasFormChanged(!areFormStatesEqual(currentQueryFormState, activeQueryParamsState));
+  }, [activeQueryParams, activeQueryParamsState, currentQueryFormState]);
+
   function showAlert() {
     if (selectedNode && Array.isArray(selectedNode)) {
       const openNeuroIsAnOption = availableNodes.find((n) => n.NodeName === 'OpenNeuro');
@@ -355,7 +401,7 @@ function App() {
     }
   }
 
-  function updateContinuousQueryParams(fieldLabel: string, value: number | null) {
+  function updateContinuousQueryParams(fieldLabel: string, value: string) {
     switch (fieldLabel) {
       case 'Minimum age':
         setMinAge(value);
@@ -374,13 +420,23 @@ function App() {
     }
   }
 
+  function parseNumericParam(value: string): number | null {
+    const trimmed = value.trim();
+    if (trimmed === '') {
+      return null;
+    }
+
+    const parsed = Number(trimmed);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+
   /**
    * Constructs the request body for the datasets endpoint.
    *
    * @returns The request body object.
    */
-  function constructDatasetsRequestBody(): DatasetsRequestBody {
-    const requestBody: DatasetsRequestBody = {
+  function constructDatasetsRequestBody(): QueryParams {
+    const requestBody: QueryParams = {
       nodes: [],
     };
 
@@ -390,14 +446,20 @@ function App() {
     }
 
     // Add optional parameters only if they have values
-    if (minAge !== null) requestBody.min_age = minAge;
-    if (maxAge !== null) requestBody.max_age = maxAge;
+    const minAgeNumber = parseNumericParam(minAge);
+    if (minAgeNumber !== null) requestBody.min_age = minAgeNumber;
+
+    const maxAgeNumber = parseNumericParam(maxAge);
+    if (maxAgeNumber !== null) requestBody.max_age = maxAgeNumber;
     if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
     if (diagnosis && !Array.isArray(diagnosis)) requestBody.diagnosis = diagnosis.id;
-    if (minNumImagingSessions !== null)
-      requestBody.min_num_imaging_sessions = minNumImagingSessions;
-    if (minNumPhenotypicSessions !== null)
-      requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessions;
+    const minNumImagingSessionsNumber = parseNumericParam(minNumImagingSessions);
+    if (minNumImagingSessionsNumber !== null)
+      requestBody.min_num_imaging_sessions = minNumImagingSessionsNumber;
+
+    const minNumPhenotypicSessionsNumber = parseNumericParam(minNumPhenotypicSessions);
+    if (minNumPhenotypicSessionsNumber !== null)
+      requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessionsNumber;
     if (assessmentTool && !Array.isArray(assessmentTool))
       requestBody.assessment = assessmentTool.id;
     if (imagingModality && !Array.isArray(imagingModality))
@@ -411,20 +473,39 @@ function App() {
 
   async function submitQuery() {
     setLoading(true);
-    const requestBody = constructDatasetsRequestBody();
+    const datasetsRequestBody = constructDatasetsRequestBody();
+    const formStateOnSubmit = currentQueryFormState;
+
     try {
-      const response = await axios.post(datasetsURL, requestBody, {
-        headers: {
-          Authorization: `Bearer ${IDToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      setResult(response.data);
-      setResultStatus(response.data.nodes_response_status);
+      const data = await sendDatasetsQuery(datasetsRequestBody);
+      setResult(data);
+      setResultStatus(data.nodes_response_status);
+      setActiveQueryParams(datasetsRequestBody);
+      setActiveQueryParamsState(formStateOnSubmit);
+      setHasFormChanged(false);
     } catch {
       setResultStatus('network error');
     }
+
     setLoading(false);
+  }
+
+  function undoQueryFormChanges() {
+    if (!activeQueryParamsState) {
+      return;
+    }
+
+    setMinAge(activeQueryParamsState.minAge);
+    setMaxAge(activeQueryParamsState.maxAge);
+    setSex(activeQueryParamsState.sex);
+    setDiagnosis(activeQueryParamsState.diagnosis);
+    setMinNumSessions(activeQueryParamsState.minNumImagingSessions);
+    setMinNumPhenotypicSessions(activeQueryParamsState.minNumPhenotypicSessions);
+    setAssessmentTool(activeQueryParamsState.assessmentTool);
+    setImagingModality(activeQueryParamsState.imagingModality);
+    setPipelineName(activeQueryParamsState.pipelineName);
+    setPipelineVersion(activeQueryParamsState.pipelineVersion);
+    setSearchParams({ node: activeQueryParamsState.nodes });
   }
 
   const queryHasFailed = resultStatus !== 'success';
@@ -470,6 +551,21 @@ function App() {
       severity: 'error',
     },
   };
+
+  const queryFormHasChanged = Boolean(activeQueryParams && hasFormChanged);
+
+  async function handleDownload(_buttonIndex: number, datasetSelection: string[]) {
+    if (!activeQueryParams || !result) {
+      throw new Error('No results available for download');
+    }
+
+    return sendSubjectsQuery({
+      queryParams: activeQueryParams,
+      datasetSelection,
+      datasetResponses: result.responses,
+      nodes: availableNodes,
+    });
+  }
 
   return (
     <>
@@ -574,13 +670,28 @@ function App() {
                   severity={queryErrorMapping[resultStatus].severity as AlertColor}
                 />
               )}
+              {queryFormHasChanged && (
+                <Alert
+                  severity="error"
+                  className="mb-2"
+                  action={
+                    <Button color="inherit" size="small" onClick={() => undoQueryFormChanges()}>
+                      Undo changes
+                    </Button>
+                  }
+                  data-cy="query-form-changed-alert"
+                >
+                  You have edited the query form fields since you&apos;ve submitted your query.
+                  Downloading is disabled until you undo the changes or submit the new query.
+                </Alert>
+              )}
               <ResultContainer
                 response={sortedResults || null}
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
-                datasetsRequestBody={result ? constructDatasetsRequestBody() : null}
-                availableNodes={availableNodes}
-                IDToken={IDToken}
+                queryForm={activeQueryParams}
+                disableDownloads={queryFormHasChanged}
+                onDownload={(buttonIndex, selection) => handleDownload(buttonIndex, selection)}
               />
             </>
           )}

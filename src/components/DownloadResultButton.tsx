@@ -17,14 +17,15 @@ const options = ['Download selected query results', 'Download selected query res
 function DownloadResultButton({
   disabled,
   handleClick,
+  loading,
 }: {
   disabled: boolean;
   handleClick: (index: number) => Promise<void>;
+  loading: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
 
   const handleMenuItemClick = (index: number) => {
     setSelectedIndex(index);
@@ -44,12 +45,7 @@ function DownloadResultButton({
   };
 
   const handleDownloadClick = async () => {
-    setLoading(true);
-    try {
-      await handleClick(selectedIndex);
-    } finally {
-      setLoading(false);
-    }
+    handleClick(selectedIndex);
   };
 
   const button = (
