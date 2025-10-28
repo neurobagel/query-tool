@@ -41,12 +41,12 @@ export interface Pipelines {
 
 export type QueryFormState = {
   nodes: string[];
-  minAge: number | null;
-  maxAge: number | null;
+  minAge: string;
+  maxAge: string;
   sex: FieldInput;
   diagnosis: FieldInput;
-  minNumImagingSessions: number | null;
-  minNumPhenotypicSessions: number | null;
+  minNumImagingSessions: string;
+  minNumPhenotypicSessions: string;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
   pipelineName: FieldInput;
