@@ -1,5 +1,15 @@
 import ResultContainer from '../../src/components/ResultContainer';
+import type { QueryParams, SubjectsResponse } from '../../src/utils/types';
 import { protectedResponse2, responseWithUnknownModality } from '../fixtures/mocked-responses';
+
+const emptySubjectsResponse: SubjectsResponse = {
+  responses: [],
+  errors: [],
+  nodes_response_status: 'success',
+};
+
+const mockOnDownload = async () => emptySubjectsResponse;
+const mockQueryParams: QueryParams = { nodes: [] };
 
 describe('ResultContainer', () => {
   it('Displays a set of Result Cards, select all checkbox, a disabled download result button, summary stats, and how to get data dialog button', () => {
@@ -8,9 +18,9 @@ describe('ResultContainer', () => {
         response={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
-        datasetsRequestBody={null}
-        availableNodes={[]}
-        IDToken={undefined}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
       />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001"]').should('be.visible');
@@ -27,9 +37,9 @@ describe('ResultContainer', () => {
         response={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
-        datasetsRequestBody={null}
-        availableNodes={[]}
-        IDToken={undefined}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
       />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
@@ -41,9 +51,9 @@ describe('ResultContainer', () => {
         response={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
-        datasetsRequestBody={null}
-        availableNodes={[]}
-        IDToken={undefined}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
       />
     );
     cy.get('[data-cy="select-all-checkbox"] input').check();
@@ -67,9 +77,9 @@ describe('ResultContainer', () => {
         response={{ responses: [], errors: [], nodes_response_status: 'success' }}
         assessmentOptions={[]}
         diagnosisOptions={[]}
-        datasetsRequestBody={null}
-        availableNodes={[]}
-        IDToken={undefined}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
       />
     );
     cy.get('[data-cy="empty-result-container-view"]')
@@ -82,9 +92,9 @@ describe('ResultContainer', () => {
         response={null}
         assessmentOptions={[]}
         diagnosisOptions={[]}
-        datasetsRequestBody={null}
-        availableNodes={[]}
-        IDToken={undefined}
+        queryForm={null}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
       />
     );
     cy.get('[data-cy="default-result-container-view"]')
@@ -97,9 +107,9 @@ describe('ResultContainer', () => {
         response={responseWithUnknownModality}
         assessmentOptions={[]}
         diagnosisOptions={[]}
-        datasetsRequestBody={null}
-        availableNodes={[]}
-        IDToken={undefined}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
       />
     );
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0003"]').should('be.visible');
@@ -108,5 +118,23 @@ describe('ResultContainer', () => {
       cy.contains('button', 'T1').should('be.visible');
       cy.get('button').should('have.length', 1);
     });
+  });
+  it('Fires the onDownload event handler with the appropriate payload when the download results button is clicked', () => {
+    const onDownloadSpy = cy.spy().as('onDownloadSpy');
+    cy.mount(
+      <ResultContainer
+        response={protectedResponse2}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={onDownloadSpy}
+      />
+    );
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
+    cy.get('[data-cy="download-results-button"]').click();
+    cy.get('@onDownloadSpy').should('have.been.calledWith', 0, [
+      'https://someportal.org/datasets/ds0001',
+    ]);
   });
 });
