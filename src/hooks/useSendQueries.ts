@@ -41,7 +41,7 @@ function buildSubjectsRequestBody(
 }
 
 export default function useSendQueries(IDToken: string | undefined) {
-  async function runDatasetsQuery(datasetsRequestBody: QueryParams) {
+  async function sendDatasetsQuery(datasetsRequestBody: QueryParams) {
     const response = await axios.post<DatasetsResponse>(datasetsURL, datasetsRequestBody, {
       headers: {
         ...(IDToken ? { Authorization: `Bearer ${IDToken}` } : {}),
@@ -52,7 +52,7 @@ export default function useSendQueries(IDToken: string | undefined) {
     return response.data;
   }
 
-  async function runSubjectsQuery({
+  async function sendSubjectsQuery({
     queryParams,
     datasetSelection,
     datasetResponses,
@@ -75,5 +75,5 @@ export default function useSendQueries(IDToken: string | undefined) {
     return response.data;
   }
 
-  return { runDatasetsQuery, runSubjectsQuery };
+  return { sendDatasetsQuery, sendSubjectsQuery };
 }
