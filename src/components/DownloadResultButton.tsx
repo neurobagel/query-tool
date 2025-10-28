@@ -20,7 +20,7 @@ function DownloadResultButton({
   loading,
 }: {
   disabled: boolean;
-  handleClick: (index: number) => Promise<void>;
+  handleClick: (index: number) => void;
   loading: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -44,7 +44,7 @@ function DownloadResultButton({
     setOpen(false);
   };
 
-  const handleDownloadClick = async () => {
+  const handleDownloadClick = () => {
     handleClick(selectedIndex);
   };
 

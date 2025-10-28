@@ -5,6 +5,9 @@ import {
   unprotectedSubjectResponse,
   diagnosisOptions,
   assessmentToolOptions,
+  pipelineOptions,
+  pipelineVersionOptions,
+  nodeOptions,
 } from '../fixtures/mocked-responses';
 
 describe('Results TSV', () => {
@@ -15,7 +18,48 @@ describe('Results TSV', () => {
     cy.intercept('POST', '/subjects', (req) => {
       req.reply(mixedSubjectResponse);
     }).as('subjectsCall');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes',
+      },
+      nodeOptions
+    ).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/diagnoses',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/assessments',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'pipelines/np:fmriprep/versions',
+      },
+      pipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
     cy.visit('/');
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
@@ -26,6 +70,8 @@ describe('Results TSV', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
+    cy.get('[data-cy="download-results-button"]').click();
+    cy.wait('@subjectsCall');
     cy.get('[data-cy="download-results-dropdown-button"]').click();
     cy.contains('URIs').click();
     cy.get('[data-cy="download-results-button"]').click();
@@ -57,6 +103,7 @@ describe('Results TSV', () => {
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
+    cy.wait('@subjectsCall');
     cy.readFile('cypress/downloads/neurobagel-query-results.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
