@@ -38,23 +38,33 @@ function QueryForm({
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
   selectedNode: FieldInput;
-  minAge: number | null;
-  maxAge: number | null;
+  minAge: string;
+  maxAge: string;
   sex: FieldInput;
   diagnosis: FieldInput;
-  minNumImagingSessions: number | null;
-  minNumPhenotypicSessions: number | null;
+  minNumImagingSessions: string;
+  minNumPhenotypicSessions: string;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
   pipelineVersion: FieldInput;
   pipelineName: FieldInput;
   pipelines: Pipelines;
   updateCategoricalQueryParams: (label: string, value: FieldInput) => void;
-  updateContinuousQueryParams: (label: string, value: number | null) => void;
+  updateContinuousQueryParams: (label: string, value: string) => void;
   loading: boolean;
   onSubmitQuery: () => void;
 }) {
   const [openDialog, setOpenDialog] = useState(false);
+
+  function parseNumericValue(value: string): number | null {
+    const trimmedValue = value.trim();
+    if (trimmedValue === '') {
+      return null;
+    }
+
+    const parsed = Number(trimmedValue);
+    return Number.isNaN(parsed) ? Number.NaN : parsed;
+  }
 
   function validateContinuousValue(value: number | null) {
     if (value === null) {
@@ -70,13 +80,26 @@ function QueryForm({
     return '';
   }
 
-  const minAgeHelperText: string = validateContinuousValue(minAge);
-  const maxAgeHelperText: string = validateContinuousValue(maxAge);
-  const minNumImagingSessionsHelperText: string = validateContinuousValue(minNumImagingSessions);
-  const minNumPhenotypicSessionsHelperText: string =
-    validateContinuousValue(minNumPhenotypicSessions);
+  const parsedMinAge = parseNumericValue(minAge);
+  const parsedMaxAge = parseNumericValue(maxAge);
+  const parsedMinNumImagingSessions = parseNumericValue(minNumImagingSessions);
+  const parsedMinNumPhenotypicSessions = parseNumericValue(minNumPhenotypicSessions);
 
-  const minAgeExceedsMaxAge: boolean = minAge && maxAge ? minAge > maxAge : false;
+  const minAgeHelperText: string = validateContinuousValue(parsedMinAge);
+  const maxAgeHelperText: string = validateContinuousValue(parsedMaxAge);
+  const minNumImagingSessionsHelperText: string = validateContinuousValue(
+    parsedMinNumImagingSessions
+  );
+  const minNumPhenotypicSessionsHelperText: string = validateContinuousValue(
+    parsedMinNumPhenotypicSessions
+  );
+
+  const minAgeExceedsMaxAge: boolean =
+    parsedMinAge !== null &&
+    parsedMaxAge !== null &&
+    !Number.isNaN(parsedMinAge) &&
+    !Number.isNaN(parsedMaxAge) &&
+    parsedMinAge > parsedMaxAge;
   const disableSubmit: boolean =
     minAgeExceedsMaxAge ||
     minAgeHelperText !== '' ||
@@ -101,6 +124,7 @@ function QueryForm({
         <ContinuousField
           helperText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
           label="Minimum age"
+          value={minAge}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
@@ -108,6 +132,7 @@ function QueryForm({
         <ContinuousField
           helperText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
           label="Maximum age"
+          value={maxAge}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
@@ -146,6 +171,7 @@ function QueryForm({
         <ContinuousField
           helperText={minNumImagingSessionsHelperText}
           label="Minimum number of imaging sessions"
+          value={minNumImagingSessions}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
@@ -153,6 +179,7 @@ function QueryForm({
         <ContinuousField
           helperText={minNumPhenotypicSessionsHelperText}
           label="Minimum number of phenotypic sessions"
+          value={minNumPhenotypicSessions}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
