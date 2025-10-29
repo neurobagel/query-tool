@@ -32,8 +32,7 @@ import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
 import './App.css';
 import logo from './assets/logo.png';
-import areFormStatesEqual from './utils/utils';
-import useSendQueries from './hooks/useSendQueries';
+import areFormStatesEqual, { sendDatasetsQuery, sendSubjectsQuery } from './utils/utils';
 
 function App() {
   // Screen is considered small if the width is less than 768px (according to tailwind docs)
@@ -73,7 +72,6 @@ function App() {
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [IDToken, setIDToken] = useState<string | undefined>('');
   const { isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
-  const { sendDatasetsQuery, sendSubjectsQuery } = useSendQueries(IDToken);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isQueryFormOpen, setIsQueryFormOpen] = useState(true);
@@ -477,7 +475,7 @@ function App() {
     const formStateOnSubmit = currentQueryFormState;
 
     try {
-      const data = await sendDatasetsQuery(datasetsRequestBody);
+      const data = await sendDatasetsQuery(datasetsRequestBody, IDToken);
       setResult(data);
       setResultStatus(data.nodes_response_status);
       setActiveQueryParams(datasetsRequestBody);
@@ -559,12 +557,15 @@ function App() {
       throw new Error('No results available for download');
     }
 
-    return sendSubjectsQuery({
-      queryParams: activeQueryParams,
-      datasetSelection,
-      datasetResponses: result.responses,
-      nodes: availableNodes,
-    });
+    return sendSubjectsQuery(
+      {
+        queryParams: activeQueryParams,
+        datasetSelection,
+        datasetResponses: result.responses,
+        nodes: availableNodes,
+      },
+      IDToken
+    );
   }
 
   return (
