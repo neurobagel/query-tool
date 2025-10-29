@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import QueryForm from '../../src/components/QueryForm';
 
 const defaultProps = {
@@ -156,41 +155,31 @@ describe('QueryForm', () => {
   });
   it('Fires updateContinuousQueryParams event handler with the appropriate payload when a continuous field is selected', () => {
     const updateContinuousQueryParamsSpy = cy.spy().as('updateContinuousQueryParamsSpy');
-    // Provide local state so the controlled form reflects typing; without feeding the updated
-    // value back in, the field would instantly revert to the default string and the change handler would
-    // only ever report intermediate characters.
-    function QueryFormWithState(): JSX.Element {
-      const [minAge, setMinAge] = useState<string>(defaultProps.minAge);
-      return (
-        <QueryForm
-          availableNodes={defaultProps.availableNodes}
-          diagnosisOptions={defaultProps.diagnosisOptions}
-          assessmentOptions={defaultProps.assessmentOptions}
-          selectedNode={defaultProps.selectedNode}
-          minAge={minAge}
-          maxAge={defaultProps.maxAge}
-          sex={defaultProps.sex}
-          diagnosis={defaultProps.diagnosis}
-          minNumImagingSessions={defaultProps.minNumImagingSessions}
-          minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
-          assessmentTool={defaultProps.assessmentTool}
-          imagingModality={defaultProps.imagingModality}
-          pipelineVersion={defaultProps.pipelineVersion}
-          pipelineName={defaultProps.pipelineName}
-          pipelines={defaultProps.pipelines}
-          updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
-          updateContinuousQueryParams={(label, value) => {
-            setMinAge(value);
-            updateContinuousQueryParamsSpy(label, value);
-          }}
-          loading={defaultProps.loading}
-          onSubmitQuery={defaultProps.onSubmitQuery}
-        />
-      );
-    }
-    cy.mount(<QueryFormWithState />);
-    cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
-    cy.wrap(updateContinuousQueryParamsSpy).should('have.been.calledWith', 'Minimum age', '10');
+    cy.mount(
+      <QueryForm
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge="1"
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
+        updateContinuousQueryParams={updateContinuousQueryParamsSpy}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
+      />
+    );
+    cy.get('[data-cy="Minimum age-continuous-field"] input').type('0');
+    cy.get('@updateContinuousQueryParamsSpy').should('have.been.calledWith', 'Minimum age', '10');
   });
   it('Fires the onSubmitQuery event handler when the submit button is clicked', () => {
     const onSubmitQuerySpy = cy.spy().as('onSubmitQuerySpy');
