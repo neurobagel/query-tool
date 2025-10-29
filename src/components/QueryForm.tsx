@@ -113,7 +113,7 @@ function QueryForm({
       </div>
       <div>
         <ContinuousField
-          helperText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
+          errorText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
           label="Minimum age"
           value={minAge}
           onFieldChange={updateContinuousQueryParams}
@@ -121,7 +121,7 @@ function QueryForm({
       </div>
       <div>
         <ContinuousField
-          helperText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
+          errorText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
           label="Maximum age"
           value={maxAge}
           onFieldChange={updateContinuousQueryParams}
@@ -160,7 +160,7 @@ function QueryForm({
       </div>
       <div>
         <ContinuousField
-          helperText={minNumImagingSessionsHelperText}
+          errorText={minNumImagingSessionsHelperText}
           label="Minimum number of imaging sessions"
           value={minNumImagingSessions}
           onFieldChange={updateContinuousQueryParams}
@@ -168,7 +168,7 @@ function QueryForm({
       </div>
       <div>
         <ContinuousField
-          helperText={minNumPhenotypicSessionsHelperText}
+          errorText={minNumPhenotypicSessionsHelperText}
           label="Minimum number of phenotypic sessions"
           value={minNumPhenotypicSessions}
           onFieldChange={updateContinuousQueryParams}

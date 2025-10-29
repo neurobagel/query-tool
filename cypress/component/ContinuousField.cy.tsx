@@ -1,7 +1,7 @@
 import ContinuousField from '../../src/components/ContinuousField';
 
 const defaultProps = {
-  helperText: 'This is a helper text',
+  errorText: 'This is an error text',
   label: 'Continuous Field',
   value: '',
   onFieldChange: () => {},
@@ -14,6 +14,7 @@ describe('ContinuousField', () => {
         label={defaultProps.label}
         value={defaultProps.value}
         onFieldChange={defaultProps.onFieldChange}
+        errorText=""
       />
     );
     cy.get('[data-cy="Continuous Field-continuous-field"]').should('be.visible');
@@ -26,18 +27,18 @@ describe('ContinuousField', () => {
       'Mui-error'
     );
   });
-  it('Displays a MUI Textfield in error state when the helper text is not empty', () => {
+  it('Displays a MUI Textfield in error state when the error text is not empty', () => {
     cy.mount(
       <ContinuousField
         label={defaultProps.label}
         onFieldChange={defaultProps.onFieldChange}
-        helperText={defaultProps.helperText}
+        errorText={defaultProps.errorText}
         value={defaultProps.value}
       />
     );
     cy.get('[data-cy="Continuous Field-continuous-field"] p').should(
       'contain',
-      'This is a helper text'
+      'This is an error text'
     );
     cy.get('[data-cy="Continuous Field-continuous-field"] label').should('have.class', 'Mui-error');
   });
@@ -47,6 +48,7 @@ describe('ContinuousField', () => {
         label={defaultProps.label}
         value="42"
         onFieldChange={defaultProps.onFieldChange}
+        errorText=""
       />
     );
     cy.get('[data-cy="Continuous Field-continuous-field"] input').should('have.value', '42');
@@ -54,7 +56,12 @@ describe('ContinuousField', () => {
   it('Fires onFieldChange event handler with the appropriate payload when a value is entered', () => {
     const onFieldChangeSpy = cy.spy().as('onFieldChangeSpy');
     cy.mount(
-      <ContinuousField label={defaultProps.label} value="1" onFieldChange={onFieldChangeSpy} />
+      <ContinuousField
+        label={defaultProps.label}
+        value="1"
+        onFieldChange={onFieldChangeSpy}
+        errorText=""
+      />
     );
     cy.get('[data-cy="Continuous Field-continuous-field"] input').type('0');
     cy.get('@onFieldChangeSpy').should('have.been.calledWith', 'Continuous Field', '10');

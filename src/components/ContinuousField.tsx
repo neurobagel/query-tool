@@ -1,15 +1,14 @@
 import TextField from '@mui/material/TextField';
 
 export interface ContinuousFieldProps {
-  helperText?: string;
+  errorText: string;
   label: string;
   value: string;
   onFieldChange: (fieldLabel: string, value: string) => void;
 }
 
-function ContinuousField({ helperText, label, value, onFieldChange }: ContinuousFieldProps) {
-  const normalizedHelperText = helperText ?? '';
-  const showError: boolean = normalizedHelperText !== '';
+function ContinuousField({ errorText, label, value, onFieldChange }: ContinuousFieldProps) {
+  const showError: boolean = errorText !== '';
 
   return (
     <TextField
@@ -19,7 +18,7 @@ function ContinuousField({ helperText, label, value, onFieldChange }: Continuous
       className="w-full"
       value={value}
       onChange={(event) => onFieldChange(label, event.target.value)}
-      helperText={normalizedHelperText}
+      helperText={errorText}
     />
   );
 }
