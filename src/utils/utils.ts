@@ -46,7 +46,7 @@ export function parseNumericValue(value: string): number | null {
   }
 
   const parsed = Number(trimmedValue);
-  return Number.isNaN(parsed) ? Number.NaN : parsed;
+  return Number.isNaN(parsed) ? null : parsed;
 }
 
 export default function areFormStatesEqual(a: QueryFormState, b: QueryFormState): boolean {

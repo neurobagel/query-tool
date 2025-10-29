@@ -29,15 +29,15 @@ describe('parseNumericValue', () => {
     expect(parseNumericValue('  25  ')).to.equal(25);
   });
 
-  it('returns NaN for invalid numeric string', () => {
-    expect(Number.isNaN(parseNumericValue('abc'))).to.equal(true);
+  it('returns null for invalid numeric string', () => {
+    expect(parseNumericValue('abc')).to.equal(null);
   });
 
-  it('returns NaN for mixed alphanumeric string', () => {
-    expect(Number.isNaN(parseNumericValue('12abc'))).to.equal(true);
+  it('returns null for mixed alphanumeric string', () => {
+    expect(parseNumericValue('12abc')).to.equal(null);
   });
 
-  it('returns NaN for special characters', () => {
-    expect(Number.isNaN(parseNumericValue('!@#'))).to.equal(true);
+  it('returns null for special characters', () => {
+    expect(parseNumericValue('!@#')).to.equal(null);
   });
 });

@@ -32,7 +32,11 @@ import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
 import './App.css';
 import logo from './assets/logo.png';
-import areFormStatesEqual, { sendDatasetsQuery, sendSubjectsQuery } from './utils/utils';
+import areFormStatesEqual, {
+  parseNumericValue,
+  sendDatasetsQuery,
+  sendSubjectsQuery,
+} from './utils/utils';
 
 function App() {
   // Screen is considered small if the width is less than 768px (according to tailwind docs)
@@ -418,16 +422,6 @@ function App() {
     }
   }
 
-  function parseNumericParam(value: string): number | null {
-    const trimmed = value.trim();
-    if (trimmed === '') {
-      return null;
-    }
-
-    const parsed = Number(trimmed);
-    return Number.isNaN(parsed) ? null : parsed;
-  }
-
   /**
    * Constructs the request body for the datasets endpoint.
    *
@@ -444,18 +438,18 @@ function App() {
     }
 
     // Add optional parameters only if they have values
-    const minAgeNumber = parseNumericParam(minAge);
+    const minAgeNumber = parseNumericValue(minAge);
     if (minAgeNumber !== null) requestBody.min_age = minAgeNumber;
 
-    const maxAgeNumber = parseNumericParam(maxAge);
+    const maxAgeNumber = parseNumericValue(maxAge);
     if (maxAgeNumber !== null) requestBody.max_age = maxAgeNumber;
     if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
     if (diagnosis && !Array.isArray(diagnosis)) requestBody.diagnosis = diagnosis.id;
-    const minNumImagingSessionsNumber = parseNumericParam(minNumImagingSessions);
+    const minNumImagingSessionsNumber = parseNumericValue(minNumImagingSessions);
     if (minNumImagingSessionsNumber !== null)
       requestBody.min_num_imaging_sessions = minNumImagingSessionsNumber;
 
-    const minNumPhenotypicSessionsNumber = parseNumericParam(minNumPhenotypicSessions);
+    const minNumPhenotypicSessionsNumber = parseNumericValue(minNumPhenotypicSessions);
     if (minNumPhenotypicSessionsNumber !== null)
       requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessionsNumber;
     if (assessmentTool && !Array.isArray(assessmentTool))

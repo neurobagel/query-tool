@@ -57,15 +57,16 @@ function QueryForm({
 }) {
   const [openDialog, setOpenDialog] = useState(false);
 
-  function validateContinuousValue(value: number | null) {
-    if (value === null) {
+  function validateContinuousValue(rawValue: string, parsedValue: number | null) {
+    const trimmed = rawValue.trim();
+    if (trimmed === '') {
       // Value is default, user has not entered anything yet
       return '';
     }
-    if (Number.isNaN(value)) {
+    if (parsedValue === null) {
       return 'Please enter a valid number!';
     }
-    if (value < 0) {
+    if (parsedValue < 0) {
       return 'Please enter a positive number!';
     }
     return '';
@@ -76,21 +77,19 @@ function QueryForm({
   const parsedMinNumImagingSessions = parseNumericValue(minNumImagingSessions);
   const parsedMinNumPhenotypicSessions = parseNumericValue(minNumPhenotypicSessions);
 
-  const minAgeHelperText: string = validateContinuousValue(parsedMinAge);
-  const maxAgeHelperText: string = validateContinuousValue(parsedMaxAge);
+  const minAgeHelperText: string = validateContinuousValue(minAge, parsedMinAge);
+  const maxAgeHelperText: string = validateContinuousValue(maxAge, parsedMaxAge);
   const minNumImagingSessionsHelperText: string = validateContinuousValue(
+    minNumImagingSessions,
     parsedMinNumImagingSessions
   );
   const minNumPhenotypicSessionsHelperText: string = validateContinuousValue(
+    minNumPhenotypicSessions,
     parsedMinNumPhenotypicSessions
   );
 
   const minAgeExceedsMaxAge: boolean =
-    parsedMinAge !== null &&
-    parsedMaxAge !== null &&
-    !Number.isNaN(parsedMinAge) &&
-    !Number.isNaN(parsedMaxAge) &&
-    parsedMinAge > parsedMaxAge;
+    parsedMinAge !== null && parsedMaxAge !== null && parsedMinAge > parsedMaxAge;
   const disableSubmit: boolean =
     minAgeExceedsMaxAge ||
     minAgeHelperText !== '' ||
