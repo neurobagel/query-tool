@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import ContinuousField from '../../src/components/ContinuousField';
 
 const defaultProps = {
   helperText: 'This is a helper text',
   label: 'Continuous Field',
+  value: '',
   onFieldChange: () => {},
 };
 
@@ -12,7 +12,7 @@ describe('ContinuousField', () => {
     cy.mount(
       <ContinuousField
         label={defaultProps.label}
-        value=""
+        value={defaultProps.value}
         onFieldChange={defaultProps.onFieldChange}
       />
     );
@@ -32,7 +32,7 @@ describe('ContinuousField', () => {
         label={defaultProps.label}
         onFieldChange={defaultProps.onFieldChange}
         helperText={defaultProps.helperText}
-        value=""
+        value={defaultProps.value}
       />
     );
     cy.get('[data-cy="Continuous Field-continuous-field"] p').should(
@@ -41,26 +41,22 @@ describe('ContinuousField', () => {
     );
     cy.get('[data-cy="Continuous Field-continuous-field"] label').should('have.class', 'Mui-error');
   });
+  it('Displays the value passed via prop', () => {
+    cy.mount(
+      <ContinuousField
+        label={defaultProps.label}
+        value="42"
+        onFieldChange={defaultProps.onFieldChange}
+      />
+    );
+    cy.get('[data-cy="Continuous Field-continuous-field"] input').should('have.value', '42');
+  });
   it('Fires onFieldChange event handler with the appropriate payload when a value is entered', () => {
     const onFieldChangeSpy = cy.spy().as('onFieldChangeSpy');
-    // We need to provide local state so the controlled form reflects typing; without feeding the updated
-    // value back in, the field would instantly revert to null and the change handler would only
-    // ever report intermediate characters e.g, instead of one payload being 10 it would read two payloads of 1 and 0.
-    function ControlledField(): JSX.Element {
-      const [value, setValue] = useState<string>('');
-      return (
-        <ContinuousField
-          label={defaultProps.label}
-          value={value}
-          onFieldChange={(label, nextValue) => {
-            setValue(nextValue);
-            onFieldChangeSpy(label, nextValue);
-          }}
-        />
-      );
-    }
-    cy.mount(<ControlledField />);
-    cy.get('[data-cy="Continuous Field-continuous-field"]').type('10');
+    cy.mount(
+      <ContinuousField label={defaultProps.label} value="1" onFieldChange={onFieldChangeSpy} />
+    );
+    cy.get('[data-cy="Continuous Field-continuous-field"] input').type('0');
     cy.get('@onFieldChangeSpy').should('have.been.calledWith', 'Continuous Field', '10');
   });
 });
