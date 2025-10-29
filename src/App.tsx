@@ -677,7 +677,7 @@ function App() {
                   data-cy="query-form-changed-alert"
                 >
                   You have edited the query form fields since you&apos;ve submitted your query.
-                  Downloading is disabled until you undo the changes or submit the new query.
+                  Downloading is disabled until you undo the changes or submit a new query.
                 </Alert>
               )}
               <ResultContainer
