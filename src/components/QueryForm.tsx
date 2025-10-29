@@ -9,6 +9,7 @@ import {
   FieldInput,
   Pipelines,
 } from '../utils/types';
+import { parseNumericValue } from '../utils/utils';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
@@ -55,16 +56,6 @@ function QueryForm({
   onSubmitQuery: () => void;
 }) {
   const [openDialog, setOpenDialog] = useState(false);
-
-  function parseNumericValue(value: string): number | null {
-    const trimmedValue = value.trim();
-    if (trimmedValue === '') {
-      return null;
-    }
-
-    const parsed = Number(trimmedValue);
-    return Number.isNaN(parsed) ? Number.NaN : parsed;
-  }
 
   function validateContinuousValue(value: number | null) {
     if (value === null) {

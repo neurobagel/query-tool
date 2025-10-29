@@ -39,6 +39,16 @@ function areStringArraysEqual(a: string[], b: string[]): boolean {
   return sortedA.every((value, index) => value === sortedB[index]);
 }
 
+export function parseNumericValue(value: string): number | null {
+  const trimmedValue = value.trim();
+  if (trimmedValue === '') {
+    return null;
+  }
+
+  const parsed = Number(trimmedValue);
+  return Number.isNaN(parsed) ? Number.NaN : parsed;
+}
+
 export default function areFormStatesEqual(a: QueryFormState, b: QueryFormState): boolean {
   return (
     areStringArraysEqual(a.nodes, b.nodes) &&
