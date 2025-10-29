@@ -20,15 +20,11 @@ describe('Undo cohort changes', () => {
     cy.get('[data-cy="close-auth-dialog-button"]').click();
   });
 
-  function runQueryAndSelectFirstDataset() {
+  it('restores continuous field changes and re-enables downloads after undo', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@datasetsQuery');
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
     cy.get('[data-cy="download-results-button"]').should('not.be.disabled');
-  }
-
-  it('restores continuous field changes and re-enables downloads after undo', () => {
-    runQueryAndSelectFirstDataset();
 
     cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
     cy.get('[data-cy="query-form-changed-alert"]').should('be.visible');
@@ -42,7 +38,10 @@ describe('Undo cohort changes', () => {
   });
 
   it('restores categorical field changes and re-enables downloads after undo', () => {
-    runQueryAndSelectFirstDataset();
+    cy.get('[data-cy="submit-query-button"]').click();
+    cy.wait('@datasetsQuery');
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
+    cy.get('[data-cy="download-results-button"]').should('not.be.disabled');
 
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
