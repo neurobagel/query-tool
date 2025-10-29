@@ -44,14 +44,10 @@ function DownloadResultButton({
     setOpen(false);
   };
 
-  const handleDownloadClick = () => {
-    handleClick(selectedIndex);
-  };
-
   const button = (
     <>
       <ButtonGroup disabled={disabled || loading} variant="contained" ref={anchorRef}>
-        <Button onClick={handleDownloadClick} data-cy="download-results-button">
+        <Button onClick={() => handleClick(selectedIndex)} data-cy="download-results-button">
           {loading ? (
             <>
               Downloading selected query results
