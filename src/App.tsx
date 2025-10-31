@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, Grow, IconButton } from '@mui/material';
@@ -71,7 +71,6 @@ function App() {
 
   const [activeQueryParams, setActiveQueryParams] = useState<QueryParams | null>(null);
   const [activeQueryParamsState, setActiveQueryParamsState] = useState<QueryFormState | null>(null);
-  const [hasFormChanged, setHasFormChanged] = useState<boolean>(false);
 
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [IDToken, setIDToken] = useState<string | undefined>('');
@@ -121,34 +120,19 @@ function App() {
     </IconButton>
   );
 
-  const currentQueryFormState: QueryFormState = useMemo(
-    () => ({
-      nodes: [...searchParams.getAll('node')],
-      minAge,
-      maxAge,
-      sex,
-      diagnosis,
-      minNumImagingSessions,
-      minNumPhenotypicSessions,
-      assessmentTool,
-      imagingModality,
-      pipelineName,
-      pipelineVersion,
-    }),
-    [
-      searchParams,
-      minAge,
-      maxAge,
-      sex,
-      diagnosis,
-      minNumImagingSessions,
-      minNumPhenotypicSessions,
-      assessmentTool,
-      imagingModality,
-      pipelineName,
-      pipelineVersion,
-    ]
-  );
+  const currentQueryFormState: QueryFormState = {
+    nodes: [...searchParams.getAll('node')],
+    minAge,
+    maxAge,
+    sex,
+    diagnosis,
+    minNumImagingSessions,
+    minNumPhenotypicSessions,
+    assessmentTool,
+    imagingModality,
+    pipelineName,
+    pipelineVersion,
+  };
 
   useEffect(() => {
     async function getAttributes(NBResource: string, dataElementURI: string) {
@@ -331,14 +315,10 @@ function App() {
     }
   }, [searchParams, setSearchParams, availableNodes]);
 
-  useEffect(() => {
-    if (!activeQueryParams || !activeQueryParamsState) {
-      setHasFormChanged(false);
-      return;
-    }
-
-    setHasFormChanged(!areFormStatesEqual(currentQueryFormState, activeQueryParamsState));
-  }, [activeQueryParams, activeQueryParamsState, currentQueryFormState]);
+  const hasFormChanged =
+    activeQueryParams && activeQueryParamsState
+      ? !areFormStatesEqual(currentQueryFormState, activeQueryParamsState)
+      : false;
 
   function showAlert() {
     if (selectedNode && Array.isArray(selectedNode)) {
@@ -474,7 +454,6 @@ function App() {
       setResultStatus(data.nodes_response_status);
       setActiveQueryParams(datasetsRequestBody);
       setActiveQueryParamsState(formStateOnSubmit);
-      setHasFormChanged(false);
     } catch {
       setResultStatus('network error');
     }
