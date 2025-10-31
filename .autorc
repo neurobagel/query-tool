@@ -15,6 +15,12 @@
                 "subject": "[pre-commit.ci]",
                 "labels": ["_bot", "skip-release"]
             }
+        ],
+        [
+            "npm",
+            {
+                "setRcToken": false
+            }
         ]
     ],
     "labels": [
