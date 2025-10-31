@@ -1,6 +1,6 @@
 import QueryForm from '../../src/components/QueryForm';
 
-const props = {
+const defaultProps = {
   availableNodes: [
     {
       NodeName: 'Some Node Name',
@@ -32,12 +32,12 @@ const props = {
     },
   ],
   selectedNode: [],
-  minAge: null,
-  maxAge: null,
+  minAge: '',
+  maxAge: '',
   sex: null,
   diagnosis: null,
-  minNumImagingSessions: null,
-  minNumPhenotypicSessions: null,
+  minNumImagingSessions: '',
+  minNumPhenotypicSessions: '',
   assessmentTool: null,
   imagingModality: null,
   pipelineVersion: null,
@@ -55,25 +55,25 @@ describe('QueryForm', () => {
   it('Displays a set of fields for user input and a button for submitting query', () => {
     cy.mount(
       <QueryForm
-        availableNodes={props.availableNodes}
-        diagnosisOptions={props.diagnosisOptions}
-        assessmentOptions={props.assessmentOptions}
-        selectedNode={props.selectedNode}
-        minAge={props.minAge}
-        maxAge={props.maxAge}
-        sex={props.sex}
-        diagnosis={props.diagnosis}
-        minNumImagingSessions={props.minNumImagingSessions}
-        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        assessmentTool={props.assessmentTool}
-        imagingModality={props.imagingModality}
-        pipelineVersion={props.pipelineVersion}
-        pipelineName={props.pipelineName}
-        pipelines={props.pipelines}
-        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
-        updateContinuousQueryParams={props.updateContinuousQueryParams}
-        loading={props.loading}
-        onSubmitQuery={props.onSubmitQuery}
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
       />
     );
     cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('be.visible');
@@ -96,25 +96,25 @@ describe('QueryForm', () => {
   it('Clicking the how to get data dialog button should open the dialog', () => {
     cy.mount(
       <QueryForm
-        availableNodes={props.availableNodes}
-        diagnosisOptions={props.diagnosisOptions}
-        assessmentOptions={props.assessmentOptions}
-        selectedNode={props.selectedNode}
-        minAge={props.minAge}
-        maxAge={props.maxAge}
-        sex={props.sex}
-        diagnosis={props.diagnosis}
-        minNumImagingSessions={props.minNumImagingSessions}
-        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        assessmentTool={props.assessmentTool}
-        imagingModality={props.imagingModality}
-        pipelineVersion={props.pipelineVersion}
-        pipelineName={props.pipelineName}
-        pipelines={props.pipelines}
-        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
-        updateContinuousQueryParams={props.updateContinuousQueryParams}
-        loading={props.loading}
-        onSubmitQuery={props.onSubmitQuery}
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
       />
     );
     cy.get('[data-cy="get-data-dialog"]').should('not.exist');
@@ -125,25 +125,25 @@ describe('QueryForm', () => {
     const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
     cy.mount(
       <QueryForm
-        availableNodes={props.availableNodes}
-        diagnosisOptions={props.diagnosisOptions}
-        assessmentOptions={props.assessmentOptions}
-        selectedNode={props.selectedNode}
-        minAge={props.minAge}
-        maxAge={props.maxAge}
-        sex={props.sex}
-        diagnosis={props.diagnosis}
-        minNumImagingSessions={props.minNumImagingSessions}
-        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        assessmentTool={props.assessmentTool}
-        imagingModality={props.imagingModality}
-        pipelineVersion={props.pipelineVersion}
-        pipelineName={props.pipelineName}
-        pipelines={props.pipelines}
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
         updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
-        updateContinuousQueryParams={props.updateContinuousQueryParams}
-        loading={props.loading}
-        onSubmitQuery={props.onSubmitQuery}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
       />
     );
 
@@ -157,52 +157,52 @@ describe('QueryForm', () => {
     const updateContinuousQueryParamsSpy = cy.spy().as('updateContinuousQueryParamsSpy');
     cy.mount(
       <QueryForm
-        availableNodes={props.availableNodes}
-        diagnosisOptions={props.diagnosisOptions}
-        assessmentOptions={props.assessmentOptions}
-        selectedNode={props.selectedNode}
-        minAge={props.minAge}
-        maxAge={props.maxAge}
-        sex={props.sex}
-        diagnosis={props.diagnosis}
-        minNumImagingSessions={props.minNumImagingSessions}
-        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        assessmentTool={props.assessmentTool}
-        imagingModality={props.imagingModality}
-        pipelineVersion={props.pipelineVersion}
-        pipelineName={props.pipelineName}
-        pipelines={props.pipelines}
-        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge="1"
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
         updateContinuousQueryParams={updateContinuousQueryParamsSpy}
-        loading={props.loading}
-        onSubmitQuery={props.onSubmitQuery}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
       />
     );
-    cy.get('[data-cy="Minimum age-continuous-field"]').type('10');
-    cy.get('@updateContinuousQueryParamsSpy').should('have.been.calledWith', 'Minimum age', 10);
+    cy.get('[data-cy="Minimum age-continuous-field"] input').type('0');
+    cy.get('@updateContinuousQueryParamsSpy').should('have.been.calledWith', 'Minimum age', '10');
   });
   it('Fires the onSubmitQuery event handler when the submit button is clicked', () => {
     const onSubmitQuerySpy = cy.spy().as('onSubmitQuerySpy');
     cy.mount(
       <QueryForm
-        availableNodes={props.availableNodes}
-        diagnosisOptions={props.diagnosisOptions}
-        assessmentOptions={props.assessmentOptions}
-        selectedNode={props.selectedNode}
-        minAge={props.minAge}
-        maxAge={props.maxAge}
-        sex={props.sex}
-        diagnosis={props.diagnosis}
-        minNumImagingSessions={props.minNumImagingSessions}
-        minNumPhenotypicSessions={props.minNumPhenotypicSessions}
-        assessmentTool={props.assessmentTool}
-        imagingModality={props.imagingModality}
-        pipelineVersion={props.pipelineVersion}
-        pipelineName={props.pipelineName}
-        pipelines={props.pipelines}
-        updateCategoricalQueryParams={props.updateCategoricalQueryParams}
-        updateContinuousQueryParams={props.updateContinuousQueryParams}
-        loading={props.loading}
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
         onSubmitQuery={onSubmitQuerySpy}
       />
     );

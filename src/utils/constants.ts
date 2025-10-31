@@ -4,7 +4,9 @@ export const baseAPIURL: string = NB_API_QUERY_URL.endsWith('/')
   ? NB_API_QUERY_URL
   : `${NB_API_QUERY_URL}/`;
 
-export const queryURL: string = `${baseAPIURL}query?`;
+export const datasetsURL: string = `${baseAPIURL}datasets`;
+
+export const subjectsURL: string = `${baseAPIURL}subjects`;
 
 export const nodesURL: string = `${baseAPIURL}nodes`;
 

@@ -11,7 +11,7 @@ export default defineConfig({
   },
 
   component: {
-    specPattern: 'cypress/component/*',
+    specPattern: ['cypress/component/*', 'cypress/unit/*'],
     devServer: {
       framework: 'react',
       bundler: 'vite',

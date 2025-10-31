@@ -9,6 +9,7 @@ import {
   FieldInput,
   Pipelines,
 } from '../utils/types';
+import { parseNumericValue } from '../utils/utils';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
@@ -38,45 +39,57 @@ function QueryForm({
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
   selectedNode: FieldInput;
-  minAge: number | null;
-  maxAge: number | null;
+  minAge: string;
+  maxAge: string;
   sex: FieldInput;
   diagnosis: FieldInput;
-  minNumImagingSessions: number | null;
-  minNumPhenotypicSessions: number | null;
+  minNumImagingSessions: string;
+  minNumPhenotypicSessions: string;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
   pipelineVersion: FieldInput;
   pipelineName: FieldInput;
   pipelines: Pipelines;
   updateCategoricalQueryParams: (label: string, value: FieldInput) => void;
-  updateContinuousQueryParams: (label: string, value: number | null) => void;
+  updateContinuousQueryParams: (label: string, value: string) => void;
   loading: boolean;
   onSubmitQuery: () => void;
 }) {
   const [openDialog, setOpenDialog] = useState(false);
 
-  function validateContinuousValue(value: number | null) {
-    if (value === null) {
+  function validateContinuousValue(rawValue: string, parsedValue: number | null) {
+    const trimmed = rawValue.trim();
+    if (trimmed === '') {
       // Value is default, user has not entered anything yet
       return '';
     }
-    if (Number.isNaN(value)) {
+    if (parsedValue === null) {
       return 'Please enter a valid number!';
     }
-    if (value < 0) {
+    if (parsedValue < 0) {
       return 'Please enter a positive number!';
     }
     return '';
   }
 
-  const minAgeHelperText: string = validateContinuousValue(minAge);
-  const maxAgeHelperText: string = validateContinuousValue(maxAge);
-  const minNumImagingSessionsHelperText: string = validateContinuousValue(minNumImagingSessions);
-  const minNumPhenotypicSessionsHelperText: string =
-    validateContinuousValue(minNumPhenotypicSessions);
+  const parsedMinAge = parseNumericValue(minAge);
+  const parsedMaxAge = parseNumericValue(maxAge);
+  const parsedMinNumImagingSessions = parseNumericValue(minNumImagingSessions);
+  const parsedMinNumPhenotypicSessions = parseNumericValue(minNumPhenotypicSessions);
 
-  const minAgeExceedsMaxAge: boolean = minAge && maxAge ? minAge > maxAge : false;
+  const minAgeHelperText: string = validateContinuousValue(minAge, parsedMinAge);
+  const maxAgeHelperText: string = validateContinuousValue(maxAge, parsedMaxAge);
+  const minNumImagingSessionsHelperText: string = validateContinuousValue(
+    minNumImagingSessions,
+    parsedMinNumImagingSessions
+  );
+  const minNumPhenotypicSessionsHelperText: string = validateContinuousValue(
+    minNumPhenotypicSessions,
+    parsedMinNumPhenotypicSessions
+  );
+
+  const minAgeExceedsMaxAge: boolean =
+    parsedMinAge !== null && parsedMaxAge !== null && parsedMinAge > parsedMaxAge;
   const disableSubmit: boolean =
     minAgeExceedsMaxAge ||
     minAgeHelperText !== '' ||
@@ -99,15 +112,17 @@ function QueryForm({
       </div>
       <div>
         <ContinuousField
-          helperText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
+          errorText={minAgeExceedsMaxAge ? '' : minAgeHelperText}
           label="Minimum age"
+          value={minAge}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
       <div>
         <ContinuousField
-          helperText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
+          errorText={minAgeExceedsMaxAge ? '' : maxAgeHelperText}
           label="Maximum age"
+          value={maxAge}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
@@ -144,15 +159,17 @@ function QueryForm({
       </div>
       <div>
         <ContinuousField
-          helperText={minNumImagingSessionsHelperText}
+          errorText={minNumImagingSessionsHelperText}
           label="Minimum number of imaging sessions"
+          value={minNumImagingSessions}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>
       <div>
         <ContinuousField
-          helperText={minNumPhenotypicSessionsHelperText}
+          errorText={minNumPhenotypicSessionsHelperText}
           label="Minimum number of phenotypic sessions"
+          value={minNumPhenotypicSessions}
           onFieldChange={updateContinuousQueryParams}
         />
       </div>

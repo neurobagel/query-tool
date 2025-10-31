@@ -1,18 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FormControlLabel, Checkbox, Typography } from '@mui/material';
 import ResultCard from './ResultCard';
-import { QueryResponse, Pipelines, AttributeOption } from '../utils/types';
+import {
+  DatasetsResponse,
+  SubjectsResponse,
+  QueryParams,
+  Pipelines,
+  AttributeOption,
+} from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import { sexes, modalities } from '../utils/constants';
+import ErrorAlert from './ErrorAlert';
+
+type DownloadHandler = (buttonIndex: number, selection: string[]) => Promise<SubjectsResponse>;
 
 function ResultContainer({
   diagnosisOptions,
   assessmentOptions,
   response,
+  queryForm,
+  disableDownloads,
+  onDownload,
 }: {
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
-  response: QueryResponse | null;
+  response: DatasetsResponse | null;
+  queryForm: QueryParams | null;
+  disableDownloads: boolean;
+  onDownload: DownloadHandler;
 }) {
   const [download, setDownload] = useState<string[]>([]);
   const selectAll: boolean = response
@@ -29,6 +44,8 @@ function ResultContainer({
     });
   }
   const summaryStats = `Summary stats: ${numOfMatchedDatasets} datasets, ${numOfMatchedSubjects} subjects`;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   /**
    * Updates the download array.
@@ -138,51 +155,94 @@ function ResultContainer({
       : '';
   }
 
-  function generateTSVString(buttonIndex: number) {
-    if (response) {
-      const tsvRows = [];
-      const datasets = response.responses.filter((res) => download.includes(res.dataset_uuid));
-      const isFileWithLabels = buttonIndex === 0;
+  function generateTSVString(subjectsData: SubjectsResponse, buttonIndex: number) {
+    const tsvRows = [];
+    const isFileWithLabels = buttonIndex === 0;
 
-      const headers = [
-        'DatasetName',
-        'PortalURI',
-        'NumMatchingSubjects',
-        'SubjectID',
-        'SessionID',
-        'ImagingSessionPath',
-        'SessionType',
-        'NumMatchingPhenotypicSessions',
-        'NumMatchingImagingSessions',
-        'Age',
-        'Sex',
-        'Diagnosis',
-        'Assessment',
-        'SessionImagingModalities',
-        'SessionCompletedPipelines',
-        'DatasetImagingModalities',
-        'DatasetPipelines',
-      ].join('\t');
-      tsvRows.push(headers);
-      datasets.forEach((res) => {
-        if (res.records_protected) {
+    const headers = [
+      'DatasetName',
+      'PortalURI',
+      'NumMatchingSubjects',
+      'SubjectID',
+      'SessionID',
+      'ImagingSessionPath',
+      'SessionType',
+      'NumMatchingPhenotypicSessions',
+      'NumMatchingImagingSessions',
+      'Age',
+      'Sex',
+      'Diagnosis',
+      'Assessment',
+      'SessionImagingModalities',
+      'SessionCompletedPipelines',
+      'DatasetImagingModalities',
+      'DatasetPipelines',
+    ].join('\t');
+    tsvRows.push(headers);
+
+    subjectsData.responses.forEach((res) => {
+      if (res.records_protected) {
+        tsvRows.push(
+          [
+            res.dataset_name.replace(/\n/g, ' '),
+            res.dataset_portal_uri,
+            res.num_matching_subjects,
+            'protected', // subject_id
+            'protected', // session_id
+            'protected', // session_file_path
+            'protected', // session_type
+            'protected', // num_matching_phenotypic_sessions
+            'protected', // num_matching_imaging_sessions
+            'protected', // age
+            'protected', // sex
+            'protected', // diagnosis
+            'protected', // assessment
+            'protected', // session_imaging_modality
+            'protected', // session_completed_pipelines
+            isFileWithLabels
+              ? convertURIToLabel('modality', res.image_modals)
+              : res.image_modals?.join(','),
+            isFileWithLabels
+              ? convertURIToLabel(
+                  'pipeline',
+                  parsePipelinesInfoToString(res.available_pipelines).split(',')
+                )
+              : parsePipelinesInfoToString(res.available_pipelines),
+          ].join('\t')
+        );
+      } else {
+        // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
+        res.subject_data.forEach((subject) => {
           tsvRows.push(
             [
-              res.dataset_name.replace('\n', ' '),
+              res.dataset_name.replace(/\n/g, ' '),
               res.dataset_portal_uri,
               res.num_matching_subjects,
-              'protected', // subject_id
-              'protected', // session_id
-              'protected', // session_file_path
-              'protected', // session_type
-              'protected', // num_matching_phenotypic_sessions
-              'protected', // num_matching_imaging_sessions
-              'protected', // age
-              'protected', // sex
-              'protected', // diagnosis
-              'protected', // assessment
-              'protected', // session_imaging_modality
-              'protected', // session_completed_pipelines
+              subject.sub_id,
+              subject.session_id,
+              subject.session_file_path,
+              isFileWithLabels
+                ? convertURIToLabel('sessionType', subject.session_type)
+                : subject.session_type,
+              subject.num_matching_phenotypic_sessions,
+              subject.num_matching_imaging_sessions,
+              subject.age,
+              isFileWithLabels ? convertURIToLabel('sex', subject.sex) : subject.sex,
+              isFileWithLabels
+                ? convertURIToLabel('diagnosis', subject.diagnosis)
+                : subject.diagnosis,
+              isFileWithLabels
+                ? convertURIToLabel('assessment', subject.assessment)
+                : subject.assessment,
+              isFileWithLabels
+                ? convertURIToLabel('modality', subject.image_modal)
+                : subject.image_modal?.join(','),
+              isFileWithLabels
+                ? convertURIToLabel(
+                    'pipeline',
+                    parsePipelinesInfoToString(subject.completed_pipelines).split(',')
+                  )
+                : parsePipelinesInfoToString(subject.completed_pipelines),
               isFileWithLabels
                 ? convertURIToLabel('modality', res.image_modals)
                 : res.image_modals?.join(','),
@@ -194,72 +254,40 @@ function ResultContainer({
                 : parsePipelinesInfoToString(res.available_pipelines),
             ].join('\t')
           );
-        } else {
-          // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
-          res.subject_data.forEach((subject) => {
-            tsvRows.push(
-              [
-                res.dataset_name.replace('\n', ' '),
-                res.dataset_portal_uri,
-                res.num_matching_subjects,
-                subject.sub_id,
-                subject.session_id,
-                subject.session_file_path,
-                isFileWithLabels
-                  ? convertURIToLabel('sessionType', subject.session_type)
-                  : subject.session_type,
-                subject.num_matching_phenotypic_sessions,
-                subject.num_matching_imaging_sessions,
-                subject.age,
-                isFileWithLabels ? convertURIToLabel('sex', subject.sex) : subject.sex,
-                isFileWithLabels
-                  ? convertURIToLabel('diagnosis', subject.diagnosis)
-                  : subject.diagnosis,
-                isFileWithLabels
-                  ? convertURIToLabel('assessment', subject.assessment)
-                  : subject.assessment,
-                isFileWithLabels
-                  ? convertURIToLabel('modality', subject.image_modal)
-                  : subject.image_modal?.join(','),
-                isFileWithLabels
-                  ? convertURIToLabel(
-                      'pipeline',
-                      parsePipelinesInfoToString(subject.completed_pipelines).split(',')
-                    )
-                  : parsePipelinesInfoToString(subject.completed_pipelines),
-                isFileWithLabels
-                  ? convertURIToLabel('modality', res.image_modals)
-                  : res.image_modals?.join(','),
-                isFileWithLabels
-                  ? convertURIToLabel(
-                      'pipeline',
-                      parsePipelinesInfoToString(res.available_pipelines).split(',')
-                    )
-                  : parsePipelinesInfoToString(res.available_pipelines),
-              ].join('\t')
-            );
-          });
-        }
-      });
-      return tsvRows.join('\n');
-    }
-
-    return '';
+        });
+      }
+    });
+    return tsvRows.join('\n');
   }
 
-  function downloadResults(buttonIndex: number) {
-    const fileName =
-      buttonIndex === 0 ? 'neurobagel-query-results.tsv' : 'neurobagel-query-results-with-URIs.tsv';
-    const element = document.createElement('a');
-    const encodedTSV = encodeURIComponent(generateTSVString(buttonIndex));
-    element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
-    element.setAttribute('download', fileName);
+  async function downloadResults(buttonIndex: number) {
+    if (!queryForm || !response || loading) return;
 
-    element.style.display = 'none';
-    document.body.appendChild(element);
+    setLoading(true);
 
-    element.click();
-    document.body.removeChild(element);
+    try {
+      const subjectsResponse = await onDownload(buttonIndex, download);
+      setDownloadError(null);
+
+      const fileName =
+        buttonIndex === 0
+          ? 'neurobagel-query-results.tsv'
+          : 'neurobagel-query-results-with-URIs.tsv';
+      const element = document.createElement('a');
+      const encodedTSV = encodeURIComponent(generateTSVString(subjectsResponse, buttonIndex));
+      element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
+      element.setAttribute('download', fileName);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+      document.body.removeChild(element);
+    } catch {
+      setDownloadError('We were unable to download the selected query results. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   function renderResults() {
@@ -317,10 +345,11 @@ function ResultContainer({
             />
           ))}
         </div>
-        <div className="flex flex-wrap justify-end">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <DownloadResultButton
-            disabled={download.length === 0}
+            disabled={download.length === 0 || disableDownloads || !queryForm}
             handleClick={(index) => downloadResults(index)}
+            loading={loading}
           />
         </div>
       </>
@@ -329,6 +358,15 @@ function ResultContainer({
 
   return (
     <div className="flex flex-col" data-cy="result-container">
+      {downloadError && (
+        <div className="mb-2">
+          <ErrorAlert
+            errorTitle="Download failed"
+            errorExplanation="We couldn't download the selected results. Try running the download again."
+            severity="error"
+          />
+        </div>
+      )}
       {renderResults()}
     </div>
   );
