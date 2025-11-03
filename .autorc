@@ -19,7 +19,10 @@
         [
             "npm",
             {
-                "setRcToken": false
+                "setRcToken": false,
+                "exact": true,
+                "commitNextVersion": true,
+                "publishFolder": "dist"
             }
         ]
     ],
