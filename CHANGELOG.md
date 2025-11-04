@@ -1,3 +1,22 @@
+# v0.13.0 (Mon Nov 03 2025)
+
+#### 🚀 Enhancements
+
+- [ENH] Split query into dataset- and subject-level query [#651](https://github.com/neurobagel/query-tool/pull/651) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] race condition between git-tag and npm version [#659](https://github.com/neurobagel/query-tool/pull/659) ([@surchs](https://github.com/surchs))
+
+#### 🏠 Internal
+
+- [FIX] Manually bumped `package.json` version [#657](https://github.com/neurobagel/query-tool/pull/657) ([@rmanaem](https://github.com/rmanaem))
+- [ENH] Add npm plugin to auto [#656](https://github.com/neurobagel/query-tool/pull/656) ([@surchs](https://github.com/surchs))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.12.0 (Thu Oct 16 2025)
 
 #### 🚀 Enhancements
