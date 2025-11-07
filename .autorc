@@ -5,7 +5,6 @@
     "author": "Neurobagel Bot <bot@neurobagel.org>",
     "noVersionPrefix": false,
     "plugins": [
-        "git-tag",
         "released",
         "first-time-contributor",
         [
@@ -21,8 +20,7 @@
             {
                 "setRcToken": false,
                 "exact": true,
-                "commitNextVersion": true,
-                "publishFolder": "dist"
+                "forcePublish": false
             }
         ]
     ],
