@@ -1,3 +1,15 @@
+# v0.13.1 (Sat Nov 08 2025)
+
+#### 🏠 Internal
+
+- [FIX] Remove git-tag from release wf [#662](https://github.com/neurobagel/query-tool/pull/662) ([@surchs](https://github.com/surchs))
+
+#### Authors: 1
+
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.13.0 (Mon Nov 03 2025)
 
 #### 🚀 Enhancements
