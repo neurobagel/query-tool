@@ -1,3 +1,16 @@
+# v0.13.1 (Sun Nov 09 2025)
+
+#### 🏠 Internal
+
+- Bump version from 0.12.1 to 0.13.0 [#663](https://github.com/neurobagel/query-tool/pull/663) ([@surchs](https://github.com/surchs))
+- [FIX] Remove git-tag from release wf [#662](https://github.com/neurobagel/query-tool/pull/662) ([@surchs](https://github.com/surchs))
+
+#### Authors: 1
+
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.13.1 (Sat Nov 08 2025)
 
 #### 🏠 Internal
