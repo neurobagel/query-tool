@@ -25,16 +25,16 @@ describe('GetDataDialog', () => {
     cy.get('@onCloseSpy').should('have.been.called');
   });
 
-  it('Switches between docker and singularity commands', () => {
+  it('Switches between docker and apptainer commands', () => {
     cy.mount(<GetDataDialog open={props.open} onClose={props.onClose} />);
 
     cy.get('button').contains('docker').should('exist');
-    cy.get('button').contains('singularity').should('exist');
+    cy.get('button').contains('apptainer').should('exist');
 
     cy.get('pre').should('contain', 'docker run');
 
-    cy.get('button').contains('singularity').click();
-    cy.get('pre').should('contain', 'singularity run');
+    cy.get('button').contains('apptainer').click();
+    cy.get('pre').should('contain', 'apptainer run');
 
     cy.get('button').contains('docker').click();
     cy.get('pre').should('contain', 'docker run');
