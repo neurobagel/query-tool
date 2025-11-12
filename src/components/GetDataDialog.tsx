@@ -17,8 +17,8 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
   const RUN_COMMANDS: { [key: string]: string } = {
     docker:
       'docker run -t -u $(id -u):$(id -g) -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results.tsv /data/output',
-    singularity:
-      'singularity run --bind $(pwd):/data docker://neurobagel/dataget:latest /data/neurobagel-query-results.tsv /data/output',
+    apptainer:
+      'apptainer run --bind $(pwd):/data docker://neurobagel/dataget:latest /data/neurobagel-query-results.tsv /data/output',
   };
 
   const theme = useTheme();
@@ -57,7 +57,7 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
           aria-label="Platform"
         >
           <ToggleButton value="docker">docker</ToggleButton>
-          <ToggleButton value="singularity">singularity</ToggleButton>
+          <ToggleButton value="apptainer">apptainer</ToggleButton>
         </ToggleButtonGroup>
         <DialogContentText>
           <CodeBlock code={RUN_COMMANDS[commandType]} />
