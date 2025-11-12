@@ -1,3 +1,15 @@
+# v0.13.2 (Wed Nov 12 2025)
+
+#### 🚀 Enhancements
+
+- [MNT] Switch to using Apptainer command in "How to get data" instructions [#666](https://github.com/neurobagel/query-tool/pull/666) ([@alyssadai](https://github.com/alyssadai))
+
+#### Authors: 1
+
+- Alyssa Dai ([@alyssadai](https://github.com/alyssadai))
+
+---
+
 # v0.13.1 (Sun Nov 09 2025)
 
 #### 🏠 Internal
