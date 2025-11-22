@@ -64,7 +64,6 @@ function App() {
   } = {
     openNeuro: {
       nodeName: 'OpenNeuro',
-      severity: 'info',
       dataCy: 'openneuro-alert',
       text: (
         <>
@@ -81,7 +80,6 @@ function App() {
     },
     eBrains: {
       nodeName: 'EBRAINS',
-      severity: 'info',
       dataCy: 'ebrains-alert',
       text: (
         <>
@@ -599,7 +597,6 @@ function App() {
           <NodeAdmonition
             key={key}
             dataCy={cfg.dataCy}
-            severity={cfg.severity}
             show
             text={cfg.text}
             onClose={() => {

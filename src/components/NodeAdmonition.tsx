@@ -3,19 +3,12 @@ import { Alert, Grow } from '@mui/material';
 
 export type NodeAdmonitionProps = {
   text: React.ReactNode;
-  show?: boolean; // Parent controls visibility only
-  onClose?: () => void; // Optional: notify parent on close
-  severity?: 'info' | 'warning' | 'error' | 'success';
+  show?: boolean;
+  onClose?: () => void;
   dataCy?: string;
 };
 
-function NodeAdmonition({
-  text,
-  show = true,
-  onClose,
-  severity = 'info',
-  dataCy,
-}: NodeAdmonitionProps) {
+function NodeAdmonition({ text, show = true, onClose, dataCy }: NodeAdmonitionProps) {
   const [open, setOpen] = useState<boolean>(Boolean(show));
 
   // If parent toggles show from false -> true, reopen the admonition
@@ -30,7 +23,7 @@ function NodeAdmonition({
       <Grow in={open} mountOnEnter unmountOnExit>
         <Alert
           data-cy={dataCy}
-          severity={severity}
+          severity="info"
           onClose={() => {
             setOpen(false);
             onClose?.();
