@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Button, Grow, IconButton } from '@mui/material';
+import { Alert, Button, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import type { AlertColor } from '@mui/material/Alert';
@@ -30,6 +30,7 @@ import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
+import NodeAdmonition from './components/NodeAdmonition';
 import './App.css';
 import logo from './assets/logo.png';
 import areFormStatesEqual, {
@@ -50,7 +51,44 @@ function App() {
   ]);
   const [pipelines, setPipelines] = useState<Pipelines>({});
 
-  const [alertDismissed, setAlertDismissed] = useState<boolean>(false);
+  // Track which admonitions have been dismissed
+  const [dismissedAdmonitions, setDismissedAdmonitions] = useState<string[]>([]);
+
+  const admonitionConfigs: {
+    [key: string]: {
+      nodeName: string;
+      text: React.ReactNode;
+      severity?: 'info' | 'warning' | 'error' | 'success';
+      dataCy?: string;
+    };
+  } = {
+    openNeuro: {
+      nodeName: 'OpenNeuro',
+      dataCy: 'openneuro-alert',
+      text: (
+        <>
+          The OpenNeuro node is being actively annotated at the participant level and does not
+          include all datasets yet. Check back soon to find more data. If you would like to
+          contribute annotations for existing OpenNeuro datasets, please head over to&nbsp;
+          <a href="https://upload-ui.neurobagel.org/" target="_blank" rel="noreferrer">
+            Neurobagel&apos;s OpenNeuro utility service
+          </a>
+          &nbsp;which is designed to download and upload OpenNeuro datasets within Neurobagel
+          ecosystem.
+        </>
+      ),
+    },
+    eBrains: {
+      nodeName: 'EBRAINS',
+      dataCy: 'ebrains-alert',
+      text: (
+        <>
+          The EBRAINS node is being actively annotated and does not include all datasets yet. Check
+          back soon to find more data.
+        </>
+      ),
+    },
+  };
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -320,17 +358,6 @@ function App() {
       ? !areFormStatesEqual(currentQueryFormState, activeQueryParamsState)
       : false;
 
-  function showAlert() {
-    if (selectedNode && Array.isArray(selectedNode)) {
-      const openNeuroIsAnOption = availableNodes.find((n) => n.NodeName === 'OpenNeuro');
-      const isOpenNeuroSelected = selectedNode.find(
-        (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeuroIsAnOption)
-      );
-      return isOpenNeuroSelected && !alertDismissed;
-    }
-    return alertDismissed;
-  }
-
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
       case 'Neurobagel graph':
@@ -541,6 +568,14 @@ function App() {
     );
   }
 
+  // Determine which admonitions to show based on node selection and dismissal state
+  const hasAllSelected = selectedNode.some((n) => n.label === 'All');
+  const showAdmonitions = Object.keys(admonitionConfigs).filter((key) => {
+    const cfg = admonitionConfigs[key];
+    const isNodeSelected = selectedNode.some((n) => n.label === cfg.nodeName) || hasAllSelected;
+    return isNodeSelected && !dismissedAdmonitions.includes(key);
+  });
+
   return (
     <>
       <AuthDialog open={openAuthDialog} onClose={() => setOpenAuthDialog(false)} />
@@ -556,29 +591,20 @@ function App() {
         notifications={notifications}
         setNotifications={setNotifications}
       />
-      {showAlert() && (
-        <>
-          <Grow in={!alertDismissed}>
-            <Alert
-              data-cy="openneuro-alert"
-              severity="info"
-              onClose={() => {
-                setAlertDismissed(true);
-              }}
-            >
-              The OpenNeuro node is being actively annotated at the participant level and does not
-              include all datasets yet. Check back soon to find more data. If you would like to
-              contribute annotations for existing OpenNeuro datasets, please head over to&nbsp;
-              <a href="https://upload-ui.neurobagel.org/" target="_blank" rel="noreferrer">
-                Neurobagel&apos;s OpenNeuro utility service
-              </a>
-              &nbsp;which is designed to download and upload OpenNeuro datasets within Neurobagel
-              ecosystem.
-            </Alert>
-          </Grow>
-          <br />
-        </>
-      )}
+      {showAdmonitions.map((key) => {
+        const cfg = admonitionConfigs[key];
+        return (
+          <NodeAdmonition
+            key={key}
+            dataCy={cfg.dataCy}
+            show
+            text={cfg.text}
+            onClose={() => {
+              setDismissedAdmonitions((prev) => [...prev, key]);
+            }}
+          />
+        );
+      })}
 
       {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
