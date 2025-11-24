@@ -11,7 +11,7 @@ describe('<NodeAdmonition />', () => {
     cy.contains('The EBRAINS node is being actively annotated').should('be.visible');
   });
 
-  it('emits dismiss event with node name when close button is clicked', () => {
+  it('should emit dismiss event with node name when close button is clicked', () => {
     const onDismissSpy = cy.stub().as('dismissHandler');
 
     cy.mount(<NodeAdmonition nodes={['OpenNeuro']} onDismiss={onDismissSpy} />);
