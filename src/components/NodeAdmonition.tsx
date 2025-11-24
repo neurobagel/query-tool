@@ -1,38 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Alert, Grow } from '@mui/material';
 
 export type NodeAdmonitionProps = {
+  nodes: string[];
+  onDismiss: (nodeName: string) => void;
+};
+
+type AdmonitionConfig = {
   text: React.ReactNode;
-  show?: boolean;
-  onClose?: () => void;
+  severity?: 'info' | 'warning' | 'error' | 'success';
   dataCy?: string;
 };
 
-function NodeAdmonition({ text, show = true, onClose, dataCy }: NodeAdmonitionProps) {
-  const [open, setOpen] = useState<boolean>(Boolean(show));
+const ADMONITION_CONFIGS: { [nodeName: string]: AdmonitionConfig } = {
+  OpenNeuro: {
+    severity: 'info',
+    dataCy: 'openneuro-alert',
+    text: (
+      <>
+        The OpenNeuro node is being actively annotated at the participant level and does not include
+        all datasets yet. Check back soon to find more data. If you would like to contribute
+        annotations for existing OpenNeuro datasets, please head over to&nbsp;
+        <a href="https://upload-ui.neurobagel.org/" target="_blank" rel="noreferrer">
+          Neurobagel&apos;s OpenNeuro utility service
+        </a>
+        &nbsp;which is designed to download and upload OpenNeuro datasets within Neurobagel
+        ecosystem.
+      </>
+    ),
+  },
+  EBRAINS: {
+    severity: 'info',
+    dataCy: 'ebrains-alert',
+    text: (
+      <>
+        The EBRAINS node is being actively annotated and does not include all datasets yet. Check
+        back soon to find more data.
+      </>
+    ),
+  },
+};
 
-  // If parent toggles show from false -> true, reopen the admonition
-  useEffect(() => {
-    if (show) setOpen(true);
-  }, [show]);
-
-  if (!show) return null;
-
+function NodeAdmonition({ nodes, onDismiss }: NodeAdmonitionProps) {
   return (
     <>
-      <Grow in={open} mountOnEnter unmountOnExit>
-        <Alert
-          data-cy={dataCy}
-          severity="info"
-          onClose={() => {
-            setOpen(false);
-            onClose?.();
-          }}
-        >
-          {text}
-        </Alert>
-      </Grow>
-      {open ? <br /> : null}
+      {nodes.map((nodeName) => {
+        const config = ADMONITION_CONFIGS[nodeName];
+        if (!config) return null;
+
+        return (
+          <React.Fragment key={nodeName}>
+            <Grow in mountOnEnter unmountOnExit>
+              <Alert
+                data-cy={config.dataCy}
+                severity={config.severity || 'info'}
+                onClose={() => {
+                  onDismiss(nodeName);
+                }}
+              >
+                {config.text}
+              </Alert>
+            </Grow>
+            <br />
+          </React.Fragment>
+        );
+      })}
     </>
   );
 }

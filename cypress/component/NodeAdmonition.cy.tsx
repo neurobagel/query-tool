@@ -1,39 +1,51 @@
 import NodeAdmonition from '../../src/components/NodeAdmonition';
 
 describe('<NodeAdmonition />', () => {
-  it('renders with provided text', () => {
-    cy.mount(
-      <NodeAdmonition
-        text="This is a test admonition message"
-        onClose={cy.stub().as('closeHandler')}
-        dataCy="test-admonition"
-      />
-    );
+  it('renders admonitions for provided nodes', () => {
+    cy.mount(<NodeAdmonition nodes={['OpenNeuro', 'EBRAINS']} onDismiss={cy.stub()} />);
 
-    cy.get('[data-cy="test-admonition"]').should('exist');
-    cy.contains('This is a test admonition message').should('be.visible');
+    cy.get('[data-cy="openneuro-alert"]').should('exist');
+    cy.contains('The OpenNeuro node is being actively annotated').should('be.visible');
+
+    cy.get('[data-cy="ebrains-alert"]').should('exist');
+    cy.contains('The EBRAINS node is being actively annotated').should('be.visible');
   });
 
-  it('emits close event when dismiss button is clicked', () => {
-    const onCloseSpy = cy.stub().as('closeHandler');
+  it('emits dismiss event with node name when close button is clicked', () => {
+    const onDismissSpy = cy.stub().as('dismissHandler');
 
-    cy.mount(<NodeAdmonition text="Test message" onClose={onCloseSpy} dataCy="test-admonition" />);
+    cy.mount(<NodeAdmonition nodes={['OpenNeuro']} onDismiss={onDismissSpy} />);
 
-    cy.get('[data-cy="test-admonition"]').should('be.visible');
-    cy.get('[data-cy="test-admonition"] button').click();
-    cy.get('@closeHandler').should('have.been.calledOnce');
+    cy.get('[data-cy="openneuro-alert"]').should('be.visible');
+    cy.get('[data-cy="openneuro-alert"] button').click();
+    cy.get('@dismissHandler').should('have.been.calledOnceWith', 'OpenNeuro');
   });
 
-  it('hides when show prop is false', () => {
-    cy.mount(
-      <NodeAdmonition
-        text="Hidden message"
-        show={false}
-        onClose={cy.stub()}
-        dataCy="hidden-admonition"
-      />
-    );
+  it('does not render admonitions for nodes without config', () => {
+    cy.mount(<NodeAdmonition nodes={['NonExistentNode']} onDismiss={cy.stub()} />);
 
-    cy.get('[data-cy="hidden-admonition"]').should('not.exist');
+    cy.get('[role="alert"]').should('not.exist');
+  });
+
+  it('does not render when nodes array is empty', () => {
+    cy.mount(<NodeAdmonition nodes={[]} onDismiss={cy.stub()} />);
+
+    cy.get('[role="alert"]').should('not.exist');
+  });
+
+  it('renders multiple admonitions stacked vertically', () => {
+    cy.mount(<NodeAdmonition nodes={['OpenNeuro', 'EBRAINS']} onDismiss={cy.stub()} />);
+
+    cy.get('[data-cy="openneuro-alert"]').should('exist');
+    cy.get('[data-cy="ebrains-alert"]').should('exist');
+
+    // Check they're stacked (ebrains should be below openneuro)
+    cy.get('[data-cy="openneuro-alert"]').then(($openneuro) => {
+      cy.get('[data-cy="ebrains-alert"]').then(($ebrains) => {
+        expect($ebrains[0].getBoundingClientRect().top).to.be.greaterThan(
+          $openneuro[0].getBoundingClientRect().bottom
+        );
+      });
+    });
   });
 });

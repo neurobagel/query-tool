@@ -51,44 +51,8 @@ function App() {
   ]);
   const [pipelines, setPipelines] = useState<Pipelines>({});
 
-  // Track which admonitions have been dismissed
-  const [dismissedAdmonitions, setDismissedAdmonitions] = useState<string[]>([]);
-
-  const admonitionConfigs: {
-    [key: string]: {
-      nodeName: string;
-      text: React.ReactNode;
-      severity?: 'info' | 'warning' | 'error' | 'success';
-      dataCy?: string;
-    };
-  } = {
-    openNeuro: {
-      nodeName: 'OpenNeuro',
-      dataCy: 'openneuro-alert',
-      text: (
-        <>
-          The OpenNeuro node is being actively annotated at the participant level and does not
-          include all datasets yet. Check back soon to find more data. If you would like to
-          contribute annotations for existing OpenNeuro datasets, please head over to&nbsp;
-          <a href="https://upload-ui.neurobagel.org/" target="_blank" rel="noreferrer">
-            Neurobagel&apos;s OpenNeuro utility service
-          </a>
-          &nbsp;which is designed to download and upload OpenNeuro datasets within Neurobagel
-          ecosystem.
-        </>
-      ),
-    },
-    eBrains: {
-      nodeName: 'EBRAINS',
-      dataCy: 'ebrains-alert',
-      text: (
-        <>
-          The EBRAINS node is being actively annotated and does not include all datasets yet. Check
-          back soon to find more data.
-        </>
-      ),
-    },
-  };
+  // Track which node admonitions have been dismissed
+  const [dismissedNodeAdmonitions, setDismissedNodeAdmonitions] = useState<string[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -568,13 +532,17 @@ function App() {
     );
   }
 
-  // Determine which admonitions to show based on node selection and dismissal state
+  // Determine which node admonitions to show based on selection and dismissal
   const hasAllSelected = selectedNode.some((n) => n.label === 'All');
-  const showAdmonitions = Object.keys(admonitionConfigs).filter((key) => {
-    const cfg = admonitionConfigs[key];
-    const isNodeSelected = selectedNode.some((n) => n.label === cfg.nodeName) || hasAllSelected;
-    return isNodeSelected && !dismissedAdmonitions.includes(key);
-  });
+  const nodesToShowAdmonitions = selectedNode
+    .filter((n) => n.label !== 'All')
+    .map((n) => n.label)
+    .filter((nodeName) => !dismissedNodeAdmonitions.includes(nodeName));
+
+  // If 'All' is selected, show admonitions for all non-dismissed nodes with configs
+  const admonitionNodes = hasAllSelected
+    ? ['OpenNeuro', 'EBRAINS'].filter((node) => !dismissedNodeAdmonitions.includes(node))
+    : nodesToShowAdmonitions;
 
   return (
     <>
@@ -591,20 +559,12 @@ function App() {
         notifications={notifications}
         setNotifications={setNotifications}
       />
-      {showAdmonitions.map((key) => {
-        const cfg = admonitionConfigs[key];
-        return (
-          <NodeAdmonition
-            key={key}
-            dataCy={cfg.dataCy}
-            show
-            text={cfg.text}
-            onClose={() => {
-              setDismissedAdmonitions((prev) => [...prev, key]);
-            }}
-          />
-        );
-      })}
+      <NodeAdmonition
+        nodes={admonitionNodes}
+        onDismiss={(nodeName) => {
+          setDismissedNodeAdmonitions((prev) => [...prev, nodeName]);
+        }}
+      />
 
       {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
