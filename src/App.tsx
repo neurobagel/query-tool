@@ -532,17 +532,17 @@ function App() {
     );
   }
 
-  // Determine which node admonitions to show based on selection and dismissal
+  // Determine which node admonitions to show based on selection and availability
   const hasAllSelected = selectedNode.some((n) => n.label === 'All');
-  const nodesToShowAdmonitions = selectedNode
-    .filter((n) => n.label !== 'All')
-    .map((n) => n.label)
-    .filter((nodeName) => !dismissedNodeAdmonitions.includes(nodeName));
+  const admonitionNodeNames = ['OpenNeuro', 'EBRAINS'];
 
-  // If 'All' is selected, show admonitions for all non-dismissed nodes with configs
-  const admonitionNodes = hasAllSelected
-    ? ['OpenNeuro', 'EBRAINS'].filter((node) => !dismissedNodeAdmonitions.includes(node))
-    : nodesToShowAdmonitions;
+  const admonitionNodes = admonitionNodeNames.filter((nodeName) => {
+    if (dismissedNodeAdmonitions.includes(nodeName)) return false;
+    if (availableNodes.some((n) => n.NodeName === nodeName)) {
+      return selectedNode.some((n) => n.label === nodeName) || hasAllSelected;
+    }
+    return false;
+  });
 
   return (
     <>
