@@ -21,7 +21,7 @@ describe('<NodeAdmonition />', () => {
     cy.get('@dismissHandler').should('have.been.calledOnceWith', 'OpenNeuro');
   });
 
-  it('does not render admonitions for nodes without config', () => {
+  it('should not render admonitions for nodes without config', () => {
     cy.mount(<NodeAdmonition nodes={['NonExistentNode']} onDismiss={cy.stub()} />);
 
     cy.get('[role="alert"]').should('not.exist');
