@@ -9,13 +9,11 @@ export type NodeAdmonitionProps = {
 
 type AdmonitionConfig = {
   text: React.ReactNode;
-  severity?: 'info' | 'warning' | 'error' | 'success';
   dataCy?: string;
 };
 
 const ADMONITION_CONFIGS: { [nodeName: string]: AdmonitionConfig } = {
   OpenNeuro: {
-    severity: 'info',
     dataCy: 'openneuro-alert',
     text: (
       <>
@@ -31,7 +29,6 @@ const ADMONITION_CONFIGS: { [nodeName: string]: AdmonitionConfig } = {
     ),
   },
   EBRAINS: {
-    severity: 'info',
     dataCy: 'ebrains-alert',
     text: (
       <>
@@ -55,11 +52,7 @@ function NodeAdmonition({ nodes, onDismiss }: NodeAdmonitionProps) {
 
     return (
       <>
-        <Alert
-          data-cy={config.dataCy}
-          severity={config.severity || 'info'}
-          onClose={() => onDismiss(nodeName)}
-        >
+        <Alert data-cy={config.dataCy} severity="info" onClose={() => onDismiss(nodeName)}>
           {config.text}
         </Alert>
         <br />
