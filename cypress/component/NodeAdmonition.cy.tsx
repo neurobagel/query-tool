@@ -27,7 +27,7 @@ describe('<NodeAdmonition />', () => {
     cy.get('[role="alert"]').should('not.exist');
   });
 
-  it('does not render when nodes array is empty', () => {
+  it('should not render when nodes array is empty', () => {
     cy.mount(<NodeAdmonition nodes={[]} onDismiss={cy.stub()} />);
 
     cy.get('[role="alert"]').should('not.exist');
