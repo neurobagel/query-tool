@@ -1,7 +1,7 @@
 import NodeAdmonition from '../../src/components/NodeAdmonition';
 
 describe('<NodeAdmonition />', () => {
-  it('renders admonitions for provided nodes', () => {
+  it('should render admonitions for provided nodes', () => {
     cy.mount(<NodeAdmonition nodes={['OpenNeuro', 'EBRAINS']} onDismiss={cy.stub()} />);
 
     cy.get('[data-cy="openneuro-alert"]').should('exist');
