@@ -33,7 +33,7 @@ describe('<NodeAdmonition />', () => {
     cy.get('[role="alert"]').should('not.exist');
   });
 
-  it('renders multiple admonitions stacked vertically', () => {
+  it('should render multiple admonitions stacked vertically', () => {
     cy.mount(<NodeAdmonition nodes={['OpenNeuro', 'EBRAINS']} onDismiss={cy.stub()} />);
 
     cy.get('[data-cy="openneuro-alert"]').should('exist');
