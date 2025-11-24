@@ -20,7 +20,7 @@ jobs:
 
       -
         name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         # Some repos have submodules that need to be part of the Docker image
         with:
           submodules: recursive
