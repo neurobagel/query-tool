@@ -82,9 +82,7 @@ function NodeAdmonition({ nodes, onDismiss }: NodeAdmonitionProps) {
                       size="small"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (validNodes.indexOf(nodeName) === activeTab) {
-                          setActiveTab(0);
-                        }
+                        setActiveTab(0);
                         onDismiss(nodeName);
                       }}
                       sx={{ padding: '2px' }}
