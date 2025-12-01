@@ -268,11 +268,16 @@ function ResultContainer({
     try {
       const subjectsResponse = await onDownload(buttonIndex, download);
       setDownloadError(null);
+      const timestamp = new Date()
+        .toISOString()
+        .replace('T', '-')
+        .replace(/:/g, '-')
+        .replace(/\..+/, '');
 
       const fileName =
         buttonIndex === 0
-          ? 'neurobagel-query-results.tsv'
-          : 'neurobagel-query-results-with-URIs.tsv';
+          ? `neurobagel-query-results-${timestamp}.tsv`
+          : `neurobagel-query-results-with-URIs-${timestamp}.tsv`;
       const element = document.createElement('a');
       const encodedTSV = encodeURIComponent(generateTSVString(subjectsResponse, buttonIndex));
       element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
