@@ -31,17 +31,18 @@ export default function DownloadResultButton({ disabled, handleClick, loading }:
 
   const control = (
     <Box sx={{ display: 'inline-block' }}>
-      <Stack spacing={1} alignItems="flex-start">
+      <Stack spacing={1} alignItems="flex-start" sx={{ width: 'fit-content' }}>
         <Button
           variant="contained"
           onClick={onDownload}
           disabled={disabled || loading}
           data-cy="download-results-button"
           aria-label="Download selected query results"
+          sx={{ width: '100%', textTransform: 'none' }}
         >
           {loading ? (
             <>
-              Downloading selected query results
+              Downloading...
               <CircularProgress size={16} color="inherit" sx={{ ml: 1 }} />
             </>
           ) : (
@@ -60,13 +61,13 @@ export default function DownloadResultButton({ disabled, handleClick, loading }:
               value="labels"
               control={<Radio size="small" />}
               label={<Typography variant="body2">Include term labels</Typography>}
-              data-cy="download-labels-radio"
+              data-cy="download-radio-0"
             />
             <FormControlLabel
               value="uris"
               control={<Radio size="small" />}
               label={<Typography variant="body2">Include term URIs</Typography>}
-              data-cy="download-uris-radio"
+              data-cy="download-radio-1"
             />
           </RadioGroup>
         </FormControl>

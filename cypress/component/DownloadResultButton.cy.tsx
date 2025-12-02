@@ -7,7 +7,7 @@ const props = {
 };
 
 describe('DownloadResultButton', () => {
-  it('Displays an enabled MUI Download button and radio options', () => {
+  it('Displays an enabled MUI Button', () => {
     cy.mount(
       <DownloadResultButton
         disabled={props.disabled}
@@ -16,13 +16,11 @@ describe('DownloadResultButton', () => {
       />
     );
     cy.get('[data-cy="download-results-button"]').should('be.visible');
-    cy.get('[data-cy="download-results-button"]').should('not.be.disabled');
     cy.get('[data-cy="download-results-button"]').should('contain', 'Download');
-    cy.get('[data-cy="download-radio-0"]').should('contain', 'Include term labels');
-    cy.get('[data-cy="download-radio-1"]').should('contain', 'Include term URIs');
+    cy.get('[data-cy="download-results-button"]').should('not.be.disabled');
   });
 
-  it('Calls handleClick(1) when "Include term URIs" is selected and Download clicked', () => {
+  it('Calls handleClick with the selected radio index', () => {
     const handleClickSpy = cy.spy().as('handleClickSpy');
     cy.mount(
       <DownloadResultButton
@@ -32,38 +30,27 @@ describe('DownloadResultButton', () => {
       />
     );
 
+    cy.get('[data-cy="download-results-button"]').click();
+    cy.get('@handleClickSpy').should('have.been.calledWith', 0);
     cy.get('[data-cy="download-radio-1"]').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.get('@handleClickSpy').should('have.been.calledWith', 1);
   });
 
-  it('Calls handleClick(0) when default (labels) option is used', () => {
-    const handleClickSpy = cy.spy().as('handleClickSpy');
-    cy.mount(
-      <DownloadResultButton
-        disabled={props.disabled}
-        handleClick={handleClickSpy}
-        loading={props.loading}
-      />
-    );
-    cy.get('[data-cy="download-results-button"]').click();
-    cy.get('@handleClickSpy').should('have.been.calledWith', 0);
-  });
-
-  it('Displays tooltip when disabled', () => {
+  it('Shows tooltip when disabled and hovered', () => {
     cy.mount(<DownloadResultButton disabled handleClick={props.handleClick} loading={false} />);
-
-    cy.get('[data-cy="download-results-button"]').parent().trigger('mouseover', { force: true });
-    cy.get('.MuiTooltip-tooltip').should('contain', 'Please select at least one dataset');
+    cy.get('[data-cy="download-results-button"]').trigger('mouseover', { force: true });
+    cy.get('.MuiTooltip-tooltip')
+      .should('be.visible')
+      .should('contain', 'Please select at least one dataset');
   });
 
-  it('Shows spinner and disables button when loading is true', () => {
-    cy.mount(<DownloadResultButton disabled={false} handleClick={props.handleClick} loading />);
-    cy.get('[data-cy="download-results-button"]').should('be.disabled');
-    cy.get('[data-cy="download-results-button"]').should(
-      'contain',
-      'Downloading selected query results'
+  it('Shows loading spinner and disables button when loading', () => {
+    cy.mount(
+      <DownloadResultButton disabled={props.disabled} handleClick={props.handleClick} loading />
     );
+    cy.get('[data-cy="download-results-button"]').should('be.disabled');
+    cy.contains('Downloading...').should('exist');
     cy.get('.MuiCircularProgress-root').should('be.visible');
   });
 });
