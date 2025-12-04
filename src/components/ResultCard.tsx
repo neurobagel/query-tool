@@ -8,7 +8,8 @@ import Typography from '@mui/material/Typography';
 import { Tooltip, Divider } from '@mui/material';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { modalities } from '../utils/constants';
+import { ImagingModalityOption } from '../utils/types';
+import { modalitiesDataTypeColorMapping } from '../utils/constants';
 
 const ResultCard = memo(
   ({
@@ -19,6 +20,7 @@ const ResultCard = memo(
     datasetTotalSubjects,
     numMatchingSubjects,
     imageModals,
+    modalityMetadata,
     pipelines,
     checked,
     onCheckboxChange,
@@ -30,6 +32,7 @@ const ResultCard = memo(
     datasetTotalSubjects: number;
     numMatchingSubjects: number;
     imageModals: string[];
+    modalityMetadata: Record<string, ImagingModalityOption>;
     pipelines: {
       [key: string]: string[];
     };
@@ -127,25 +130,28 @@ const ResultCard = memo(
           </div>
           <div className="justify-self-end" data-cy="modality-buttons">
             <ButtonGroup>
-              {imageModals
-                .sort()
-                .filter((modal) => Object.keys(modalities).includes(modal))
-                .map((modal) => (
+              {imageModals.sort().map((modal) => {
+                const metadata = modalityMetadata[modal];
+                const backgroundColor =
+                  metadata?.data_type &&
+                  modalitiesDataTypeColorMapping[metadata.data_type.toLowerCase()];
+                return (
                   <Button
                     key={modal}
                     variant="contained"
                     disableElevation
                     sx={{
-                      backgroundColor: modalities[modal].bgColor,
+                      backgroundColor,
                       '&:hover': {
-                        backgroundColor: modalities[modal].bgColor,
+                        backgroundColor,
                         cursor: 'default',
                       },
                     }}
                   >
-                    {modalities[modal].name}
+                    {metadata.abbreviation}
                   </Button>
-                ))}
+                );
+              })}
             </ButtonGroup>
           </div>
         </div>
