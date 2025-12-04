@@ -8,6 +8,11 @@ export interface AttributeOption {
   TermURL: string;
 }
 
+export interface ImagingModalityOption extends AttributeOption {
+  abbreviation?: string | null;
+  data_type?: string | null;
+}
+
 export interface NodeOption {
   NodeName: string;
   ApiURL: string;
@@ -32,6 +37,12 @@ export interface RetrievedAttributeOption extends BaseAPIResponse {
 export interface RetrievedPipelineVersions extends BaseAPIResponse {
   responses: {
     [key: string]: string[];
+  };
+}
+
+export interface RetrievedImagingModalities extends BaseAPIResponse {
+  responses: {
+    [key: string]: ImagingModalityOption[];
   };
 }
 
