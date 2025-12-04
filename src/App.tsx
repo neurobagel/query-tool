@@ -11,7 +11,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { FilterList } from '@mui/icons-material';
 import { baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
-  RetrievedAttributeOption,
   AttributeOption,
   RetrievedPipelineVersions,
   NodeOption,
@@ -22,6 +21,8 @@ import {
   QueryParams,
   Notification,
   QueryFormState,
+  ImagingModalityOption,
+  AttributeResponse,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -46,6 +47,10 @@ function App() {
   );
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
+  const [imagingModalityOptions, setImagingModalityOptions] = useState<ImagingModalityOption[]>([]);
+  const [imagingModalitiesMap, setImagingModalitiesMap] = useState<
+    Record<string, ImagingModalityOption>
+  >({});
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
@@ -137,9 +142,16 @@ function App() {
   };
 
   useEffect(() => {
-    async function getAttributes(NBResource: string, dataElementURI: string) {
+    // T is constrained to include an optional Label so we can safely filter out missing labels when needed.
+    async function getAttributes<T extends { Label?: string | null }>(
+      NBResource: string,
+      dataElementURI: string,
+      onSuccess: (items: T[]) => void,
+      options: { removeMissingLabels?: boolean } = {}
+    ) {
+      const removeMissingLabels = options.removeMissingLabels ?? true;
       try {
-        const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
+        const response: AxiosResponse<AttributeResponse<T>> = await axios.get(
           `${baseAPIURL}${NBResource}`
         );
         if (response.data.nodes_response_status === 'fail') {
@@ -147,71 +159,88 @@ function App() {
             variant: 'error',
             action,
           });
-        } else {
-          // If any errors occurred, report them
-          response.data.errors.forEach((error) => {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'warning',
-                message: `Failed to retrieve ${NBResource} options from ${error.node_name}`,
-              },
-            ]);
-          });
-          // If the results are empty, report that
-          if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'info',
-                message: `No ${NBResource} options were available`,
-              },
-            ]);
-            // TODO: remove the second condition once pipeline labels are added
-          } else if (
-            response.data.responses[dataElementURI].some((item) => item.Label === null) &&
-            NBResource !== 'pipelines'
-          ) {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'warning',
-                message: `Warning: Missing labels were removed for ${NBResource}`,
-              },
-            ]);
-            response.data.responses[dataElementURI] = response.data.responses[
-              dataElementURI
-            ].filter((item) => item.Label !== null);
-          }
+          return;
         }
-        return response.data.responses[dataElementURI];
+
+        response.data.errors.forEach((error) => {
+          setNotifications((prev) => [
+            ...prev,
+            {
+              id: uuidv4(),
+              type: 'warning',
+              message: `Failed to retrieve ${NBResource} options from ${error.node_name}`,
+            },
+          ]);
+        });
+
+        const items = response.data.responses[dataElementURI];
+        if (!items || items.length === 0) {
+          setNotifications((prev) => [
+            ...prev,
+            {
+              id: uuidv4(),
+              type: 'info',
+              message: `No ${NBResource} options were available`,
+            },
+          ]);
+          return;
+        }
+
+        let filteredItems = items;
+        const itemsWithLabels = items as Array<{ Label?: string | null }>;
+        if (
+          removeMissingLabels &&
+          itemsWithLabels.some(
+            (item) => Object.prototype.hasOwnProperty.call(item, 'Label') && item.Label === null
+          )
+        ) {
+          setNotifications((prev) => [
+            ...prev,
+            {
+              id: uuidv4(),
+              type: 'warning',
+              message: `Warning: Missing labels were removed for ${NBResource}`,
+            },
+          ]);
+          filteredItems = items.filter((item) => item.Label !== null);
+        }
+
+        onSuccess(filteredItems as T[]);
       } catch {
-        return null;
+        enqueueSnackbar(`Failed to retrieve ${NBResource} options`, { variant: 'error', action });
       }
     }
 
-    getAttributes('diagnoses', 'nb:Diagnosis').then((diagnosisResponse) => {
-      if (diagnosisResponse !== null && diagnosisResponse.length !== 0) {
-        setDiagnosisOptions(diagnosisResponse);
-      }
+    getAttributes<AttributeOption>('diagnoses', 'nb:Diagnosis', (diagnosisResponse) => {
+      setDiagnosisOptions(diagnosisResponse);
     });
 
-    getAttributes('assessments', 'nb:Assessment').then((assessmentResponse) => {
-      if (assessmentResponse !== null && assessmentResponse.length !== 0) {
-        setAssessmentOptions(assessmentResponse);
-      }
+    getAttributes<AttributeOption>('assessments', 'nb:Assessment', (assessmentResponse) => {
+      setAssessmentOptions(assessmentResponse);
     });
 
-    getAttributes('pipelines', 'nb:Pipeline').then((pipelineResponse) => {
-      if (pipelineResponse !== null && pipelineResponse.length !== 0) {
+    getAttributes<ImagingModalityOption>('images', 'nb:Image', (modalities) => {
+      setImagingModalityOptions(modalities);
+      const modalityMap = modalities.reduce<Record<string, ImagingModalityOption>>(
+        (acc, modality) => {
+          acc[modality.TermURL] = modality;
+          return acc;
+        },
+        {}
+      );
+      setImagingModalitiesMap(modalityMap);
+    });
+
+    getAttributes<AttributeOption>(
+      'pipelines',
+      'nb:Pipeline',
+      (pipelineResponse) => {
         pipelineResponse.forEach((option) => {
           setPipelines((prevPipelines) => ({ ...prevPipelines, [option.TermURL]: [] }));
         });
-      }
-    });
+      },
+      { removeMissingLabels: false }
+    );
 
     async function getNodeOptions(fetchURL: string) {
       try {
@@ -588,6 +617,7 @@ function App() {
               availableNodes={availableNodes}
               diagnosisOptions={diagnosisOptions}
               assessmentOptions={assessmentOptions}
+              imagingModalityOptions={imagingModalityOptions}
               selectedNode={selectedNode}
               minAge={minAge}
               maxAge={maxAge}
@@ -649,6 +679,7 @@ function App() {
                 response={sortedResults || null}
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
+                imagingModalities={imagingModalitiesMap}
                 queryForm={activeQueryParams}
                 disableDownloads={queryFormHasChanged}
                 onDownload={(buttonIndex, selection) => handleDownload(buttonIndex, selection)}
