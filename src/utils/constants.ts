@@ -30,55 +30,20 @@ export const sexes: { [key: string]: string } = {
   other: 'snomed:32570681000036106',
 };
 
-export const modalities: {
-  [key: string]: { label: string; TermURL: string; name: string; bgColor: string };
-} = {
-  'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
-    label: 'Arterial Spin Labeling',
-    TermURL: 'nidm:ArterialSpinLabeling',
-    name: 'ASL',
-    bgColor: 'rgb(113, 113, 122)',
-  },
-  'http://purl.org/nidash/nidm#DiffusionWeighted': {
-    label: 'Diffusion Weighted',
-    TermURL: 'nidm:DiffusionWeighted',
-    name: 'DWI',
-    bgColor: 'rgb(205, 92, 92)',
-  },
-  'http://purl.org/nidash/nidm#Electroencephalography': {
-    label: 'Electroencephalogram',
-    TermURL: 'nidm:Electroencephalography',
-    name: 'EEG',
-    bgColor: 'rgb(253, 164, 164)',
-  },
-  'http://purl.org/nidash/nidm#FlowWeighted': {
-    label: 'Functional MRI',
-    TermURL: 'nidm:FlowWeighted',
-    name: 'fMRI',
-    bgColor: 'rgb(70, 130, 180)',
-  },
-  'http://purl.org/nidash/nidm#T1Weighted': {
-    label: 'T1 Weighted',
-    TermURL: 'nidm:T1Weighted',
-    name: 'T1',
-    bgColor: 'rgb(189, 183, 107)',
-  },
-  'http://purl.org/nidash/nidm#T2Weighted': {
-    label: 'T2 Weighted',
-    TermURL: 'nidm:T2Weighted',
-    name: 'T2',
-    bgColor: 'rgb(143, 188, 143)',
-  },
-  'http://purl.org/nidash/nidm#Magnetoencephalography': {
-    label: 'Magnetoencephalography',
-    TermURL: 'nidm:Magnetoencephalography',
-    name: 'MEG',
-    bgColor: 'rgb(215,145,50)',
-  },
-  'http://purl.org/nidash/nidm#PositronEmissionTomography': {
-    label: 'Positron Emission Tomography',
-    TermURL: 'nidm:PositronEmissionTomography',
-    name: 'PET',
-    bgColor: 'rgb(78,20,186)',
-  },
+export const modalitiesDataTypeColorMapping: { [key: string]: string } = {
+  anat: 'rgb(113, 113, 122)',
+  beh: 'rgb(205, 92, 92)',
+  dwi: 'rgb(253, 164, 164)',
+  eeg: 'rgb(70, 130, 180)',
+  fmap: 'rgb(189, 183, 107)',
+  func: 'rgb(143, 188, 143)',
+  ieeg: 'rgb(215,145,50)',
+  meg: 'rgb(78,20,186)',
+  micr: 'rgba(0, 192, 6, 0.54)',
+  motion: 'rgb(199, 21, 133)',
+  mrs: 'rgb(0, 191, 255)',
+  perf: 'rgb(34, 139, 34)',
+  pet: 'rgb(255, 69, 0)',
+  phenotype: 'rgb(138, 43, 226)',
+  nirs: 'rgba(228, 104, 170, 1)',
 };
