@@ -46,6 +46,12 @@ export interface RetrievedImagingModalities extends BaseAPIResponse {
   };
 }
 
+export interface AttributeResponse<T> {
+  nodes_response_status: string;
+  errors: { node_name: string; error: string }[];
+  responses: Record<string, T[]>;
+}
+
 export interface Pipelines {
   [key: string]: string[];
 }
