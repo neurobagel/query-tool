@@ -10,7 +10,11 @@ export interface AttributeOption {
 
 export interface ImagingModalityOption extends AttributeOption {
   Abbreviation?: string | null;
-  Data_type?: string | null;
+  DataType?: string | null;
+}
+
+export interface ImagingModalitiesMetadata {
+  [key: string]: ImagingModalityOption;
 }
 
 export interface NodeOption {
