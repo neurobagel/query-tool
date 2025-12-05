@@ -7,7 +7,7 @@ import {
   QueryParams,
   Pipelines,
   AttributeOption,
-  ImagingModalityOption,
+  ImagingModalitiesMetadata,
 } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
 import { sexes } from '../utils/constants';
@@ -18,7 +18,7 @@ type DownloadHandler = (buttonIndex: number, selection: string[]) => Promise<Sub
 function ResultContainer({
   diagnosisOptions,
   assessmentOptions,
-  imagingModalities,
+  imagingModalitiesMetadata,
   response,
   queryForm,
   disableDownloads,
@@ -26,7 +26,7 @@ function ResultContainer({
 }: {
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
-  imagingModalities: Record<string, ImagingModalityOption>;
+  imagingModalitiesMetadata: ImagingModalitiesMetadata;
   response: DatasetsResponse | null;
   queryForm: QueryParams | null;
   disableDownloads: boolean;
@@ -134,7 +134,7 @@ function ResultContainer({
       }
 
       case 'modality': {
-        const modality = Object.values(imagingModalities).find((m) => {
+        const modality = Object.values(imagingModalitiesMetadata).find((m) => {
           const [, id] = m.TermURL.split(':');
           return uri.includes(id);
         });
@@ -345,7 +345,7 @@ function ResultContainer({
               datasetTotalSubjects={item.dataset_total_subjects}
               numMatchingSubjects={item.num_matching_subjects}
               imageModals={item.image_modals}
-              modalityMetadata={imagingModalities}
+              imagingModalitiesMetadata={imagingModalitiesMetadata}
               pipelines={item.available_pipelines}
               checked={download.includes(item.dataset_uuid)}
               onCheckboxChange={updateDownload}
