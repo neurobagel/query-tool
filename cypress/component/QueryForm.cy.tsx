@@ -31,6 +31,14 @@ const defaultProps = {
       TermURL: 'http://anotherurl/',
     },
   ],
+  imagingModalityOptions: [
+    {
+      Label: 'Some Modality',
+      TermURL: 'nidm:SomeModality',
+      Abbreviation: 'SM',
+      DataType: 'anat',
+    },
+  ],
   selectedNode: [],
   minAge: '',
   maxAge: '',
@@ -58,6 +66,7 @@ describe('QueryForm', () => {
         availableNodes={defaultProps.availableNodes}
         diagnosisOptions={defaultProps.diagnosisOptions}
         assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
         selectedNode={defaultProps.selectedNode}
         minAge={defaultProps.minAge}
         maxAge={defaultProps.maxAge}
@@ -99,6 +108,7 @@ describe('QueryForm', () => {
         availableNodes={defaultProps.availableNodes}
         diagnosisOptions={defaultProps.diagnosisOptions}
         assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
         selectedNode={defaultProps.selectedNode}
         minAge={defaultProps.minAge}
         maxAge={defaultProps.maxAge}
@@ -128,6 +138,7 @@ describe('QueryForm', () => {
         availableNodes={defaultProps.availableNodes}
         diagnosisOptions={defaultProps.diagnosisOptions}
         assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
         selectedNode={defaultProps.selectedNode}
         minAge={defaultProps.minAge}
         maxAge={defaultProps.maxAge}
@@ -160,6 +171,7 @@ describe('QueryForm', () => {
         availableNodes={defaultProps.availableNodes}
         diagnosisOptions={defaultProps.diagnosisOptions}
         assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
         selectedNode={defaultProps.selectedNode}
         minAge="1"
         maxAge={defaultProps.maxAge}
@@ -188,6 +200,7 @@ describe('QueryForm', () => {
         availableNodes={defaultProps.availableNodes}
         diagnosisOptions={defaultProps.diagnosisOptions}
         assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
         selectedNode={defaultProps.selectedNode}
         minAge={defaultProps.minAge}
         maxAge={defaultProps.maxAge}

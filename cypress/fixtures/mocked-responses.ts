@@ -324,6 +324,60 @@ export const failedAssessmentToolOptions = {
   ],
 };
 
+export const imagingModalityOptions = {
+  errors: [],
+  responses: {
+    'nb:Image': [
+      {
+        TermURL: 'nidm:T1Weighted',
+        Label: 'T1 Weighted',
+        Abbreviation: 'T1w',
+        DataType: 'anat',
+      },
+      {
+        TermURL: 'nidm:T2Weighted',
+        Label: 'T2 Weighted',
+        Abbreviation: 'T2w',
+        DataType: 'anat',
+      },
+      {
+        TermURL: 'nidm:FlowWeighted',
+        Label: 'Functional MRI',
+        Abbreviation: 'fMRI',
+        DataType: 'func',
+      },
+    ],
+  },
+  nodes_response_status: 'success',
+};
+
+export const emptyImagingModalityOptions = {
+  ...imagingModalityOptions,
+  responses: { 'nb:Image': [] },
+};
+
+export const partiallyFailedImagingModalityOptions = {
+  ...imagingModalityOptions,
+  nodes_response_status: 'partial success',
+  errors: [
+    {
+      node_name: 'NoImagingModalityNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const failedImagingModalityOptions = {
+  ...emptyImagingModalityOptions,
+  nodes_response_status: 'fail',
+  errors: [
+    {
+      node_name: 'NoImagingModalityNode',
+      error: 'some error message',
+    },
+  ],
+};
+
 export const pipelineOptions = {
   errors: [],
   responses: {

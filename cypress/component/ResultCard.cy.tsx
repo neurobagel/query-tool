@@ -17,6 +17,20 @@ const props = {
       '23.1.3',
     ],
   },
+  imagingModalitiesMetadata: {
+    'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
+      TermURL: 'nidm:ArterialSpinLabeling',
+      Label: 'Arterial Spin Labeling',
+      Abbreviation: 'ASL',
+      DataType: 'anat',
+    },
+    'http://purl.org/nidash/nidm#DiffusionWeighted': {
+      TermURL: 'nidm:DiffusionWeighted',
+      Label: 'Diffusion Weighted',
+      Abbreviation: 'DWI',
+      DataType: 'dwi',
+    },
+  },
   checked: true,
   onCheckboxChange: () => {},
 };
@@ -32,6 +46,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        imagingModalitiesMetadata={props.imagingModalitiesMetadata}
         pipelines={props.pipelines}
         checked={props.checked}
         onCheckboxChange={props.onCheckboxChange}
@@ -49,7 +64,7 @@ describe('ResultCard', () => {
     cy.get('[data-cy="card-some uuid"] button')
       .eq(2)
       .should('contain', 'DWI')
-      .should('have.css', 'background-color', 'rgb(205, 92, 92)');
+      .should('have.css', 'background-color', 'rgb(253, 164, 164)');
 
     cy.get('[data-cy="card-some uuid-available-pipelines-button"]').trigger('mouseover', {
       force: true,
@@ -67,6 +82,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        imagingModalitiesMetadata={props.imagingModalitiesMetadata}
         pipelines={props.pipelines}
         checked={false}
         onCheckboxChange={onCheckboxChangeSpy}
@@ -85,6 +101,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        imagingModalitiesMetadata={props.imagingModalitiesMetadata}
         pipelines={{}}
         checked={false}
         onCheckboxChange={props.onCheckboxChange}

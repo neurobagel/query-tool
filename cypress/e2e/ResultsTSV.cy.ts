@@ -8,6 +8,7 @@ import {
   pipelineOptions,
   pipelineVersionOptions,
   nodeOptions,
+  imagingModalityOptions,
 } from '../fixtures/mocked-responses';
 
 describe('Results TSV', () => {
@@ -42,6 +43,13 @@ describe('Results TSV', () => {
     cy.intercept(
       {
         method: 'GET',
+        url: '/imaging-modalities',
+      },
+      imagingModalityOptions
+    ).as('getImagingModalityOptions');
+    cy.intercept(
+      {
+        method: 'GET',
         url: '/pipelines',
       },
       pipelineOptions
@@ -58,6 +66,7 @@ describe('Results TSV', () => {
       '@getNodes',
       '@getDiagnosisOptions',
       '@getAssessmentToolOptions',
+      '@getImagingModalityOptions',
       '@getPipelineOptions',
     ]);
     // TODO: remove this
@@ -133,8 +142,15 @@ describe('Unprotected response', () => {
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/imaging-modalities',
+      },
+      imagingModalityOptions
+    ).as('getImagingModalityOptions');
     cy.visit('/');
-    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions', '@getImagingModalityOptions']);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature

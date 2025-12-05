@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Button, CircularProgress, FormHelperText, Tooltip, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { sexes, modalities } from '../utils/constants';
+import { sexes } from '../utils/constants';
 import {
   NodeOption,
   AttributeOption,
   FieldInputOption,
   FieldInput,
   Pipelines,
+  ImagingModalityOption,
 } from '../utils/types';
 import { parseNumericValue } from '../utils/utils';
 import CategoricalField from './CategoricalField';
@@ -18,6 +19,7 @@ function QueryForm({
   availableNodes,
   diagnosisOptions,
   assessmentOptions,
+  imagingModalityOptions,
   selectedNode,
   minAge,
   maxAge,
@@ -38,6 +40,7 @@ function QueryForm({
   availableNodes: NodeOption[];
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
+  imagingModalityOptions: ImagingModalityOption[];
   selectedNode: FieldInput;
   minAge: string;
   maxAge: string;
@@ -184,8 +187,8 @@ function QueryForm({
       <div>
         <CategoricalField
           label="Imaging modality"
-          options={Object.entries(modalities).map(([, value]) => ({
-            label: value.label,
+          options={imagingModalityOptions.map((value) => ({
+            label: value.Label,
             id: value.TermURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
