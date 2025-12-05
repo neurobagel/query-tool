@@ -23,6 +23,7 @@ import {
   QueryFormState,
   ImagingModalityOption,
   AttributeResponse,
+  ImagingModalitiesMetadata,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -48,9 +49,8 @@ function App() {
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
   const [imagingModalityOptions, setImagingModalityOptions] = useState<ImagingModalityOption[]>([]);
-  const [imagingModalitiesMap, setImagingModalitiesMap] = useState<
-    Record<string, ImagingModalityOption>
-  >({});
+  const [imagingModalitiesMetadata, setImagingModalitiesMetadata] =
+    useState<ImagingModalitiesMetadata>({});
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
@@ -180,7 +180,7 @@ function App() {
             {
               id: uuidv4(),
               type: 'info',
-              message: `No ${NBResource} options were available`,
+              message: `No ${NBResource === 'imaging-modalities' ? 'imaging modalities' : NBResource} options were available`,
             },
           ]);
           return;
@@ -219,16 +219,16 @@ function App() {
       setAssessmentOptions(assessmentResponse);
     });
 
-    getAttributes<ImagingModalityOption>('images', 'nb:Image', (modalities) => {
+    getAttributes<ImagingModalityOption>('imaging-modalities', 'nb:Image', (modalities) => {
       setImagingModalityOptions(modalities);
-      const modalityMap = modalities.reduce<Record<string, ImagingModalityOption>>(
-        (acc, modality) => {
-          acc[modality.TermURL] = modality;
-          return acc;
-        },
-        {}
-      );
-      setImagingModalitiesMap(modalityMap);
+      const modalityMap = modalities.reduce<ImagingModalitiesMetadata>((acc, modality) => {
+        const [, suffix] = modality.TermURL.split(':');
+        const fullIRI = suffix ? `http://purl.org/nidash/nidm#${suffix}` : modality.TermURL;
+        acc[modality.TermURL] = modality;
+        acc[fullIRI] = modality;
+        return acc;
+      }, {});
+      setImagingModalitiesMetadata(modalityMap);
     });
 
     getAttributes<AttributeOption>(
@@ -679,7 +679,7 @@ function App() {
                 response={sortedResults || null}
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
-                imagingModalities={imagingModalitiesMap}
+                imagingModalitiesMetadata={imagingModalitiesMetadata}
                 queryForm={activeQueryParams}
                 disableDownloads={queryFormHasChanged}
                 onDownload={(buttonIndex, selection) => handleDownload(buttonIndex, selection)}
