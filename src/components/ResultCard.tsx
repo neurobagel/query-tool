@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { Tooltip, Divider } from '@mui/material';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { ImagingModalityOption } from '../utils/types';
+import { ImagingModalitiesMetadata } from '../utils/types';
 import { modalitiesDataTypeColorMapping } from '../utils/constants';
 
 const ResultCard = memo(
@@ -20,7 +20,7 @@ const ResultCard = memo(
     datasetTotalSubjects,
     numMatchingSubjects,
     imageModals,
-    modalityMetadata,
+    imagingModalitiesMetadata,
     pipelines,
     checked,
     onCheckboxChange,
@@ -32,7 +32,7 @@ const ResultCard = memo(
     datasetTotalSubjects: number;
     numMatchingSubjects: number;
     imageModals: string[];
-    modalityMetadata: Record<string, ImagingModalityOption>;
+    imagingModalitiesMetadata: ImagingModalitiesMetadata;
     pipelines: {
       [key: string]: string[];
     };
@@ -130,28 +130,34 @@ const ResultCard = memo(
           </div>
           <div className="justify-self-end" data-cy="modality-buttons">
             <ButtonGroup>
-              {imageModals.sort().map((modal) => {
-                const metadata = modalityMetadata[modal];
-                const backgroundColor =
-                  metadata?.data_type &&
-                  modalitiesDataTypeColorMapping[metadata.data_type.toLowerCase()];
-                return (
-                  <Button
-                    key={modal}
-                    variant="contained"
-                    disableElevation
-                    sx={{
-                      backgroundColor,
-                      '&:hover': {
+              {imageModals
+                .sort()
+                .filter((modal) => {
+                  const metadata = imagingModalitiesMetadata[modal];
+                  return Boolean(metadata?.DataType && metadata?.Abbreviation);
+                })
+                .map((modal) => {
+                  const metadata = imagingModalitiesMetadata[modal]!;
+                  const dataType = metadata.DataType;
+                  const backgroundColor =
+                    dataType && modalitiesDataTypeColorMapping[dataType.toLowerCase()];
+                  return (
+                    <Button
+                      key={modal}
+                      variant="contained"
+                      disableElevation
+                      sx={{
                         backgroundColor,
-                        cursor: 'default',
-                      },
-                    }}
-                  >
-                    {metadata.abbreviation}
-                  </Button>
-                );
-              })}
+                        '&:hover': {
+                          backgroundColor,
+                          cursor: 'default',
+                        },
+                      }}
+                    >
+                      {metadata.Abbreviation ?? metadata.Label ?? modal}
+                    </Button>
+                  );
+                })}
             </ButtonGroup>
           </div>
         </div>
