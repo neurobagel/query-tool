@@ -10,6 +10,26 @@ const emptySubjectsResponse: SubjectsResponse = {
 
 const mockOnDownload = async () => emptySubjectsResponse;
 const mockQueryParams: QueryParams = { nodes: [] };
+const imagingModalitiesMetadata = {
+  'http://purl.org/nidash/nidm#FlowWeighted': {
+    TermURL: 'nidm:FlowWeighted',
+    Label: 'Functional MRI',
+    Abbreviation: 'fMRI',
+    DataType: 'func',
+  },
+  'http://purl.org/nidash/nidm#T1Weighted': {
+    TermURL: 'nidm:T1Weighted',
+    Label: 'T1-weighted',
+    Abbreviation: 'T1',
+    DataType: 'anat',
+  },
+  'http://purl.org/nidash/nidm#T2Weighted': {
+    TermURL: 'nidm:T2Weighted',
+    Label: 'T2-weighted',
+    Abbreviation: 'T2',
+    DataType: 'anat',
+  },
+};
 
 describe('ResultContainer', () => {
   it('Displays a set of Result Cards, select all checkbox, a disabled download result button, summary stats, and how to get data dialog button', () => {
@@ -18,6 +38,7 @@ describe('ResultContainer', () => {
         response={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
         queryForm={mockQueryParams}
         disableDownloads={false}
         onDownload={mockOnDownload}
@@ -37,6 +58,7 @@ describe('ResultContainer', () => {
         response={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
         queryForm={mockQueryParams}
         disableDownloads={false}
         onDownload={mockOnDownload}
@@ -51,6 +73,7 @@ describe('ResultContainer', () => {
         response={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
         queryForm={mockQueryParams}
         disableDownloads={false}
         onDownload={mockOnDownload}
@@ -77,6 +100,7 @@ describe('ResultContainer', () => {
         response={{ responses: [], errors: [], nodes_response_status: 'success' }}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
         queryForm={mockQueryParams}
         disableDownloads={false}
         onDownload={mockOnDownload}
@@ -92,6 +116,7 @@ describe('ResultContainer', () => {
         response={null}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
         queryForm={null}
         disableDownloads={false}
         onDownload={mockOnDownload}
@@ -107,6 +132,7 @@ describe('ResultContainer', () => {
         response={responseWithUnknownModality}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
         queryForm={mockQueryParams}
         disableDownloads={false}
         onDownload={mockOnDownload}
@@ -126,6 +152,7 @@ describe('ResultContainer', () => {
         response={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
         queryForm={mockQueryParams}
         disableDownloads={false}
         onDownload={onDownloadSpy}
