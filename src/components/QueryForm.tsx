@@ -152,7 +152,7 @@ function QueryForm({
           <CategoricalField
             label="Diagnosis"
             options={diagnosisOptions.map((d) => ({
-              label: d.Label,
+              label: d.Label as string,
               id: d.TermURL,
             }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
@@ -179,7 +179,7 @@ function QueryForm({
       <div>
         <CategoricalField
           label="Assessment tool"
-          options={assessmentOptions.map((a) => ({ label: a.Label, id: a.TermURL }))}
+          options={assessmentOptions.map((a) => ({ label: a.Label as string, id: a.TermURL }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
           inputValue={assessmentTool}
         />
@@ -188,7 +188,7 @@ function QueryForm({
         <CategoricalField
           label="Imaging modality"
           options={imagingModalityOptions.map((value) => ({
-            label: value.Label,
+            label: value.Label as string,
             id: value.TermURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}

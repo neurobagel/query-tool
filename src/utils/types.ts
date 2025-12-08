@@ -4,13 +4,13 @@ export interface FieldInputOption {
 }
 
 export interface AttributeOption {
-  Label: string;
+  Label: string | null;
   TermURL: string;
 }
 
 export interface ImagingModalityOption extends AttributeOption {
-  Abbreviation?: string | null;
-  DataType?: string | null;
+  Abbreviation: string | null;
+  DataType: string | null;
 }
 
 export interface ImagingModalitiesMetadata {

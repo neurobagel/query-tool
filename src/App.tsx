@@ -142,8 +142,8 @@ function App() {
   };
 
   useEffect(() => {
-    // T is constrained to include an optional Label so we can safely filter out missing labels when needed.
-    async function getAttributes<T extends { Label?: string | null }>(
+    // T is constrained to include a Label so we can safely filter out missing labels when needed.
+    async function getAttributes<T extends { Label: string | null }>(
       NBResource: string,
       dataElementURI: string,
       onSuccess: (items: T[]) => void,
