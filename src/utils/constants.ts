@@ -30,9 +30,9 @@ export const sexes: { [key: string]: string } = {
   other: 'snomed:32570681000036106',
 };
 
+// We do not support "beh" and "phenotype" BIDS tags
 export const modalitiesDataTypeColorMapping: { [key: string]: string } = {
   anat: 'rgb(113, 113, 122)',
-  beh: 'rgb(205, 92, 92)',
   dwi: 'rgb(253, 164, 164)',
   eeg: 'rgb(70, 130, 180)',
   fmap: 'rgb(189, 183, 107)',
@@ -44,6 +44,5 @@ export const modalitiesDataTypeColorMapping: { [key: string]: string } = {
   mrs: 'rgb(0, 191, 255)',
   perf: 'rgb(34, 139, 34)',
   pet: 'rgb(255, 69, 0)',
-  phenotype: 'rgb(138, 43, 226)',
   nirs: 'rgba(228, 104, 170, 1)',
 };

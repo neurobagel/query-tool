@@ -187,13 +187,7 @@ function App() {
         }
 
         let filteredItems = items;
-        const itemsWithLabels = items as Array<{ Label?: string | null }>;
-        if (
-          removeMissingLabels &&
-          itemsWithLabels.some(
-            (item) => Object.prototype.hasOwnProperty.call(item, 'Label') && item.Label === null
-          )
-        ) {
+        if (removeMissingLabels && items.some((item) => item.Label == null)) {
           setNotifications((prev) => [
             ...prev,
             {
@@ -202,7 +196,7 @@ function App() {
               message: `Warning: Missing labels were removed for ${NBResource}`,
             },
           ]);
-          filteredItems = items.filter((item) => item.Label !== null);
+          filteredItems = items.filter((item) => item.Label != null);
         }
 
         onSuccess(filteredItems as T[]);
@@ -239,6 +233,7 @@ function App() {
           setPipelines((prevPipelines) => ({ ...prevPipelines, [option.TermURL]: [] }));
         });
       },
+      // TODO to revisit once pipelines come with Label
       { removeMissingLabels: false }
     );
 
