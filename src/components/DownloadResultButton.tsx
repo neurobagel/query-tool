@@ -16,7 +16,7 @@ type Props = {
   loading: boolean;
 };
 
-export default function DownloadResultButton({ disabled, handleClick, loading }: Props) {
+export function DownloadResultButton({ disabled, handleClick, loading }: Props) {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const onDownload = () => {
@@ -50,7 +50,7 @@ export default function DownloadResultButton({ disabled, handleClick, loading }:
           )}
         </Button>
 
-        <FormControl component="fieldset" sx={{ mt: 0.5 }}>
+        <FormControl component="fieldset" sx={{ mt: 0.5 }} disabled={disabled || loading}>
           <RadioGroup
             aria-label="download-format"
             name="download-format"
@@ -86,3 +86,5 @@ export default function DownloadResultButton({ disabled, handleClick, loading }:
     control
   );
 }
+
+export default DownloadResultButton;
