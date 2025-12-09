@@ -16,7 +16,7 @@ type Props = {
   loading: boolean;
 };
 
-export function DownloadResultButton({ disabled, handleClick, loading }: Props) {
+function DownloadResultButton({ disabled, handleClick, loading }: Props) {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const onDownload = () => {
