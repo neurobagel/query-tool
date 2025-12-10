@@ -72,8 +72,7 @@ describe('Results TSV', () => {
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    cy.get('[data-cy="download-results-dropdown-button"]').click();
-    cy.contains('URIs').click();
+    cy.get('[data-cy="download-radio-1"]').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
     cy.readFile('cypress/downloads/neurobagel-query-results-with-URIs.tsv').should(
@@ -90,8 +89,7 @@ describe('Results TSV', () => {
     cy.readFile('cypress/downloads/neurobagel-query-results.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
-    cy.get('[data-cy="download-results-dropdown-button"]').click();
-    cy.contains('URIs').click();
+    cy.get('[data-cy="download-radio-1"]').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
     cy.readFile('cypress/downloads/neurobagel-query-results-with-URIs.tsv').then((fileContent) => {
