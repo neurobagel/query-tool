@@ -1,3 +1,20 @@
+# v0.14.0 (Thu Dec 11 2025)
+
+#### 💥 Breaking Changes
+
+- [ENH] Fetch imaging modality options from an API endpoint [#684](https://github.com/neurobagel/query-tool/pull/684) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🚀 Enhancements
+
+- [ENH] Replace dropdown selector with radio button group [#683](https://github.com/neurobagel/query-tool/pull/683) ([@Tusharjamdade](https://github.com/Tusharjamdade) [@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
 # v0.13.3 (Tue Nov 25 2025)
 
 #### 🏠 Internal
