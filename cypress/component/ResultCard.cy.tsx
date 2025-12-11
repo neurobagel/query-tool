@@ -111,4 +111,75 @@ describe('ResultCard', () => {
       .should('be.disabled')
       .should('contain', 'No pipelines');
   });
+  it('should hide modalities missing abbreviation or data type', () => {
+    const propsWithIncompleteModality = {
+      ...props,
+      imageModals: [...props.imageModals, 'http://purl.org/nidash/nidm#IncompleteModality'],
+      imagingModalitiesMetadata: {
+        ...props.imagingModalitiesMetadata,
+        'http://purl.org/nidash/nidm#IncompleteModality': {
+          TermURL: 'nidm:IncompleteModality',
+          Label: 'Incomplete Modality',
+          Abbreviation: null,
+          DataType: 'anat',
+        },
+      },
+    };
+
+    cy.mount(
+      <ResultCard
+        nodeName={propsWithIncompleteModality.nodeName}
+        datasetUUID={propsWithIncompleteModality.datasetUUID}
+        datasetName={propsWithIncompleteModality.datasetName}
+        datasetPortalURI={propsWithIncompleteModality.datasetPortalURI}
+        datasetTotalSubjects={propsWithIncompleteModality.datasetTotalSubjects}
+        numMatchingSubjects={propsWithIncompleteModality.numMatchingSubjects}
+        imageModals={propsWithIncompleteModality.imageModals}
+        imagingModalitiesMetadata={propsWithIncompleteModality.imagingModalitiesMetadata}
+        pipelines={propsWithIncompleteModality.pipelines}
+        checked={propsWithIncompleteModality.checked}
+        onCheckboxChange={propsWithIncompleteModality.onCheckboxChange}
+      />
+    );
+
+    cy.get('[data-cy="modality-buttons"] button').should('have.length', 2);
+    cy.get('[data-cy="modality-buttons"]').should('contain', 'ASL').and('contain', 'DWI');
+    cy.get('[data-cy="modality-buttons"]').should('not.contain', 'Incomplete Modality');
+  });
+  it('should fall back to default styling when data type has no color mapping', () => {
+    const propsWithUnknownType = {
+      ...props,
+      imageModals: [...props.imageModals, 'http://purl.org/nidash/nidm#UnknownTypeModality'],
+      imagingModalitiesMetadata: {
+        ...props.imagingModalitiesMetadata,
+        'http://purl.org/nidash/nidm#UnknownTypeModality': {
+          TermURL: 'nidm:UnknownTypeModality',
+          Label: 'Unknown Type Modality',
+          Abbreviation: 'UNK',
+          DataType: 'unknown_type',
+        },
+      },
+    };
+
+    cy.mount(
+      <ResultCard
+        nodeName={propsWithUnknownType.nodeName}
+        datasetUUID={propsWithUnknownType.datasetUUID}
+        datasetName={propsWithUnknownType.datasetName}
+        datasetPortalURI={propsWithUnknownType.datasetPortalURI}
+        datasetTotalSubjects={propsWithUnknownType.datasetTotalSubjects}
+        numMatchingSubjects={propsWithUnknownType.numMatchingSubjects}
+        imageModals={propsWithUnknownType.imageModals}
+        imagingModalitiesMetadata={propsWithUnknownType.imagingModalitiesMetadata}
+        pipelines={propsWithUnknownType.pipelines}
+        checked={propsWithUnknownType.checked}
+        onCheckboxChange={propsWithUnknownType.onCheckboxChange}
+      />
+    );
+
+    cy.get('[data-cy="modality-buttons"] button').should('have.length', 3);
+    cy.contains('[data-cy="modality-buttons"] button', 'UNK')
+      .should('exist')
+      .should('have.css', 'background-color', 'rgb(25, 118, 210)');
+  });
 });

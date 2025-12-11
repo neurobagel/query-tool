@@ -175,12 +175,13 @@ function App() {
 
         const items = response.data.responses[dataElementURI];
         if (!items || items.length === 0) {
+          const resourceLabel = NBResource.replace(/-/g, ' ');
           setNotifications((prev) => [
             ...prev,
             {
               id: uuidv4(),
               type: 'info',
-              message: `No ${NBResource === 'imaging-modalities' ? 'imaging modalities' : NBResource} options were available`,
+              message: `No ${resourceLabel} options were available`,
             },
           ]);
           return;
