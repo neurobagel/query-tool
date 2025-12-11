@@ -4,8 +4,17 @@ export interface FieldInputOption {
 }
 
 export interface AttributeOption {
-  Label: string;
+  Label: string | null;
   TermURL: string;
+}
+
+export interface ImagingModalityOption extends AttributeOption {
+  Abbreviation: string | null;
+  DataType: string | null;
+}
+
+export interface ImagingModalitiesMetadata {
+  [key: string]: ImagingModalityOption;
 }
 
 export interface NodeOption {
@@ -33,6 +42,18 @@ export interface RetrievedPipelineVersions extends BaseAPIResponse {
   responses: {
     [key: string]: string[];
   };
+}
+
+export interface RetrievedImagingModalities extends BaseAPIResponse {
+  responses: {
+    [key: string]: ImagingModalityOption[];
+  };
+}
+
+export interface AttributeResponse<T> {
+  nodes_response_status: string;
+  errors: { node_name: string; error: string }[];
+  responses: Record<string, T[]>;
 }
 
 export interface Pipelines {
