@@ -10,6 +10,16 @@ import {
   nodeOptions,
 } from '../fixtures/mocked-responses';
 
+function readLatestFile(pattern: string) {
+  if (Cypress.platform === 'win32') {
+    const psCmd = `powershell -NoProfile -Command "Get-ChildItem -Path '${pattern}' -File 2>$null | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName"`;
+    return cy.exec(psCmd).then(({ stdout }) => cy.readFile(stdout.trim()));
+  }
+
+  const bashCmd = `bash -lc "ls -t ${pattern} 2>/dev/null | head -n1"`;
+  return cy.exec(bashCmd).then(({ stdout }) => cy.readFile(stdout.trim()));
+}
+
 describe('Results TSV', () => {
   beforeEach(() => {
     cy.intercept('POST', '/datasets', (req) => {
@@ -76,7 +86,7 @@ describe('Results TSV', () => {
     cy.contains('URIs').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    cy.readFile('cypress/downloads/neurobagel-query-results-with-URIs-*.tsv').should(
+    readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs-*.tsv').should(
       'contain',
       'some cool name'
     );
@@ -87,14 +97,14 @@ describe('Results TSV', () => {
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    cy.readFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
+    readLatestFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
     cy.get('[data-cy="download-results-dropdown-button"]').click();
     cy.contains('URIs').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    cy.readFile('cypress/downloads/neurobagel-query-results-with-URIs-*.tsv').then(
+    readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs-*.tsv').then(
       (fileContent) => {
         expect(fileContent).to.match(/^DatasetName/);
       }
@@ -106,7 +116,7 @@ describe('Results TSV', () => {
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    cy.readFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
+    readLatestFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const datasetProtected = rows[1];
@@ -149,7 +159,7 @@ describe('Unprotected response', () => {
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
 
-    cy.readFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
+    readLatestFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const phenotypicSession = rows[1];
