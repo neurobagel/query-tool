@@ -11,19 +11,15 @@ import {
 } from '../fixtures/mocked-responses';
 
 function readLatestFile(pattern: string) {
-  if (Cypress.platform === 'win32') {
-    const psCmd = `powershell -NoProfile -Command "Get-ChildItem -Path '${pattern}' -File 2>$null | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName"`;
-    return cy.exec(psCmd).then(({ stdout }) => {
-      const file = stdout.trim();
-      if (!file) throw new Error(`No file found for pattern: ${pattern}`);
-      return cy.readFile(file);
-    });
-  }
+  const cmd = `bash -lc "ls -t ${pattern} 2>/dev/null | head -n 1"`;
 
-  const bashCmd = `bash -lc "ls -t ${pattern} 2>/dev/null | head -n1"`;
-  return cy.exec(bashCmd).then(({ stdout }) => {
+  return cy.exec(cmd).then(({ stdout }) => {
     const file = stdout.trim();
-    if (!file) throw new Error(`No file found for pattern: ${pattern}`);
+
+    if (!file) {
+      throw new Error(`No file found for pattern: ${pattern}`);
+    }
+
     return cy.readFile(file);
   });
 }
