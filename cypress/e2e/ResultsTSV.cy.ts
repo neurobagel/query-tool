@@ -13,11 +13,19 @@ import {
 function readLatestFile(pattern: string) {
   if (Cypress.platform === 'win32') {
     const psCmd = `powershell -NoProfile -Command "Get-ChildItem -Path '${pattern}' -File 2>$null | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName"`;
-    return cy.exec(psCmd).then(({ stdout }) => cy.readFile(stdout.trim()));
+    return cy.exec(psCmd).then(({ stdout }) => {
+      const file = stdout.trim();
+      if (!file) throw new Error(`No file found for pattern: ${pattern}`);
+      return cy.readFile(file);
+    });
   }
 
   const bashCmd = `bash -lc "ls -t ${pattern} 2>/dev/null | head -n1"`;
-  return cy.exec(bashCmd).then(({ stdout }) => cy.readFile(stdout.trim()));
+  return cy.exec(bashCmd).then(({ stdout }) => {
+    const file = stdout.trim();
+    if (!file) throw new Error(`No file found for pattern: ${pattern}`);
+    return cy.readFile(file);
+  });
 }
 
 describe('Results TSV', () => {
