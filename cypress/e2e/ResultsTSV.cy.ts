@@ -90,7 +90,7 @@ describe('Results TSV', () => {
     cy.contains('URIs').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs-*.tsv').should(
+    readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs_*.tsv').should(
       'contain',
       'some cool name'
     );
@@ -101,14 +101,14 @@ describe('Results TSV', () => {
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    readLatestFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
+    readLatestFile('cypress/downloads/neurobagel-query-results_*.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
     cy.get('[data-cy="download-results-dropdown-button"]').click();
     cy.contains('URIs').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs-*.tsv').then(
+    readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs_*.tsv').then(
       (fileContent) => {
         expect(fileContent).to.match(/^DatasetName/);
       }
@@ -120,7 +120,7 @@ describe('Results TSV', () => {
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    readLatestFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
+    readLatestFile('cypress/downloads/neurobagel-query-results_*.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const datasetProtected = rows[1];
@@ -163,7 +163,7 @@ describe('Unprotected response', () => {
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
 
-    readLatestFile('cypress/downloads/neurobagel-query-results-*.tsv').then((fileContent) => {
+    readLatestFile('cypress/downloads/neurobagel-query-results_*.tsv').then((fileContent) => {
       const rows = fileContent.split('\n');
 
       const phenotypicSession = rows[1];
