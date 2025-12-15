@@ -21,7 +21,7 @@
     "test:e2e": "cypress run --e2e"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.10.0",
+    "@auth0/auth0-react": "^2.11.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.9",
