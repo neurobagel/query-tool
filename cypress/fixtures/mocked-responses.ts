@@ -324,6 +324,66 @@ export const failedAssessmentToolOptions = {
   ],
 };
 
+export const imagingModalityOptions = {
+  errors: [],
+  responses: {
+    'nb:Image': [
+      {
+        TermURL: 'nidm:T1Weighted',
+        Label: 'T1 Weighted',
+        Abbreviation: 'T1w',
+        DataType: 'anat',
+      },
+      {
+        TermURL: 'nidm:T2Weighted',
+        Label: 'T2 Weighted',
+        Abbreviation: 'T2w',
+        DataType: 'anat',
+      },
+      {
+        TermURL: 'nidm:FlowWeighted',
+        Label: 'Functional MRI',
+        Abbreviation: 'fMRI',
+        DataType: 'func',
+      },
+      {
+        TermURL: 'nidm:IncompleteModality',
+        Label: 'Incomplete Modality',
+        Abbreviation: null,
+        DataType: 'anat',
+      },
+    ],
+  },
+  nodes_response_status: 'success',
+};
+
+export const emptyImagingModalityOptions = {
+  ...imagingModalityOptions,
+  responses: { 'nb:Image': [] },
+};
+
+export const partiallyFailedImagingModalityOptions = {
+  ...imagingModalityOptions,
+  nodes_response_status: 'partial success',
+  errors: [
+    {
+      node_name: 'NoImagingModalityNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const failedImagingModalityOptions = {
+  ...emptyImagingModalityOptions,
+  nodes_response_status: 'fail',
+  errors: [
+    {
+      node_name: 'NoImagingModalityNode',
+      error: 'some error message',
+    },
+  ],
+};
+
 export const pipelineOptions = {
   errors: [],
   responses: {
@@ -419,5 +479,27 @@ export const datasetWithUnknownModality = {
 export const responseWithUnknownModality = {
   errors: [],
   responses: [datasetWithUnknownModality],
+  nodes_response_status: 'success',
+};
+
+export const datasetWithIncompleteModality = {
+  records_protected: false,
+  node_name: 'some-node-name',
+  dataset_uuid: 'https://someportal.org/datasets/ds0004',
+  dataset_name: 'dataset with incomplete modality',
+  dataset_portal_uri: 'https://example.com/dataset-incomplete',
+  dataset_total_subjects: 25,
+  num_matching_subjects: 3,
+  subject_data: 'protected',
+  image_modals: [
+    'http://purl.org/nidash/nidm#FlowWeighted',
+    'http://purl.org/nidash/nidm#IncompleteModality',
+  ],
+  available_pipelines: {},
+};
+
+export const responseWithIncompleteModality = {
+  errors: [],
+  responses: [datasetWithIncompleteModality],
   nodes_response_status: 'success',
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Button, Grow, IconButton } from '@mui/material';
+import { Alert, Button, IconButton } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CloseIcon from '@mui/icons-material/Close';
 import type { AlertColor } from '@mui/material/Alert';
@@ -11,7 +11,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { FilterList } from '@mui/icons-material';
 import { baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
 import {
-  RetrievedAttributeOption,
   AttributeOption,
   RetrievedPipelineVersions,
   NodeOption,
@@ -22,6 +21,9 @@ import {
   QueryParams,
   Notification,
   QueryFormState,
+  ImagingModalityOption,
+  AttributeResponse,
+  ImagingModalitiesMetadata,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -30,6 +32,7 @@ import AuthDialog from './components/AuthDialog';
 import ChatbotFeature from './components/Chatbot';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
+import NodeAdmonition from './components/NodeAdmonition';
 import './App.css';
 import logo from './assets/logo.png';
 import areFormStatesEqual, {
@@ -45,12 +48,16 @@ function App() {
   );
   const [diagnosisOptions, setDiagnosisOptions] = useState<AttributeOption[]>([]);
   const [assessmentOptions, setAssessmentOptions] = useState<AttributeOption[]>([]);
+  const [imagingModalityOptions, setImagingModalityOptions] = useState<ImagingModalityOption[]>([]);
+  const [imagingModalitiesMetadata, setImagingModalitiesMetadata] =
+    useState<ImagingModalitiesMetadata>({});
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
   const [pipelines, setPipelines] = useState<Pipelines>({});
 
-  const [alertDismissed, setAlertDismissed] = useState<boolean>(false);
+  // Track which node admonitions have been dismissed
+  const [dismissedNodeAdmonitions, setDismissedNodeAdmonitions] = useState<string[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -135,9 +142,16 @@ function App() {
   };
 
   useEffect(() => {
-    async function getAttributes(NBResource: string, dataElementURI: string) {
+    // T is constrained to include a Label so we can safely filter out missing labels when needed.
+    async function getAttributes<T extends { Label: string | null }>(
+      NBResource: string,
+      dataElementURI: string,
+      onSuccess: (items: T[]) => void,
+      options: { removeMissingLabels?: boolean } = {}
+    ) {
+      const removeMissingLabels = options.removeMissingLabels ?? true;
       try {
-        const response: AxiosResponse<RetrievedAttributeOption> = await axios.get(
+        const response: AxiosResponse<AttributeResponse<T>> = await axios.get(
           `${baseAPIURL}${NBResource}`
         );
         if (response.data.nodes_response_status === 'fail') {
@@ -145,71 +159,84 @@ function App() {
             variant: 'error',
             action,
           });
-        } else {
-          // If any errors occurred, report them
-          response.data.errors.forEach((error) => {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'warning',
-                message: `Failed to retrieve ${NBResource} options from ${error.node_name}`,
-              },
-            ]);
-          });
-          // If the results are empty, report that
-          if (Object.keys(response.data.responses[dataElementURI]).length === 0) {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'info',
-                message: `No ${NBResource} options were available`,
-              },
-            ]);
-            // TODO: remove the second condition once pipeline labels are added
-          } else if (
-            response.data.responses[dataElementURI].some((item) => item.Label === null) &&
-            NBResource !== 'pipelines'
-          ) {
-            setNotifications((prev) => [
-              ...prev,
-              {
-                id: uuidv4(),
-                type: 'warning',
-                message: `Warning: Missing labels were removed for ${NBResource}`,
-              },
-            ]);
-            response.data.responses[dataElementURI] = response.data.responses[
-              dataElementURI
-            ].filter((item) => item.Label !== null);
-          }
+          return;
         }
-        return response.data.responses[dataElementURI];
+
+        response.data.errors.forEach((error) => {
+          setNotifications((prev) => [
+            ...prev,
+            {
+              id: uuidv4(),
+              type: 'warning',
+              message: `Failed to retrieve ${NBResource} options from ${error.node_name}`,
+            },
+          ]);
+        });
+
+        const items = response.data.responses[dataElementURI];
+        if (!items || items.length === 0) {
+          const resourceLabel = NBResource.replace(/-/g, ' ');
+          setNotifications((prev) => [
+            ...prev,
+            {
+              id: uuidv4(),
+              type: 'info',
+              message: `No ${resourceLabel} options were available`,
+            },
+          ]);
+          return;
+        }
+
+        let filteredItems = items;
+        if (removeMissingLabels && items.some((item) => item.Label == null)) {
+          setNotifications((prev) => [
+            ...prev,
+            {
+              id: uuidv4(),
+              type: 'warning',
+              message: `Warning: Missing labels were removed for ${NBResource}`,
+            },
+          ]);
+          filteredItems = items.filter((item) => item.Label != null);
+        }
+
+        onSuccess(filteredItems as T[]);
       } catch {
-        return null;
+        enqueueSnackbar(`Failed to retrieve ${NBResource} options`, { variant: 'error', action });
       }
     }
 
-    getAttributes('diagnoses', 'nb:Diagnosis').then((diagnosisResponse) => {
-      if (diagnosisResponse !== null && diagnosisResponse.length !== 0) {
-        setDiagnosisOptions(diagnosisResponse);
-      }
+    getAttributes<AttributeOption>('diagnoses', 'nb:Diagnosis', (diagnosisResponse) => {
+      setDiagnosisOptions(diagnosisResponse);
     });
 
-    getAttributes('assessments', 'nb:Assessment').then((assessmentResponse) => {
-      if (assessmentResponse !== null && assessmentResponse.length !== 0) {
-        setAssessmentOptions(assessmentResponse);
-      }
+    getAttributes<AttributeOption>('assessments', 'nb:Assessment', (assessmentResponse) => {
+      setAssessmentOptions(assessmentResponse);
     });
 
-    getAttributes('pipelines', 'nb:Pipeline').then((pipelineResponse) => {
-      if (pipelineResponse !== null && pipelineResponse.length !== 0) {
+    getAttributes<ImagingModalityOption>('imaging-modalities', 'nb:Image', (modalities) => {
+      setImagingModalityOptions(modalities);
+      const modalityMap = modalities.reduce<ImagingModalitiesMetadata>((acc, modality) => {
+        const [, suffix] = modality.TermURL.split(':');
+        const fullIRI = suffix ? `http://purl.org/nidash/nidm#${suffix}` : modality.TermURL;
+        acc[modality.TermURL] = modality;
+        acc[fullIRI] = modality;
+        return acc;
+      }, {});
+      setImagingModalitiesMetadata(modalityMap);
+    });
+
+    getAttributes<AttributeOption>(
+      'pipelines',
+      'nb:Pipeline',
+      (pipelineResponse) => {
         pipelineResponse.forEach((option) => {
           setPipelines((prevPipelines) => ({ ...prevPipelines, [option.TermURL]: [] }));
         });
-      }
-    });
+      },
+      // TODO to revisit once pipelines come with Label
+      { removeMissingLabels: false }
+    );
 
     async function getNodeOptions(fetchURL: string) {
       try {
@@ -319,17 +346,6 @@ function App() {
     activeQueryParams && activeQueryParamsState
       ? !areFormStatesEqual(currentQueryFormState, activeQueryParamsState)
       : false;
-
-  function showAlert() {
-    if (selectedNode && Array.isArray(selectedNode)) {
-      const openNeuroIsAnOption = availableNodes.find((n) => n.NodeName === 'OpenNeuro');
-      const isOpenNeuroSelected = selectedNode.find(
-        (n) => n.label === 'OpenNeuro' || (n.label === 'All' && openNeuroIsAnOption)
-      );
-      return isOpenNeuroSelected && !alertDismissed;
-    }
-    return alertDismissed;
-  }
 
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
@@ -541,6 +557,18 @@ function App() {
     );
   }
 
+  // Determine which node admonitions to show based on selection and availability
+  const hasAllSelected = selectedNode.some((n) => n.label === 'All');
+  const admonitionNodeNames = ['OpenNeuro', 'EBRAINS'];
+
+  const admonitionNodes = admonitionNodeNames.filter((nodeName) => {
+    if (dismissedNodeAdmonitions.includes(nodeName)) return false;
+    if (availableNodes.some((n) => n.NodeName === nodeName)) {
+      return selectedNode.some((n) => n.label === nodeName) || hasAllSelected;
+    }
+    return false;
+  });
+
   return (
     <>
       <AuthDialog open={openAuthDialog} onClose={() => setOpenAuthDialog(false)} />
@@ -556,29 +584,12 @@ function App() {
         notifications={notifications}
         setNotifications={setNotifications}
       />
-      {showAlert() && (
-        <>
-          <Grow in={!alertDismissed}>
-            <Alert
-              data-cy="openneuro-alert"
-              severity="info"
-              onClose={() => {
-                setAlertDismissed(true);
-              }}
-            >
-              The OpenNeuro node is being actively annotated at the participant level and does not
-              include all datasets yet. Check back soon to find more data. If you would like to
-              contribute annotations for existing OpenNeuro datasets, please head over to&nbsp;
-              <a href="https://upload-ui.neurobagel.org/" target="_blank" rel="noreferrer">
-                Neurobagel&apos;s OpenNeuro utility service
-              </a>
-              &nbsp;which is designed to download and upload OpenNeuro datasets within Neurobagel
-              ecosystem.
-            </Alert>
-          </Grow>
-          <br />
-        </>
-      )}
+      <NodeAdmonition
+        nodes={admonitionNodes}
+        onDismiss={(nodeName) => {
+          setDismissedNodeAdmonitions((prev) => [...prev, nodeName]);
+        }}
+      />
 
       {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
@@ -602,6 +613,7 @@ function App() {
               availableNodes={availableNodes}
               diagnosisOptions={diagnosisOptions}
               assessmentOptions={assessmentOptions}
+              imagingModalityOptions={imagingModalityOptions}
               selectedNode={selectedNode}
               minAge={minAge}
               maxAge={maxAge}
@@ -663,6 +675,7 @@ function App() {
                 response={sortedResults || null}
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
+                imagingModalitiesMetadata={imagingModalitiesMetadata}
                 queryForm={activeQueryParams}
                 disableDownloads={queryFormHasChanged}
                 onDownload={(buttonIndex, selection) => handleDownload(buttonIndex, selection)}

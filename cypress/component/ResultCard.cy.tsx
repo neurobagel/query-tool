@@ -17,6 +17,20 @@ const props = {
       '23.1.3',
     ],
   },
+  imagingModalitiesMetadata: {
+    'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
+      TermURL: 'nidm:ArterialSpinLabeling',
+      Label: 'Arterial Spin Labeling',
+      Abbreviation: 'ASL',
+      DataType: 'anat',
+    },
+    'http://purl.org/nidash/nidm#DiffusionWeighted': {
+      TermURL: 'nidm:DiffusionWeighted',
+      Label: 'Diffusion Weighted',
+      Abbreviation: 'DWI',
+      DataType: 'dwi',
+    },
+  },
   checked: true,
   onCheckboxChange: () => {},
 };
@@ -32,6 +46,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        imagingModalitiesMetadata={props.imagingModalitiesMetadata}
         pipelines={props.pipelines}
         checked={props.checked}
         onCheckboxChange={props.onCheckboxChange}
@@ -49,7 +64,7 @@ describe('ResultCard', () => {
     cy.get('[data-cy="card-some uuid"] button')
       .eq(2)
       .should('contain', 'DWI')
-      .should('have.css', 'background-color', 'rgb(205, 92, 92)');
+      .should('have.css', 'background-color', 'rgb(253, 164, 164)');
 
     cy.get('[data-cy="card-some uuid-available-pipelines-button"]').trigger('mouseover', {
       force: true,
@@ -67,6 +82,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        imagingModalitiesMetadata={props.imagingModalitiesMetadata}
         pipelines={props.pipelines}
         checked={false}
         onCheckboxChange={onCheckboxChangeSpy}
@@ -85,6 +101,7 @@ describe('ResultCard', () => {
         datasetTotalSubjects={props.datasetTotalSubjects}
         numMatchingSubjects={props.numMatchingSubjects}
         imageModals={props.imageModals}
+        imagingModalitiesMetadata={props.imagingModalitiesMetadata}
         pipelines={{}}
         checked={false}
         onCheckboxChange={props.onCheckboxChange}
@@ -93,5 +110,76 @@ describe('ResultCard', () => {
     cy.get('[data-cy="card-some uuid-available-pipelines-button"]')
       .should('be.disabled')
       .should('contain', 'No pipelines');
+  });
+  it('should hide modalities missing abbreviation or data type', () => {
+    const propsWithIncompleteModality = {
+      ...props,
+      imageModals: [...props.imageModals, 'http://purl.org/nidash/nidm#IncompleteModality'],
+      imagingModalitiesMetadata: {
+        ...props.imagingModalitiesMetadata,
+        'http://purl.org/nidash/nidm#IncompleteModality': {
+          TermURL: 'nidm:IncompleteModality',
+          Label: 'Incomplete Modality',
+          Abbreviation: null,
+          DataType: 'anat',
+        },
+      },
+    };
+
+    cy.mount(
+      <ResultCard
+        nodeName={propsWithIncompleteModality.nodeName}
+        datasetUUID={propsWithIncompleteModality.datasetUUID}
+        datasetName={propsWithIncompleteModality.datasetName}
+        datasetPortalURI={propsWithIncompleteModality.datasetPortalURI}
+        datasetTotalSubjects={propsWithIncompleteModality.datasetTotalSubjects}
+        numMatchingSubjects={propsWithIncompleteModality.numMatchingSubjects}
+        imageModals={propsWithIncompleteModality.imageModals}
+        imagingModalitiesMetadata={propsWithIncompleteModality.imagingModalitiesMetadata}
+        pipelines={propsWithIncompleteModality.pipelines}
+        checked={propsWithIncompleteModality.checked}
+        onCheckboxChange={propsWithIncompleteModality.onCheckboxChange}
+      />
+    );
+
+    cy.get('[data-cy="modality-buttons"] button').should('have.length', 2);
+    cy.get('[data-cy="modality-buttons"]').should('contain', 'ASL').and('contain', 'DWI');
+    cy.get('[data-cy="modality-buttons"]').should('not.contain', 'Incomplete Modality');
+  });
+  it('should fall back to default styling when data type has no color mapping', () => {
+    const propsWithUnknownType = {
+      ...props,
+      imageModals: [...props.imageModals, 'http://purl.org/nidash/nidm#UnknownTypeModality'],
+      imagingModalitiesMetadata: {
+        ...props.imagingModalitiesMetadata,
+        'http://purl.org/nidash/nidm#UnknownTypeModality': {
+          TermURL: 'nidm:UnknownTypeModality',
+          Label: 'Unknown Type Modality',
+          Abbreviation: 'UNK',
+          DataType: 'unknown_type',
+        },
+      },
+    };
+
+    cy.mount(
+      <ResultCard
+        nodeName={propsWithUnknownType.nodeName}
+        datasetUUID={propsWithUnknownType.datasetUUID}
+        datasetName={propsWithUnknownType.datasetName}
+        datasetPortalURI={propsWithUnknownType.datasetPortalURI}
+        datasetTotalSubjects={propsWithUnknownType.datasetTotalSubjects}
+        numMatchingSubjects={propsWithUnknownType.numMatchingSubjects}
+        imageModals={propsWithUnknownType.imageModals}
+        imagingModalitiesMetadata={propsWithUnknownType.imagingModalitiesMetadata}
+        pipelines={propsWithUnknownType.pipelines}
+        checked={propsWithUnknownType.checked}
+        onCheckboxChange={propsWithUnknownType.onCheckboxChange}
+      />
+    );
+
+    cy.get('[data-cy="modality-buttons"] button').should('have.length', 3);
+    cy.contains('[data-cy="modality-buttons"] button', 'UNK')
+      .should('exist')
+      .should('have.css', 'background-color', 'rgb(25, 118, 210)');
   });
 });

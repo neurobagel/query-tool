@@ -8,6 +8,7 @@ import {
   pipelineOptions,
   pipelineVersionOptions,
   nodeOptions,
+  imagingModalityOptions,
 } from '../fixtures/mocked-responses';
 
 function readLatestFile(pattern: string) {
@@ -52,6 +53,13 @@ describe('Results TSV', () => {
     cy.intercept(
       {
         method: 'GET',
+        url: '/imaging-modalities',
+      },
+      imagingModalityOptions
+    ).as('getImagingModalityOptions');
+    cy.intercept(
+      {
+        method: 'GET',
         url: '/pipelines',
       },
       pipelineOptions
@@ -68,6 +76,7 @@ describe('Results TSV', () => {
       '@getNodes',
       '@getDiagnosisOptions',
       '@getAssessmentToolOptions',
+      '@getImagingModalityOptions',
       '@getPipelineOptions',
     ]);
     // TODO: remove this
@@ -82,8 +91,7 @@ describe('Results TSV', () => {
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
-    cy.get('[data-cy="download-results-dropdown-button"]').click();
-    cy.contains('URIs').click();
+    cy.get('[data-cy="download-radio-1"]').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
     readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs_*.tsv').should(
@@ -100,8 +108,7 @@ describe('Results TSV', () => {
     readLatestFile('cypress/downloads/neurobagel-query-results_*.tsv').then((fileContent) => {
       expect(fileContent).to.match(/^DatasetName/);
     });
-    cy.get('[data-cy="download-results-dropdown-button"]').click();
-    cy.contains('URIs').click();
+    cy.get('[data-cy="download-radio-1"]').click();
     cy.get('[data-cy="download-results-button"]').click();
     cy.wait('@subjectsCall');
     readLatestFile('cypress/downloads/neurobagel-query-results-with-URIs_*.tsv').then(
@@ -145,8 +152,15 @@ describe('Unprotected response', () => {
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/imaging-modalities',
+      },
+      imagingModalityOptions
+    ).as('getImagingModalityOptions');
     cy.visit('/');
-    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions', '@getImagingModalityOptions']);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature

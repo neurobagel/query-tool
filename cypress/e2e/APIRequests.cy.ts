@@ -20,6 +20,10 @@ import {
   partiallyFailedPipelineVersionOptions,
   failedPipelineVersionOptions,
   pipelineVersionOptions,
+  imagingModalityOptions,
+  emptyImagingModalityOptions,
+  partiallyFailedImagingModalityOptions,
+  failedImagingModalityOptions,
 } from '../fixtures/mocked-responses';
 
 describe('Successful API attribute responses', () => {
@@ -48,6 +52,13 @@ describe('Successful API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
+        url: '/imaging-modalities',
+      },
+      imagingModalityOptions
+    ).as('getImagingModalityOptions');
+    cy.intercept(
+      {
+        method: 'GET',
         url: '/pipelines',
       },
       pipelineOptions
@@ -64,6 +75,7 @@ describe('Successful API attribute responses', () => {
       '@getNodes',
       '@getDiagnosisOptions',
       '@getAssessmentToolOptions',
+      '@getImagingModalityOptions',
       '@getPipelineOptions',
     ]);
   });
@@ -112,6 +124,26 @@ describe('Successful API attribute responses', () => {
       .within(() => {
         cy.get('.MuiListItemText-primary').should('contain', 'INFO');
         cy.get('p').should('contain.text', 'No assessments options were available');
+      });
+  });
+  it('Empty imaging modality response makes info toast appear', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/imaging-modalities',
+      },
+      emptyImagingModalityOptions
+    ).as('getImagingModalityOptions');
+    cy.visit('/');
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+    cy.wait('@getImagingModalityOptions');
+    cy.get("[data-cy='notification-button']").should('exist');
+    cy.get("[data-cy='notification-button']").click({ force: true });
+    cy.get('.MuiListItem-root')
+      .eq(0)
+      .within(() => {
+        cy.get('.MuiListItemText-primary').should('contain', 'INFO');
+        cy.get('p').should('contain.text', 'No imaging modalities options were available');
       });
   });
   it('Empty pipeline response makes info toast appear', () => {
@@ -182,6 +214,13 @@ describe('Partially successful API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
+        url: '/imaging-modalities',
+      },
+      partiallyFailedImagingModalityOptions
+    ).as('getImagingModalityOptions');
+    cy.intercept(
+      {
+        method: 'GET',
         url: '/pipelines',
       },
       partiallyFailedPipelineOptions
@@ -198,6 +237,7 @@ describe('Partially successful API attribute responses', () => {
       '@getNodes',
       '@getDiagnosisOptions',
       '@getAssessmentToolOptions',
+      '@getImagingModalityOptions',
       '@getPipelineOptions',
     ]);
   });
@@ -215,6 +255,11 @@ describe('Partially successful API attribute responses', () => {
     cy.get("[data-cy='notification-button']").should('exist');
     cy.get("[data-cy='notification-button']").click({ force: true });
     cy.get('.MuiList-root').should('contain', 'NoPipelineNode');
+  });
+  it('Shows warning for node that failed Imaging modality option request', () => {
+    cy.get("[data-cy='notification-button']").should('exist');
+    cy.get("[data-cy='notification-button']").click({ force: true });
+    cy.get('.MuiList-root').should('contain', 'NoImagingModalityNode');
   });
   it('Shows warning for node that failed Pipeline version option request', () => {
     cy.get('[data-cy="close-auth-dialog-button"]').click();
@@ -252,6 +297,13 @@ describe('Failed API attribute responses', () => {
     cy.intercept(
       {
         method: 'GET',
+        url: '/imaging-modalities',
+      },
+      failedImagingModalityOptions
+    ).as('getImagingModalityOptions');
+    cy.intercept(
+      {
+        method: 'GET',
         url: '/pipelines',
       },
       failedPipelineOptions
@@ -268,6 +320,7 @@ describe('Failed API attribute responses', () => {
       '@getNodes',
       '@getDiagnosisOptions',
       '@getAssessmentToolOptions',
+      '@getImagingModalityOptions',
       '@getPipelineOptions',
     ]);
   });
@@ -280,6 +333,11 @@ describe('Failed API attribute responses', () => {
     cy.get('.notistack-SnackbarContainer')
       .find('.notistack-MuiContent-error')
       .should('contain', 'diagnoses');
+  });
+  it('Shows error toast for failed Imaging modality options', () => {
+    cy.get('.notistack-SnackbarContainer')
+      .find('.notistack-MuiContent-error')
+      .should('contain', 'imaging-modalities');
   });
   it('Shows error toast for failed Pipeline options', () => {
     cy.get('.notistack-SnackbarContainer')

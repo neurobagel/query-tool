@@ -24,8 +24,7 @@ describe('Update Examples', () => {
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
     cy.get('[data-cy="download-results-button"]').click();
-    cy.get('[data-cy="download-results-dropdown-button"]').click();
-    cy.contains('URIs').click();
+    cy.get('[data-cy="download-radio-1"]').click();
     cy.get('[data-cy="download-results-button"]').click();
   });
 });
