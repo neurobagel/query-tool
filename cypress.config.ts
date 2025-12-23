@@ -13,7 +13,7 @@ export default defineConfig({
     baseUrl: 'http://localhost:5173',
     setupNodeEvents(on) {
       on('task', {
-        getLatestFile(pattern: string) {
+        getLatestFile(pattern) {
           const files = globSync(pattern);
 
           if (!files.length) {
