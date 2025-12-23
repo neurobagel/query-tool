@@ -11,16 +11,12 @@ import {
 } from '../fixtures/mocked-responses';
 
 function readLatestFile(pattern: string) {
-  const cmd = `bash -lc "ls -t ${pattern} 2>/dev/null | head -n 1"`;
-
-  return cy.exec(cmd).then(({ stdout }) => {
-    const file = stdout.trim();
-
-    if (!file) {
+  return cy.task('getLatestFile', pattern).then((filePath) => {
+    if (!filePath) {
       throw new Error(`No file found for pattern: ${pattern}`);
     }
 
-    return cy.readFile(file);
+    return cy.readFile(filePath as string);
   });
 }
 
