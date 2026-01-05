@@ -28,6 +28,7 @@
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
     "axios": "^1.13.2",
+    "glob": "^13.0.0",
     "eslint-plugin-tsdoc": "^0.5.0",
     "jwt-decode": "^4.0.0",
     "notistack": "^3.0.2",
