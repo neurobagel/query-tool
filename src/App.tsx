@@ -33,6 +33,9 @@ import ChatbotFeature from './components/Chatbot';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
 import NodeAdmonition from './components/NodeAdmonition';
+import MockResultCard, { MockResultType } from './components/MockResultCard';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import './App.css';
 import logo from './assets/logo.png';
 import areFormStatesEqual, {
@@ -41,7 +44,71 @@ import areFormStatesEqual, {
   sendSubjectsQuery,
 } from './utils/utils';
 
+
+const mockRichData: MockResultType = {
+  nodeName: 'OpenNeuro',
+  datasetUUID: 'ds000001',
+  datasetName: 'BIDS Standard Dataset',
+  datasetPortalURI: 'https://openneuro.org/datasets/ds000001',
+  datasetTotalSubjects: 100,
+  numMatchingSubjects: 50,
+  recordsProtected: true,
+  imageModals: [
+    'http://purl.org/nidash/nidm#T1Weighted',
+    'http://purl.org/nidash/nidm#T2Weighted',
+    'http://purl.org/nidash/nidm#DiffusionWeighted',
+    'http://purl.org/nidash/nidm#FlowWeighted'
+  ],
+  pipelines: { 'fmriprep': ['20.2.1'] },
+  authors: ['Doe J', 'Smith A', 'Johnson B'],
+  homepage: 'https://openneuro.org',
+  references_and_links: ['https://doi.org/10.1038/sdata.2016.44', 'https://bids.neuroimaging.io'],
+  keywords: ['neuroimaging', 'BIDS', 'fMRI'],
+  repository_url: 'https://github.com/OpenNeuroDatasets/ds000001',
+  access_instructions: 'Data is available under the CC0 license. You can download it directly from OpenNeuro.',
+  access_type: 'open',
+  access_email: 'support@openneuro.org',
+  access_link: 'https://openneuro.org/datasets/ds000001/download',
+};
+
+const mockModalitiesMetadata: ImagingModalitiesMetadata = {
+  'http://purl.org/nidash/nidm#T1Weighted': {
+    TermURL: 'http://purl.org/nidash/nidm#T1Weighted', Label: 'T1 Weighted', Abbreviation: 'T1W', DataType: 'anat'
+  },
+  'http://purl.org/nidash/nidm#T2Weighted': {
+    TermURL: 'http://purl.org/nidash/nidm#T2Weighted', Label: 'T2 Weighted', Abbreviation: 'T2W', DataType: 'anat'
+  },
+  'http://purl.org/nidash/nidm#DiffusionWeighted': {
+    TermURL: 'http://purl.org/nidash/nidm#DiffusionWeighted', Label: 'Diffusion Weighted', Abbreviation: 'DWI', DataType: 'dwi'
+  },
+  'http://purl.org/nidash/nidm#FlowWeighted': {
+    TermURL: 'http://purl.org/nidash/nidm#FlowWeighted', Label: 'Flow Weighted', Abbreviation: 'Flow', DataType: 'fmap'
+  }
+};
+
+const mockSparseData: MockResultType = {
+  nodeName: 'Restricted',
+  datasetUUID: 'ds999999',
+  datasetName: 'Protected Clinical Data',
+  datasetPortalURI: '',
+  datasetTotalSubjects: 200,
+  numMatchingSubjects: 10,
+  recordsProtected: true,
+  imageModals: [],
+  pipelines: {},
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  repository_url: null,
+  access_instructions: null,
+  access_type: 'protected',
+  access_email: 'access@hospital.org',
+  access_link: null,
+};
+
 function App() {
+  const [showRichData, setShowRichData] = useState(true);
   // Screen is considered small if the width is less than 768px (according to tailwind docs)
   const [isScreenSizeSmall, setIsScreenSizeSmall] = useState<boolean>(
     useMediaQuery('(max-width: 767px)')
@@ -112,9 +179,9 @@ function App() {
 
   const sortedResults: DatasetsResponse | null = result
     ? {
-        ...result,
-        responses: result.responses.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)),
-      }
+      ...result,
+      responses: result.responses.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)),
+    }
     : null;
 
   const action = (snackbarId: SnackbarKey) => (
@@ -671,6 +738,26 @@ function App() {
                   Downloading is disabled until you undo the changes or submit a new query.
                 </Alert>
               )}
+              <div className="mb-4 flex justify-end">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showRichData}
+                      onChange={(e) => setShowRichData(e.target.checked)}
+                    />
+                  }
+                  label={showRichData ? "Showing Rich Data" : "Showing Missing Data"}
+                />
+              </div>
+              <div className="mb-4">
+                <MockResultCard
+                  data={showRichData ? mockRichData : mockSparseData}
+                  imagingModalitiesMetadata={{ ...imagingModalitiesMetadata, ...mockModalitiesMetadata }}
+                  checked={false}
+                  onCheckboxChange={() => { }}
+                />
+              </div>
+
               <ResultContainer
                 response={sortedResults || null}
                 diagnosisOptions={diagnosisOptions}
