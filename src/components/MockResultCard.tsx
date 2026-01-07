@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
-import { Tooltip, Divider, Chip, Collapse, Stack, IconButton, Box } from '@mui/material';
+import { Tooltip, Divider, Chip, Collapse, Stack, IconButton, Box, alpha } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -130,7 +130,7 @@ const MockResultCard = memo(
             <Card data-cy={`mock-card-${datasetUUID}`} sx={{ mb: 2 }}>
                 {/* HEADER: Node Name + Node Mode Icon */}
                 <Box sx={{
-                    bgcolor: 'grey.100',
+                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
                     px: 2,
                     py: 1,
                     display: 'flex',
