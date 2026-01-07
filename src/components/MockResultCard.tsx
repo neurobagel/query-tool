@@ -8,10 +8,11 @@ import Typography from '@mui/material/Typography';
 import { Tooltip, Divider, Chip, Collapse, Stack, IconButton, Box } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import FactCheckIcon from '@mui/icons-material/FactCheck';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 import HomeIcon from '@mui/icons-material/Home';
 import ShieldIcon from '@mui/icons-material/Security';
 import PublicIcon from '@mui/icons-material/Public';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { ImagingModalitiesMetadata } from '../utils/types';
 import { modalitiesDataTypeColorMapping } from '../utils/constants';
 
@@ -77,14 +78,14 @@ const MockResultCard = memo(
         const renderAccessIcon = () => {
             if (!access_type) return null;
             let Icon = LockIcon;
-            let title = "Protected Class - Login/DUA Required";
+            let title = "Restricted Access";
 
             if (access_type === 'open') {
                 Icon = LockOpenIcon;
-                title = "Open Access";
+                title = "Public Access";
             } else if (access_type === 'controlled') {
-                Icon = FactCheckIcon;
-                title = "Controlled Access - Application Required";
+                Icon = HowToRegIcon;
+                title = "Registered Access";
             }
 
             return (
@@ -98,7 +99,7 @@ const MockResultCard = memo(
             const isProtected = recordsProtected;
             // protected -> Shield (Security), public -> Globe (Public)
             const Icon = isProtected ? ShieldIcon : PublicIcon;
-            const title = isProtected ? "Records Protected" : "Public Node";
+            const title = isProtected ? "Protected" : "Open";
 
             return (
                 <Tooltip title={title} placement="top">
@@ -117,6 +118,7 @@ const MockResultCard = memo(
                     href={repository_url}
                     target="_blank"
                     sx={{ textTransform: 'none' }}
+                    endIcon={<OpenInNewIcon />}
                 >
                     Repository
                 </Button>
@@ -264,7 +266,7 @@ const MockResultCard = memo(
                                 </ButtonGroup>
                             ) : (
                                 <Typography variant="body2" color="text.secondary" fontStyle="italic" align="center">
-                                    No imaging modalities available
+                                    No imaging data available
                                 </Typography>
                             )}
                         </div>
@@ -292,7 +294,7 @@ const MockResultCard = memo(
                                         sx={{ textTransform: 'none' }}
                                         disableElevation
                                     >
-                                        Processed
+                                        Derivative Data
                                     </Button>
                                 </Tooltip>
                             ) : (
@@ -386,6 +388,7 @@ const MockResultCard = memo(
                                             size="small"
                                             href={access_link}
                                             target="_blank"
+                                            endIcon={<OpenInNewIcon />}
                                         >
                                             Access Data
                                         </Button>
@@ -395,8 +398,9 @@ const MockResultCard = memo(
                                             variant="outlined"
                                             size="small"
                                             href={`mailto:${access_email} `}
+                                            endIcon={<OpenInNewIcon />}
                                         >
-                                            Contact For Access
+                                            Contact
                                         </Button>
                                     )}
                                     {renderRepoButton()}
