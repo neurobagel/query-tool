@@ -48,11 +48,11 @@ import areFormStatesEqual, {
 const mockRichData: MockResultType = {
   nodeName: 'OpenNeuro',
   datasetUUID: 'ds000001',
-  datasetName: 'BIDS Standard Dataset',
+  datasetName: 'BIDS Standard Dataset that is very very very very very very long',
   datasetPortalURI: 'https://openneuro.org/datasets/ds000001',
   datasetTotalSubjects: 100,
   numMatchingSubjects: 50,
-  recordsProtected: true,
+  recordsProtected: false,
   imageModals: [
     'http://purl.org/nidash/nidm#T1Weighted',
     'http://purl.org/nidash/nidm#T2Weighted',
@@ -60,7 +60,7 @@ const mockRichData: MockResultType = {
     'http://purl.org/nidash/nidm#FlowWeighted'
   ],
   pipelines: { 'fmriprep': ['20.2.1'] },
-  authors: ['Doe J', 'Smith A', 'Johnson B'],
+  authors: ['Doe J', 'Smith A', 'Johnson B', 'Cool joe', 'nice joe', 'bad joe'],
   homepage: 'https://openneuro.org',
   references_and_links: ['https://doi.org/10.1038/sdata.2016.44', 'https://bids.neuroimaging.io'],
   keywords: ['neuroimaging', 'BIDS', 'fMRI'],
@@ -103,7 +103,7 @@ const mockSparseData: MockResultType = {
   repository_url: null,
   access_instructions: null,
   access_type: 'protected',
-  access_email: 'access@hospital.org',
+  access_email: null,
   access_link: null,
 };
 

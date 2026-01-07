@@ -6,12 +6,10 @@ import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 import { Tooltip, Divider, Chip, Collapse, Stack, IconButton, Box } from '@mui/material';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import HomeIcon from '@mui/icons-material/Home';
-import CodeIcon from '@mui/icons-material/Code';
 import ShieldIcon from '@mui/icons-material/Security';
 import PublicIcon from '@mui/icons-material/Public';
 import { ImagingModalitiesMetadata } from '../utils/types';
@@ -90,8 +88,8 @@ const MockResultCard = memo(
             }
 
             return (
-                <Tooltip title={title}>
-                    <Icon color="action" fontSize="small" />
+                <Tooltip title={title} placement="top">
+                    <Icon color="primary" fontSize="small" />
                 </Tooltip>
             );
         };
@@ -103,33 +101,32 @@ const MockResultCard = memo(
             const title = isProtected ? "Records Protected" : "Public Node";
 
             return (
-                <Tooltip title={title}>
-                    <Icon color="action" fontSize="small" />
+                <Tooltip title={title} placement="top">
+                    <Icon color="primary" fontSize="small" />
                 </Tooltip>
             );
         };
 
-        const renderRepoIcon = () => {
+        const renderRepoButton = () => {
+            if (!repository_url) return null;
             return (
-                <Tooltip title={repository_url ? "Repository" : "No repository available"}>
-                    <span>
-                        <IconButton
-                            size="small"
-                            disabled={!repository_url}
-                            color="primary"
-                            {...(repository_url ? { href: repository_url, target: "_blank", rel: "noopener noreferrer" } : {})}
-                        >
-                            <CodeIcon fontSize="small" />
-                        </IconButton>
-                    </span>
-                </Tooltip>
+                <Button
+                    variant="outlined"
+                    disableElevation
+                    size="small"
+                    href={repository_url}
+                    target="_blank"
+                    sx={{ textTransform: 'none' }}
+                >
+                    Repository
+                </Button>
             );
         }
 
 
         return (
-            <Card data-cy={`mock - card - ${datasetUUID} `} sx={{ mb: 2 }}>
-                {/* HEADER: Node Name + Access/Repo Icons */}
+            <Card data-cy={`mock-card-${datasetUUID}`} sx={{ mb: 2 }}>
+                {/* HEADER: Node Name + Node Mode Icon */}
                 <Box sx={{
                     bgcolor: 'grey.100',
                     px: 2,
@@ -144,8 +141,6 @@ const MockResultCard = memo(
                         {nodeName} node
                     </Typography>
                     {renderNodeModeIcon()}
-                    {renderAccessIcon()}
-                    {renderRepoIcon()}
                 </Box>
 
                 <CardContent>
@@ -155,16 +150,24 @@ const MockResultCard = memo(
                         {/* COL 1: Info (Checkbox + Desc) - Span 5 */}
                         <div className="col-span-5 flex gap-2">
                             <Checkbox
-                                data-cy={`card - ${datasetUUID} -checkbox`}
+                                data-cy={`card-${datasetUUID}-checkbox`}
                                 checked={checked}
                                 onChange={() => onCheckboxChange(datasetUUID)}
                                 sx={{ p: 0.5, alignSelf: 'flex-start' }}
                             />
-                            <Stack spacing={0.5}>
+                            <Stack spacing={0.5} sx={{ minWidth: 0 }}>
                                 {/* Dataset Name (Text Only) */}
-                                <Typography variant="h6" component="div" sx={{ lineHeight: 1.2 }}>
-                                    {datasetName}
-                                </Typography>
+                                <Tooltip title={datasetName} placement="top">
+                                    <Typography
+                                        variant="h6"
+                                        component="div"
+                                        sx={{
+                                            lineHeight: 1.2
+                                        }}
+                                    >
+                                        {datasetName.length > 39 ? `${datasetName.substring(0, 39)}...` : datasetName}
+                                    </Typography>
+                                </Tooltip>
 
                                 {/* Authors (First 3) */}
                                 <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
@@ -175,7 +178,7 @@ const MockResultCard = memo(
 
                                 {/* Actions Row */}
                                 <div className="flex items-center gap-1 mt-1">
-                                    <Tooltip title={homepage ? "Homepage" : "No Homepage available"}>
+                                    <Tooltip title={homepage ? "Homepage" : "No Homepage available"} placement="top">
                                         <span>
                                             <IconButton
                                                 size="small"
@@ -189,11 +192,13 @@ const MockResultCard = memo(
                                         </span>
                                     </Tooltip>
 
+                                    {renderAccessIcon()}
+
                                     <Button
                                         variant="outlined"
                                         size="small"
                                         onClick={() => setIsExpanded(!isExpanded)}
-                                        sx={{ textTransform: 'none', px: 2, minWidth: 'auto', height: 28 }}
+                                        sx={{ textTransform: 'none', px: 2, minWidth: 'auto', height: 28, ml: 1 }}
                                     >
                                         {isExpanded ? "Hide Details" : "Details"}
                                     </Button>
@@ -214,7 +219,12 @@ const MockResultCard = memo(
                         {/* COL 3: Modalities - Span 2 */}
                         <div className="col-span-2 flex flex-wrap gap-1 content-center justify-center">
                             {imageModals.length > 0 ? (
-                                <ButtonGroup>
+                                <ButtonGroup sx={{
+                                    boxShadow: 'none',
+                                    '& .MuiButtonGroup-grouped:not(:last-of-type)': {
+                                        borderRight: '2px solid #ffffff !important',
+                                    }
+                                }}>
                                     {imageModals
                                         .sort()
                                         .filter((modal) => {
@@ -224,8 +234,14 @@ const MockResultCard = memo(
                                         .map((modal) => {
                                             const metadata = imagingModalitiesMetadata[modal]!;
                                             const dataType = metadata.DataType;
-                                            const backgroundColor =
+                                            let backgroundColor =
                                                 dataType && modalitiesDataTypeColorMapping[dataType.toLowerCase()];
+
+                                            // Override anat color
+                                            if (dataType && dataType.toLowerCase() === 'anat') {
+                                                backgroundColor = '#009688'; // Teal
+                                            }
+
                                             return (
                                                 <Button
                                                     key={modal}
@@ -349,15 +365,18 @@ const MockResultCard = memo(
                                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                                     Access
                                 </Typography>
-                                {access_instructions ? (
-                                    <Typography variant="body2" paragraph>
-                                        {access_instructions}
-                                    </Typography>
-                                ) : (
-                                    <Typography variant="body2" color="text.disabled" fontStyle="italic" paragraph>
-                                        No access instructions
-                                    </Typography>
-                                )}
+                                {(() => {
+                                    const showButtons = Boolean(access_link || access_email || repository_url);
+                                    return access_instructions ? (
+                                        <Typography variant="body2" sx={{ mb: showButtons ? 1 : 0 }}>
+                                            {access_instructions}
+                                        </Typography>
+                                    ) : (
+                                        <Typography variant="body2" color="text.disabled" fontStyle="italic" sx={{ mb: showButtons ? 1 : 0 }}>
+                                            No access instructions
+                                        </Typography>
+                                    );
+                                })()}
 
                                 <div className="flex gap-2">
                                     {access_link && (
@@ -367,7 +386,6 @@ const MockResultCard = memo(
                                             size="small"
                                             href={access_link}
                                             target="_blank"
-                                            startIcon={<OpenInNewIcon />}
                                         >
                                             Access Data
                                         </Button>
@@ -381,14 +399,15 @@ const MockResultCard = memo(
                                             Contact For Access
                                         </Button>
                                     )}
+                                    {renderRepoButton()}
                                 </div>
                             </Box>
                             {/* References */}
-                            {references_and_links.length > 0 && (
-                                <Box>
-                                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                                        References
-                                    </Typography>
+                            <Box>
+                                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                                    References
+                                </Typography>
+                                {references_and_links.length > 0 ? (
                                     <Stack spacing={0.5}>
                                         {references_and_links.map((link, idx) => (
                                             <Typography key={idx} variant="body2" sx={{ wordBreak: 'break-all' }}>
@@ -398,9 +417,12 @@ const MockResultCard = memo(
                                             </Typography>
                                         ))}
                                     </Stack>
-                                </Box>
-                            )}
-
+                                ) : (
+                                    <Typography variant="body2" color="text.disabled" fontStyle="italic">
+                                        No references available
+                                    </Typography>
+                                )}
+                            </Box>
                         </Stack>
                     </Collapse>
 
