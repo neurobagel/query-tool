@@ -1,11 +1,11 @@
 import { memo, useState } from 'react';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Typography from '@mui/material/Typography';
-import { Tooltip, Divider, Chip, Collapse, Stack, IconButton, Box, alpha } from '@mui/material';
+import { Tooltip, Divider, Chip, Collapse, Stack, Box, alpha, Button, IconButton, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -13,6 +13,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import ShieldIcon from '@mui/icons-material/Security';
 import PublicIcon from '@mui/icons-material/Public';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import DownloadIcon from '@mui/icons-material/Download';
 import { ImagingModalitiesMetadata } from '../utils/types';
 import { modalitiesDataTypeColorMapping } from '../utils/constants';
 
@@ -75,22 +76,31 @@ const MockResultCard = memo(
         } = data;
 
         // Helper to render access icon
+        // Helper to render access icon group
         const renderAccessIcon = () => {
-            if (!access_type) return null;
-            let Icon = LockIcon;
-            let title = "Restricted Access";
+            const accessConfigs = [
+                { type: 'open', Icon: LockOpenIcon, label: 'Public', activeColor: 'success' },
+                { type: 'controlled', Icon: HowToRegIcon, label: 'Registered', activeColor: 'warning' },
+                { type: 'protected', Icon: LockIcon, label: 'Restricted', activeColor: 'error' },
+            ] as const;
 
-            if (access_type === 'open') {
-                Icon = LockOpenIcon;
-                title = "Public Access";
-            } else if (access_type === 'controlled') {
-                Icon = HowToRegIcon;
-                title = "Registered Access";
-            }
+            const activeConfig = accessConfigs.find(c => c.type === access_type);
+            const groupTooltip = activeConfig
+                ? `Access Level: ${activeConfig.label}`
+                : "Access Level: Unknown";
 
             return (
-                <Tooltip title={title} placement="top">
-                    <Icon color="primary" fontSize="small" />
+                <Tooltip title={groupTooltip} placement="top">
+                    <div className="flex gap-1 ml-1 items-center bg-gray-100 rounded px-1.5 py-0.5 border border-gray-200">
+                        {accessConfigs.map(({ type, Icon, activeColor }) => {
+                            const isActive = access_type === type;
+                            const color = isActive ? activeColor : 'disabled';
+
+                            return (
+                                <Icon key={type} color={color} fontSize="small" />
+                            );
+                        })}
+                    </div>
                 </Tooltip>
             );
         };
@@ -99,24 +109,23 @@ const MockResultCard = memo(
             const isProtected = recordsProtected;
             // protected -> Shield (Security), public -> Globe (Public)
             const Icon = isProtected ? ShieldIcon : PublicIcon;
-            const title = isProtected ? "Protected" : "Open";
+            const title = isProtected ? "Node Mode: Counts" : "Node Mode: Records";
 
             return (
                 <Tooltip title={title} placement="top">
-                    <Icon color="primary" fontSize="small" />
+                    <Icon fontSize="small" />
                 </Tooltip>
             );
         };
 
         const renderRepoButton = () => {
-            if (!repository_url) return null;
             return (
                 <Button
                     variant="outlined"
                     disableElevation
                     size="small"
-                    href={repository_url}
-                    target="_blank"
+                    disabled={!repository_url}
+                    {...(repository_url ? { href: repository_url, target: "_blank" } : {})}
                     sx={{ textTransform: 'none' }}
                     endIcon={<OpenInNewIcon />}
                 >
@@ -130,7 +139,7 @@ const MockResultCard = memo(
             <Card data-cy={`mock-card-${datasetUUID}`} sx={{ mb: 2 }}>
                 {/* HEADER: Node Name + Node Mode Icon */}
                 <Box sx={{
-                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                    bgcolor: 'grey.100',
                     px: 2,
                     py: 1,
                     display: 'flex',
@@ -194,16 +203,16 @@ const MockResultCard = memo(
                                         </span>
                                     </Tooltip>
 
+                                    <Tooltip title={repository_url ? "Raw Data Available" : "No Raw Data Available"} placement="top">
+                                        <DownloadIcon
+                                            color={repository_url ? "action" : "disabled"}
+                                            fontSize="small"
+                                        />
+                                    </Tooltip>
+
                                     {renderAccessIcon()}
 
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        onClick={() => setIsExpanded(!isExpanded)}
-                                        sx={{ textTransform: 'none', px: 2, minWidth: 'auto', height: 28, ml: 1 }}
-                                    >
-                                        {isExpanded ? "Hide Details" : "Details"}
-                                    </Button>
+
                                 </div>
                             </Stack>
                         </div>
@@ -221,105 +230,109 @@ const MockResultCard = memo(
                         {/* COL 3: Modalities - Span 2 */}
                         <div className="col-span-2 flex flex-wrap gap-1 content-center justify-center">
                             {imageModals.length > 0 ? (
-                                <ButtonGroup sx={{
-                                    boxShadow: 'none',
-                                    '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-                                        borderRight: '2px solid #ffffff !important',
-                                    }
-                                }}>
-                                    {imageModals
-                                        .sort()
-                                        .filter((modal) => {
-                                            const metadata = imagingModalitiesMetadata[modal];
-                                            return Boolean(metadata?.DataType && metadata?.Abbreviation);
-                                        })
-                                        .map((modal) => {
-                                            const metadata = imagingModalitiesMetadata[modal]!;
-                                            const dataType = metadata.DataType;
-                                            let backgroundColor =
-                                                dataType && modalitiesDataTypeColorMapping[dataType.toLowerCase()];
-
-                                            // Override anat color
-                                            if (dataType && dataType.toLowerCase() === 'anat') {
-                                                backgroundColor = '#009688'; // Teal
+                                <Tooltip title="Imaging Modalities" placement="top">
+                                    <ButtonGroup
+                                        sx={{
+                                            boxShadow: 'none',
+                                            '& .MuiButtonGroup-grouped:not(:last-of-type)': {
+                                                borderRight: '2px solid #ffffff !important',
                                             }
+                                        }}>
+                                        {imageModals
+                                            .sort()
+                                            .filter((modal) => {
+                                                const metadata = imagingModalitiesMetadata[modal];
+                                                return Boolean(metadata?.DataType && metadata?.Abbreviation);
+                                            })
+                                            .map((modal) => {
+                                                const metadata = imagingModalitiesMetadata[modal]!;
+                                                const dataType = metadata.DataType;
+                                                let backgroundColor =
+                                                    dataType && modalitiesDataTypeColorMapping[dataType.toLowerCase()];
 
-                                            return (
-                                                <Button
-                                                    key={modal}
-                                                    variant="contained"
-                                                    disableElevation
-                                                    sx={{
-                                                        backgroundColor: backgroundColor ? `${backgroundColor} !important` : undefined,
-                                                        '&:hover': {
+                                                // Override anat color
+                                                if (dataType && dataType.toLowerCase() === 'anat') {
+                                                    backgroundColor = '#009688'; // Teal
+                                                }
+
+                                                return (
+                                                    <Button
+                                                        key={modal}
+                                                        variant="contained"
+                                                        disableElevation
+                                                        sx={{
                                                             backgroundColor: backgroundColor ? `${backgroundColor} !important` : undefined,
-                                                            cursor: 'default',
-                                                        },
-                                                        padding: '2px 8px', // Slightly smaller padding for compact look
-                                                        minWidth: 'auto'
-                                                    }}
-                                                >
-                                                    {metadata.Abbreviation ?? metadata.Label ?? modal}
-                                                </Button>
-                                            );
-                                        })}
-                                </ButtonGroup>
+                                                            '&:hover': {
+                                                                backgroundColor: backgroundColor ? `${backgroundColor} !important` : undefined,
+                                                                cursor: 'default',
+                                                            },
+                                                            padding: '2px 8px', // Slightly smaller padding for compact look
+                                                            minWidth: 'auto'
+                                                        }}
+                                                    >
+                                                        {metadata.Abbreviation ?? metadata.Label ?? modal}
+                                                    </Button>
+                                                );
+                                            })}
+                                    </ButtonGroup>
+                                </Tooltip>
                             ) : (
-                                <Typography variant="body2" color="text.secondary" fontStyle="italic" align="center">
-                                    No imaging data available
-                                </Typography>
+                                <Button
+                                    disabled
+                                    sx={{ textTransform: 'none', fontStyle: 'italic' }}
+                                    disableElevation
+                                >
+                                    No imaging modalities available
+                                </Button>
+                                // <Typography variant="body2" color="text.secondary" fontStyle="italic" align="center">
+                                //     No imaging data available
+                                // </Typography>
                             )}
                         </div>
 
                         {/* COL 4: Processed (Pipelines) - Span 2 */}
-                        <div className="col-span-2 flex justify-end items-center">
+                        <div className="col-span-2 flex flex-col justify-center items-end">
                             {Object.entries(pipelines).length > 0 ? (
-                                <Tooltip
-                                    title={
-                                        <Typography variant="body1">
-                                            {Object.entries(pipelines)
-                                                .flatMap(([name, versions]) =>
-                                                    versions.map((version) => `${name.split('/').slice(-1)[0]} ${version}`)
-                                                )
-                                                .map((pipeline) => (
-                                                    <Divider key={pipeline}>{pipeline}</Divider>
-                                                ))}
-                                        </Typography>
-                                    }
-                                    placement="top"
+                                <ButtonGroup
+                                    sx={{
+                                        boxShadow: 'none',
+                                        '& .MuiButtonGroup-grouped:not(:last-of-type)': {
+                                            borderRight: '2px solid #ffffff !important',
+                                        }
+                                    }}
                                 >
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{ textTransform: 'none' }}
-                                        disableElevation
-                                    >
-                                        Derivative Data
-                                    </Button>
-                                </Tooltip>
+                                    {Object.entries(pipelines).map(([name, versions]) => {
+                                        const shortName = name.split('/').slice(-1)[0];
+                                        return (
+                                            <Tooltip key={name} title={`Versions: ${versions.join(', ')}`} placement="top">
+                                                <Button
+                                                    variant="contained"
+                                                    disableElevation
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        cursor: 'default',
+                                                        padding: '2px 8px',
+                                                        minWidth: 'auto',
+                                                        backgroundColor: '#673ab7 !important', // Deep Purple
+                                                        '&:hover': {
+                                                            backgroundColor: '#5e35b1 !important' // Slightly darker Deep Purple
+                                                        }
+                                                    }}
+                                                >
+                                                    {shortName}
+                                                </Button>
+                                            </Tooltip>
+                                        );
+                                    })}
+                                </ButtonGroup>
                             ) : (
-                                <Typography variant="body2" color="text.secondary" fontStyle="italic" align="center">
+                                <Button
+                                    disabled
+                                    sx={{ textTransform: 'none', fontStyle: 'italic' }}
+                                    disableElevation
+                                >
                                     No derivative data available
-                                </Typography>
-                                // <Tooltip
-                                //     title={
-                                //         <Typography variant="body1">
-                                //             No derivative data available
-                                //         </Typography>
-                                //     }
-                                //     placement="top"
-                                // >
-                                //     <span>
-                                //         <Button
-                                //             variant="contained"
-                                //             disabled
-                                //             sx={{ textTransform: 'none' }}
-                                //             disableElevation
-                                //         >
-                                //             Unprocessed
-                                //         </Button>
-                                //     </span>
-                                // </Tooltip>
+                                </Button>
                             )}
                         </div>
                     </div>
@@ -381,28 +394,25 @@ const MockResultCard = memo(
                                 })()}
 
                                 <div className="flex gap-2">
-                                    {access_link && (
-                                        <Button
-                                            variant="outlined"
-                                            disableElevation
-                                            size="small"
-                                            href={access_link}
-                                            target="_blank"
-                                            endIcon={<OpenInNewIcon />}
-                                        >
-                                            Access Data
-                                        </Button>
-                                    )}
-                                    {access_email && (
-                                        <Button
-                                            variant="outlined"
-                                            size="small"
-                                            href={`mailto:${access_email} `}
-                                            endIcon={<OpenInNewIcon />}
-                                        >
-                                            Contact
-                                        </Button>
-                                    )}
+                                    <Button
+                                        variant="outlined"
+                                        disableElevation
+                                        size="small"
+                                        disabled={!access_link}
+                                        {...(access_link ? { href: access_link, target: "_blank" } : {})}
+                                        endIcon={<OpenInNewIcon />}
+                                    >
+                                        Access Data
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        disabled={!access_email}
+                                        {...(access_email ? { href: `mailto:${access_email}` } : {})}
+                                        endIcon={<OpenInNewIcon />}
+                                    >
+                                        Contact
+                                    </Button>
                                     {renderRepoButton()}
                                 </div>
                             </Box>
@@ -429,6 +439,19 @@ const MockResultCard = memo(
                             </Box>
                         </Stack>
                     </Collapse>
+
+                    {/* EXPAND/COLLAPSE BUTTON */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+                        <Button
+                            size="small"
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            endIcon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                            sx={{ textTransform: 'none' }} // removed color override, defaults to primary
+                            color="primary"
+                        >
+                            {isExpanded ? "Hide Details" : "Show Details"}
+                        </Button>
+                    </Box>
 
                 </CardContent>
             </Card >

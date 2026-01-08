@@ -59,7 +59,7 @@ const mockRichData: MockResultType = {
     'http://purl.org/nidash/nidm#DiffusionWeighted',
     'http://purl.org/nidash/nidm#FlowWeighted'
   ],
-  pipelines: { 'fmriprep': ['20.2.1'] },
+  pipelines: { 'fMRIPrep': ['20.2.1'], 'FreeSurfer': ['6.0.0'] },
   authors: ['Doe J', 'Smith A', 'Johnson B', 'Cool joe', 'nice joe', 'bad joe'],
   homepage: 'https://openneuro.org',
   references_and_links: ['https://doi.org/10.1038/sdata.2016.44', 'https://bids.neuroimaging.io'],
@@ -102,7 +102,7 @@ const mockSparseData: MockResultType = {
   keywords: [],
   repository_url: null,
   access_instructions: null,
-  access_type: 'protected',
+  access_type: null,
   access_email: null,
   access_link: null,
 };
