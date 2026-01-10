@@ -110,7 +110,7 @@ function App() {
     .filter((option) => searchParams.getAll('node').includes(option.NodeName))
     .map((filteredOption) => ({ label: filteredOption.NodeName, id: filteredOption.ApiURL }));
 
-  const sortedResults: DatasetsResponse | null = result
+  const sortedDatasetResults: DatasetsResponse | null = result
     ? {
         ...result,
         responses: result.responses.sort((a, b) => a.dataset_name.localeCompare(b.dataset_name)),
@@ -672,7 +672,7 @@ function App() {
                 </Alert>
               )}
               <ResultContainer
-                response={sortedResults || null}
+                datasetsResponse={sortedDatasetResults || null}
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
                 imagingModalitiesMetadata={imagingModalitiesMetadata}
