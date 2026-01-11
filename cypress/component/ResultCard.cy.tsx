@@ -4,7 +4,7 @@ const props = {
   nodeName: 'some node name',
   datasetUuid: 'some uuid',
   datasetName: 'some dataset name',
-  repositoryUrl: 'some portal uri',
+  repositoryUrl: 'some repository uri',
   datasetTotalSubjects: 10,
   numMatchingSubjects: 5,
   recordsProtected: false,
