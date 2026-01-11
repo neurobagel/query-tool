@@ -32,7 +32,7 @@ export const sexes: { [key: string]: string } = {
 
 // We do not support "beh" and "phenotype" BIDS tags
 export const modalitiesDataTypeColorMapping: { [key: string]: string } = {
-  anat: 'rgb(113, 113, 122)',
+  anat: 'rgba(0, 150, 136, 1)',
   dwi: 'rgb(253, 164, 164)',
   eeg: 'rgb(70, 130, 180)',
   fmap: 'rgb(189, 183, 107)',
