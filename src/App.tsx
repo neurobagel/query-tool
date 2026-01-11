@@ -351,16 +351,19 @@ function App() {
     switch (fieldLabel) {
       case 'Neurobagel graph':
         if (Array.isArray(value)) {
+          const isAllSelectedNow = value.some((n) => n.label === 'All');
+          const wasAllSelectedBefore = Array.isArray(selectedNode)
+            ? selectedNode.some((n) => n.label === 'All')
+            : false;
+
           // Case 1: User explicitly selected "All" after some other nodes were already selected.
-          // in this case "All" would be the last option in the array
           // Approach: keep "All", remove all other options
-          if (value.length > 1 && value[value.length - 1].label === 'All') {
+          if (isAllSelectedNow && !wasAllSelectedBefore) {
             setSearchParams({ node: ['All'] });
             break;
           }
 
           // Case 2: User clicked the "x" dismiss button to clear all options.
-          // in this case the selected options array would be empty
           // Approach: set "All" as the only option
           if (value.length === 0) {
             setSearchParams({ node: ['All'] });
@@ -368,12 +371,19 @@ function App() {
           }
 
           // Case 3: User selected some nodes, but not "All" option.
-          // in this case if "All" is present in the selected options array,
-          // "All" would be the first option in the array leftover from being initially
-          // set as the default or set as the fallback option when all options were cleared
+          // OR User selected some nodes while "All" was already selected (implying they want specific nodes, not All)
           // Approach: Remove "All" if it was in the selected options and keep the rest
-          const withoutAll = value.filter((n) => n.label !== 'All').map((n) => n.label);
-          setSearchParams({ node: withoutAll });
+          if (isAllSelectedNow && wasAllSelectedBefore && value.length > 1) {
+            const withoutAll = value.filter((n) => n.label !== 'All').map((n) => n.label);
+            setSearchParams({ node: withoutAll });
+            break;
+          }
+
+          // Default case: Just update with whatever is selected (excluding All if it was somehow mixed in but shouldn't be)
+          // But standard behavior is handled above. If we are here, it means isAllSelectedNow is false (normal selection).
+          if (!isAllSelectedNow) {
+            setSearchParams({ node: value.map((n) => n.label) });
+          }
         }
         break;
       case 'Sex':
