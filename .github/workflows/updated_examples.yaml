@@ -37,6 +37,11 @@ jobs:
           spec: cypress/e2e/UpdateExamples.cy.ts
           component: false
 
+      - name: Rename artifacts
+        run: |
+          mv cypress/downloads/neurobagel-query-results_*.tsv cypress/downloads/neurobagel-query-results_YYYYMMDDHHMMSS.tsv
+          mv cypress/downloads/neurobagel-query-results-with-URIs_*.tsv cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv
+
       - name: Upload test artifacts
         uses: actions/upload-artifact@v6
         with:

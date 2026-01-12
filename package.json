@@ -36,7 +36,7 @@
     "react-dom": "^18.3.1",
     "react-draggable": "^4.5.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.11.0",
+    "react-router-dom": "^7.12.0",
     "react-simple-chatbot": "^0.6.1",
     "styled-components": "^4.4.1",
     "uuid": "^11.1.0"
@@ -47,7 +47,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.32.1",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "@vitest/ui": "^3.2.4",
