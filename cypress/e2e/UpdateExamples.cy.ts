@@ -1,5 +1,5 @@
 // This file automates the process of generating the query tool example files.
-import fapiQuerySuccess200 from '../../neurobagel_examples/api-responses/fapi_query_success_200.json';
+import fapiQuerySuccess200 from '../../neurobagel_examples/api-responses/fapi_post_datasets_success_200.json';
 
 describe('Update Examples', () => {
   it('Generates result files using a successful FAPI query', () => {
