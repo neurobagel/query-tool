@@ -24,33 +24,19 @@ describe('Update Examples', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call');
     cy.get('[data-cy="select-all-checkbox"]').find('input').check();
-    /* 
-    Explicitly wait for the downloaded files to exist to ensure
-    the test fails if the download fails silently (e.g., due to a data mismatch).
-    */
-
-    const checkForFile = (pattern: string) => {
-      // Retry logic: cy.task yields the result. If null, retry recursively until timeout.
-      const timeout = 10000;
-      const start = Date.now();
-
-      const check = () => {
-        cy.task('getLatestFile', pattern).then((found) => {
-          if (!found) {
-            if (Date.now() - start > timeout) {
-              throw new Error(`File matching ${pattern} not found after ${timeout}ms`);
-            }
-            check();
-          }
-        });
-      };
-      check();
-    };
+    // Freeze (mock) the clock to ensure the downloaded file name is static and predictable.
+    // This allows us to use cy.readFile(), which natively retries (up to the global timeout)
+    cy.clock(Date.UTC(2025, 0, 1), ['Date']);
 
     cy.get('[data-cy="download-results-button"]').click();
-    checkForFile('cypress/downloads/neurobagel-query-results_*.tsv');
+
+    cy.readFile('cypress/downloads/neurobagel-query-results_20250101000000.tsv').should('exist');
+
     cy.get('[data-cy="download-radio-1"]').click();
     cy.get('[data-cy="download-results-button"]').click();
-    checkForFile('cypress/downloads/neurobagel-query-results-with-URIs_*.tsv');
+
+    cy.readFile('cypress/downloads/neurobagel-query-results-with-URIs_20250101000000.tsv').should(
+      'exist'
+    );
   });
 });

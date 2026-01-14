@@ -1,23 +1,33 @@
-import ResultCard from '../../src/components/ResultCard';
+import ResultCard from '../../src/components/ResultCard/ResultCard';
 
 const props = {
-  nodeName: 'some node name',
-  datasetUuid: 'some uuid',
-  datasetName: 'some dataset name',
-  repositoryUrl: 'some repository uri',
-  datasetTotalSubjects: 10,
-  numMatchingSubjects: 5,
-  recordsProtected: false,
-  imageModals: [
+  node_name: 'some node name',
+  dataset_uuid: 'some uuid',
+  dataset_name: 'some dataset name',
+  repository_url: 'some repository uri',
+  dataset_total_subjects: 10,
+  num_matching_subjects: 5,
+  records_protected: false,
+  image_modals: [
     'http://purl.org/nidash/nidm#ArterialSpinLabeling',
     'http://purl.org/nidash/nidm#DiffusionWeighted',
   ],
-  availablePipelines: {
+  available_pipelines: {
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': [
       '0.2.3',
       '23.1.3',
     ],
   },
+  authors: ['John Doe', 'Jane Doe', 'Bob Smith', 'Alice Johnson', 'Charlie Brown'],
+  homepage: 'https://example.com',
+  references_and_links: ['https://somesite.com', 'https://anothersite.com'],
+  keywords: ['keyword1', 'keyword2', 'keyword3'],
+  access_instructions: 'some instructions',
+  access_type: 'public' as const,
+  access_email: 'someemail@domain.com',
+  access_link: 'https://example.com',
+  checked: true,
+  onCheckboxChange: () => {},
   imagingModalitiesMetadata: {
     'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
       TermURL: 'nidm:ArterialSpinLabeling',
@@ -32,40 +42,14 @@ const props = {
       DataType: 'dwi',
     },
   },
-  authors: ['John Doe', 'Jane Doe', 'Bob Smith', 'Alice Johnson', 'Charlie Brown'],
-  homepage: 'https://example.com',
-  referencesAndLinks: ['https://somesite.com', 'https://anothersite.com'],
-  keywords: ['keyword1', 'keyword2', 'keyword3'],
-  accessInstructions: 'some instructions',
-  accessType: 'public' as const,
-  accessEmail: 'someemail@domain.com',
-  accessLink: 'https://example.com',
-  checked: true,
-  onCheckboxChange: () => {},
 };
 
 describe('ResultCard', () => {
   it('Displays a result card with all the expected properties', () => {
     cy.mount(
       <ResultCard
-        nodeName={props.nodeName}
-        datasetUuid={props.datasetUuid}
-        datasetName={props.datasetName}
-        repositoryUrl={props.repositoryUrl}
-        datasetTotalSubjects={props.datasetTotalSubjects}
-        numMatchingSubjects={props.numMatchingSubjects}
-        recordsProtected={props.recordsProtected}
-        imageModals={props.imageModals}
-        availablePipelines={props.availablePipelines}
+        dataset={props}
         imagingModalitiesMetadata={props.imagingModalitiesMetadata}
-        authors={props.authors}
-        homepage={props.homepage}
-        referencesAndLinks={props.referencesAndLinks}
-        keywords={props.keywords}
-        accessInstructions={props.accessInstructions}
-        accessType={props.accessType}
-        accessEmail={props.accessEmail}
-        accessLink={props.accessLink}
         checked={props.checked}
         onCheckboxChange={props.onCheckboxChange}
       />
@@ -125,37 +109,21 @@ describe('ResultCard', () => {
       ...props,
       authors: [],
       homepage: null,
-      referencesAndLinks: [],
+      references_and_links: [],
       keywords: [],
-      repositoryUrl: null,
-      accessInstructions: null,
-      accessType: null,
-      accessEmail: null,
-      accessLink: null,
-      imageModals: [],
-      availablePipelines: {},
+      repository_url: null,
+      access_instructions: null,
+      access_type: null,
+      access_email: null,
+      access_link: null,
+      image_modals: [],
+      available_pipelines: {},
     };
 
     cy.mount(
       <ResultCard
-        nodeName={propsMissingFields.nodeName}
-        datasetUuid={propsMissingFields.datasetUuid}
-        datasetName={propsMissingFields.datasetName}
-        repositoryUrl={propsMissingFields.repositoryUrl}
-        datasetTotalSubjects={propsMissingFields.datasetTotalSubjects}
-        numMatchingSubjects={propsMissingFields.numMatchingSubjects}
-        recordsProtected={propsMissingFields.recordsProtected}
-        imageModals={propsMissingFields.imageModals}
-        availablePipelines={propsMissingFields.availablePipelines}
+        dataset={propsMissingFields}
         imagingModalitiesMetadata={propsMissingFields.imagingModalitiesMetadata}
-        authors={propsMissingFields.authors}
-        homepage={propsMissingFields.homepage}
-        referencesAndLinks={propsMissingFields.referencesAndLinks}
-        keywords={propsMissingFields.keywords}
-        accessInstructions={propsMissingFields.accessInstructions}
-        accessType={propsMissingFields.accessType}
-        accessEmail={propsMissingFields.accessEmail}
-        accessLink={propsMissingFields.accessLink}
         checked={propsMissingFields.checked}
         onCheckboxChange={propsMissingFields.onCheckboxChange}
       />
@@ -198,52 +166,20 @@ describe('ResultCard', () => {
     const onCheckboxChangeSpy = cy.spy().as('onCheckboxChangeSpy');
     cy.mount(
       <ResultCard
-        nodeName={props.nodeName}
-        datasetUuid={props.datasetUuid}
-        datasetName={props.datasetName}
-        repositoryUrl={props.repositoryUrl}
-        datasetTotalSubjects={props.datasetTotalSubjects}
-        numMatchingSubjects={props.numMatchingSubjects}
-        recordsProtected={props.recordsProtected}
-        imageModals={props.imageModals}
-        availablePipelines={props.availablePipelines}
+        dataset={props}
         imagingModalitiesMetadata={props.imagingModalitiesMetadata}
-        authors={props.authors}
-        homepage={props.homepage}
-        referencesAndLinks={props.referencesAndLinks}
-        keywords={props.keywords}
-        accessInstructions={props.accessInstructions}
-        accessType={props.accessType}
-        accessEmail={props.accessEmail}
-        accessLink={props.accessLink}
         checked={false}
         onCheckboxChange={onCheckboxChangeSpy}
       />
     );
     cy.get('[data-cy="card-some uuid-checkbox"] input').check();
-    cy.get('@onCheckboxChangeSpy').should('have.been.calledWith', props.datasetUuid);
+    cy.get('@onCheckboxChangeSpy').should('have.been.calledWith', props.dataset_uuid);
   });
   it('Displays a disabled button with "No pipelines" text when no pipelines are available', () => {
     cy.mount(
       <ResultCard
-        nodeName={props.nodeName}
-        datasetUuid={props.datasetUuid}
-        datasetName={props.datasetName}
-        repositoryUrl={props.repositoryUrl}
-        datasetTotalSubjects={props.datasetTotalSubjects}
-        numMatchingSubjects={props.numMatchingSubjects}
-        recordsProtected={props.recordsProtected}
-        imageModals={props.imageModals}
-        availablePipelines={{}}
+        dataset={{ ...props, available_pipelines: {} }}
         imagingModalitiesMetadata={props.imagingModalitiesMetadata}
-        authors={props.authors}
-        homepage={props.homepage}
-        referencesAndLinks={props.referencesAndLinks}
-        keywords={props.keywords}
-        accessInstructions={props.accessInstructions}
-        accessType={props.accessType}
-        accessEmail={props.accessEmail}
-        accessLink={props.accessLink}
         checked={false}
         onCheckboxChange={props.onCheckboxChange}
       />
@@ -255,7 +191,7 @@ describe('ResultCard', () => {
   it('should hide modalities missing abbreviation or data type', () => {
     const propsWithIncompleteModality = {
       ...props,
-      imageModals: [...props.imageModals, 'http://purl.org/nidash/nidm#IncompleteModality'],
+      image_modals: [...props.image_modals, 'http://purl.org/nidash/nidm#IncompleteModality'],
       imagingModalitiesMetadata: {
         ...props.imagingModalitiesMetadata,
         'http://purl.org/nidash/nidm#IncompleteModality': {
@@ -269,24 +205,8 @@ describe('ResultCard', () => {
 
     cy.mount(
       <ResultCard
-        nodeName={propsWithIncompleteModality.nodeName}
-        datasetUuid={propsWithIncompleteModality.datasetUuid}
-        datasetName={propsWithIncompleteModality.datasetName}
-        repositoryUrl={propsWithIncompleteModality.repositoryUrl}
-        datasetTotalSubjects={propsWithIncompleteModality.datasetTotalSubjects}
-        numMatchingSubjects={propsWithIncompleteModality.numMatchingSubjects}
-        recordsProtected={propsWithIncompleteModality.recordsProtected}
-        imageModals={propsWithIncompleteModality.imageModals}
-        availablePipelines={propsWithIncompleteModality.availablePipelines}
+        dataset={propsWithIncompleteModality}
         imagingModalitiesMetadata={propsWithIncompleteModality.imagingModalitiesMetadata}
-        authors={propsWithIncompleteModality.authors}
-        homepage={propsWithIncompleteModality.homepage}
-        referencesAndLinks={propsWithIncompleteModality.referencesAndLinks}
-        keywords={propsWithIncompleteModality.keywords}
-        accessInstructions={propsWithIncompleteModality.accessInstructions}
-        accessType={propsWithIncompleteModality.accessType}
-        accessEmail={propsWithIncompleteModality.accessEmail}
-        accessLink={propsWithIncompleteModality.accessLink}
         checked={propsWithIncompleteModality.checked}
         onCheckboxChange={propsWithIncompleteModality.onCheckboxChange}
       />
@@ -299,7 +219,7 @@ describe('ResultCard', () => {
   it('should fall back to default styling when data type has no color mapping', () => {
     const propsWithUnknownType = {
       ...props,
-      imageModals: [...props.imageModals, 'http://purl.org/nidash/nidm#UnknownTypeModality'],
+      image_modals: [...props.image_modals, 'http://purl.org/nidash/nidm#UnknownTypeModality'],
       imagingModalitiesMetadata: {
         ...props.imagingModalitiesMetadata,
         'http://purl.org/nidash/nidm#UnknownTypeModality': {
@@ -313,24 +233,8 @@ describe('ResultCard', () => {
 
     cy.mount(
       <ResultCard
-        nodeName={propsWithUnknownType.nodeName}
-        datasetUuid={propsWithUnknownType.datasetUuid}
-        datasetName={propsWithUnknownType.datasetName}
-        repositoryUrl={propsWithUnknownType.repositoryUrl}
-        datasetTotalSubjects={propsWithUnknownType.datasetTotalSubjects}
-        numMatchingSubjects={propsWithUnknownType.numMatchingSubjects}
-        recordsProtected={propsWithUnknownType.recordsProtected}
-        imageModals={propsWithUnknownType.imageModals}
-        availablePipelines={propsWithUnknownType.availablePipelines}
+        dataset={propsWithUnknownType}
         imagingModalitiesMetadata={propsWithUnknownType.imagingModalitiesMetadata}
-        authors={propsWithUnknownType.authors}
-        homepage={propsWithUnknownType.homepage}
-        referencesAndLinks={propsWithUnknownType.referencesAndLinks}
-        keywords={propsWithUnknownType.keywords}
-        accessInstructions={propsWithUnknownType.accessInstructions}
-        accessType={propsWithUnknownType.accessType}
-        accessEmail={propsWithUnknownType.accessEmail}
-        accessLink={propsWithUnknownType.accessLink}
         checked={propsWithUnknownType.checked}
         onCheckboxChange={propsWithUnknownType.onCheckboxChange}
       />

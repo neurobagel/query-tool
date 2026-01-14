@@ -197,9 +197,9 @@ To define a cohort, set your inclusion criteria using the following:
 Once you've defined your criteria, submit them as a query and the query tool will display the results.\
 The query tool offers two different TSV files for results:
 
-- cohort participant results TSV contains: dataset name, repository url, number of matching subjects, subject id, session id, session file path, session type, age, sex, diagnosis, assessment, number of matching phenotypic sessions, number of matching imaging sessions, session imaging modality, session completed pipelines, dataset imaging modality, and dataset pipelines
+- cohort participant results TSV contains: dataset name, repository url, access link, number of matching subjects, subject id, session id, session file path, session type, age, sex, diagnosis, assessment, number of matching phenotypic sessions, number of matching imaging sessions, session imaging modality, session completed pipelines, dataset imaging modality, and dataset pipelines
 
-- cohort participant machine results TSV contains: dataset name, repository url, subject id, session id, session file path, session type, number of matching phenotypic sessions, number of matching imaging sessions, session imaging modality, session completed pipelines, dataset imaging modality, and dataset pipeline
+- cohort participant machine results TSV contains: dataset name, repository url, access link, subject id, session id, session file path, session type, number of matching phenotypic sessions, number of matching imaging sessions, session imaging modality, session completed pipelines, dataset imaging modality, and dataset pipeline
 
 You can refer to [the neurobagel documentation](https://neurobagel.org/user_guide/query_tool/#downloading-query-results) to see what the outputs of the query tool look like and how they are structured. You can also download the raw example output files [here](https://github.com/neurobagel/neurobagel_examples/tree/main/query-tool-results).
 

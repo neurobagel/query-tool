@@ -77,7 +77,6 @@ export type QueryFormState = {
 export interface Subject {
   sub_id: string;
   session_id: string;
-  num_sessions: string;
   age: string;
   sex: string;
   diagnosis: string[];
@@ -86,6 +85,9 @@ export interface Subject {
   image_modal: string[];
   session_file_path: string;
   completed_pipelines: Pipelines;
+  session_type: string;
+  num_matching_phenotypic_sessions: string;
+  num_matching_imaging_sessions: string;
 }
 
 export interface SubjectsQueryParams {

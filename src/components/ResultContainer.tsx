@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FormControlLabel, Checkbox, Typography } from '@mui/material';
-import ResultCard from './ResultCard';
+import ResultCard from './ResultCard/ResultCard';
 import {
   DatasetsResponse,
   SubjectsResponse,
@@ -187,19 +187,22 @@ function ResultContainer({
     ].join('\t');
     tsvRows.push(headers);
 
+    // TODO: Refactor this to avoid mutating tsvRows in the forEach loop (e.g., using map/reduce)
     subjectsResponse.responses.forEach((subResp) => {
       const datasetMetadata = datasetsResponse?.responses.find(
         (d) => d.dataset_uuid === subResp.dataset_uuid
       );
 
       // Fallback values if merge fails (should not happen if UUIDs match)
-      const datasetName = datasetMetadata?.dataset_name ?? '';
-      const repositoryUrl = datasetMetadata?.repository_url ?? '';
-      const accessLink = datasetMetadata?.access_link ?? '';
-      const numMatchingSubjects = datasetMetadata?.num_matching_subjects ?? 0;
-      const isProtected = datasetMetadata?.records_protected ?? false;
-      const datasetImageModals = datasetMetadata?.image_modals ?? [];
-      const datasetPipelines = datasetMetadata?.available_pipelines ?? {};
+      const {
+        dataset_name: datasetName = '',
+        repository_url: repositoryUrl = '',
+        access_link: accessLink = '',
+        num_matching_subjects: numMatchingSubjects = 0,
+        records_protected: isProtected = false,
+        image_modals: datasetImageModals = [],
+        available_pipelines: datasetPipelines = {},
+      } = datasetMetadata || {};
 
       if (isProtected) {
         tsvRows.push(
@@ -355,23 +358,7 @@ function ResultContainer({
           {datasetsResponse.responses.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
-              nodeName={item.node_name}
-              datasetUuid={item.dataset_uuid}
-              datasetName={item.dataset_name}
-              authors={item.authors}
-              homepage={item.homepage}
-              referencesAndLinks={item.references_and_links}
-              keywords={item.keywords}
-              repositoryUrl={item.repository_url}
-              accessInstructions={item.access_instructions}
-              accessType={item.access_type}
-              accessEmail={item.access_email}
-              accessLink={item.access_link}
-              datasetTotalSubjects={item.dataset_total_subjects}
-              recordsProtected={item.records_protected}
-              numMatchingSubjects={item.num_matching_subjects}
-              imageModals={item.image_modals}
-              availablePipelines={item.available_pipelines}
+              dataset={item}
               imagingModalitiesMetadata={imagingModalitiesMetadata}
               checked={download.includes(item.dataset_uuid)}
               onCheckboxChange={updateDownload}
