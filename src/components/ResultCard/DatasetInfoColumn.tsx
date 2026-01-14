@@ -25,7 +25,7 @@ function DatasetInfoColumn({
   accessType,
 }: DatasetInfoColumnProps) {
   return (
-    <div className="col-span-5 flex gap-2">
+    <>
       <Checkbox
         data-cy={`card-${datasetUuid}-checkbox`}
         checked={checked}
@@ -97,7 +97,7 @@ function DatasetInfoColumn({
           <AccessTypeIcons accessType={accessType} datasetUuid={datasetUuid} />
         </div>
       </Stack>
-    </div>
+    </>
   );
 }
 

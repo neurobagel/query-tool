@@ -52,32 +52,40 @@ const ResultCard = memo(
 
         <CardContent>
           <div className="grid grid-cols-12 gap-4">
-            <DatasetInfoColumn
-              datasetUuid={datasetUuid}
-              checked={checked}
-              onCheckboxChange={onCheckboxChange}
-              datasetName={datasetName}
-              authors={authors}
-              homepage={homepage}
-              repositoryUrl={repositoryUrl}
-              accessType={accessType}
-            />
+            <div className="col-span-5 flex gap-2">
+              <DatasetInfoColumn
+                datasetUuid={datasetUuid}
+                checked={checked}
+                onCheckboxChange={onCheckboxChange}
+                datasetName={datasetName}
+                authors={authors}
+                homepage={homepage}
+                repositoryUrl={repositoryUrl}
+                accessType={accessType}
+              />
+            </div>
 
-            <SubjectCountColumn
-              numMatchingSubjects={numMatchingSubjects}
-              datasetTotalSubjects={datasetTotalSubjects}
-            />
+            <div className="col-span-3 flex flex-col justify-center">
+              <SubjectCountColumn
+                numMatchingSubjects={numMatchingSubjects}
+                datasetTotalSubjects={datasetTotalSubjects}
+              />
+            </div>
 
-            <ImagingModalitiesColumn
-              imageModals={imageModals}
-              imagingModalitiesMetadata={imagingModalitiesMetadata}
-              datasetUuid={datasetUuid}
-            />
+            <div className="col-span-2 flex flex-wrap content-center justify-center gap-1">
+              <ImagingModalitiesColumn
+                imageModals={imageModals}
+                imagingModalitiesMetadata={imagingModalitiesMetadata}
+                datasetUuid={datasetUuid}
+              />
+            </div>
 
-            <DerivativeDataColumn
-              availablePipelines={availablePipelines}
-              datasetUuid={datasetUuid}
-            />
+            <div className="col-span-2 flex flex-col items-end justify-center">
+              <DerivativeDataColumn
+                availablePipelines={availablePipelines}
+                datasetUuid={datasetUuid}
+              />
+            </div>
           </div>
 
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
