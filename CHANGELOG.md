@@ -1,3 +1,24 @@
+# v0.15.0 (Thu Jan 15 2026)
+
+#### 💥 Breaking Changes
+
+- [ENH] Display enriched dataset level info on result cards [#697](https://github.com/neurobagel/query-tool/pull/697) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🚀 Enhancements
+
+- [ENH] Add timestamp to downloaded result filenames [#681](https://github.com/neurobagel/query-tool/pull/681) ([@Tusharjamdade](https://github.com/Tusharjamdade) [@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [CI] Rename generated example files to remove timestamps [#701](https://github.com/neurobagel/query-tool/pull/701) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
 # v0.14.0 (Thu Dec 11 2025)
 
 #### 💥 Breaking Changes
