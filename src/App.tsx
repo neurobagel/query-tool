@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, IconButton } from '@mui/material';
@@ -29,6 +29,7 @@ import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
+import ChatbotFeature from './components/Chatbot';
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
 import NodeAdmonition from './components/NodeAdmonition';
@@ -39,8 +40,6 @@ import areFormStatesEqual, {
   sendDatasetsQuery,
   sendSubjectsQuery,
 } from './utils/utils';
-
-const ChatbotFeature = lazy(() => import('./components/Chatbot'));
 
 function App() {
   // Screen is considered small if the width is less than 768px (according to tailwind docs)
@@ -602,11 +601,7 @@ function App() {
         }}
       />
 
-      {enableChatbot && (
-        <Suspense fallback={null}>
-          <ChatbotFeature setResult={setResult} />
-        </Suspense>
-      )}
+      {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
       <div className="flex flex-wrap gap-3">
         {/* 380px is currently the smallest width for the query form without dropdowns being affected */}
