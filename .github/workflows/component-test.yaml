@@ -21,7 +21,10 @@ jobs:
           echo -e "NB_API_QUERY_URL=https://federate.neurobagel.org/" > .env
 
       - name: build
-        run: npm install && npm run build
+        run: |
+          npm ci
+          rm -rf node_modules/.vite
+          npm run build
 
       - name: Run component tests
         uses: cypress-io/github-action@v6
