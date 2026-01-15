@@ -3,7 +3,7 @@
 // DATASETS RESPONSES
 const protectedDatasetSnippet = {
   node_name: 'some-node-name',
-  dataset_portal_uri: 'https://hello.dataset.portal',
+  repository_url: 'https://hello.dataset.portal',
   records_protected: true,
   dataset_uuid: 'https://someportal.org/datasets/ds0001',
   dataset_name: 'some\ncool name',
@@ -17,6 +17,14 @@ const protectedDatasetSnippet = {
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
   },
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'restricted' as const,
+  access_email: null,
+  access_link: null,
 };
 
 const unprotectedDatasetSnippet = {
@@ -24,7 +32,7 @@ const unprotectedDatasetSnippet = {
   node_name: 'some-node-name',
   dataset_uuid: 'http://neurobagel.org/vocab/1234',
   dataset_name: 'some\ndataset',
-  dataset_portal_uri: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
+  repository_url: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
   dataset_total_subjects: 209,
   num_matching_subjects: 2,
   image_modals: [
@@ -35,34 +43,26 @@ const unprotectedDatasetSnippet = {
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
   },
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'public' as const,
+  access_email: null,
+  access_link: null,
 };
 
 // SUBJECTS RESPONSES
 const protectedSubjectDataSnippet = {
-  dataset_portal_uri: 'https://hello.dataset.portal',
-  records_protected: true,
+  node_name: 'some-node-name',
   dataset_uuid: 'https://someportal.org/datasets/ds0001',
-  dataset_name: 'some\ncool name',
-  dataset_total_subjects: 10,
-  num_matching_subjects: 2,
   subject_data: 'protected',
-  image_modals: [
-    'http://purl.org/nidash/nidm#FlowWeighted',
-    'http://purl.org/nidash/nidm#T1Weighted',
-  ],
-  available_pipelines: {
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
-  },
 };
 
 const unprotectedSubjectDataSnippet = {
-  records_protected: false,
+  node_name: 'some-node-name',
   dataset_uuid: 'http://neurobagel.org/vocab/1234',
-  dataset_name: 'some\ndataset',
-  dataset_portal_uri: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
-  dataset_total_subjects: 209,
-  num_matching_subjects: 2,
   subject_data: [
     {
       sub_id: 'sub-300100',
@@ -101,14 +101,6 @@ const unprotectedSubjectDataSnippet = {
       },
     },
   ],
-  image_modals: [
-    'http://purl.org/nidash/nidm#FlowWeighted',
-    'http://purl.org/nidash/nidm#T2Weighted',
-  ],
-  available_pipelines: {
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
-  },
 };
 
 // doesn't care
@@ -465,7 +457,7 @@ export const datasetWithUnknownModality = {
   node_name: 'some-node-name',
   dataset_uuid: 'https://someportal.org/datasets/ds0003',
   dataset_name: 'dataset with unknown modality',
-  dataset_portal_uri: 'https://example.com/dataset',
+  repository_url: 'https://example.com/dataset',
   dataset_total_subjects: 50,
   num_matching_subjects: 5,
   subject_data: 'protected',
@@ -474,6 +466,14 @@ export const datasetWithUnknownModality = {
     'http://purl.org/nidash/nidm#UnknownModality',
   ],
   available_pipelines: {},
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'restricted' as const,
+  access_email: null,
+  access_link: null,
 };
 
 export const responseWithUnknownModality = {
@@ -487,7 +487,7 @@ export const datasetWithIncompleteModality = {
   node_name: 'some-node-name',
   dataset_uuid: 'https://someportal.org/datasets/ds0004',
   dataset_name: 'dataset with incomplete modality',
-  dataset_portal_uri: 'https://example.com/dataset-incomplete',
+  repository_url: 'https://example.com/dataset-incomplete',
   dataset_total_subjects: 25,
   num_matching_subjects: 3,
   subject_data: 'protected',
@@ -496,6 +496,14 @@ export const datasetWithIncompleteModality = {
     'http://purl.org/nidash/nidm#IncompleteModality',
   ],
   available_pipelines: {},
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'public' as const,
+  access_email: null,
+  access_link: null,
 };
 
 export const responseWithIncompleteModality = {

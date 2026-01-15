@@ -35,7 +35,7 @@ describe('ResultContainer', () => {
   it('Displays a set of Result Cards, select all checkbox, a disabled download result button, summary stats, and how to get data dialog button', () => {
     cy.mount(
       <ResultContainer
-        response={protectedResponse2}
+        datasetsResponse={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
         imagingModalitiesMetadata={imagingModalitiesMetadata}
@@ -55,7 +55,7 @@ describe('ResultContainer', () => {
   it('Selecting a dataset should enable the download result button', () => {
     cy.mount(
       <ResultContainer
-        response={protectedResponse2}
+        datasetsResponse={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
         imagingModalitiesMetadata={imagingModalitiesMetadata}
@@ -70,7 +70,7 @@ describe('ResultContainer', () => {
   it('Selecting/unselecting select all datasets checkbox should check/uncheck all dataset cards', () => {
     cy.mount(
       <ResultContainer
-        response={protectedResponse2}
+        datasetsResponse={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
         imagingModalitiesMetadata={imagingModalitiesMetadata}
@@ -97,7 +97,7 @@ describe('ResultContainer', () => {
   it('Shows no result view when result is empty', () => {
     cy.mount(
       <ResultContainer
-        response={{ responses: [], errors: [], nodes_response_status: 'success' }}
+        datasetsResponse={{ responses: [], errors: [], nodes_response_status: 'success' }}
         assessmentOptions={[]}
         diagnosisOptions={[]}
         imagingModalitiesMetadata={imagingModalitiesMetadata}
@@ -113,7 +113,7 @@ describe('ResultContainer', () => {
   it('Shows Click Submit Query view when result is null', () => {
     cy.mount(
       <ResultContainer
-        response={null}
+        datasetsResponse={null}
         assessmentOptions={[]}
         diagnosisOptions={[]}
         imagingModalitiesMetadata={imagingModalitiesMetadata}
@@ -129,7 +129,7 @@ describe('ResultContainer', () => {
   it('Handles unknown modalities gracefully without breaking', () => {
     cy.mount(
       <ResultContainer
-        response={responseWithUnknownModality}
+        datasetsResponse={responseWithUnknownModality}
         assessmentOptions={[]}
         diagnosisOptions={[]}
         imagingModalitiesMetadata={imagingModalitiesMetadata}
@@ -149,7 +149,7 @@ describe('ResultContainer', () => {
     const onDownloadSpy = cy.spy().as('onDownloadSpy');
     cy.mount(
       <ResultContainer
-        response={protectedResponse2}
+        datasetsResponse={protectedResponse2}
         assessmentOptions={[]}
         diagnosisOptions={[]}
         imagingModalitiesMetadata={imagingModalitiesMetadata}

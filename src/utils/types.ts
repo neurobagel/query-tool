@@ -77,7 +77,6 @@ export type QueryFormState = {
 export interface Subject {
   sub_id: string;
   session_id: string;
-  num_sessions: string;
   age: string;
   sex: string;
   diagnosis: string[];
@@ -86,6 +85,9 @@ export interface Subject {
   image_modal: string[];
   session_file_path: string;
   completed_pipelines: Pipelines;
+  session_type: string;
+  num_matching_phenotypic_sessions: string;
+  num_matching_imaging_sessions: string;
 }
 
 export interface SubjectsQueryParams {
@@ -99,7 +101,15 @@ export interface DatasetsResult {
   node_name: string;
   dataset_uuid: string;
   dataset_name: string;
-  dataset_portal_uri: string;
+  authors: string[];
+  homepage: string | null;
+  references_and_links: string[];
+  keywords: string[];
+  repository_url: string | null;
+  access_instructions: string | null;
+  access_type: 'public' | 'registered' | 'restricted' | null;
+  access_email: string | null;
+  access_link: string | null;
   dataset_total_subjects: number;
   records_protected: boolean;
   num_matching_subjects: number;
@@ -108,14 +118,8 @@ export interface DatasetsResult {
 }
 
 export interface SubjectsResult {
+  node_name: string;
   dataset_uuid: string;
-  dataset_name: string;
-  dataset_portal_uri: string;
-  dataset_total_subjects: number;
-  records_protected: boolean;
-  num_matching_subjects: number;
-  image_modals: string[];
-  available_pipelines: Pipelines;
   subject_data: Subject[] | string;
 }
 
