@@ -9,7 +9,7 @@ import { SnackbarKey, SnackbarProvider, closeSnackbar, enqueueSnackbar } from 'n
 import { useAuth0 } from '@auth0/auth0-react';
 import { v4 as uuidv4 } from 'uuid';
 import { FilterList } from '@mui/icons-material';
-import { baseAPIURL, nodesURL, enableAuth, enableChatbot } from './utils/constants';
+import { baseAPIURL, nodesURL, enableAuth } from './utils/constants';
 import {
   AttributeOption,
   RetrievedPipelineVersions,
@@ -29,7 +29,7 @@ import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
 import Navbar from './components/Navbar';
 import AuthDialog from './components/AuthDialog';
-import ChatbotFeature from './components/Chatbot';
+
 import SmallScreenSizeDialog from './components/SmallScreenSizeDialog';
 import ErrorAlert from './components/ErrorAlert';
 import NodeAdmonition from './components/NodeAdmonition';
@@ -600,8 +600,6 @@ function App() {
           setDismissedNodeAdmonitions((prev) => [...prev, nodeName]);
         }}
       />
-
-      {enableChatbot && <ChatbotFeature setResult={setResult} />}
 
       <div className="flex flex-wrap gap-3">
         {/* 380px is currently the smallest width for the query form without dropdowns being affected */}
