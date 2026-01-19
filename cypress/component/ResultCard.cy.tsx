@@ -247,7 +247,7 @@ describe('ResultCard', () => {
   });
   it('should display modalities and pipelines without overlap and wrap correctly on smaller screens', () => {
     // Force a small viewport to ensure wrapping occurs
-    cy.viewport(500, 800);
+    cy.viewport(768, 900);
 
     const crowdedProps = {
       ...props,

@@ -65,14 +65,16 @@ const ResultCard = memo(
               />
             </div>
 
-            <div className="col-span-3 flex flex-col justify-center">
-              <SubjectCountColumn
-                numMatchingSubjects={numMatchingSubjects}
-                datasetTotalSubjects={datasetTotalSubjects}
-              />
-            </div>
-
-            <div className="col-span-4 flex flex-wrap content-center justify-end gap-2">
+            <div
+              className="col-span-7 flex flex-wrap items-center justify-between gap-4"
+              data-cy="result-card-flex-container"
+            >
+              <div className="flex items-center gap-2">
+                <SubjectCountColumn
+                  numMatchingSubjects={numMatchingSubjects}
+                  datasetTotalSubjects={datasetTotalSubjects}
+                />
+              </div>
               <ImagingModalitiesColumn
                 imageModals={imageModals}
                 imagingModalitiesMetadata={imagingModalitiesMetadata}
