@@ -27,7 +27,7 @@ const props = {
   access_email: 'someemail@domain.com',
   access_link: 'https://example.com',
   checked: true,
-  onCheckboxChange: () => { },
+  onCheckboxChange: () => {},
   imagingModalitiesMetadata: {
     'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
       TermURL: 'nidm:ArterialSpinLabeling',
