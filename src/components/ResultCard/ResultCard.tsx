@@ -51,7 +51,7 @@ const ResultCard = memo(
         <ResultCardHeader nodeName={nodeName} recordsProtected={recordsProtected} />
 
         <CardContent>
-          <div className="grid grid-cols-12 gap-4">
+          <div className="grid grid-cols-12 items-center gap-4">
             <div className="col-span-5 flex gap-2">
               <DatasetInfoColumn
                 datasetUuid={datasetUuid}

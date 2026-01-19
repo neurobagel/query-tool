@@ -30,7 +30,7 @@ function DatasetInfoColumn({
         data-cy={`card-${datasetUuid}-checkbox`}
         checked={checked}
         onChange={() => onCheckboxChange(datasetUuid)}
-        sx={{ p: 0.5, alignSelf: 'flex-start' }}
+        sx={{ p: 0.5, alignSelf: 'center' }}
       />
       <Stack spacing={0.5} sx={{ minWidth: 0 }}>
         {/* Dataset Name (Text Only) */}
@@ -62,7 +62,7 @@ function DatasetInfoColumn({
                   data-cy={`card-${datasetUuid}-homepage-icon`}
                   size="small"
                   color="primary"
-                  style={{ padding: 4 }}
+                  style={{ padding: 4, marginLeft: -4 }}
                   href={homepage}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -74,7 +74,7 @@ function DatasetInfoColumn({
                   size="small"
                   disabled
                   color="primary"
-                  style={{ padding: 4 }}
+                  style={{ padding: 4, marginLeft: -4 }}
                   data-cy={`card-${datasetUuid}-homepage-icon`}
                 >
                   <HomeIcon fontSize="medium" />
