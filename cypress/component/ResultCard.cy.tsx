@@ -27,7 +27,7 @@ const props = {
   access_email: 'someemail@domain.com',
   access_link: 'https://example.com',
   checked: true,
-  onCheckboxChange: () => {},
+  onCheckboxChange: () => { },
   imagingModalitiesMetadata: {
     'http://purl.org/nidash/nidm#ArterialSpinLabeling': {
       TermURL: 'nidm:ArterialSpinLabeling',
@@ -244,5 +244,69 @@ describe('ResultCard', () => {
     cy.contains('[data-cy="modality-buttons"] button', 'UNK')
       .should('exist')
       .should('have.css', 'background-color', 'rgb(25, 118, 210)');
+  });
+  it('should display modalities and pipelines without overlap and wrap correctly on smaller screens', () => {
+    // Force a small viewport to ensure wrapping occurs
+    cy.viewport(500, 800);
+
+    const crowdedProps = {
+      ...props,
+      image_modals: [
+        'http://purl.org/nidash/nidm#ArterialSpinLabeling',
+        'http://purl.org/nidash/nidm#DiffusionWeighted',
+        'http://purl.org/nidash/nidm#FlowWeighted',
+        'http://purl.org/nidash/nidm#T1Weighted',
+      ],
+      available_pipelines: {
+        fmriprep: ['1.0'],
+        freesurfer: ['6.0'],
+      },
+      imagingModalitiesMetadata: {
+        ...props.imagingModalitiesMetadata,
+        'http://purl.org/nidash/nidm#FlowWeighted': {
+          TermURL: 'nidm:FlowWeighted',
+          Label: 'Blood Oxygen Level Dependent',
+          Abbreviation: 'BOLD',
+          DataType: 'func',
+        },
+        'http://purl.org/nidash/nidm#T1Weighted': {
+          TermURL: 'nidm:T1Weighted',
+          Label: 'T1 Weighted',
+          Abbreviation: 'T1W',
+          DataType: 'anat',
+        },
+      },
+    };
+
+    cy.mount(
+      <ResultCard
+        dataset={crowdedProps}
+        imagingModalitiesMetadata={crowdedProps.imagingModalitiesMetadata}
+        checked={props.checked}
+        onCheckboxChange={props.onCheckboxChange}
+      />
+    );
+
+    // Get all buttons in the container (modalities and pipelines)
+    // We target the container that holds both to ensure we check them together
+    cy.get('[data-cy="modality-buttons"]').parent().as('container');
+
+    cy.get('@container').find('button').should('have.length.at.least', 5);
+
+    cy.get('@container')
+      .find('button')
+      .then(($buttons) => {
+        const firstBtn = $buttons.first()[0].getBoundingClientRect();
+        const lastBtn = $buttons.last()[0].getBoundingClientRect();
+
+        // Native/Best-Practice Check for Wrapping:
+        // If flex-wrap is working correctly on a narrow screen, the last item
+        // should be visually positioned BELOW the first item (higher 'y' or 'top' value).
+        // If they were overlapping or overflowing horizontally, 'top' would be the same.
+        expect(lastBtn.top).to.be.greaterThan(
+          firstBtn.top,
+          'Items should wrap to a new line on smaller screens'
+        );
+      });
   });
 });

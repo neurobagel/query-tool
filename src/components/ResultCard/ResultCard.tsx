@@ -72,15 +72,12 @@ const ResultCard = memo(
               />
             </div>
 
-            <div className="col-span-2 flex flex-wrap content-center justify-center gap-1">
+            <div className="col-span-4 flex flex-wrap content-center justify-end gap-2">
               <ImagingModalitiesColumn
                 imageModals={imageModals}
                 imagingModalitiesMetadata={imagingModalitiesMetadata}
                 datasetUuid={datasetUuid}
               />
-            </div>
-
-            <div className="col-span-2 flex flex-col items-end justify-center">
               <DerivativeDataColumn
                 availablePipelines={availablePipelines}
                 datasetUuid={datasetUuid}
