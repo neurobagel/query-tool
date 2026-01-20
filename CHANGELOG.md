@@ -1,3 +1,15 @@
+# v0.15.1 (Tue Jan 20 2026)
+
+#### 🐛 Bug Fixes
+
+- [FIX] Fix overlapping imaging modality and derivative group buttons and improve ResultCard responsiveness [#711](https://github.com/neurobagel/query-tool/pull/711) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 1
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.15.0 (Thu Jan 15 2026)
 
 #### 💥 Breaking Changes

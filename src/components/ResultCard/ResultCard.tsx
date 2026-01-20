@@ -51,7 +51,7 @@ const ResultCard = memo(
         <ResultCardHeader nodeName={nodeName} recordsProtected={recordsProtected} />
 
         <CardContent>
-          <div className="grid grid-cols-12 gap-4">
+          <div className="grid grid-cols-12 items-center gap-4">
             <div className="col-span-5 flex gap-2">
               <DatasetInfoColumn
                 datasetUuid={datasetUuid}
@@ -65,26 +65,27 @@ const ResultCard = memo(
               />
             </div>
 
-            <div className="col-span-3 flex flex-col justify-center">
-              <SubjectCountColumn
-                numMatchingSubjects={numMatchingSubjects}
-                datasetTotalSubjects={datasetTotalSubjects}
-              />
-            </div>
-
-            <div className="col-span-2 flex flex-wrap content-center justify-center gap-1">
-              <ImagingModalitiesColumn
-                imageModals={imageModals}
-                imagingModalitiesMetadata={imagingModalitiesMetadata}
-                datasetUuid={datasetUuid}
-              />
-            </div>
-
-            <div className="col-span-2 flex flex-col items-end justify-center">
-              <DerivativeDataColumn
-                availablePipelines={availablePipelines}
-                datasetUuid={datasetUuid}
-              />
+            <div
+              className="col-span-7 flex items-center justify-between gap-4"
+              data-cy="result-card-flex-container"
+            >
+              <div className="flex flex-col items-start text-left">
+                <SubjectCountColumn
+                  numMatchingSubjects={numMatchingSubjects}
+                  datasetTotalSubjects={datasetTotalSubjects}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-2">
+                <ImagingModalitiesColumn
+                  imageModals={imageModals}
+                  imagingModalitiesMetadata={imagingModalitiesMetadata}
+                  datasetUuid={datasetUuid}
+                />
+                <DerivativeDataColumn
+                  availablePipelines={availablePipelines}
+                  datasetUuid={datasetUuid}
+                />
+              </div>
             </div>
           </div>
 
