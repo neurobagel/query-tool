@@ -12,7 +12,11 @@ import ErrorBoundary from './components/ErrorBoundary';
 const router = createBrowserRouter([
   {
     path: appBasePath,
-    element: <App />,
+    element: (
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    ),
   },
 ]);
 
@@ -21,9 +25,7 @@ const app = (
     {/* CSS injection order for MUI and tailwind: https://mui.com/material-ui/guides/interoperability/#tailwind-css */}
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <ErrorBoundary>
-          <RouterProvider router={router} />
-        </ErrorBoundary>
+        <RouterProvider router={router} />
       </ThemeProvider>
     </StyledEngineProvider>
   </React.StrictMode>
