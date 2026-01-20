@@ -291,7 +291,7 @@ describe('ResultCard', () => {
     // We target the container that holds both to ensure we check them together
     cy.get('[data-cy="modality-buttons"]').parent().as('container');
 
-    cy.get('@container').find('button').should('have.length.at.least', 5);
+    cy.get('@container').find('button').should('have.length', 6);
 
     cy.get('@container')
       .find('button')
