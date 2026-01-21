@@ -104,6 +104,24 @@ describe('ResultCard', () => {
       .and('contain', 'https://anothersite.com');
   });
 
+  it('displays full term name in tooltip when hovering over imaging modality button', () => {
+    cy.mount(
+      <ResultCard
+        dataset={props}
+        imagingModalitiesMetadata={props.imagingModalitiesMetadata}
+        checked={props.checked}
+        onCheckboxChange={props.onCheckboxChange}
+      />
+    );
+    cy.get('[data-cy="card-some uuid-ASL-imaging-modality-button"]').trigger('mouseover');
+    cy.get('.MuiTooltip-tooltip').should('contain', 'Arterial Spin Labeling');
+    cy.get('[data-cy="card-some uuid-ASL-imaging-modality-button"]').trigger('mouseout');
+
+    cy.get('[data-cy="card-some uuid-DWI-imaging-modality-button"]').trigger('mouseover');
+    cy.get('.MuiTooltip-tooltip').should('contain', 'Diffusion Weighted');
+    cy.get('[data-cy="card-some uuid-DWI-imaging-modality-button"]').trigger('mouseout');
+  });
+
   it('Displays default content and disabled buttons when optional fields are missing', () => {
     const propsMissingFields = {
       ...props,
