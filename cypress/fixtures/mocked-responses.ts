@@ -511,3 +511,29 @@ export const responseWithIncompleteModality = {
   responses: [datasetWithIncompleteModality],
   nodes_response_status: 'success',
 };
+// Response with missing fields (for error boundary testing)
+export const missingFieldsResponse = {
+  nodes_response_status: 'success',
+  errors: [],
+  responses: [
+    {
+      node_name: 'Test Node',
+      dataset_uuid: '123',
+      dataset_name: 'Crash Dataset',
+      // authors is missing!
+      homepage: 'http://example.com',
+      references_and_links: [],
+      keywords: [],
+      repository_url: null,
+      access_instructions: null,
+      access_type: 'public' as const,
+      access_email: null,
+      access_link: null,
+      dataset_total_subjects: 10,
+      records_protected: false,
+      num_matching_subjects: 5,
+      image_modals: [],
+      available_pipelines: {},
+    },
+  ],
+};
