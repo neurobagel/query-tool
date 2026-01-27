@@ -26,6 +26,6 @@ jobs:
           npm run build
 
       - name: Run component tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           component: true
