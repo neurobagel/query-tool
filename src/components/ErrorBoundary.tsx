@@ -38,7 +38,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     if (hasError) {
       // Fallback UI
       return (
-        <div className="flex h-screen w-screen flex-col items-center justify-center space-y-5">
+        <div
+          className="flex h-screen w-screen flex-col items-center justify-center space-y-5"
+          data-cy="error-boundary"
+        >
           <img src={logo} alt="Logo" className="max-h-20 animate-pulse" />
           <Typography variant="h5" className="text-center">
             This is not supposed to happen. Please try again,{' '}

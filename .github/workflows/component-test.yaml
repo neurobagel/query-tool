@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -21,9 +21,11 @@ jobs:
           echo -e "NB_API_QUERY_URL=https://federate.neurobagel.org/" > .env
 
       - name: build
-        run: npm install && npm run build
+        run: |
+          npm ci
+          npm run build
 
       - name: Run component tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           component: true

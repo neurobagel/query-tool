@@ -1,15 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FormControlLabel, Checkbox, Typography } from '@mui/material';
-import ResultCard from './ResultCard';
+import ResultCard from './ResultCard/ResultCard';
 import {
   DatasetsResponse,
   SubjectsResponse,
   QueryParams,
   Pipelines,
   AttributeOption,
+  ImagingModalitiesMetadata,
 } from '../utils/types';
 import DownloadResultButton from './DownloadResultButton';
-import { sexes, modalities } from '../utils/constants';
+import { sexes } from '../utils/constants';
 import ErrorAlert from './ErrorAlert';
 
 type DownloadHandler = (buttonIndex: number, selection: string[]) => Promise<SubjectsResponse>;
@@ -17,28 +18,30 @@ type DownloadHandler = (buttonIndex: number, selection: string[]) => Promise<Sub
 function ResultContainer({
   diagnosisOptions,
   assessmentOptions,
-  response,
+  imagingModalitiesMetadata,
+  datasetsResponse,
   queryForm,
   disableDownloads,
   onDownload,
 }: {
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
-  response: DatasetsResponse | null;
+  imagingModalitiesMetadata: ImagingModalitiesMetadata;
+  datasetsResponse: DatasetsResponse | null;
   queryForm: QueryParams | null;
   disableDownloads: boolean;
   onDownload: DownloadHandler;
 }) {
   const [download, setDownload] = useState<string[]>([]);
-  const selectAll: boolean = response
-    ? response.responses.length === download.length &&
-      response.responses.every((r) => download.includes(r.dataset_uuid))
+  const selectAll: boolean = datasetsResponse
+    ? datasetsResponse.responses.length === download.length &&
+      datasetsResponse.responses.every((r) => download.includes(r.dataset_uuid))
     : false;
 
   let numOfMatchedDatasets = 0;
   let numOfMatchedSubjects = 0;
-  if (response) {
-    response.responses.forEach((item) => {
+  if (datasetsResponse) {
+    datasetsResponse.responses.forEach((item) => {
       numOfMatchedDatasets += 1;
       numOfMatchedSubjects += item.num_matching_subjects;
     });
@@ -66,21 +69,21 @@ function ResultContainer({
   }, []);
 
   function handleSelectAll(checked: boolean) {
-    if (response) {
-      const uuids = response.responses.map((item) => item.dataset_uuid);
+    if (datasetsResponse) {
+      const uuids = datasetsResponse.responses.map((item) => item.dataset_uuid);
       setDownload(checked ? uuids : []);
     }
   }
 
   useEffect(() => {
-    if (response) {
+    if (datasetsResponse) {
       setDownload((currentDownload) =>
         currentDownload.filter((downloadID) =>
-          response.responses.some((item) => item.dataset_uuid === downloadID)
+          datasetsResponse.responses.some((item) => item.dataset_uuid === downloadID)
         )
       );
     }
-  }, [response]);
+  }, [datasetsResponse]);
 
   function convertURIToLabel(
     type: string,
@@ -131,8 +134,11 @@ function ResultContainer({
       }
 
       case 'modality': {
-        const modalityKey = Object.keys(modalities).find((key) => key === uri);
-        return modalityKey ? modalities[modalityKey].label : uri;
+        const modality = Object.values(imagingModalitiesMetadata).find((m) => {
+          const [, id] = m.TermURL.split(':');
+          return uri.includes(id);
+        });
+        return modality ? modality.Label : uri;
       }
 
       case 'pipeline': {
@@ -155,13 +161,13 @@ function ResultContainer({
       : '';
   }
 
-  function generateTSVString(subjectsData: SubjectsResponse, buttonIndex: number) {
+  function generateTSVString(subjectsResponse: SubjectsResponse, buttonIndex: number) {
     const tsvRows = [];
     const isFileWithLabels = buttonIndex === 0;
 
     const headers = [
       'DatasetName',
-      'PortalURI',
+      'RepositoryURL',
       'NumMatchingSubjects',
       'SubjectID',
       'SessionID',
@@ -177,16 +183,33 @@ function ResultContainer({
       'SessionCompletedPipelines',
       'DatasetImagingModalities',
       'DatasetPipelines',
+      'AccessLink',
     ].join('\t');
     tsvRows.push(headers);
 
-    subjectsData.responses.forEach((res) => {
-      if (res.records_protected) {
+    // TODO: Refactor this to avoid mutating tsvRows in the forEach loop (e.g., using map/reduce)
+    subjectsResponse.responses.forEach((subResp) => {
+      const datasetMetadata = datasetsResponse?.responses.find(
+        (d) => d.dataset_uuid === subResp.dataset_uuid
+      );
+
+      // Fallback values if merge fails (should not happen if UUIDs match)
+      const {
+        dataset_name: datasetName = '',
+        repository_url: repositoryUrl = '',
+        access_link: accessLink = '',
+        num_matching_subjects: numMatchingSubjects = 0,
+        records_protected: isProtected = false,
+        image_modals: datasetImageModals = [],
+        available_pipelines: datasetPipelines = {},
+      } = datasetMetadata || {};
+
+      if (isProtected) {
         tsvRows.push(
           [
-            res.dataset_name.replace(/\n/g, ' '),
-            res.dataset_portal_uri,
-            res.num_matching_subjects,
+            datasetName.replace(/\n/g, ' '),
+            repositoryUrl,
+            numMatchingSubjects,
             'protected', // subject_id
             'protected', // session_id
             'protected', // session_file_path
@@ -200,24 +223,25 @@ function ResultContainer({
             'protected', // session_imaging_modality
             'protected', // session_completed_pipelines
             isFileWithLabels
-              ? convertURIToLabel('modality', res.image_modals)
-              : res.image_modals?.join(','),
+              ? convertURIToLabel('modality', datasetImageModals)
+              : datasetImageModals?.join(','),
             isFileWithLabels
               ? convertURIToLabel(
                   'pipeline',
-                  parsePipelinesInfoToString(res.available_pipelines).split(',')
+                  parsePipelinesInfoToString(datasetPipelines).split(',')
                 )
-              : parsePipelinesInfoToString(res.available_pipelines),
+              : parsePipelinesInfoToString(datasetPipelines),
+            accessLink,
           ].join('\t')
         );
       } else {
         // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
-        res.subject_data.forEach((subject) => {
+        subResp.subject_data.forEach((subject) => {
           tsvRows.push(
             [
-              res.dataset_name.replace(/\n/g, ' '),
-              res.dataset_portal_uri,
-              res.num_matching_subjects,
+              datasetName.replace(/\n/g, ' '),
+              repositoryUrl,
+              numMatchingSubjects,
               subject.sub_id,
               subject.session_id,
               subject.session_file_path,
@@ -244,14 +268,15 @@ function ResultContainer({
                   )
                 : parsePipelinesInfoToString(subject.completed_pipelines),
               isFileWithLabels
-                ? convertURIToLabel('modality', res.image_modals)
-                : res.image_modals?.join(','),
+                ? convertURIToLabel('modality', datasetImageModals)
+                : datasetImageModals?.join(','),
               isFileWithLabels
                 ? convertURIToLabel(
                     'pipeline',
-                    parsePipelinesInfoToString(res.available_pipelines).split(',')
+                    parsePipelinesInfoToString(datasetPipelines).split(',')
                   )
-                : parsePipelinesInfoToString(res.available_pipelines),
+                : parsePipelinesInfoToString(datasetPipelines),
+              accessLink,
             ].join('\t')
           );
         });
@@ -261,18 +286,19 @@ function ResultContainer({
   }
 
   async function downloadResults(buttonIndex: number) {
-    if (!queryForm || !response || loading) return;
+    if (!queryForm || !datasetsResponse || loading) return;
 
     setLoading(true);
 
     try {
       const subjectsResponse = await onDownload(buttonIndex, download);
       setDownloadError(null);
+      const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
 
       const fileName =
         buttonIndex === 0
-          ? 'neurobagel-query-results.tsv'
-          : 'neurobagel-query-results-with-URIs.tsv';
+          ? `neurobagel-query-results_${timestamp}.tsv`
+          : `neurobagel-query-results-with-URIs_${timestamp}.tsv`;
       const element = document.createElement('a');
       const encodedTSV = encodeURIComponent(generateTSVString(subjectsResponse, buttonIndex));
       element.setAttribute('href', `data:text/tab-separated-values;charset=utf-8,${encodedTSV}`);
@@ -291,7 +317,7 @@ function ResultContainer({
   }
 
   function renderResults() {
-    if (response === null) {
+    if (datasetsResponse === null) {
       return (
         <Typography variant="h5" data-cy="default-result-container-view" className="text-gray-500">
           Click &apos;Submit Query&apos; for results
@@ -299,7 +325,7 @@ function ResultContainer({
       );
     }
 
-    if (response.responses.length === 0) {
+    if (datasetsResponse.responses.length === 0) {
       return (
         <Typography variant="h5" data-cy="empty-result-container-view" className="text-gray-500">
           No results
@@ -329,17 +355,11 @@ function ResultContainer({
           </div>
         </div>
         <div className="h-[65vh] space-y-1 overflow-auto">
-          {response.responses.map((item) => (
+          {datasetsResponse.responses.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
-              nodeName={item.node_name}
-              datasetUUID={item.dataset_uuid}
-              datasetName={item.dataset_name}
-              datasetPortalURI={item.dataset_portal_uri}
-              datasetTotalSubjects={item.dataset_total_subjects}
-              numMatchingSubjects={item.num_matching_subjects}
-              imageModals={item.image_modals}
-              pipelines={item.available_pipelines}
+              dataset={item}
+              imagingModalitiesMetadata={imagingModalitiesMetadata}
               checked={download.includes(item.dataset_uuid)}
               onCheckboxChange={updateDownload}
             />

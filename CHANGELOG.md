@@ -1,3 +1,65 @@
+# v0.15.1 (Tue Jan 20 2026)
+
+#### 🐛 Bug Fixes
+
+- [FIX] Fix overlapping imaging modality and derivative group buttons and improve ResultCard responsiveness [#711](https://github.com/neurobagel/query-tool/pull/711) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 1
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
+# v0.15.0 (Thu Jan 15 2026)
+
+#### 💥 Breaking Changes
+
+- [ENH] Display enriched dataset level info on result cards [#697](https://github.com/neurobagel/query-tool/pull/697) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🚀 Enhancements
+
+- [ENH] Add timestamp to downloaded result filenames [#681](https://github.com/neurobagel/query-tool/pull/681) ([@Tusharjamdade](https://github.com/Tusharjamdade) [@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [CI] Rename generated example files to remove timestamps [#701](https://github.com/neurobagel/query-tool/pull/701) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
+# v0.14.0 (Thu Dec 11 2025)
+
+#### 💥 Breaking Changes
+
+- [ENH] Fetch imaging modality options from an API endpoint [#684](https://github.com/neurobagel/query-tool/pull/684) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🚀 Enhancements
+
+- [ENH] Replace dropdown selector with radio button group [#683](https://github.com/neurobagel/query-tool/pull/683) ([@Tusharjamdade](https://github.com/Tusharjamdade) [@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
+# v0.13.3 (Tue Nov 25 2025)
+
+#### 🏠 Internal
+
+- [ENH] Make node admonitions configurable [#671](https://github.com/neurobagel/query-tool/pull/671) ([@surchs](https://github.com/surchs))
+
+#### Authors: 1
+
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.13.2 (Wed Nov 12 2025)
 
 #### 🚀 Enhancements

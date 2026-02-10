@@ -3,7 +3,7 @@
 // DATASETS RESPONSES
 const protectedDatasetSnippet = {
   node_name: 'some-node-name',
-  dataset_portal_uri: 'https://hello.dataset.portal',
+  repository_url: 'https://hello.dataset.portal',
   records_protected: true,
   dataset_uuid: 'https://someportal.org/datasets/ds0001',
   dataset_name: 'some\ncool name',
@@ -17,6 +17,14 @@ const protectedDatasetSnippet = {
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
   },
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'restricted' as const,
+  access_email: null,
+  access_link: null,
 };
 
 const unprotectedDatasetSnippet = {
@@ -24,7 +32,7 @@ const unprotectedDatasetSnippet = {
   node_name: 'some-node-name',
   dataset_uuid: 'http://neurobagel.org/vocab/1234',
   dataset_name: 'some\ndataset',
-  dataset_portal_uri: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
+  repository_url: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
   dataset_total_subjects: 209,
   num_matching_subjects: 2,
   image_modals: [
@@ -35,34 +43,26 @@ const unprotectedDatasetSnippet = {
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
     'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
   },
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'public' as const,
+  access_email: null,
+  access_link: null,
 };
 
 // SUBJECTS RESPONSES
 const protectedSubjectDataSnippet = {
-  dataset_portal_uri: 'https://hello.dataset.portal',
-  records_protected: true,
+  node_name: 'some-node-name',
   dataset_uuid: 'https://someportal.org/datasets/ds0001',
-  dataset_name: 'some\ncool name',
-  dataset_total_subjects: 10,
-  num_matching_subjects: 2,
   subject_data: 'protected',
-  image_modals: [
-    'http://purl.org/nidash/nidm#FlowWeighted',
-    'http://purl.org/nidash/nidm#T1Weighted',
-  ],
-  available_pipelines: {
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
-  },
 };
 
 const unprotectedSubjectDataSnippet = {
-  records_protected: false,
+  node_name: 'some-node-name',
   dataset_uuid: 'http://neurobagel.org/vocab/1234',
-  dataset_name: 'some\ndataset',
-  dataset_portal_uri: 'https://github.com/OpenNeuroDatasets-JSONLD/ds004116.git',
-  dataset_total_subjects: 209,
-  num_matching_subjects: 2,
   subject_data: [
     {
       sub_id: 'sub-300100',
@@ -101,14 +101,6 @@ const unprotectedSubjectDataSnippet = {
       },
     },
   ],
-  image_modals: [
-    'http://purl.org/nidash/nidm#FlowWeighted',
-    'http://purl.org/nidash/nidm#T2Weighted',
-  ],
-  available_pipelines: {
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/fmriprep': ['23.1.3'],
-    'https://github.com/nipoppy/pipeline-catalog/tree/main/processing/freesurfer': ['7.3.2'],
-  },
 };
 
 // doesn't care
@@ -324,6 +316,66 @@ export const failedAssessmentToolOptions = {
   ],
 };
 
+export const imagingModalityOptions = {
+  errors: [],
+  responses: {
+    'nb:Image': [
+      {
+        TermURL: 'nidm:T1Weighted',
+        Label: 'T1 Weighted',
+        Abbreviation: 'T1w',
+        DataType: 'anat',
+      },
+      {
+        TermURL: 'nidm:T2Weighted',
+        Label: 'T2 Weighted',
+        Abbreviation: 'T2w',
+        DataType: 'anat',
+      },
+      {
+        TermURL: 'nidm:FlowWeighted',
+        Label: 'Functional MRI',
+        Abbreviation: 'fMRI',
+        DataType: 'func',
+      },
+      {
+        TermURL: 'nidm:IncompleteModality',
+        Label: 'Incomplete Modality',
+        Abbreviation: null,
+        DataType: 'anat',
+      },
+    ],
+  },
+  nodes_response_status: 'success',
+};
+
+export const emptyImagingModalityOptions = {
+  ...imagingModalityOptions,
+  responses: { 'nb:Image': [] },
+};
+
+export const partiallyFailedImagingModalityOptions = {
+  ...imagingModalityOptions,
+  nodes_response_status: 'partial success',
+  errors: [
+    {
+      node_name: 'NoImagingModalityNode',
+      error: 'some error message',
+    },
+  ],
+};
+
+export const failedImagingModalityOptions = {
+  ...emptyImagingModalityOptions,
+  nodes_response_status: 'fail',
+  errors: [
+    {
+      node_name: 'NoImagingModalityNode',
+      error: 'some error message',
+    },
+  ],
+};
+
 export const pipelineOptions = {
   errors: [],
   responses: {
@@ -405,7 +457,7 @@ export const datasetWithUnknownModality = {
   node_name: 'some-node-name',
   dataset_uuid: 'https://someportal.org/datasets/ds0003',
   dataset_name: 'dataset with unknown modality',
-  dataset_portal_uri: 'https://example.com/dataset',
+  repository_url: 'https://example.com/dataset',
   dataset_total_subjects: 50,
   num_matching_subjects: 5,
   subject_data: 'protected',
@@ -414,10 +466,74 @@ export const datasetWithUnknownModality = {
     'http://purl.org/nidash/nidm#UnknownModality',
   ],
   available_pipelines: {},
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'restricted' as const,
+  access_email: null,
+  access_link: null,
 };
 
 export const responseWithUnknownModality = {
   errors: [],
   responses: [datasetWithUnknownModality],
   nodes_response_status: 'success',
+};
+
+export const datasetWithIncompleteModality = {
+  records_protected: false,
+  node_name: 'some-node-name',
+  dataset_uuid: 'https://someportal.org/datasets/ds0004',
+  dataset_name: 'dataset with incomplete modality',
+  repository_url: 'https://example.com/dataset-incomplete',
+  dataset_total_subjects: 25,
+  num_matching_subjects: 3,
+  subject_data: 'protected',
+  image_modals: [
+    'http://purl.org/nidash/nidm#FlowWeighted',
+    'http://purl.org/nidash/nidm#IncompleteModality',
+  ],
+  available_pipelines: {},
+  authors: [],
+  homepage: null,
+  references_and_links: [],
+  keywords: [],
+  access_instructions: null,
+  access_type: 'public' as const,
+  access_email: null,
+  access_link: null,
+};
+
+export const responseWithIncompleteModality = {
+  errors: [],
+  responses: [datasetWithIncompleteModality],
+  nodes_response_status: 'success',
+};
+// Response with missing fields (for error boundary testing)
+export const missingFieldsResponse = {
+  nodes_response_status: 'success',
+  errors: [],
+  responses: [
+    {
+      node_name: 'Test Node',
+      dataset_uuid: '123',
+      dataset_name: 'Crash Dataset',
+      // authors is missing!
+      homepage: 'http://example.com',
+      references_and_links: [],
+      keywords: [],
+      repository_url: null,
+      access_instructions: null,
+      access_type: 'public' as const,
+      access_email: null,
+      access_link: null,
+      dataset_total_subjects: 10,
+      records_protected: false,
+      num_matching_subjects: 5,
+      image_modals: [],
+      available_pipelines: {},
+    },
+  ],
 };

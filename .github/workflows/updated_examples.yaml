@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR head branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -30,15 +30,20 @@ jobs:
         run: npm install && npm run build
 
       - name: Run end to end tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           wait-on: http://localhost:5173
           start: npm run preview
           spec: cypress/e2e/UpdateExamples.cy.ts
           component: false
 
+      - name: Rename artifacts
+        run: |
+          mv cypress/downloads/neurobagel-query-results_*.tsv cypress/downloads/neurobagel-query-results_YYYYMMDDHHMMSS.tsv
+          mv cypress/downloads/neurobagel-query-results-with-URIs_*.tsv cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv
+
       - name: Upload test artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: query-tool-results
           path: cypress/downloads/*
@@ -56,20 +61,20 @@ jobs:
           owner: ${{ github.repository_owner }}
 
       - name: Checkout neurobagel_examples repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: neurobagel/neurobagel_examples
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Download artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: query-tool-results
           path: query-tool-results
 
       - name: Create Pull Request
         id: create_pr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: Update `query-tool-results` files

@@ -1,4 +1,9 @@
-import { nodeOptions, diagnosisOptions, assessmentToolOptions } from '../fixtures/mocked-responses';
+import {
+  nodeOptions,
+  diagnosisOptions,
+  assessmentToolOptions,
+  imagingModalityOptions,
+} from '../fixtures/mocked-responses';
 
 describe('Authentication flow', () => {
   beforeEach(() => {
@@ -23,8 +28,20 @@ describe('Authentication flow', () => {
       },
       assessmentToolOptions
     ).as('getAssessmentToolOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/imaging-modalities',
+      },
+      imagingModalityOptions
+    ).as('getImagingModalityOptions');
     cy.visit('/');
-    cy.wait(['@getNodes', '@getDiagnosisOptions', '@getAssessmentToolOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getImagingModalityOptions',
+    ]);
   });
   it('Auth dialog is visible by default and user is not logged in', () => {
     cy.visit('/');
