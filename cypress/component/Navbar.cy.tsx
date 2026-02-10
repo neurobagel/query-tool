@@ -47,6 +47,9 @@ describe('Navbar', () => {
     cy.get("[data-cy='navbar']")
       .find('.MuiBadge-badge')
       .should('contain', mockNotifications.length);
+    cy.get("[data-cy='notification-button']").within(() => {
+      cy.get('svg[data-testid="WarningAmberIcon"]').should('be.visible');
+    });
     cy.get("[data-cy='notification-button']").click();
     cy.get('.MuiPopover-paper').should('be.visible');
 
