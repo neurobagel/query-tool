@@ -16,7 +16,7 @@ import {
   Button,
   Avatar,
 } from '@mui/material';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CloseIcon from '@mui/icons-material/Close';
 import GitHub from '@mui/icons-material/GitHub';
 import Article from '@mui/icons-material/Article';
@@ -95,7 +95,7 @@ function Navbar({
           <Tooltip title="Notifications">
             <IconButton onClick={handleNotifClick} data-cy="notification-button">
               <Badge badgeContent={notifications.length} color="primary">
-                <NotificationsIcon color="action" />
+                <WarningAmberIcon color="action" />
               </Badge>
             </IconButton>
           </Tooltip>
