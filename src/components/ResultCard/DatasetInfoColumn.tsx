@@ -7,7 +7,6 @@ interface DatasetInfoColumnProps {
   datasetUuid: string;
   checked: boolean;
   onCheckboxChange: (id: string) => void;
-  datasetName: string;
   authors: string[];
   homepage: string | null;
   repositoryUrl: string | null;
@@ -18,7 +17,6 @@ function DatasetInfoColumn({
   datasetUuid,
   checked,
   onCheckboxChange,
-  datasetName,
   authors,
   homepage,
   repositoryUrl,
@@ -33,19 +31,6 @@ function DatasetInfoColumn({
         sx={{ p: 0.5, alignSelf: 'center' }}
       />
       <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-        {/* Dataset Name (Text Only) */}
-        <Tooltip title={datasetName} placement="top">
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              lineHeight: 1.2,
-            }}
-          >
-            {datasetName.length > 39 ? `${datasetName.substring(0, 39)}...` : datasetName}
-          </Typography>
-        </Tooltip>
-
         {/* Authors (First 3) */}
         <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
           {authors.length > 0
