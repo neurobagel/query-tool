@@ -21,15 +21,15 @@
     "test:e2e": "cypress run --e2e"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.13.0",
+    "@auth0/auth0-react": "^2.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.9",
-    "@mui/icons-material": "^7.3.7",
+    "@mui/icons-material": "^7.3.8",
     "@mui/material": "^7.3.7",
     "axios": "^1.13.5",
     "eslint-plugin-tsdoc": "^0.5.0",
-    "glob": "^13.0.0",
+    "glob": "^13.0.3",
     "jwt-decode": "^4.0.0",
     "notistack": "^3.0.2",
     "react": "^18.2.0",
