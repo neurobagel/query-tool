@@ -61,7 +61,60 @@ function App() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [result, setResult] = useState<DatasetsResponse | null>(null);
+  /*
+   * Mock data for demo purposes
+   * This allows us to see how the result card looks with all props and with missing props
+   */
+  const MOCK_DATASETS_RESPONSE: DatasetsResponse = {
+    nodes_response_status: 'success',
+    errors: [],
+    responses: [
+      {
+        node_name: 'OpenNeuro',
+        dataset_uuid: 'mock-ds-full-props',
+        dataset_name: 'Some Dataset',
+        authors: ['Alice A.', 'Bob B.', 'Charlie C.'],
+        homepage: 'https://openneuro.org/datasets/mock',
+        references_and_links: ['https://doi.org/10.1234/5678', 'https://paper.link/1'],
+        keywords: ['fMRI', 'neuroimaging', 'bids', 'mock'],
+        repository_url: 'https://github.com/OpenNeuro/mock',
+        access_instructions: 'Data is public domain. Please enjoy responsibily.',
+        access_type: 'public',
+        access_email: 'support@openneuro.org',
+        access_link: 'https://openneuro.org',
+        dataset_total_subjects: 120,
+        records_protected: false,
+        num_matching_subjects: 42,
+        image_modals: [
+          'http://purl.org/nidash/nidm#T1Weighted',
+          'http://purl.org/nidash/nidm#FlowWeighted',
+          'http://purl.org/nidash/nidm#T2Weighted',
+        ],
+        available_pipelines: { fmriprep: ['20.2.1', '21.0.0'], mriqc: ['0.16.1'] },
+      },
+      {
+        node_name: 'Austrian Neuro Cloud',
+        dataset_uuid: 'mock-ds-missing-props',
+        dataset_name: 'Some Other Dataset',
+        authors: [],
+        homepage: null,
+        references_and_links: [],
+        keywords: [],
+        repository_url: null,
+        access_instructions: null,
+        access_type: null,
+        access_email: null,
+        access_link: null,
+        dataset_total_subjects: 0,
+        records_protected: false,
+        num_matching_subjects: 0,
+        image_modals: [],
+        available_pipelines: {},
+      },
+    ],
+  };
+
+  const [result, setResult] = useState<DatasetsResponse | null>(MOCK_DATASETS_RESPONSE);
   const [resultStatus, setResultStatus] = useState<string>('success');
 
   const [minAge, setMinAge] = useState<string>('');
