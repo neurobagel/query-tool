@@ -46,11 +46,12 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
               results&rdquo; dropdown
             </li>
             <li>Change directory to the location of the downloaded TSV</li>
-            <li>Take note of the filename you downloaded. It will include a timestamp at the end</li>
             <li>
-              Copy the below command into your terminal and replace the
-              &rdquo;YYYYMMDDHHMMSS&rdquo; placeholder with the actual time stamp 
-              from your downloaded filename
+              Take note of the filename you downloaded. It will include a timestamp at the end
+            </li>
+            <li>
+              Copy the below command into your terminal and replace the &rdquo;YYYYMMDDHHMMSS&rdquo;
+              placeholder with the actual time stamp from your downloaded filename
             </li>
             <li>Run the command</li>
           </ol>
