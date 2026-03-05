@@ -49,8 +49,8 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
             <li>Take note of the filename you downloaded. It will include a timestamp at the end</li>
             <li>
               Copy the below command into your terminal and replace the
-              &rdquo;neurobagel-query-results_00000000000000.tsv&rdquo; placeholder with your actual
-              file name. Make sure to keep the &rdquo;/data/&rdquo; part!
+              &rdquo;YYYYMMDDHHMMSS&rdquo; placeholder with the actual time stamp 
+              from your downloaded filename
             </li>
             <li>Run the command</li>
           </ol>
