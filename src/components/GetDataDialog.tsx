@@ -16,7 +16,7 @@ import CodeBlock from './CodeBlock';
 function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const RUN_COMMANDS: { [key: string]: string } = {
     docker:
-      'docker run -t -u $(id -u):$(id -g) -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results_00000000000000.tsv /data/output',
+      'docker run -t -u $(id -u):$(id -g) -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results_YYYYMMDDHHMMSS.tsv /data/output',
     apptainer:
       'apptainer run --bind $(pwd):/data docker://neurobagel/dataget:latest /data/neurobagel-query-results_00000000000000.tsv /data/output',
   };
@@ -46,9 +46,9 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
               results&rdquo; dropdown
             </li>
             <li>Change directory to the location of the downloaded TSV</li>
-            <li>Take not of the filename you downloaded. It will include a timestamp at the end</li>
+            <li>Take note of the filename you downloaded. It will include a timestamp at the end</li>
             <li>
-              Copy the command below into your terminal and replace the
+              Copy the below command into your terminal and replace the
               &rdquo;neurobagel-query-results_00000000000000.tsv&rdquo; placeholder with your actual
               file name. Make sure to keep the &rdquo;/data/&rdquo; part!
             </li>
