@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FormControlLabel, Checkbox, Typography } from '@mui/material';
+
+
 import ResultCard from './ResultCard/ResultCard';
 import {
   DatasetsResponse,
@@ -354,7 +356,7 @@ function ResultContainer({
             </Typography>
           </div>
         </div>
-        <div className="h-[65vh] space-y-1 overflow-auto">
+        <div className="h-[65vh] space-y-7 overflow-auto">
           {datasetsResponse.responses.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
