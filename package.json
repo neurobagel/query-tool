@@ -27,7 +27,7 @@
     "@fontsource/roboto": "^5.2.9",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
-    "axios": "^1.13.5",
+    "axios": "^1.15.0",
     "eslint-plugin-tsdoc": "^0.5.0",
     "glob": "^13.0.0",
     "jwt-decode": "^4.0.0",
