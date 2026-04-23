@@ -47,7 +47,7 @@ const ResultCard = memo(
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-      <Card data-cy={`card-${datasetUuid}`} sx={{ mb: 2 }}>
+      <Card data-cy={`card-${datasetUuid}`}>
         <ResultCardHeader nodeName={nodeName} recordsProtected={recordsProtected} />
 
         <CardContent>
