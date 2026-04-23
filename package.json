@@ -39,7 +39,7 @@
     "react-router-dom": "^7.13.0",
     "react-simple-chatbot": "^0.6.1",
     "styled-components": "^4.4.1",
-    "uuid": "^11.1.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@kesills/eslint-config-airbnb-typescript": "^20.0.0",
