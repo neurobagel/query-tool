@@ -162,7 +162,7 @@ function ResultContainer({
   }
 
   function generateTSVString(subjectsResponse: SubjectsResponse, buttonIndex: number) {
-    const tsvRows = [];
+    
     const isFileWithLabels = buttonIndex === 0;
 
     const headers = [
@@ -185,15 +185,12 @@ function ResultContainer({
       'DatasetPipelines',
       'AccessLink',
     ].join('\t');
-    tsvRows.push(headers);
-
-    // TODO: Refactor this to avoid mutating tsvRows in the forEach loop (e.g., using map/reduce)
-    subjectsResponse.responses.forEach((subResp) => {
+    
+    const dataRows = subjectsResponse.responses.flatMap((subResp) => {
       const datasetMetadata = datasetsResponse?.responses.find(
         (d) => d.dataset_uuid === subResp.dataset_uuid
       );
 
-      // Fallback values if merge fails (should not happen if UUIDs match)
       const {
         dataset_name: datasetName = '',
         repository_url: repositoryUrl = '',
@@ -205,7 +202,7 @@ function ResultContainer({
       } = datasetMetadata || {};
 
       if (isProtected) {
-        tsvRows.push(
+        return[
           [
             datasetName.replace(/\n/g, ' '),
             repositoryUrl,
@@ -233,12 +230,14 @@ function ResultContainer({
               : parsePipelinesInfoToString(datasetPipelines),
             accessLink,
           ].join('\t')
-        );
-      } else {
-        // @ts-expect-error: typescript doesn't know that subject_data is an array when records_protected is false.
-        subResp.subject_data.forEach((subject) => {
-          tsvRows.push(
-            [
+        ];
+      } 
+      if (!Array.isArray(subResp.subject_data)) {
+        return [];
+      }
+
+      return subResp.subject_data.map((subject) =>
+        [
               datasetName.replace(/\n/g, ' '),
               repositoryUrl,
               numMatchingSubjects,
@@ -280,9 +279,7 @@ function ResultContainer({
             ].join('\t')
           );
         });
-      }
-    });
-    return tsvRows.join('\n');
+        return [headers, ...dataRows].join('\n');
   }
 
   async function downloadResults(buttonIndex: number) {
