@@ -16,9 +16,9 @@ import CodeBlock from './CodeBlock';
 function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const RUN_COMMANDS: { [key: string]: string } = {
     docker:
-      'docker run -t -u $(id -u):$(id -g) -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results.tsv /data/output',
+      'docker run -t -u $(id -u):$(id -g) -v $(pwd):/data neurobagel/dataget:latest /data/neurobagel-query-results_YYYYMMDDHHMMSS.tsv /data/output',
     apptainer:
-      'apptainer run --bind $(pwd):/data docker://neurobagel/dataget:latest /data/neurobagel-query-results.tsv /data/output',
+      'apptainer run --bind $(pwd):/data docker://neurobagel/dataget:latest /data/neurobagel-query-results_00000000000000.tsv /data/output',
   };
 
   const theme = useTheme();
@@ -46,7 +46,14 @@ function GetDataDialog({ open, onClose }: { open: boolean; onClose: () => void }
               results&rdquo; dropdown
             </li>
             <li>Change directory to the location of the downloaded TSV</li>
-            <li>Copy and run the command below</li>
+            <li>
+              Take note of the filename you downloaded. It will include a timestamp at the end
+            </li>
+            <li>
+              Copy the below command into your terminal and replace the &rdquo;YYYYMMDDHHMMSS&rdquo;
+              placeholder with the actual time stamp from your downloaded filename
+            </li>
+            <li>Run the command</li>
           </ol>
         </DialogContentText>
         <ToggleButtonGroup

@@ -43,7 +43,7 @@ jobs:
           mv cypress/downloads/neurobagel-query-results-with-URIs_*.tsv cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv
 
       - name: Upload test artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: query-tool-results
           path: cypress/downloads/*
@@ -54,7 +54,7 @@ jobs:
     steps:
       - name: Generate a token
         id: generate-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.NB_BOT_ID }}
           private-key: ${{ secrets.NB_BOT_KEY }}
@@ -67,7 +67,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Download artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: query-tool-results
           path: query-tool-results
