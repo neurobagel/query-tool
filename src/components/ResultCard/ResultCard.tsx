@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { Collapse, Box } from '@mui/material';
+import { Collapse, Box, Tooltip, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { ImagingModalitiesMetadata, DatasetsResult } from '../../utils/types';
@@ -51,13 +51,30 @@ const ResultCard = memo(
         <ResultCardHeader nodeName={nodeName} recordsProtected={recordsProtected} />
 
         <CardContent>
-          <div className="grid grid-cols-12 items-center gap-4">
-            <div className="col-span-5 flex gap-2">
+          <div className="grid grid-cols-12 gap-4">
+            
+            <div className="col-span-12">
+              <Tooltip title={datasetName} placement="top">
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    lineHeight: 1.2,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {datasetName}
+                </Typography>
+              </Tooltip>
+            </div>
+
+            <div className="col-span-5 flex items-center gap-2">
               <DatasetInfoColumn
                 datasetUuid={datasetUuid}
                 checked={checked}
                 onCheckboxChange={onCheckboxChange}
-                datasetName={datasetName}
                 authors={authors}
                 homepage={homepage}
                 repositoryUrl={repositoryUrl}
