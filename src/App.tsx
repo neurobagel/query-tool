@@ -41,6 +41,51 @@ import areFormStatesEqual, {
   sendSubjectsQuery,
 } from './utils/utils';
 
+const MOCK_INITIAL_RESULT = {
+  errors: [],
+  responses: [
+    {
+      dataset_uuid: 'mock-catalog-1',
+      dataset_name: 'Mock Catalog Dataset 1',
+      dataset_total_subjects: 150,
+      records_protected: false,
+      num_matching_subjects: null,
+      node_name: 'Mock Catalog Node',
+      image_modals: [],
+      available_pipelines: {},
+      access_type: 'public' as const,
+      access_email: null,
+      access_link: null,
+      authors: ['Mock Author 1'],
+      homepage: 'https://example.com/mock-catalog-1',
+      references_and_links: [],
+      keywords: ['mock', 'catalog'],
+      repository_url: 'https://example.com/mock-catalog-1',
+      access_instructions: null,
+    },
+    {
+      dataset_uuid: 'mock-subject-level-1',
+      dataset_name: 'Mock Subject-Level Dataset (Protected)',
+      dataset_total_subjects: 300,
+      records_protected: true,
+      num_matching_subjects: 50,
+      node_name: 'Mock Data Node',
+      image_modals: [],
+      available_pipelines: {},
+      access_type: 'restricted' as const,
+      access_email: 'test@example.com',
+      access_link: null,
+      authors: ['Mock Author 2'],
+      homepage: null,
+      references_and_links: [],
+      keywords: ['mock', 'protected', 'subject-level'],
+      repository_url: null,
+      access_instructions: 'Contact test@example.com',
+    },
+  ],
+  nodes_response_status: 'success',
+};
+
 function App() {
   // Screen is considered small if the width is less than 768px (according to tailwind docs)
   const [isScreenSizeSmall, setIsScreenSizeSmall] = useState<boolean>(
@@ -61,7 +106,7 @@ function App() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [result, setResult] = useState<DatasetsResponse | null>(null);
+  const [result, setResult] = useState<DatasetsResponse | null>(MOCK_INITIAL_RESULT);
   const [resultStatus, setResultStatus] = useState<string>('success');
 
   const [minAge, setMinAge] = useState<string>('');
@@ -476,6 +521,7 @@ function App() {
 
     try {
       const data = await sendDatasetsQuery(datasetsRequestBody, IDToken);
+
       setResult(data);
       setResultStatus(data.nodes_response_status);
       setActiveQueryParams(datasetsRequestBody);

@@ -45,10 +45,26 @@ const ResultCard = memo(
       available_pipelines: availablePipelines,
     } = dataset;
     const [isExpanded, setIsExpanded] = useState(false);
+    const isCatalog = numMatchingSubjects === null;
 
     return (
-      <Card data-cy={`card-${datasetUuid}`} sx={{ mb: 2 }}>
-        <ResultCardHeader nodeName={nodeName} recordsProtected={recordsProtected} />
+      <Card
+        data-cy={`card-${datasetUuid}`}
+        sx={{
+          mb: 2,
+          borderLeft: isCatalog ? 'none' : '4px solid',
+          borderLeftColor: 'primary.main',
+          transition: 'box-shadow 0.2s',
+          '&:hover': {
+            boxShadow: isCatalog ? 1 : 4,
+          },
+        }}
+      >
+        <ResultCardHeader
+          nodeName={nodeName}
+          recordsProtected={recordsProtected}
+          isCatalog={isCatalog}
+        />
 
         <CardContent>
           <div className="grid grid-cols-12 items-center gap-4">
@@ -62,6 +78,7 @@ const ResultCard = memo(
                 homepage={homepage}
                 repositoryUrl={repositoryUrl}
                 accessType={accessType}
+                isCatalog={isCatalog}
               />
             </div>
 
