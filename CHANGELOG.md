@@ -1,3 +1,28 @@
+# v0.16.0 (Tue May 26 2026)
+
+#### 🚀 Enhancements
+
+- [ENH] Implement visualization for catalog datasets [#794](https://github.com/neurobagel/query-tool/pull/794) ([@rmanaem](https://github.com/rmanaem))
+- [ENH] Make notifications drawer icon clearly indicate warnings [#736](https://github.com/neurobagel/query-tool/pull/736) ([@Tusharjamdade](https://github.com/Tusharjamdade))
+- [ENH] Add tooltips to imaging modality buttons [#717](https://github.com/neurobagel/query-tool/pull/717) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [MNT] Resolve flaky behaviour of the component test suite [#719](https://github.com/neurobagel/query-tool/pull/719) ([@rmanaem](https://github.com/rmanaem))
+- [FIX] Correct the position of `ErrorBoundary` in the app to catch render errors [#714](https://github.com/neurobagel/query-tool/pull/714) ([@rmanaem](https://github.com/rmanaem))
+
+#### 📝 Documentation
+
+- [ENH] Update command and docstring [#752](https://github.com/neurobagel/query-tool/pull/752) ([@surchs](https://github.com/surchs))
+
+#### Authors: 3
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
 # v0.15.1 (Tue Jan 20 2026)
 
 #### 🐛 Bug Fixes
