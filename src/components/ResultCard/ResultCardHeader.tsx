@@ -1,12 +1,15 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Tooltip } from '@mui/material';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PersonIcon from '@mui/icons-material/Person';
 import NodeModeIcon from './NodeModeIcon';
 
 interface ResultCardHeaderProps {
   nodeName: string;
   recordsProtected: boolean;
+  isCatalog: boolean;
 }
 
-function ResultCardHeader({ nodeName, recordsProtected }: ResultCardHeaderProps) {
+function ResultCardHeader({ nodeName, recordsProtected, isCatalog }: ResultCardHeaderProps) {
   return (
     <Box
       sx={{
@@ -24,6 +27,14 @@ function ResultCardHeader({ nodeName, recordsProtected }: ResultCardHeaderProps)
         {nodeName} node
       </Typography>
       <NodeModeIcon recordsProtected={recordsProtected} />
+      <Tooltip
+        title={isCatalog ? 'Catalog-Level Dataset (No Subject Data)' : 'Subject-Level Dataset'}
+        placement="top"
+      >
+        <div className="ml-1 flex items-center gap-1">
+          {isCatalog ? <MenuBookIcon fontSize="small" /> : <PersonIcon fontSize="small" />}
+        </div>
+      </Tooltip>
     </Box>
   );
 }

@@ -49,7 +49,7 @@ describe('ResultContainer', () => {
     cy.get('[data-cy="select-all-checkbox"]').should('be.visible');
     cy.get('[data-cy="summary-stats"]')
       .should('be.visible')
-      .should('contain', 'Summary stats: 2 datasets, 4 subjects');
+      .should('contain', 'Summary stats: 2 datasets, 4 matching subjects, 20 total subjects');
     cy.get('[data-cy="download-results-button"]').should('be.visible').should('be.disabled');
   });
   it('Selecting a dataset should enable the download result button', () => {
@@ -163,5 +163,75 @@ describe('ResultContainer', () => {
     cy.get('@onDownloadSpy').should('have.been.calledWith', 0, [
       'https://someportal.org/datasets/ds0001',
     ]);
+  });
+
+  it('Filters out catalog datasets when the subject-level only switch is toggled', () => {
+    const mixedDatasetsResponse = {
+      errors: [],
+      nodes_response_status: 'success',
+      responses: [
+        { ...protectedResponse2.responses[0] },
+        {
+          ...protectedResponse2.responses[1],
+          dataset_uuid: 'catalog-1',
+          num_matching_subjects: null,
+          dataset_total_subjects: 150,
+        },
+      ],
+    };
+
+    cy.mount(
+      <ResultContainer
+        datasetsResponse={mixedDatasetsResponse}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
+      />
+    );
+
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001"]').should('be.visible');
+    cy.get('[data-cy="card-catalog-1"]').should('be.visible');
+
+    cy.contains('Subject-level datasets only').click();
+
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001"]').should('be.visible');
+    cy.get('[data-cy="card-catalog-1"]').should('not.exist');
+  });
+
+  it('Only selects and downloads subject-level datasets when Select All is clicked with a mixed result', () => {
+    const mixedDatasetsResponse = {
+      errors: [],
+      nodes_response_status: 'success',
+      responses: [
+        { ...protectedResponse2.responses[0] },
+        {
+          ...protectedResponse2.responses[1],
+          dataset_uuid: 'catalog-1',
+          num_matching_subjects: null,
+          dataset_total_subjects: 150,
+        },
+      ],
+    };
+
+    cy.mount(
+      <ResultContainer
+        datasetsResponse={mixedDatasetsResponse}
+        assessmentOptions={[]}
+        diagnosisOptions={[]}
+        imagingModalitiesMetadata={imagingModalitiesMetadata}
+        queryForm={mockQueryParams}
+        disableDownloads={false}
+        onDownload={mockOnDownload}
+      />
+    );
+
+    cy.get('[data-cy="select-all-checkbox"] input').check();
+    cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').should(
+      'be.checked'
+    );
+    cy.get('[data-cy="card-catalog-1-checkbox"] input').should('not.be.checked');
   });
 });
