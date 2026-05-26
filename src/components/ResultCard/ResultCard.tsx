@@ -48,18 +48,7 @@ const ResultCard = memo(
     const isCatalog = numMatchingSubjects === null;
 
     return (
-      <Card
-        data-cy={`card-${datasetUuid}`}
-        sx={{
-          mb: 2,
-          borderLeft: isCatalog ? 'none' : '4px solid',
-          borderLeftColor: 'primary.main',
-          transition: 'box-shadow 0.2s',
-          '&:hover': {
-            boxShadow: isCatalog ? 1 : 4,
-          },
-        }}
-      >
+      <Card data-cy={`card-${datasetUuid}`} sx={{ mb: 2 }}>
         <ResultCardHeader
           nodeName={nodeName}
           recordsProtected={recordsProtected}

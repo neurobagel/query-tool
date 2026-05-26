@@ -13,7 +13,7 @@ function ResultCardHeader({ nodeName, recordsProtected, isCatalog }: ResultCardH
   return (
     <Box
       sx={{
-        bgcolor: isCatalog ? 'rgba(211, 47, 47, 0.04)' : 'rgba(46, 125, 50, 0.04)',
+        bgcolor: 'grey.100',
         px: 2,
         py: 1,
         display: 'flex',

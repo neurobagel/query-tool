@@ -16,15 +16,31 @@ function SubjectCountColumn({
       <Typography variant="body2" fontWeight="bold">
         Matching subjects:
       </Typography>
-      <Typography variant="h6">
+      <div className="mt-1">
         {isCatalog ? (
-          <>
-            <span className="text-base italic text-gray-500">Unknown</span> / {datasetTotalSubjects}
-          </>
+          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+            Unknown / {datasetTotalSubjects}
+          </Typography>
         ) : (
-          `${numMatchingSubjects} / ${datasetTotalSubjects}`
+          <div className="flex items-baseline gap-1.5">
+            <Typography
+              variant="h4"
+              component="span"
+              sx={{ color: '#0891b2', fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}
+            >
+              {numMatchingSubjects}
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              component="span"
+              color="text.secondary"
+              sx={{ fontWeight: 'bold' }}
+            >
+              / {datasetTotalSubjects}
+            </Typography>
+          </div>
         )}
-      </Typography>
+      </div>
     </>
   );
 }
