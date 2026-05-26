@@ -6,7 +6,7 @@ import NodeModeIcon from './NodeModeIcon';
 interface ResultCardHeaderProps {
   nodeName: string;
   recordsProtected: boolean;
-  isCatalog?: boolean;
+  isCatalog: boolean;
 }
 
 function ResultCardHeader({ nodeName, recordsProtected, isCatalog }: ResultCardHeaderProps) {
@@ -27,16 +27,14 @@ function ResultCardHeader({ nodeName, recordsProtected, isCatalog }: ResultCardH
         {nodeName} node
       </Typography>
       <NodeModeIcon recordsProtected={recordsProtected} />
-      {isCatalog !== undefined && (
-        <Tooltip
-          title={isCatalog ? 'Catalog-Level Dataset (No Subject Data)' : 'Subject-Level Dataset'}
-          placement="top"
-        >
-          <div className="ml-1 flex items-center gap-1">
-            {isCatalog ? <MenuBookIcon fontSize="small" /> : <PersonIcon fontSize="small" />}
-          </div>
-        </Tooltip>
-      )}
+      <Tooltip
+        title={isCatalog ? 'Catalog-Level Dataset (No Subject Data)' : 'Subject-Level Dataset'}
+        placement="top"
+      >
+        <div className="ml-1 flex items-center gap-1">
+          {isCatalog ? <MenuBookIcon fontSize="small" /> : <PersonIcon fontSize="small" />}
+        </div>
+      </Tooltip>
     </Box>
   );
 }
