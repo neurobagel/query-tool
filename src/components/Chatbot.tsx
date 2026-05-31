@@ -124,6 +124,7 @@ function ChatbotFeature({ setResult }: ChatbotFeatureProps) {
         <span className="absolute right-8 top-0 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-white" />
       </button>
       {showChatbot && (
+        // @ts-expect-error: react-draggable 4.6.0 typing requires too many props
         <Draggable>
           <div className="fixed bottom-12 right-32 z-50 w-80 rounded-lg border border-gray-300 bg-white shadow-lg">
             <ThemeProvider theme={theme}>
