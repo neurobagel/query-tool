@@ -28,14 +28,14 @@ describe('CategoricalField', () => {
       'Categorical Field'
     );
     props.options.forEach((option) => {
-      cy.get('[data-cy="Categorical Field-categorical-field"]').type(
+      cy.get('[data-cy="Categorical Field-categorical-field"] input').type(
         `${option.label}{downarrow}{enter}`
       );
       cy.get('[data-cy="Categorical Field-categorical-field"] input').should(
         'have.value',
         option.label
       );
-      cy.get('[data-cy="Categorical Field-categorical-field"]').clear();
+      cy.get('[data-cy="Categorical Field-categorical-field"] input').clear();
     });
   });
   it('Displays the input value passed as props', () => {
@@ -62,7 +62,9 @@ describe('CategoricalField', () => {
         inputValue={props.inputValue}
       />
     );
-    cy.get('[data-cy="Categorical Field-categorical-field"]').type('Option 1{downarrow}{enter}');
+    cy.get('[data-cy="Categorical Field-categorical-field"] input').type(
+      'Option 1{downarrow}{enter}'
+    );
     cy.get('@onFieldChangeSpy').should('have.been.calledWith', 'Categorical Field', {
       id: '1',
       label: 'Option 1',
