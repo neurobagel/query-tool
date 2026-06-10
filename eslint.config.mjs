@@ -16,7 +16,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   cypressPlugin.configs.recommended,
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}', '**/*.js', '**/*.cjs'],
     plugins: {
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
@@ -24,10 +24,12 @@ export default tseslint.config(
       tsdoc: tsdocPlugin,
     },
     languageOptions: {
-      ecmaVersion: 2020,
-      sourceType: 'module',
+      parserOptions: {
+        project: ['./tsconfig.*json'],
+      },
       globals: {
         ...globals.browser,
+        ...globals.es2020,
         ...globals.node,
       },
     },
@@ -37,6 +39,11 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'react/react-in-jsx-scope': 'off',
       'tsdoc/syntax': 'warn',
+      /* 
+      @typescript-eslint/no-unused-vars is turned off since eslint wasn't picking up on using `_` for unused variables
+      which is the solution that we've been using for it.
+      */
+      '@typescript-eslint/no-unused-vars': 'off',
     },
     settings: {
       react: {
