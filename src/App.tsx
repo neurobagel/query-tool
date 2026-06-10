@@ -93,7 +93,6 @@ function App() {
       if (isAuthenticated) {
         (async () => {
           const tokenClaims = await getIdTokenClaims();
-          // eslint-disable-next-line no-underscore-dangle
           setIDToken(tokenClaims?.__raw);
         })();
         setOpenAuthDialog(false);
