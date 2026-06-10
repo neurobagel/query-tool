@@ -10,7 +10,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/', 'eslint.config.mjs', 'recipes/'],
+    ignores: ['dist/', 'eslint.config.mjs', 'component.ts', '**/*.js', '**/*.cjs', '**/*.mjs'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -36,12 +36,7 @@ export default tseslint.config(
       ...reactHooksPlugin.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'react/react-in-jsx-scope': 'off',
-      'react/require-default-props': 'off',
       'tsdoc/syntax': 'warn',
-      '@typescript-eslint/no-namespace': 'off',
-      'react-hooks/set-state-in-effect': 'off',
-      'react-hooks/refs': 'off',
-      'react/display-name': 'off',
     },
     settings: {
       react: {

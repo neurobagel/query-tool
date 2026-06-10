@@ -95,6 +95,7 @@ function App() {
           const tokenClaims = await getIdTokenClaims();
           setIDToken(tokenClaims?.__raw);
         })();
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setOpenAuthDialog(false);
       }
       if (!isAuthenticated) {
