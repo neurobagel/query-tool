@@ -1,4 +1,4 @@
 {
-  "*.{ts,tsx}": ["npm run lint:check:file"],
-  "!(.*|.*/**)*": ["npm run format:check:file"]
+  "*.{ts,tsx}": ["eslint --report-unused-disable-directives --max-warnings=0"],
+  "!(.*|.*/**)*": ["prettier --check"]
 }
