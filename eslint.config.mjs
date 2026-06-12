@@ -1,5 +1,7 @@
 import eslint from '@eslint/js';
 import cypressPlugin from 'eslint-plugin-cypress';
+import importPlugin from 'eslint-plugin-import';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
@@ -15,6 +17,9 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   cypressPlugin.configs.recommended,
+  importPlugin.flatConfigs.recommended,
+  importPlugin.flatConfigs.typescript,
+  jsxA11yPlugin.flatConfigs.recommended,
   {
     files: ['**/*.{ts,tsx}', '**/*.js', '**/*.cjs'],
     plugins: {
@@ -44,10 +49,20 @@ export default tseslint.config(
       which is the solution that we've been using for it.
       */
       '@typescript-eslint/no-unused-vars': 'off',
+      /*
+      This is redundant as TypeScript's compiler natively verifies namespace imports via its type-checking process.
+      See: https://typescript-eslint.io/troubleshooting/performance-troubleshooting/#eslint-plugin-import
+      */
+      'import/namespace': 'off',
     },
     settings: {
       react: {
         version: 'detect',
+      },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+        },
       },
     },
   },
