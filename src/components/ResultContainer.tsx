@@ -38,12 +38,14 @@ function ResultContainer({
 
   if (datasetsResponse !== prevDatasetsResponse) {
     setPrevDatasetsResponse(datasetsResponse);
-    if (datasetsResponse) {
-      setDownload((currentDownload) =>
-        currentDownload.filter((downloadID) =>
-          datasetsResponse.responses.some((item) => item.dataset_uuid === downloadID)
-        )
+    if (datasetsResponse && download.length > 0) {
+      const filteredDownloads = download.filter((downloadID) =>
+        datasetsResponse.responses.some((item) => item.dataset_uuid === downloadID)
       );
+
+      if (filteredDownloads.length !== download.length) {
+        setDownload(filteredDownloads);
+      }
     }
   }
 
