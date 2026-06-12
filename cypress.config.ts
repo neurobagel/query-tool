@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { defineConfig } from 'cypress';
 import fs from 'fs';
 import path from 'path';

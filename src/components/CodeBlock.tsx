@@ -9,10 +9,11 @@ interface CodeBlockProps {
 
 function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
   const [showPopover, setShowPopover] = useState(false);
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const handleCopyClick = async () => {
+  const handleCopyClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     await navigator.clipboard.writeText(code);
+    setAnchorEl(event.currentTarget);
     setShowPopover(true);
 
     setTimeout(() => {
@@ -37,7 +38,6 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
         {code}
       </pre>
       <IconButton
-        ref={buttonRef}
         color="primary"
         onClick={handleCopyClick}
         size="small"
@@ -50,7 +50,7 @@ function CodeBlock({ code = 'Sample code content' }: CodeBlockProps) {
       >
         <ContentCopyIcon fontSize="small" />
       </IconButton>
-      <Popover open={showPopover} anchorEl={buttonRef.current} onClose={handleClose}>
+      <Popover open={showPopover} anchorEl={anchorEl} onClose={handleClose}>
         <Typography
           className="rounded px-2 py-1 text-sm text-white shadow"
           sx={{ backgroundColor: NBTheme.palette.primary.main }}
