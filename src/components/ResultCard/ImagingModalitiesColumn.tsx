@@ -1,4 +1,4 @@
-import { Tooltip, ButtonGroup, Button } from '@mui/material';
+import { Tooltip, Button, Stack, Divider } from '@mui/material';
 import { ImagingModalitiesMetadata } from '../../utils/types';
 import { modalitiesDataTypeColorMapping } from '../../utils/constants';
 
@@ -14,13 +14,20 @@ function ImagingModalitiesColumn({
   datasetUuid,
 }: ImagingModalitiesColumnProps) {
   return imageModals.length > 0 ? (
-    <ButtonGroup
+    <Stack
+      direction="row"
       data-cy="modality-buttons"
+      divider={
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: '#ffffff', borderRightWidth: 2 }}
+        />
+      }
       sx={{
         boxShadow: 'none',
-        '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-          borderRight: '2px solid #ffffff !important',
-        },
+        borderRadius: 1,
+        overflow: 'hidden',
       }}
     >
       {imageModals
@@ -49,6 +56,7 @@ function ImagingModalitiesColumn({
                   },
                   padding: '2px 8px',
                   minWidth: 'auto',
+                  borderRadius: 0,
                 }}
               >
                 {metadata.Abbreviation ?? metadata.Label ?? modal}
@@ -56,7 +64,7 @@ function ImagingModalitiesColumn({
             </Tooltip>
           );
         })}
-    </ButtonGroup>
+    </Stack>
   ) : (
     <Button disabled sx={{ textTransform: 'none', fontStyle: 'italic' }} disableElevation>
       No imaging modalities available
