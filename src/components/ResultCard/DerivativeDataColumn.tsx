@@ -1,4 +1,4 @@
-import { Tooltip, ButtonGroup, Button } from '@mui/material';
+import { Tooltip, Button, Stack, Divider } from '@mui/material';
 
 interface DerivativeDataColumnProps {
   availablePipelines: Record<string, string[]>;
@@ -7,13 +7,20 @@ interface DerivativeDataColumnProps {
 
 function DerivativeDataColumn({ availablePipelines, datasetUuid }: DerivativeDataColumnProps) {
   return Object.entries(availablePipelines).length > 0 ? (
-    <ButtonGroup
+    <Stack
+      direction="row"
       data-cy={`card-${datasetUuid}-available-pipelines-group`}
+      divider={
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: '#ffffff', borderRightWidth: 2 }}
+        />
+      }
       sx={{
         boxShadow: 'none',
-        '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-          borderRight: '2px solid #ffffff !important',
-        },
+        borderRadius: 1,
+        overflow: 'hidden',
       }}
     >
       {Object.entries(availablePipelines).map(([name, versions]) => {
@@ -29,6 +36,7 @@ function DerivativeDataColumn({ availablePipelines, datasetUuid }: DerivativeDat
                 cursor: 'default',
                 padding: '2px 8px',
                 minWidth: 'auto',
+                borderRadius: 0,
                 backgroundColor: '#488fd6ff !important',
                 '&:hover': {
                   backgroundColor: '#30739cff !important',
@@ -40,7 +48,7 @@ function DerivativeDataColumn({ availablePipelines, datasetUuid }: DerivativeDat
           </Tooltip>
         );
       })}
-    </ButtonGroup>
+    </Stack>
   ) : (
     <Button
       disabled
