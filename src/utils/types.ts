@@ -112,7 +112,7 @@ export interface DatasetsResult {
   access_link: string | null;
   dataset_total_subjects: number;
   records_protected: boolean;
-  num_matching_subjects: number;
+  num_matching_subjects: number | null;
   image_modals: string[];
   available_pipelines: Pipelines;
 }

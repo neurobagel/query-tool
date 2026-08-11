@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR head branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -18,7 +18,7 @@ jobs:
           submodules: true
 
       - name: Set up node env
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 20
 
@@ -43,7 +43,7 @@ jobs:
           mv cypress/downloads/neurobagel-query-results-with-URIs_*.tsv cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv
 
       - name: Upload test artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: query-tool-results
           path: cypress/downloads/*
@@ -54,20 +54,20 @@ jobs:
     steps:
       - name: Generate a token
         id: generate-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.NB_BOT_ID }}
           private-key: ${{ secrets.NB_BOT_KEY }}
           owner: ${{ github.repository_owner }}
 
       - name: Checkout neurobagel_examples repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: neurobagel/neurobagel_examples
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Download artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: query-tool-results
           path: query-tool-results

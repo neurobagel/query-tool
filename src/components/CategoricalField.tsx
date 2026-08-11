@@ -16,12 +16,7 @@ function CategoricalField({
       isOptionEqualToValue={(option, value) => option.id === value.id}
       value={inputValue}
       renderInput={(params) => (
-        <TextField
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...params}
-          label={label}
-          placeholder="Select an option"
-        />
+        <TextField {...params} label={label} placeholder="Select an option" />
       )}
       multiple={multiple}
       onChange={(_, value) => onFieldChange(label, value)}
