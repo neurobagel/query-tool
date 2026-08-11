@@ -54,62 +54,61 @@ const ResultCard = memo(function ResultCard({
         isCatalog={isCatalog}
       />
 
-        <CardContent>
-          <div className="grid grid-cols-12 gap-4">
-            
-            <div className="col-span-12">
-              <Tooltip title={datasetName} placement="top">
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{
-                    lineHeight: 1.2,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {datasetName}
-                </Typography>
-              </Tooltip>
-            </div>
+      <CardContent>
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-12">
+            <Tooltip title={datasetName} placement="top">
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  lineHeight: 1.2,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {datasetName}
+              </Typography>
+            </Tooltip>
+          </div>
 
-            <div className="col-span-5 flex items-center gap-2">
-              <DatasetInfoColumn
-                datasetUuid={datasetUuid}
-                checked={checked}
-                onCheckboxChange={onCheckboxChange}
-                authors={authors}
-                homepage={homepage}
-                repositoryUrl={repositoryUrl}
-                accessType={accessType}
-                isCatalog={isCatalog}
+          <div className="col-span-5 flex items-center gap-2">
+            <DatasetInfoColumn
+              datasetUuid={datasetUuid}
+              checked={checked}
+              onCheckboxChange={onCheckboxChange}
+              authors={authors}
+              homepage={homepage}
+              repositoryUrl={repositoryUrl}
+              accessType={accessType}
+              isCatalog={isCatalog}
+            />
+          </div>
+
+          <div
+            className="col-span-7 flex items-center justify-between gap-4"
+            data-cy="result-card-flex-container"
+          >
+            <div className="flex flex-col items-start text-left">
+              <SubjectCountColumn
+                numMatchingSubjects={numMatchingSubjects}
+                datasetTotalSubjects={datasetTotalSubjects}
               />
             </div>
-
-            <div
-              className="col-span-7 flex items-center justify-between gap-4"
-              data-cy="result-card-flex-container"
-            >
-              <div className="flex flex-col items-start text-left">
-                <SubjectCountColumn
-                  numMatchingSubjects={numMatchingSubjects}
-                  datasetTotalSubjects={datasetTotalSubjects}
-                />
-              </div>
-              <div className="flex flex-col items-start gap-2">
-                <ImagingModalitiesColumn
-                  imageModals={imageModals}
-                  imagingModalitiesMetadata={imagingModalitiesMetadata}
-                  datasetUuid={datasetUuid}
-                />
-                <DerivativeDataColumn
-                  availablePipelines={availablePipelines}
-                  datasetUuid={datasetUuid}
-                />
-              </div>
+            <div className="flex flex-col items-start gap-2">
+              <ImagingModalitiesColumn
+                imageModals={imageModals}
+                imagingModalitiesMetadata={imagingModalitiesMetadata}
+                datasetUuid={datasetUuid}
+              />
+              <DerivativeDataColumn
+                availablePipelines={availablePipelines}
+                datasetUuid={datasetUuid}
+              />
             </div>
           </div>
+        </div>
 
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <ExpandedDetails
