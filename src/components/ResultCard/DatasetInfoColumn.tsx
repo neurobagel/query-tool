@@ -12,6 +12,7 @@ interface DatasetInfoColumnProps {
   homepage: string | null;
   repositoryUrl: string | null;
   accessType: 'public' | 'registered' | 'restricted' | null;
+  isCatalog?: boolean;
 }
 
 function DatasetInfoColumn({
@@ -23,6 +24,7 @@ function DatasetInfoColumn({
   homepage,
   repositoryUrl,
   accessType,
+  isCatalog,
 }: DatasetInfoColumnProps) {
   return (
     <>
@@ -30,6 +32,7 @@ function DatasetInfoColumn({
         data-cy={`card-${datasetUuid}-checkbox`}
         checked={checked}
         onChange={() => onCheckboxChange(datasetUuid)}
+        disabled={isCatalog}
         sx={{ p: 0.5, alignSelf: 'center' }}
       />
       <Stack spacing={0.5} sx={{ minWidth: 0 }}>

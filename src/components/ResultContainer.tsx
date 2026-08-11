@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { FormControlLabel, Checkbox, Typography } from '@mui/material';
+import { useState, useCallback, useMemo } from 'react';
+import { FormControlLabel, Checkbox, Typography, Switch } from '@mui/material';
 import ResultCard from './ResultCard/ResultCard';
 import {
   DatasetsResponse,
@@ -33,20 +33,49 @@ function ResultContainer({
   onDownload: DownloadHandler;
 }) {
   const [download, setDownload] = useState<string[]>([]);
-  const selectAll: boolean = datasetsResponse
-    ? datasetsResponse.responses.length === download.length &&
-      datasetsResponse.responses.every((r) => download.includes(r.dataset_uuid))
-    : false;
+  const [subjectLevelOnly, setSubjectLevelOnly] = useState<boolean>(false);
+  const [prevDatasetsResponse, setPrevDatasetsResponse] = useState<DatasetsResponse | null>(null);
+
+  if (datasetsResponse !== prevDatasetsResponse) {
+    setPrevDatasetsResponse(datasetsResponse);
+    if (datasetsResponse && download.length > 0) {
+      const filteredDownloads = download.filter((downloadID) =>
+        datasetsResponse.responses.some((item) => item.dataset_uuid === downloadID)
+      );
+
+      if (filteredDownloads.length !== download.length) {
+        setDownload(filteredDownloads);
+      }
+    }
+  }
+
+  const displayedDatasets = useMemo(() => {
+    if (!datasetsResponse) return [];
+    if (subjectLevelOnly) {
+      return datasetsResponse.responses.filter((d) => d.num_matching_subjects !== null);
+    }
+    return datasetsResponse.responses;
+  }, [datasetsResponse, subjectLevelOnly]);
+
+  const downloadableDatasets = useMemo(() => {
+    if (!datasetsResponse) return [];
+    return datasetsResponse.responses.filter((d) => d.num_matching_subjects !== null);
+  }, [datasetsResponse]);
+
+  const selectAll: boolean =
+    downloadableDatasets.length > 0 &&
+    downloadableDatasets.length === download.length &&
+    downloadableDatasets.every((r) => download.includes(r.dataset_uuid));
 
   let numOfMatchedDatasets = 0;
   let numOfMatchedSubjects = 0;
-  if (datasetsResponse) {
-    datasetsResponse.responses.forEach((item) => {
-      numOfMatchedDatasets += 1;
-      numOfMatchedSubjects += item.num_matching_subjects;
-    });
-  }
-  const summaryStats = `Summary stats: ${numOfMatchedDatasets} datasets, ${numOfMatchedSubjects} subjects`;
+  let totalSubjects = 0;
+  displayedDatasets.forEach((item) => {
+    numOfMatchedDatasets += 1;
+    numOfMatchedSubjects += item.num_matching_subjects || 0;
+    totalSubjects += item.dataset_total_subjects || 0;
+  });
+  const summaryStats = `Summary stats: ${numOfMatchedDatasets} datasets, ${numOfMatchedSubjects} matching subjects, ${totalSubjects} total subjects`;
   const [loading, setLoading] = useState<boolean>(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
@@ -69,21 +98,9 @@ function ResultContainer({
   }, []);
 
   function handleSelectAll(checked: boolean) {
-    if (datasetsResponse) {
-      const uuids = datasetsResponse.responses.map((item) => item.dataset_uuid);
-      setDownload(checked ? uuids : []);
-    }
+    const uuids = downloadableDatasets.map((item) => item.dataset_uuid);
+    setDownload(checked ? uuids : []);
   }
-
-  useEffect(() => {
-    if (datasetsResponse) {
-      setDownload((currentDownload) =>
-        currentDownload.filter((downloadID) =>
-          datasetsResponse.responses.some((item) => item.dataset_uuid === downloadID)
-        )
-      );
-    }
-  }, [datasetsResponse]);
 
   function convertURIToLabel(
     type: string,
@@ -162,7 +179,6 @@ function ResultContainer({
   }
 
   function generateTSVString(subjectsResponse: SubjectsResponse, buttonIndex: number) {
-    
     const isFileWithLabels = buttonIndex === 0;
 
     const headers = [
@@ -185,7 +201,7 @@ function ResultContainer({
       'DatasetPipelines',
       'AccessLink',
     ].join('\t');
-    
+
     const dataRows = subjectsResponse.responses.flatMap((subResp) => {
       const datasetMetadata = datasetsResponse?.responses.find(
         (d) => d.dataset_uuid === subResp.dataset_uuid
@@ -202,7 +218,7 @@ function ResultContainer({
       } = datasetMetadata || {};
 
       if (isProtected) {
-        return[
+        return [
           [
             datasetName.replace(/\n/g, ' '),
             repositoryUrl,
@@ -229,57 +245,52 @@ function ResultContainer({
                 )
               : parsePipelinesInfoToString(datasetPipelines),
             accessLink,
-          ].join('\t')
+          ].join('\t'),
         ];
-      } 
+      }
       if (!Array.isArray(subResp.subject_data)) {
         return [];
       }
 
       return subResp.subject_data.map((subject) =>
         [
-              datasetName.replace(/\n/g, ' '),
-              repositoryUrl,
-              numMatchingSubjects,
-              subject.sub_id,
-              subject.session_id,
-              subject.session_file_path,
-              isFileWithLabels
-                ? convertURIToLabel('sessionType', subject.session_type)
-                : subject.session_type,
-              subject.num_matching_phenotypic_sessions,
-              subject.num_matching_imaging_sessions,
-              subject.age,
-              isFileWithLabels ? convertURIToLabel('sex', subject.sex) : subject.sex,
-              isFileWithLabels
-                ? convertURIToLabel('diagnosis', subject.diagnosis)
-                : subject.diagnosis,
-              isFileWithLabels
-                ? convertURIToLabel('assessment', subject.assessment)
-                : subject.assessment,
-              isFileWithLabels
-                ? convertURIToLabel('modality', subject.image_modal)
-                : subject.image_modal?.join(','),
-              isFileWithLabels
-                ? convertURIToLabel(
-                    'pipeline',
-                    parsePipelinesInfoToString(subject.completed_pipelines).split(',')
-                  )
-                : parsePipelinesInfoToString(subject.completed_pipelines),
-              isFileWithLabels
-                ? convertURIToLabel('modality', datasetImageModals)
-                : datasetImageModals?.join(','),
-              isFileWithLabels
-                ? convertURIToLabel(
-                    'pipeline',
-                    parsePipelinesInfoToString(datasetPipelines).split(',')
-                  )
-                : parsePipelinesInfoToString(datasetPipelines),
-              accessLink,
-            ].join('\t')
-          );
-        });
-        return [headers, ...dataRows].join('\n');
+          datasetName.replace(/\n/g, ' '),
+          repositoryUrl,
+          numMatchingSubjects,
+          subject.sub_id,
+          subject.session_id,
+          subject.session_file_path,
+          isFileWithLabels
+            ? convertURIToLabel('sessionType', subject.session_type)
+            : subject.session_type,
+          subject.num_matching_phenotypic_sessions,
+          subject.num_matching_imaging_sessions,
+          subject.age,
+          isFileWithLabels ? convertURIToLabel('sex', subject.sex) : subject.sex,
+          isFileWithLabels ? convertURIToLabel('diagnosis', subject.diagnosis) : subject.diagnosis,
+          isFileWithLabels
+            ? convertURIToLabel('assessment', subject.assessment)
+            : subject.assessment,
+          isFileWithLabels
+            ? convertURIToLabel('modality', subject.image_modal)
+            : subject.image_modal?.join(','),
+          isFileWithLabels
+            ? convertURIToLabel(
+                'pipeline',
+                parsePipelinesInfoToString(subject.completed_pipelines).split(',')
+              )
+            : parsePipelinesInfoToString(subject.completed_pipelines),
+          isFileWithLabels
+            ? convertURIToLabel('modality', datasetImageModals)
+            : datasetImageModals?.join(','),
+          isFileWithLabels
+            ? convertURIToLabel('pipeline', parsePipelinesInfoToString(datasetPipelines).split(','))
+            : parsePipelinesInfoToString(datasetPipelines),
+          accessLink,
+        ].join('\t')
+      );
+    });
+    return [headers, ...dataRows].join('\n');
   }
 
   async function downloadResults(buttonIndex: number) {
@@ -332,8 +343,8 @@ function ResultContainer({
 
     return (
       <>
-        <div className="flex flex-row items-baseline justify-between">
-          <div>
+        <div className="mb-4 flex flex-row items-baseline justify-between">
+          <div className="flex flex-row items-center gap-4">
             <FormControlLabel
               data-cy="select-all-checkbox"
               label="Select all datasets"
@@ -341,6 +352,16 @@ function ResultContainer({
                 <Checkbox
                   onChange={(event) => handleSelectAll(event.target.checked)}
                   checked={selectAll}
+                />
+              }
+            />
+            <FormControlLabel
+              label="Subject-level datasets only"
+              control={
+                <Switch
+                  checked={subjectLevelOnly}
+                  onChange={(e) => setSubjectLevelOnly(e.target.checked)}
+                  color="primary"
                 />
               }
             />
@@ -352,7 +373,7 @@ function ResultContainer({
           </div>
         </div>
         <div className="h-[65vh] space-y-1 overflow-auto">
-          {datasetsResponse.responses.map((item) => (
+          {displayedDatasets.map((item) => (
             <ResultCard
               key={item.dataset_uuid}
               dataset={item}

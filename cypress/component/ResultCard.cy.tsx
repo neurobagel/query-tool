@@ -59,7 +59,8 @@ describe('ResultCard', () => {
     cy.get('[data-cy="card-some uuid"]').should('contain', 'some node name node');
     cy.get('[data-cy="card-some uuid"]').should('contain', 'John Doe, Jane Doe, Bob Smith et al.');
     cy.get('[data-cy="card-some uuid"]').should('contain', 'Matching subjects:');
-    cy.get('[data-cy="card-some uuid"]').should('contain', '5 / 10');
+    cy.get('[data-cy="card-some uuid"]').should('contain', '5');
+    cy.get('[data-cy="card-some uuid"]').should('contain', '/ 10');
     cy.get('[data-cy="card-some uuid-checkbox"] input').should('be.checked');
     cy.get('[data-cy="card-some uuid-ASL-imaging-modality-button"]')
       .should('be.visible')
@@ -326,5 +327,34 @@ describe('ResultCard', () => {
           'Items should wrap to a new line on smaller screens'
         );
       });
+  });
+
+  it('Displays catalog dataset correctly with specific icons and unknown subjects', () => {
+    const catalogProps = {
+      ...props,
+      num_matching_subjects: null,
+    };
+
+    cy.mount(
+      <ResultCard
+        dataset={catalogProps}
+        imagingModalitiesMetadata={catalogProps.imagingModalitiesMetadata}
+        checked={catalogProps.checked}
+        onCheckboxChange={catalogProps.onCheckboxChange}
+      />
+    );
+
+    // SubjectCountColumn logic for catalog
+    cy.get('[data-cy="card-some uuid"]').should('contain', 'Matching subjects:');
+    cy.get('[data-cy="card-some uuid"]').should('contain', 'Unknown / 10');
+    cy.contains('Unknown').should('have.css', 'font-style', 'italic');
+
+    // ResultCardHeader logic for catalog
+    cy.get('[data-testid="MenuBookIcon"]').should('be.visible');
+
+    // Check tooltip (trigger mouseover on the icon wrapper)
+    // The icon is wrapped in a div with ml-1 flex items-center gap-1
+    cy.get('[data-testid="MenuBookIcon"]').parent().trigger('mouseover', { force: true });
+    cy.get('.MuiTooltip-tooltip').should('contain', 'Catalog-Level Dataset (No Subject Data)');
   });
 });
