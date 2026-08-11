@@ -87,22 +87,22 @@ function App() {
   const [isQueryFormOpen, setIsQueryFormOpen] = useState(true);
   const isSmallViewport = useMediaQuery('(max-width: 1024px)');
 
+  const [prevAuthState, setPrevAuthState] = useState({ isLoading, isAuthenticated });
+
+  if (isLoading !== prevAuthState.isLoading || isAuthenticated !== prevAuthState.isAuthenticated) {
+    setPrevAuthState({ isLoading, isAuthenticated });
+    if (enableAuth && !isLoading) {
+      setOpenAuthDialog(!isAuthenticated);
+    }
+  }
+
   // Extract the raw OIDC ID token from the Auth0 SDK
   useEffect(() => {
-    if (enableAuth && !isLoading) {
-      if (isAuthenticated) {
-        (async () => {
-          const tokenClaims = await getIdTokenClaims();
-          // eslint-disable-next-line no-underscore-dangle
-          setIDToken(tokenClaims?.__raw);
-        })();
-        setOpenAuthDialog(false);
-      }
-      if (!isAuthenticated) {
-        setOpenAuthDialog(true);
-      } else {
-        setOpenAuthDialog(false);
-      }
+    if (enableAuth && !isLoading && isAuthenticated) {
+      (async () => {
+        const tokenClaims = await getIdTokenClaims();
+        setIDToken(tokenClaims?.__raw);
+      })();
     }
   }, [isAuthenticated, isLoading, getIdTokenClaims]);
 

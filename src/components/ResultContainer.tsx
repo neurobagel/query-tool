@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { FormControlLabel, Checkbox, Typography, Switch } from '@mui/material';
 import ResultCard from './ResultCard/ResultCard';
 import {
@@ -34,6 +34,20 @@ function ResultContainer({
 }) {
   const [download, setDownload] = useState<string[]>([]);
   const [subjectLevelOnly, setSubjectLevelOnly] = useState<boolean>(false);
+  const [prevDatasetsResponse, setPrevDatasetsResponse] = useState<DatasetsResponse | null>(null);
+
+  if (datasetsResponse !== prevDatasetsResponse) {
+    setPrevDatasetsResponse(datasetsResponse);
+    if (datasetsResponse && download.length > 0) {
+      const filteredDownloads = download.filter((downloadID) =>
+        datasetsResponse.responses.some((item) => item.dataset_uuid === downloadID)
+      );
+
+      if (filteredDownloads.length !== download.length) {
+        setDownload(filteredDownloads);
+      }
+    }
+  }
 
   const displayedDatasets = useMemo(() => {
     if (!datasetsResponse) return [];
@@ -87,16 +101,6 @@ function ResultContainer({
     const uuids = downloadableDatasets.map((item) => item.dataset_uuid);
     setDownload(checked ? uuids : []);
   }
-
-  useEffect(() => {
-    if (datasetsResponse) {
-      setDownload((currentDownload) =>
-        currentDownload.filter((downloadID) =>
-          datasetsResponse.responses.some((item) => item.dataset_uuid === downloadID)
-        )
-      );
-    }
-  }, [datasetsResponse]);
 
   function convertURIToLabel(
     type: string,
