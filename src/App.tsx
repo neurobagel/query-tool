@@ -476,6 +476,7 @@ function App() {
 
     try {
       const data = await sendDatasetsQuery(datasetsRequestBody, IDToken);
+
       setResult(data);
       setResultStatus(data.nodes_response_status);
       setActiveQueryParams(datasetsRequestBody);
