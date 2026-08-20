@@ -162,6 +162,8 @@ export interface SubjectsRequestBody {
   nodes: Array<{ node_url: string; dataset_uuids: string[] }>;
 }
 
+import { AutocompleteRenderGroupParams } from '@mui/material';
+
 export interface CategoricalFieldOption extends FieldInputOption {
   group?: string;
 }
@@ -174,6 +176,7 @@ export interface CategoricalFieldProps {
   inputValue: FieldInput;
   disabled?: boolean;
   groupBy?: (option: CategoricalFieldOption) => string;
+  renderGroup?: (params: AutocompleteRenderGroupParams) => React.ReactNode;
 }
 
 export type ToastProps = {

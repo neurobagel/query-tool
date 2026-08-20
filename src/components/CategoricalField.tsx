@@ -9,6 +9,7 @@ function CategoricalField({
   inputValue,
   disabled = false,
   groupBy,
+  renderGroup,
 }: CategoricalFieldProps) {
   const normalizedValue = multiple
     ? Array.isArray(inputValue)
@@ -41,6 +42,7 @@ function CategoricalField({
       groupBy={
         groupBy || (hasGroups ? (option: CategoricalFieldOption) => option.group ?? '' : undefined)
       }
+      renderGroup={renderGroup}
       onChange={(_, value) => onFieldChange(label, value)}
       disabled={disabled}
     />

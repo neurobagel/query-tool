@@ -307,19 +307,23 @@ function App() {
       }
     }
 
-    const selectedPipelineNames = normalizeFieldInputOptions(pipelineName);
+    const pipelineURIs = Object.keys(pipelines);
 
-    selectedPipelineNames.forEach((p) => {
-      if (pipelines[p.id] == null || pipelines[p.id].length === 0) {
-        getPipelineVersions(p).then((pipelineVersionsResponse) => {
+    pipelineURIs.forEach((pId) => {
+      if (pipelines[pId] == null || pipelines[pId].length === 0) {
+        const pOption: FieldInputOption = {
+          id: pId,
+          label: pId.startsWith('np:') ? pId.slice(3) : pId,
+        };
+        getPipelineVersions(pOption).then((pipelineVersionsResponse) => {
           setPipelines((prevPipelines) => ({
             ...prevPipelines,
-            [p.id]: pipelineVersionsResponse,
+            [pId]: pipelineVersionsResponse,
           }));
         });
       }
     });
-  }, [pipelines, pipelineName]);
+  }, [pipelines]);
 
   useEffect(() => {
     if (availableNodes.length > 1) {
