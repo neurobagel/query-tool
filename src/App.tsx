@@ -36,6 +36,7 @@ import NodeAdmonition from './components/NodeAdmonition';
 import './App.css';
 import logo from './assets/logo.png';
 import areFormStatesEqual, {
+  normalizeFieldInputOptions,
   parseNumericValue,
   sendDatasetsQuery,
   sendSubjectsQuery,
@@ -306,11 +307,7 @@ function App() {
       }
     }
 
-    const selectedPipelineNames: FieldInputOption[] = Array.isArray(pipelineName)
-      ? pipelineName
-      : pipelineName
-        ? [pipelineName]
-        : [];
+    const selectedPipelineNames = normalizeFieldInputOptions(pipelineName);
 
     selectedPipelineNames.forEach((p) => {
       if (pipelines[p.id] == null || pipelines[p.id].length === 0) {
@@ -405,16 +402,10 @@ function App() {
         break;
       case 'Pipeline name': {
         setPipelineName(value);
-        const newSelectedPipelines: FieldInputOption[] = Array.isArray(value)
-          ? value
-          : value
-            ? [value]
-            : [];
+        const newSelectedPipelines = normalizeFieldInputOptions(value);
         const newPipelineIds = new Set(newSelectedPipelines.map((p) => p.id));
         if (pipelineVersion) {
-          const currentVersions: FieldInputOption[] = Array.isArray(pipelineVersion)
-            ? pipelineVersion
-            : [pipelineVersion];
+          const currentVersions = normalizeFieldInputOptions(pipelineVersion);
           const validVersions = currentVersions.filter((v) => {
             const pId = v.id.includes('::') ? v.id.split('::')[0] : '';
             return newPipelineIds.has(pId);
@@ -470,11 +461,9 @@ function App() {
     if (maxAgeNumber !== null) requestBody.max_age = maxAgeNumber;
     if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
 
-    if (diagnosis) {
-      const diagArray = Array.isArray(diagnosis) ? diagnosis : [diagnosis];
-      if (diagArray.length > 0) {
-        requestBody.diagnosis = diagArray.map((d) => d.id);
-      }
+    const diagArray = normalizeFieldInputOptions(diagnosis);
+    if (diagArray.length > 0) {
+      requestBody.diagnosis = diagArray.map((d) => d.id);
     }
 
     const minNumImagingSessionsNumber = parseNumericValue(minNumImagingSessions);
@@ -485,32 +474,20 @@ function App() {
     if (minNumPhenotypicSessionsNumber !== null)
       requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessionsNumber;
 
-    if (assessmentTool) {
-      const assessArray = Array.isArray(assessmentTool) ? assessmentTool : [assessmentTool];
-      if (assessArray.length > 0) {
-        requestBody.assessment = assessArray.map((a) => a.id);
-      }
+    const assessArray = normalizeFieldInputOptions(assessmentTool);
+    if (assessArray.length > 0) {
+      requestBody.assessment = assessArray.map((a) => a.id);
     }
 
-    if (imagingModality) {
-      const modalArray = Array.isArray(imagingModality) ? imagingModality : [imagingModality];
-      if (modalArray.length > 0) {
-        requestBody.image_modal = modalArray.map((m) => m.id);
-      }
+    const modalArray = normalizeFieldInputOptions(imagingModality);
+    if (modalArray.length > 0) {
+      requestBody.image_modal = modalArray.map((m) => m.id);
     }
 
-    const selectedPipelines: FieldInputOption[] = Array.isArray(pipelineName)
-      ? pipelineName
-      : pipelineName
-        ? [pipelineName]
-        : [];
+    const selectedPipelines = normalizeFieldInputOptions(pipelineName);
 
     if (selectedPipelines.length > 0) {
-      const selectedVersions: FieldInputOption[] = Array.isArray(pipelineVersion)
-        ? pipelineVersion
-        : pipelineVersion
-          ? [pipelineVersion]
-          : [];
+      const selectedVersions = normalizeFieldInputOptions(pipelineVersion);
 
       requestBody.pipeline = selectedPipelines.flatMap((p) => {
         const pVersions = selectedVersions.filter(

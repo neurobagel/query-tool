@@ -2,6 +2,7 @@ import axios from 'axios';
 import { datasetsURL, subjectsURL } from './constants';
 import {
   FieldInput,
+  FieldInputOption,
   QueryFormState,
   QueryParams,
   DatasetsResponse,
@@ -10,6 +11,13 @@ import {
   SubjectsResponse,
   SubjectsQueryParams,
 } from './types';
+
+export function normalizeFieldInputOptions(input: FieldInput): FieldInputOption[] {
+  if (input === null) {
+    return [];
+  }
+  return Array.isArray(input) ? input : [input];
+}
 
 function normalizeFieldInput(input: FieldInput): string {
   if (input === null) {

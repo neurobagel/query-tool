@@ -5,12 +5,11 @@ import { sexes } from '../utils/constants';
 import {
   NodeOption,
   AttributeOption,
-  FieldInputOption,
   FieldInput,
   Pipelines,
   ImagingModalityOption,
 } from '../utils/types';
-import { parseNumericValue } from '../utils/utils';
+import { parseNumericValue, normalizeFieldInputOptions } from '../utils/utils';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
@@ -212,11 +211,7 @@ function QueryForm({
         />
       </div>
       {(() => {
-        const selectedPipelines: FieldInputOption[] = Array.isArray(pipelineName)
-          ? pipelineName
-          : pipelineName
-            ? [pipelineName]
-            : [];
+        const selectedPipelines = normalizeFieldInputOptions(pipelineName);
 
         if (selectedPipelines.length === 0) {
           return (
