@@ -159,10 +159,12 @@ describe('QueryForm', () => {
     );
 
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('Some{downarrow}{enter}');
-    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Diagnosis', {
-      id: 'https://someurl/',
-      label: 'Some Diagnosis',
-    });
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Diagnosis', [
+      {
+        id: 'https://someurl/',
+        label: 'Some Diagnosis',
+      },
+    ]);
   });
   it('Fires updateContinuousQueryParams event handler with the appropriate payload when a continuous field is selected', () => {
     const updateContinuousQueryParamsSpy = cy.spy().as('updateContinuousQueryParamsSpy');
