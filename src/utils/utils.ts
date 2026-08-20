@@ -17,6 +17,9 @@ function normalizeFieldInput(input: FieldInput): string {
   }
 
   if (Array.isArray(input)) {
+    if (input.length === 0) {
+      return 'null';
+    }
     const ids = input.map((option) => option.id).sort();
     return `multi:${ids.join('|')}`;
   }
