@@ -156,6 +156,7 @@ function QueryForm({
               id: d.TermURL,
             }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+            multiple
             inputValue={diagnosis}
           />
         </div>
@@ -181,6 +182,7 @@ function QueryForm({
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label as string, id: a.TermURL }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          multiple
           inputValue={assessmentTool}
         />
       </div>
@@ -192,6 +194,7 @@ function QueryForm({
             id: value.TermURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          multiple
           inputValue={imagingModality}
         />
       </div>
@@ -204,37 +207,58 @@ function QueryForm({
             id: pipelineURI,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          multiple
           inputValue={pipelineName}
         />
       </div>
-      {pipelineName === null ? (
-        <Tooltip
-          title={<Typography variant="body1">Please select a pipeline name</Typography>}
-          placement="right"
-        >
+      {(() => {
+        const selectedPipelines: FieldInputOption[] = Array.isArray(pipelineName)
+          ? pipelineName
+          : pipelineName
+            ? [pipelineName]
+            : [];
+
+        if (selectedPipelines.length === 0) {
+          return (
+            <Tooltip
+              title={<Typography variant="body1">Please select a pipeline name</Typography>}
+              placement="right"
+            >
+              <div>
+                <CategoricalField
+                  label="Pipeline version"
+                  options={[]}
+                  onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+                  multiple
+                  inputValue={null}
+                  disabled
+                />
+              </div>
+            </Tooltip>
+          );
+        }
+
+        const pipelineVersionOptions = selectedPipelines.flatMap((p) => {
+          const versions = pipelines[p.id] ?? [];
+          return versions.map((v) => ({
+            label: `${p.label} - ${v}`,
+            id: `${p.id}::${v}`,
+            group: p.label,
+          }));
+        });
+
+        return (
           <div>
             <CategoricalField
               label="Pipeline version"
-              options={[]}
+              options={pipelineVersionOptions}
               onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-              inputValue={null}
-              disabled
+              multiple
+              inputValue={pipelineVersion}
             />
           </div>
-        </Tooltip>
-      ) : (
-        <div>
-          <CategoricalField
-            label="Pipeline version"
-            options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
-              label: v,
-              id: v,
-            }))}
-            onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-            inputValue={pipelineVersion}
-          />
-        </div>
-      )}
+        );
+      })()}
 
       <div className="flex justify-between">
         <Button
