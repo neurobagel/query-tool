@@ -97,8 +97,7 @@ describe('QueryForm', () => {
     );
     cy.get('[data-cy="Assessment tool-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Imaging modality-categorical-field"]').should('be.visible');
-    cy.get('[data-cy="Pipeline name-categorical-field"]').should('be.visible');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Pipeline-categorical-field"]').should('be.visible');
     cy.get('[data-cy="submit-query-button"]').should('be.visible');
     cy.get('[data-cy="how-to-get-data-dialog-button"]').should('be.visible');
   });

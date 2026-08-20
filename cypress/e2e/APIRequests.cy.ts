@@ -84,9 +84,8 @@ describe('Successful API attribute responses', () => {
   });
   it('Loads pipeline versions correctly if all node responses are successful', () => {
     cy.get('[data-cy="close-auth-dialog-button"]').click();
-    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
-    cy.wait('@getPipelineVersionsOptions');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').type('23.1.3{downarrow}{enter}');
+    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 23.1.3').click();
   });
   it('Empty diagnosis response makes info toast appear', () => {
     cy.intercept(
@@ -174,9 +173,8 @@ describe('Successful API attribute responses', () => {
       emptyPipelineVersionOptions
     ).as('getPipelineVersionsOptions');
     cy.visit('/');
-    cy.get('[data-cy="close-auth-dialog-button"]').click();
-    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
     cy.wait('@getPipelineVersionsOptions');
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
     cy.get("[data-cy='notification-button']").should('exist');
     cy.get("[data-cy='notification-button']").click({ force: true });
     cy.get('.MuiListItem-root')
@@ -263,8 +261,6 @@ describe('Partially successful API attribute responses', () => {
   });
   it('Shows warning for node that failed Pipeline version option request', () => {
     cy.get('[data-cy="close-auth-dialog-button"]').click();
-    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
-    cy.wait('@getPipelineVersionsOptions');
     cy.get("[data-cy='notification-button']").should('exist');
     cy.get("[data-cy='notification-button']").click({ force: true });
     cy.get('.MuiList-root').should('contain', 'NoPipelineVersionNode');
@@ -390,10 +386,9 @@ describe('Failed API attribute responses continued', () => {
       '@getDiagnosisOptions',
       '@getAssessmentToolOptions',
       '@getPipelineOptions',
+      '@getPipelineVersionsOptions',
     ]);
     cy.get('[data-cy="close-auth-dialog-button"]').click();
-    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
-    cy.wait('@getPipelineVersionsOptions');
     cy.get('.notistack-SnackbarContainer')
       .find('.notistack-MuiContent-error')
       .should('contain', 'versions');
@@ -465,16 +460,13 @@ describe('Successful API query requests', () => {
     cy.get('[data-cy="Maximum age-continuous-field"]').type('30');
     cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').type('2');
     cy.get('[data-cy="Minimum number of phenotypic sessions-continuous-field"]').type('3');
-    // Assert that pipeline version doesn't sneak into the query if pipeline name is cleared
-    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
-    cy.wait('@getPipelineVersionsOptions');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').should('contain', '0.2.3');
-    cy.get('[data-cy="Pipeline name-categorical-field"]')
+    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
+    cy.get('[data-cy="Pipeline-categorical-field"]').should('contain', 'fmriprep 0.2.3');
+    cy.get('[data-cy="Pipeline-categorical-field"]')
       .find('.MuiAutocomplete-clearIndicator')
       .click({ force: true });
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').should('have.value', '');
+    cy.get('[data-cy="Pipeline-categorical-field"]').should('not.contain', 'fmriprep 0.2.3');
     cy.get('[data-cy="submit-query-button"]').click();
     cy.wait('@call').then((interception) => {
       expect(interception.request.body).to.have.property('min_age', 10);
