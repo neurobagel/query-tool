@@ -4,6 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
+  Checkbox,
   CircularProgress,
   FormHelperText,
   Typography,
@@ -26,11 +27,30 @@ import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
 
-function CollapsiblePipelineGroup(params: AutocompleteRenderGroupParams) {
+function CollapsiblePipelineGroup({
+  params,
+  selectedPipelines,
+  selectedVersions,
+  onTogglePipeline,
+}: {
+  params: AutocompleteRenderGroupParams;
+  selectedPipelines: FieldInputOption[];
+  selectedVersions: FieldInputOption[];
+  onTogglePipeline: (pId: string, pLabel: string) => void;
+}) {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const pLabel = params.group;
+  const isPipelineInName = selectedPipelines.some((p) => p.label === pLabel);
+  const pId = selectedPipelines.find((p) => p.label === pLabel)?.id ?? `np:${pLabel}`;
+  const hasSelectedVersion = selectedVersions.some((v) => v.id.startsWith(`${pId}::`));
+
+  const isPipelineChecked = isPipelineInName && !hasSelectedVersion;
+
   return (
     <li key={params.key}>
       <Accordion
-        defaultExpanded
+        expanded={isExpanded}
+        onChange={() => setIsExpanded((prev) => !prev)}
         elevation={0}
         square
         disableGutters
@@ -44,15 +64,27 @@ function CollapsiblePipelineGroup(params: AutocompleteRenderGroupParams) {
           sx={{
             minHeight: 36,
             maxHeight: 36,
-            px: 2,
+            px: 1,
             py: 0,
             '&.Mui-expanded': { minHeight: 36, maxHeight: 36 },
             '&:hover': { backgroundColor: 'action.hover' },
-            '.MuiAccordionSummary-content': { my: 0, '&.Mui-expanded': { my: 0 } },
+            '.MuiAccordionSummary-content': {
+              my: 0,
+              alignItems: 'center',
+              '&.Mui-expanded': { my: 0 },
+            },
           }}
         >
-          <Typography variant="body2" fontWeight={600}>
-            {params.group}
+          <Checkbox
+            size="small"
+            checked={isPipelineChecked}
+            onClick={(e) => {
+              e.stopPropagation();
+              onTogglePipeline(pId, pLabel);
+            }}
+          />
+          <Typography variant="body2" fontWeight={600} sx={{ ml: 0.5 }}>
+            {pLabel}
           </Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ p: 0 }}>
@@ -152,23 +184,21 @@ function QueryForm({
       const pLabel = pId.startsWith('np:') ? pId.slice(3) : pId;
       const versions = pipelines[pId] ?? [];
 
-      const pOptions: CategoricalFieldOption[] = [
-        {
-          label: `${pLabel} (Any version)`,
-          id: pId,
-          group: pLabel,
-        },
-      ];
+      if (versions.length === 0) {
+        return [
+          {
+            label: pLabel,
+            id: pId,
+            group: pLabel,
+          },
+        ];
+      }
 
-      versions.forEach((v) => {
-        pOptions.push({
-          label: `${pLabel} - ${v}`,
-          id: `${pId}::${v}`,
-          group: pLabel,
-        });
-      });
-
-      return pOptions;
+      return versions.map((v) => ({
+        label: `${pLabel} ${v}`,
+        id: `${pId}::${v}`,
+        group: pLabel,
+      }));
     }
   );
 
@@ -186,12 +216,41 @@ function QueryForm({
     }
     return [
       {
-        label: `${p.label} (Any version)`,
+        label: p.label,
         id: p.id,
         group: p.label,
       },
     ];
   });
+
+  const handleTogglePipeline = (pId: string, pLabel: string) => {
+    const hasSelectedVersion = selectedVersionsAll.some((v) => v.id.startsWith(`${pId}::`));
+    const isPipelineInName = selectedPipelines.some((p) => p.id === pId);
+    const isHeaderChecked = isPipelineInName && !hasSelectedVersion;
+
+    let updatedPipelines: FieldInputOption[];
+    let updatedVersions: FieldInputOption[];
+
+    if (isHeaderChecked) {
+      updatedPipelines = selectedPipelines.filter((p) => p.id !== pId);
+      updatedVersions = selectedVersionsAll.filter((v) => !v.id.startsWith(`${pId}::`));
+    } else {
+      const exists = selectedPipelines.some((p) => p.id === pId);
+      updatedPipelines = exists
+        ? selectedPipelines
+        : [...selectedPipelines, { id: pId, label: pLabel }];
+      updatedVersions = selectedVersionsAll.filter((v) => !v.id.startsWith(`${pId}::`));
+    }
+
+    updateCategoricalQueryParams(
+      'Pipeline name',
+      updatedPipelines.length > 0 ? updatedPipelines : null
+    );
+    updateCategoricalQueryParams(
+      'Pipeline version',
+      updatedVersions.length > 0 ? updatedVersions : null
+    );
+  };
 
   const handleCombinedPipelineChange = (selectedOptionsInput: FieldInput) => {
     const selectedOptions = normalizeFieldInputOptions(selectedOptionsInput);
@@ -213,7 +272,7 @@ function QueryForm({
         updatedVersions.push({ id: opt.id, label: opt.label });
       } else {
         const pId = opt.id;
-        const pLabel = opt.label.replace(' (Any version)', '');
+        const pLabel = opt.group ?? (pId.startsWith('np:') ? pId.slice(3) : pId);
         updatedPipelinesMap.set(pId, { id: pId, label: pLabel });
       }
     });
@@ -336,7 +395,14 @@ function QueryForm({
           onFieldChange={(_, value) => handleCombinedPipelineChange(value)}
           multiple
           inputValue={combinedInputValue}
-          renderGroup={(params) => <CollapsiblePipelineGroup {...params} />}
+          renderGroup={(params) => (
+            <CollapsiblePipelineGroup
+              params={params}
+              selectedPipelines={selectedPipelines}
+              selectedVersions={selectedVersionsAll}
+              onTogglePipeline={handleTogglePipeline}
+            />
+          )}
         />
       </div>
 

@@ -1,4 +1,4 @@
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Checkbox, TextField } from '@mui/material';
 import { CategoricalFieldProps, CategoricalFieldOption } from '../utils/types';
 
 function CategoricalField({
@@ -39,10 +39,20 @@ function CategoricalField({
         <TextField {...params} label={label} placeholder="Select an option" />
       )}
       multiple={multiple}
+      disableCloseOnSelect={multiple}
       groupBy={
         groupBy || (hasGroups ? (option: CategoricalFieldOption) => option.group ?? '' : undefined)
       }
       renderGroup={renderGroup}
+      renderOption={(props, option, { selected }) => {
+        const { key, ...optionProps } = props;
+        return (
+          <li key={key ?? option.id} {...optionProps}>
+            <Checkbox size="small" sx={{ mr: 1 }} checked={selected} />
+            {option.label}
+          </li>
+        );
+      }}
       onChange={(_, value) => onFieldChange(label, value)}
       disabled={disabled}
     />
