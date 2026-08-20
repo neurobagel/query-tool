@@ -2,6 +2,7 @@ import axios from 'axios';
 import { datasetsURL, subjectsURL } from './constants';
 import {
   FieldInput,
+  FieldInputOption,
   QueryFormState,
   QueryParams,
   DatasetsResponse,
@@ -11,12 +12,22 @@ import {
   SubjectsQueryParams,
 } from './types';
 
+export function normalizeFieldInputOptions(input: FieldInput): FieldInputOption[] {
+  if (input === null) {
+    return [];
+  }
+  return Array.isArray(input) ? input : [input];
+}
+
 function normalizeFieldInput(input: FieldInput): string {
   if (input === null) {
     return 'null';
   }
 
   if (Array.isArray(input)) {
+    if (input.length === 0) {
+      return 'null';
+    }
     const ids = input.map((option) => option.id).sort();
     return `multi:${ids.join('|')}`;
   }

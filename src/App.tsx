@@ -36,6 +36,7 @@ import NodeAdmonition from './components/NodeAdmonition';
 import './App.css';
 import logo from './assets/logo.png';
 import areFormStatesEqual, {
+  normalizeFieldInputOptions,
   parseNumericValue,
   sendDatasetsQuery,
   sendSubjectsQuery,
@@ -305,22 +306,24 @@ function App() {
         return [];
       }
     }
-    // Get pipeline versions if
-    // 1. A pipeline has been selected (this implementation only works for single value for pipeline name field)
-    // 2. This is the first time its being selected (i.e., we haven't retrieved pipeline versions before)
-    if (
-      pipelineName !== null &&
-      !Array.isArray(pipelineName) &&
-      pipelines[pipelineName.id].length === 0
-    ) {
-      getPipelineVersions(pipelineName).then((pipelineVersionsRespnse) => {
-        setPipelines((prevPipelines) => ({
-          ...prevPipelines,
-          [pipelineName.id]: pipelineVersionsRespnse,
-        }));
-      });
-    }
-  }, [pipelines, pipelineName]);
+
+    const pipelineURIs = Object.keys(pipelines);
+
+    pipelineURIs.forEach((pId) => {
+      if (pipelines[pId] == null || pipelines[pId].length === 0) {
+        const pOption: FieldInputOption = {
+          id: pId,
+          label: pId.startsWith('np:') ? pId.slice(3) : pId,
+        };
+        getPipelineVersions(pOption).then((pipelineVersionsResponse) => {
+          setPipelines((prevPipelines) => ({
+            ...prevPipelines,
+            [pId]: pipelineVersionsResponse,
+          }));
+        });
+      }
+    });
+  }, [pipelines]);
 
   useEffect(() => {
     if (availableNodes.length > 1) {
@@ -401,9 +404,20 @@ function App() {
       case 'Pipeline version':
         setPipelineVersion(value);
         break;
-      case 'Pipeline name':
+      case 'Pipeline name': {
         setPipelineName(value);
+        const newSelectedPipelines = normalizeFieldInputOptions(value);
+        const newPipelineIds = new Set(newSelectedPipelines.map((p) => p.id));
+        if (pipelineVersion) {
+          const currentVersions = normalizeFieldInputOptions(pipelineVersion);
+          const validVersions = currentVersions.filter((v) => {
+            const pId = v.id.includes('::') ? v.id.split('::')[0] : '';
+            return newPipelineIds.has(pId);
+          });
+          setPipelineVersion(validVersions.length > 0 ? validVersions : null);
+        }
         break;
+      }
       default:
         break;
     }
@@ -450,7 +464,12 @@ function App() {
     const maxAgeNumber = parseNumericValue(maxAge);
     if (maxAgeNumber !== null) requestBody.max_age = maxAgeNumber;
     if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
-    if (diagnosis && !Array.isArray(diagnosis)) requestBody.diagnosis = diagnosis.id;
+
+    const diagArray = normalizeFieldInputOptions(diagnosis);
+    if (diagArray.length > 0) {
+      requestBody.diagnosis = diagArray.map((d) => d.id);
+    }
+
     const minNumImagingSessionsNumber = parseNumericValue(minNumImagingSessions);
     if (minNumImagingSessionsNumber !== null)
       requestBody.min_num_imaging_sessions = minNumImagingSessionsNumber;
@@ -458,13 +477,36 @@ function App() {
     const minNumPhenotypicSessionsNumber = parseNumericValue(minNumPhenotypicSessions);
     if (minNumPhenotypicSessionsNumber !== null)
       requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessionsNumber;
-    if (assessmentTool && !Array.isArray(assessmentTool))
-      requestBody.assessment = assessmentTool.id;
-    if (imagingModality && !Array.isArray(imagingModality))
-      requestBody.image_modal = imagingModality.id;
-    if (pipelineName && !Array.isArray(pipelineName)) requestBody.pipeline_name = pipelineName.id;
-    if (pipelineVersion && !Array.isArray(pipelineVersion) && pipelineName)
-      requestBody.pipeline_version = pipelineVersion.id;
+
+    const assessArray = normalizeFieldInputOptions(assessmentTool);
+    if (assessArray.length > 0) {
+      requestBody.assessment = assessArray.map((a) => a.id);
+    }
+
+    const modalArray = normalizeFieldInputOptions(imagingModality);
+    if (modalArray.length > 0) {
+      requestBody.image_modal = modalArray.map((m) => m.id);
+    }
+
+    const selectedPipelines = normalizeFieldInputOptions(pipelineName);
+
+    if (selectedPipelines.length > 0) {
+      const selectedVersions = normalizeFieldInputOptions(pipelineVersion);
+
+      requestBody.pipeline = selectedPipelines.flatMap((p) => {
+        const pVersions = selectedVersions.filter(
+          (v) =>
+            v.id.startsWith(`${p.id}::`) || (selectedPipelines.length === 1 && !v.id.includes('::'))
+        );
+        if (pVersions.length > 0) {
+          return pVersions.map((v) => {
+            const versionStr = v.id.includes('::') ? v.id.split('::')[1] : v.id;
+            return { name: p.id, version: versionStr };
+          });
+        }
+        return [{ name: p.id }];
+      });
+    }
 
     return requestBody;
   }

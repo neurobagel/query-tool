@@ -1,19 +1,67 @@
 import { useState } from 'react';
-import { Button, CircularProgress, FormHelperText, Tooltip, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  CircularProgress,
+  FormHelperText,
+  Typography,
+  AutocompleteRenderGroupParams,
+} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { sexes } from '../utils/constants';
 import {
   NodeOption,
   AttributeOption,
-  FieldInputOption,
   FieldInput,
+  FieldInputOption,
+  CategoricalFieldOption,
   Pipelines,
   ImagingModalityOption,
 } from '../utils/types';
-import { parseNumericValue } from '../utils/utils';
+import { parseNumericValue, normalizeFieldInputOptions } from '../utils/utils';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
+
+function CollapsiblePipelineGroup(params: AutocompleteRenderGroupParams) {
+  return (
+    <li key={params.key}>
+      <Accordion
+        defaultExpanded
+        elevation={0}
+        square
+        disableGutters
+        sx={{
+          backgroundColor: 'transparent',
+          '&:before': { display: 'none' },
+        }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon fontSize="small" />}
+          sx={{
+            minHeight: 36,
+            maxHeight: 36,
+            px: 2,
+            py: 0,
+            '&.Mui-expanded': { minHeight: 36, maxHeight: 36 },
+            '&:hover': { backgroundColor: 'action.hover' },
+            '.MuiAccordionSummary-content': { my: 0, '&.Mui-expanded': { my: 0 } },
+          }}
+        >
+          <Typography variant="body2" fontWeight={600}>
+            {params.group}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails sx={{ p: 0 }}>
+          <ul>{params.children}</ul>
+        </AccordionDetails>
+      </Accordion>
+    </li>
+  );
+}
 
 function QueryForm({
   availableNodes,
@@ -99,6 +147,89 @@ function QueryForm({
     maxAgeHelperText !== '' ||
     minNumImagingSessionsHelperText !== '';
 
+  const pipelineCombinedOptions: CategoricalFieldOption[] = Object.keys(pipelines).flatMap(
+    (pId) => {
+      const pLabel = pId.startsWith('np:') ? pId.slice(3) : pId;
+      const versions = pipelines[pId] ?? [];
+
+      const pOptions: CategoricalFieldOption[] = [
+        {
+          label: `${pLabel} (Any version)`,
+          id: pId,
+          group: pLabel,
+        },
+      ];
+
+      versions.forEach((v) => {
+        pOptions.push({
+          label: `${pLabel} - ${v}`,
+          id: `${pId}::${v}`,
+          group: pLabel,
+        });
+      });
+
+      return pOptions;
+    }
+  );
+
+  const selectedPipelines = normalizeFieldInputOptions(pipelineName);
+  const selectedVersionsAll = normalizeFieldInputOptions(pipelineVersion);
+
+  const combinedInputValue: CategoricalFieldOption[] = selectedPipelines.flatMap((p) => {
+    const pVersions = selectedVersionsAll.filter((v) => v.id.startsWith(`${p.id}::`));
+    if (pVersions.length > 0) {
+      return pVersions.map((v) => ({
+        label: v.label,
+        id: v.id,
+        group: p.label,
+      }));
+    }
+    return [
+      {
+        label: `${p.label} (Any version)`,
+        id: p.id,
+        group: p.label,
+      },
+    ];
+  });
+
+  const handleCombinedPipelineChange = (selectedOptionsInput: FieldInput) => {
+    const selectedOptions = normalizeFieldInputOptions(selectedOptionsInput);
+
+    if (selectedOptions.length === 0) {
+      updateCategoricalQueryParams('Pipeline name', null);
+      updateCategoricalQueryParams('Pipeline version', null);
+      return;
+    }
+
+    const updatedPipelinesMap = new Map<string, FieldInputOption>();
+    const updatedVersions: FieldInputOption[] = [];
+
+    (selectedOptions as CategoricalFieldOption[]).forEach((opt) => {
+      if (opt.id.includes('::')) {
+        const pId = opt.id.split('::')[0];
+        const pLabel = opt.group ?? (pId.startsWith('np:') ? pId.slice(3) : pId);
+        updatedPipelinesMap.set(pId, { id: pId, label: pLabel });
+        updatedVersions.push({ id: opt.id, label: opt.label });
+      } else {
+        const pId = opt.id;
+        const pLabel = opt.label.replace(' (Any version)', '');
+        updatedPipelinesMap.set(pId, { id: pId, label: pLabel });
+      }
+    });
+
+    const updatedPipelines = Array.from(updatedPipelinesMap.values());
+
+    updateCategoricalQueryParams(
+      'Pipeline name',
+      updatedPipelines.length > 0 ? updatedPipelines : null
+    );
+    updateCategoricalQueryParams(
+      'Pipeline version',
+      updatedVersions.length > 0 ? updatedVersions : null
+    );
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div>
@@ -156,6 +287,7 @@ function QueryForm({
               id: d.TermURL,
             }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+            multiple
             inputValue={diagnosis}
           />
         </div>
@@ -181,6 +313,7 @@ function QueryForm({
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label as string, id: a.TermURL }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          multiple
           inputValue={assessmentTool}
         />
       </div>
@@ -192,49 +325,20 @@ function QueryForm({
             id: value.TermURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
+          multiple
           inputValue={imagingModality}
         />
       </div>
       <div>
         <CategoricalField
-          label="Pipeline name"
-          options={Object.keys(pipelines).map((pipelineURI) => ({
-            // Remove the `np:` prefix
-            label: pipelineURI.slice(3),
-            id: pipelineURI,
-          }))}
-          onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          inputValue={pipelineName}
+          label="Pipeline"
+          options={pipelineCombinedOptions}
+          onFieldChange={(_, value) => handleCombinedPipelineChange(value)}
+          multiple
+          inputValue={combinedInputValue}
+          renderGroup={(params) => <CollapsiblePipelineGroup {...params} />}
         />
       </div>
-      {pipelineName === null ? (
-        <Tooltip
-          title={<Typography variant="body1">Please select a pipeline name</Typography>}
-          placement="right"
-        >
-          <div>
-            <CategoricalField
-              label="Pipeline version"
-              options={[]}
-              onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-              inputValue={null}
-              disabled
-            />
-          </div>
-        </Tooltip>
-      ) : (
-        <div>
-          <CategoricalField
-            label="Pipeline version"
-            options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
-              label: v,
-              id: v,
-            }))}
-            onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-            inputValue={pipelineVersion}
-          />
-        </div>
-      )}
 
       <div className="flex justify-between">
         <Button

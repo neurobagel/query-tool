@@ -57,10 +57,7 @@ describe('App', () => {
   it('Displays the diagnosis options it retrieves from a node API', () => {
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should('not.be.disabled');
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
-      'have.value',
-      "Parkinson's disease"
-    );
+    cy.get('[data-cy="Diagnosis-categorical-field"]').should('contain', "Parkinson's disease");
   });
   it('Enables the pipeline version field once a pipeline name is selected', () => {
     cy.intercept(
@@ -75,7 +72,7 @@ describe('App', () => {
     cy.wait('@getPipelineVersionsOptions');
     cy.get('[data-cy="Pipeline version-categorical-field"] input').should('not.be.disabled');
     cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
+    cy.get('[data-cy="Pipeline version-categorical-field"]').should('contain', '0.2.3');
   });
   it('Should disable and clear the pipeline version field when the pipeline name field is cleared', () => {
     cy.intercept(
@@ -90,8 +87,10 @@ describe('App', () => {
     cy.wait('@getPipelineVersionsOptions');
     cy.get('[data-cy="Pipeline version-categorical-field"] input').should('not.be.disabled');
     cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
-    cy.get('[data-cy="Pipeline name-categorical-field"]').clear();
+    cy.get('[data-cy="Pipeline version-categorical-field"]').should('contain', '0.2.3');
+    cy.get('[data-cy="Pipeline name-categorical-field"]')
+      .find('.MuiAutocomplete-clearIndicator')
+      .click({ force: true });
     cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
     cy.get('[data-cy="Pipeline version-categorical-field"]').should('have.value', '');
   });
