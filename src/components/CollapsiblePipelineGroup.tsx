@@ -1,38 +1,34 @@
-import { useState } from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Checkbox,
-  Typography,
-  AutocompleteRenderGroupParams,
-} from '@mui/material';
+import { useState, ReactNode } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FieldInputOption } from '../utils/types';
 
 interface CollapsiblePipelineGroupProps {
-  params: AutocompleteRenderGroupParams;
+  groupKey: string | number;
+  groupLabel: string;
+  children: ReactNode;
   selectedPipelines: FieldInputOption[];
   selectedVersions: FieldInputOption[];
   onTogglePipeline: (pId: string, pLabel: string) => void;
 }
 
 function CollapsiblePipelineGroup({
-  params,
+  groupKey,
+  groupLabel,
+  children,
   selectedPipelines,
   selectedVersions,
   onTogglePipeline,
 }: CollapsiblePipelineGroupProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const pLabel = params.group;
-  const isPipelineInName = selectedPipelines.some((p) => p.label === pLabel);
-  const pId = selectedPipelines.find((p) => p.label === pLabel)?.id ?? `np:${pLabel}`;
+  const isPipelineInName = selectedPipelines.some((p) => p.label === groupLabel);
+  const pId = selectedPipelines.find((p) => p.label === groupLabel)?.id ?? `np:${groupLabel}`;
   const hasSelectedVersion = selectedVersions.some((v) => v.id.startsWith(`${pId}::`));
 
   const isPipelineChecked = isPipelineInName && !hasSelectedVersion;
 
   return (
-    <li key={params.key}>
+    <li key={groupKey}>
       <Accordion
         expanded={isExpanded}
         onChange={() => setIsExpanded((prev) => !prev)}
@@ -66,15 +62,15 @@ function CollapsiblePipelineGroup({
             checked={isPipelineChecked}
             onClick={(e) => {
               e.stopPropagation();
-              onTogglePipeline(pId, pLabel);
+              onTogglePipeline(pId, groupLabel);
             }}
           />
           <Typography variant="body2" fontWeight={600} sx={{ ml: 0.5 }}>
-            {pLabel}
+            {groupLabel}
           </Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ p: 0 }}>
-          <ul>{params.children}</ul>
+          <ul>{children}</ul>
         </AccordionDetails>
       </Accordion>
     </li>

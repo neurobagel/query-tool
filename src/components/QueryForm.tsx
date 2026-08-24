@@ -268,13 +268,17 @@ function QueryForm({
           onFieldChange={(_, value) => handleCombinedPipelineChange(value)}
           multiple
           inputValue={combinedInputValue}
-          renderGroup={(params) => (
+          renderGroup={({ key, group, children }) => (
             <CollapsiblePipelineGroup
-              params={params}
+              key={key}
+              groupKey={key}
+              groupLabel={group}
               selectedPipelines={selectedPipelines}
               selectedVersions={selectedVersionsAll}
               onTogglePipeline={handleTogglePipeline}
-            />
+            >
+              {children}
+            </CollapsiblePipelineGroup>
           )}
         />
       </div>
