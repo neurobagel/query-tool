@@ -3,6 +3,8 @@ import { datasetsURL, subjectsURL } from './constants';
 import {
   FieldInput,
   FieldInputOption,
+  CategoricalFieldOption,
+  Pipelines,
   QueryFormState,
   QueryParams,
   DatasetsResponse,
@@ -17,6 +19,70 @@ export function normalizeFieldInputOptions(input: FieldInput): FieldInputOption[
     return [];
   }
   return Array.isArray(input) ? input : [input];
+}
+
+export function validateContinuousValue(rawValue: string, parsedValue: number | null): string {
+  const trimmed = rawValue.trim();
+  if (trimmed === '') {
+    return '';
+  }
+  if (parsedValue === null) {
+    return 'Please enter a valid number!';
+  }
+  if (parsedValue < 0) {
+    return 'Please enter a positive number!';
+  }
+  return '';
+}
+
+export function getPipelineLabel(pId: string): string {
+  return pId.startsWith('np:') ? pId.slice(3) : pId;
+}
+
+export function buildPipelineCombinedOptions(pipelines: Pipelines): CategoricalFieldOption[] {
+  return Object.keys(pipelines).flatMap((pId) => {
+    const pLabel = getPipelineLabel(pId);
+    const versions = pipelines[pId] ?? [];
+
+    if (versions.length === 0) {
+      return [
+        {
+          label: `${pLabel} any version`,
+          id: pId,
+          group: pLabel,
+        },
+      ];
+    }
+
+    return versions.map((v) => ({
+      label: `${pLabel} ${v}`,
+      id: `${pId}::${v}`,
+      group: pLabel,
+    }));
+  });
+}
+
+export function buildCombinedInputValue(
+  selectedPipelines: FieldInputOption[],
+  selectedVersionsAll: FieldInputOption[]
+): CategoricalFieldOption[] {
+  return selectedPipelines.flatMap((p) => {
+    const pVersions = selectedVersionsAll.filter((v) => v.id.startsWith(`${p.id}::`));
+    if (pVersions.length > 0) {
+      return pVersions.map((v) => ({
+        label: v.label,
+        id: v.id,
+        group: p.label,
+      }));
+    }
+    return [
+      {
+        label: `${p.label} any version`,
+        id: p.id,
+        group: p.label,
+      },
+    ];
+  });
 }
 
 function normalizeFieldInput(input: FieldInput): string {

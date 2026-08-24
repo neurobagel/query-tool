@@ -1,17 +1,6 @@
 import { useState } from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Checkbox,
-  CircularProgress,
-  FormHelperText,
-  Typography,
-  AutocompleteRenderGroupParams,
-} from '@mui/material';
+import { Button, CircularProgress, FormHelperText } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { sexes } from '../utils/constants';
 import {
   NodeOption,
@@ -22,79 +11,18 @@ import {
   Pipelines,
   ImagingModalityOption,
 } from '../utils/types';
-import { parseNumericValue, normalizeFieldInputOptions } from '../utils/utils';
+import {
+  parseNumericValue,
+  normalizeFieldInputOptions,
+  validateContinuousValue,
+  getPipelineLabel,
+  buildPipelineCombinedOptions,
+  buildCombinedInputValue,
+} from '../utils/utils';
 import CategoricalField from './CategoricalField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
-
-function CollapsiblePipelineGroup({
-  params,
-  selectedPipelines,
-  selectedVersions,
-  onTogglePipeline,
-}: {
-  params: AutocompleteRenderGroupParams;
-  selectedPipelines: FieldInputOption[];
-  selectedVersions: FieldInputOption[];
-  onTogglePipeline: (pId: string, pLabel: string) => void;
-}) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const pLabel = params.group;
-  const isPipelineInName = selectedPipelines.some((p) => p.label === pLabel);
-  const pId = selectedPipelines.find((p) => p.label === pLabel)?.id ?? `np:${pLabel}`;
-  const hasSelectedVersion = selectedVersions.some((v) => v.id.startsWith(`${pId}::`));
-
-  const isPipelineChecked = isPipelineInName && !hasSelectedVersion;
-
-  return (
-    <li key={params.key}>
-      <Accordion
-        expanded={isExpanded}
-        onChange={() => setIsExpanded((prev) => !prev)}
-        elevation={0}
-        square
-        disableGutters
-        sx={{
-          backgroundColor: 'transparent',
-          '&:before': { display: 'none' },
-        }}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon fontSize="small" />}
-          sx={{
-            minHeight: 36,
-            maxHeight: 36,
-            px: 1,
-            py: 0,
-            '&.Mui-expanded': { minHeight: 36, maxHeight: 36 },
-            '&:hover': { backgroundColor: 'action.hover' },
-            '.MuiAccordionSummary-content': {
-              my: 0,
-              alignItems: 'center',
-              '&.Mui-expanded': { my: 0 },
-            },
-          }}
-        >
-          <Checkbox
-            data-cy={`pipeline-group-${pId}-checkbox`}
-            size="small"
-            checked={isPipelineChecked}
-            onClick={(e) => {
-              e.stopPropagation();
-              onTogglePipeline(pId, pLabel);
-            }}
-          />
-          <Typography variant="body2" fontWeight={600} sx={{ ml: 0.5 }}>
-            {pLabel}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ p: 0 }}>
-          <ul>{params.children}</ul>
-        </AccordionDetails>
-      </Accordion>
-    </li>
-  );
-}
+import CollapsiblePipelineGroup from './CollapsiblePipelineGroup';
 
 function QueryForm({
   availableNodes,
@@ -141,21 +69,6 @@ function QueryForm({
 }) {
   const [openDialog, setOpenDialog] = useState(false);
 
-  function validateContinuousValue(rawValue: string, parsedValue: number | null) {
-    const trimmed = rawValue.trim();
-    if (trimmed === '') {
-      // Value is default, user has not entered anything yet
-      return '';
-    }
-    if (parsedValue === null) {
-      return 'Please enter a valid number!';
-    }
-    if (parsedValue < 0) {
-      return 'Please enter a positive number!';
-    }
-    return '';
-  }
-
   const parsedMinAge = parseNumericValue(minAge);
   const parsedMaxAge = parseNumericValue(maxAge);
   const parsedMinNumImagingSessions = parseNumericValue(minNumImagingSessions);
@@ -179,56 +92,6 @@ function QueryForm({
     minAgeHelperText !== '' ||
     maxAgeHelperText !== '' ||
     minNumImagingSessionsHelperText !== '';
-
-  function getPipelineLabel(pId: string): string {
-    return pId.startsWith('np:') ? pId.slice(3) : pId;
-  }
-
-  function buildPipelineCombinedOptions(pipelines: Pipelines): CategoricalFieldOption[] {
-    return Object.keys(pipelines).flatMap((pId) => {
-      const pLabel = getPipelineLabel(pId);
-      const versions = pipelines[pId] ?? [];
-
-      if (versions.length === 0) {
-        return [
-          {
-            label: `${pLabel} any version`,
-            id: pId,
-            group: pLabel,
-          },
-        ];
-      }
-
-      return versions.map((v) => ({
-        label: `${pLabel} ${v}`,
-        id: `${pId}::${v}`,
-        group: pLabel,
-      }));
-    });
-  }
-
-  function buildCombinedInputValue(
-    selectedPipelines: FieldInputOption[],
-    selectedVersionsAll: FieldInputOption[]
-  ): CategoricalFieldOption[] {
-    return selectedPipelines.flatMap((p) => {
-      const pVersions = selectedVersionsAll.filter((v) => v.id.startsWith(`${p.id}::`));
-      if (pVersions.length > 0) {
-        return pVersions.map((v) => ({
-          label: v.label,
-          id: v.id,
-          group: p.label,
-        }));
-      }
-      return [
-        {
-          label: `${p.label} any version`,
-          id: p.id,
-          group: p.label,
-        },
-      ];
-    });
-  }
 
   const pipelineCombinedOptions = buildPipelineCombinedOptions(pipelines);
   const selectedPipelines = normalizeFieldInputOptions(pipelineName);
