@@ -67,26 +67,41 @@ describe('App', () => {
     cy.get('[data-cy="Diagnosis-categorical-field"]').should('contain', "Parkinson's disease");
   });
   it('Allows selecting a pipeline option in the Pipeline field', () => {
-    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
-    cy.get('[data-cy="Pipeline-categorical-field"]').should('contain', 'fmriprep 0.2.3');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep 0.2.3'
+    );
   });
   it('Should clear selected pipeline options when the clear button is clicked', () => {
-    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
-    cy.get('[data-cy="Pipeline-categorical-field"]').should('contain', 'fmriprep 0.2.3');
-    cy.get('[data-cy="Pipeline-categorical-field"]')
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep 0.2.3'
+    );
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]')
       .find('.MuiAutocomplete-clearIndicator')
       .click({ force: true });
-    cy.get('[data-cy="Pipeline-categorical-field"]').should('not.contain', 'fmriprep 0.2.3');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'not.contain',
+      'fmriprep 0.2.3'
+    );
   });
   it('should clear specific pipeline versions when clicking the pipeline group header checkbox', () => {
-    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
-    cy.get('[data-cy="Pipeline-categorical-field"]').should('contain', 'fmriprep 0.2.3');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep 0.2.3'
+    );
     cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
-    cy.get('[data-cy="Pipeline-categorical-field"]').should('contain', 'fmriprep');
-    cy.get('[data-cy="Pipeline-categorical-field"]').should('not.contain', 'fmriprep 0.2.3');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should('contain', 'fmriprep');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'not.contain',
+      'fmriprep 0.2.3'
+    );
   });
   it('should toggle the filter form visibility when clicking the button', () => {
     cy.viewport(800, 600); // Mobile/tablet viewport

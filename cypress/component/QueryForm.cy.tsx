@@ -97,7 +97,7 @@ describe('QueryForm', () => {
     );
     cy.get('[data-cy="Assessment tool-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Imaging modality-categorical-field"]').should('be.visible');
-    cy.get('[data-cy="Pipeline-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should('be.visible');
     cy.get('[data-cy="submit-query-button"]').should('be.visible');
     cy.get('[data-cy="how-to-get-data-dialog-button"]').should('be.visible');
   });
@@ -250,7 +250,7 @@ describe('QueryForm', () => {
       />
     );
 
-    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
     cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
       { id: 'np:fmriprep', label: 'fmriprep' },
@@ -286,7 +286,7 @@ describe('QueryForm', () => {
       />
     );
 
-    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
     cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
     cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
       { id: 'np:fmriprep', label: 'fmriprep' },

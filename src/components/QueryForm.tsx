@@ -391,7 +391,7 @@ function QueryForm({
       </div>
       <div>
         <CategoricalField
-          label="Pipeline"
+          label="Pipeline name and version"
           options={pipelineCombinedOptions}
           onFieldChange={(_, value) => handleCombinedPipelineChange(value)}
           multiple
