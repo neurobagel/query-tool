@@ -494,15 +494,12 @@ function App() {
       const selectedVersions = normalizeFieldInputOptions(pipelineVersion);
 
       requestBody.pipeline = selectedPipelines.flatMap((p) => {
-        const pVersions = selectedVersions.filter(
-          (v) =>
-            v.id.startsWith(`${p.id}::`) || (selectedPipelines.length === 1 && !v.id.includes('::'))
-        );
+        const pVersions = selectedVersions.filter((v) => v.id.startsWith(`${p.id}::`));
         if (pVersions.length > 0) {
-          return pVersions.map((v) => {
-            const versionStr = v.id.includes('::') ? v.id.split('::')[1] : v.id;
-            return { name: p.id, version: versionStr };
-          });
+          return pVersions.map((v) => ({
+            name: p.id,
+            version: v.id.split('::')[1],
+          }));
         }
         return [{ name: p.id }];
       });

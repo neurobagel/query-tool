@@ -1,5 +1,6 @@
 import { Autocomplete, Checkbox, TextField } from '@mui/material';
 import { CategoricalFieldProps, CategoricalFieldOption } from '../utils/types';
+import { normalizeFieldInputOptions } from '../utils/utils';
 
 function CategoricalField({
   label,
@@ -11,15 +12,8 @@ function CategoricalField({
   groupBy,
   renderGroup,
 }: CategoricalFieldProps) {
-  const normalizedValue = multiple
-    ? Array.isArray(inputValue)
-      ? inputValue
-      : inputValue
-        ? [inputValue]
-        : []
-    : Array.isArray(inputValue)
-      ? (inputValue[0] ?? null)
-      : inputValue;
+  const normalizedOptions = normalizeFieldInputOptions(inputValue);
+  const normalizedValue = multiple ? normalizedOptions : (normalizedOptions[0] ?? null);
 
   const hasGroups = options.some((opt) => opt.group != null);
   const sortedOptions = [...options].sort((a, b) => {

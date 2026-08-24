@@ -180,9 +180,13 @@ function QueryForm({
     maxAgeHelperText !== '' ||
     minNumImagingSessionsHelperText !== '';
 
-  const pipelineCombinedOptions: CategoricalFieldOption[] = Object.keys(pipelines).flatMap(
-    (pId) => {
-      const pLabel = pId.startsWith('np:') ? pId.slice(3) : pId;
+  function getPipelineLabel(pId: string): string {
+    return pId.startsWith('np:') ? pId.slice(3) : pId;
+  }
+
+  function buildPipelineCombinedOptions(pipelines: Pipelines): CategoricalFieldOption[] {
+    return Object.keys(pipelines).flatMap((pId) => {
+      const pLabel = getPipelineLabel(pId);
       const versions = pipelines[pId] ?? [];
 
       if (versions.length === 0) {
@@ -200,29 +204,36 @@ function QueryForm({
         id: `${pId}::${v}`,
         group: pLabel,
       }));
-    }
-  );
+    });
+  }
 
+  function buildCombinedInputValue(
+    selectedPipelines: FieldInputOption[],
+    selectedVersionsAll: FieldInputOption[]
+  ): CategoricalFieldOption[] {
+    return selectedPipelines.flatMap((p) => {
+      const pVersions = selectedVersionsAll.filter((v) => v.id.startsWith(`${p.id}::`));
+      if (pVersions.length > 0) {
+        return pVersions.map((v) => ({
+          label: v.label,
+          id: v.id,
+          group: p.label,
+        }));
+      }
+      return [
+        {
+          label: `${p.label} any version`,
+          id: p.id,
+          group: p.label,
+        },
+      ];
+    });
+  }
+
+  const pipelineCombinedOptions = buildPipelineCombinedOptions(pipelines);
   const selectedPipelines = normalizeFieldInputOptions(pipelineName);
   const selectedVersionsAll = normalizeFieldInputOptions(pipelineVersion);
-
-  const combinedInputValue: CategoricalFieldOption[] = selectedPipelines.flatMap((p) => {
-    const pVersions = selectedVersionsAll.filter((v) => v.id.startsWith(`${p.id}::`));
-    if (pVersions.length > 0) {
-      return pVersions.map((v) => ({
-        label: v.label,
-        id: v.id,
-        group: p.label,
-      }));
-    }
-    return [
-      {
-        label: `${p.label} any version`,
-        id: p.id,
-        group: p.label,
-      },
-    ];
-  });
+  const combinedInputValue = buildCombinedInputValue(selectedPipelines, selectedVersionsAll);
 
   const handleTogglePipeline = (pId: string, pLabel: string) => {
     const hasSelectedVersion = selectedVersionsAll.some((v) => v.id.startsWith(`${pId}::`));
@@ -266,15 +277,13 @@ function QueryForm({
     const updatedVersions: FieldInputOption[] = [];
 
     (selectedOptions as CategoricalFieldOption[]).forEach((opt) => {
-      if (opt.id.includes('::')) {
-        const pId = opt.id.split('::')[0];
-        const pLabel = opt.group ?? (pId.startsWith('np:') ? pId.slice(3) : pId);
-        updatedPipelinesMap.set(pId, { id: pId, label: pLabel });
+      const isVersionOption = opt.id.includes('::');
+      const pId = isVersionOption ? opt.id.split('::')[0] : opt.id;
+      const pLabel = opt.group ?? getPipelineLabel(pId);
+
+      updatedPipelinesMap.set(pId, { id: pId, label: pLabel });
+      if (isVersionOption) {
         updatedVersions.push({ id: opt.id, label: opt.label });
-      } else {
-        const pId = opt.id;
-        const pLabel = opt.group ?? (pId.startsWith('np:') ? pId.slice(3) : pId);
-        updatedPipelinesMap.set(pId, { id: pId, label: pLabel });
       }
     });
 
