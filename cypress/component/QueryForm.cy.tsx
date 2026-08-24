@@ -223,4 +223,78 @@ describe('QueryForm', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.get('@onSubmitQuerySpy').should('have.been.called');
   });
+  it('Fires updateCategoricalQueryParams event handler when selecting a pipeline version in the Pipeline field', () => {
+    const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
+    cy.mount(
+      <QueryForm
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
+      />
+    );
+
+    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
+      { id: 'np:fmriprep', label: 'fmriprep' },
+    ]);
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline version', [
+      { id: 'np:fmriprep::0.2.3', label: 'fmriprep 0.2.3' },
+    ]);
+  });
+  it('Fires updateCategoricalQueryParams event handler when clicking the pipeline group header checkbox in the Pipeline field', () => {
+    const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
+    cy.mount(
+      <QueryForm
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
+      />
+    );
+
+    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
+      { id: 'np:fmriprep', label: 'fmriprep' },
+    ]);
+    cy.get('@updateCategoricalQueryParamsSpy').should(
+      'have.been.calledWith',
+      'Pipeline version',
+      null
+    );
+  });
 });

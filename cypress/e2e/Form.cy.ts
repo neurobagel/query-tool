@@ -80,6 +80,14 @@ describe('App', () => {
       .click({ force: true });
     cy.get('[data-cy="Pipeline-categorical-field"]').should('not.contain', 'fmriprep 0.2.3');
   });
+  it('should clear specific pipeline versions when clicking the pipeline group header checkbox', () => {
+    cy.get('[data-cy="Pipeline-categorical-field"]').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
+    cy.get('[data-cy="Pipeline-categorical-field"]').should('contain', 'fmriprep 0.2.3');
+    cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
+    cy.get('[data-cy="Pipeline-categorical-field"]').should('contain', 'fmriprep');
+    cy.get('[data-cy="Pipeline-categorical-field"]').should('not.contain', 'fmriprep 0.2.3');
+  });
   it('should toggle the filter form visibility when clicking the button', () => {
     cy.viewport(800, 600); // Mobile/tablet viewport
     cy.get('[data-cy="filter-toggle-button"]').should('be.visible');

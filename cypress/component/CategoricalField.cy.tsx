@@ -70,4 +70,58 @@ describe('CategoricalField', () => {
       label: 'Option 1',
     });
   });
+  it('Renders option checkboxes and stays open when multiple selection is enabled', () => {
+    cy.mount(
+      <CategoricalField
+        label={props.label}
+        options={props.options}
+        onFieldChange={props.onFieldChange}
+        inputValue={[]}
+        multiple={true}
+      />
+    );
+    cy.get('[data-cy="Categorical Field-categorical-field"]').click();
+    cy.get('.MuiAutocomplete-popper').should('be.visible');
+    cy.get('.MuiAutocomplete-option').should('have.length', 3);
+    cy.get('.MuiAutocomplete-option .MuiCheckbox-root').should('have.length', 3);
+
+    cy.contains('.MuiAutocomplete-option', 'Option 1').click();
+    cy.get('.MuiAutocomplete-popper').should('be.visible');
+  });
+  it('Fires onFieldChange event handler with an array payload when multiple selection is enabled', () => {
+    const onFieldChangeSpy = cy.spy().as('onFieldChangeSpy');
+    cy.mount(
+      <CategoricalField
+        label={props.label}
+        options={props.options}
+        onFieldChange={onFieldChangeSpy}
+        inputValue={[]}
+        multiple={true}
+      />
+    );
+    cy.get('[data-cy="Categorical Field-categorical-field"]').click();
+    cy.contains('.MuiAutocomplete-option', 'Option 1').click();
+    cy.get('@onFieldChangeSpy').should('have.been.calledWith', 'Categorical Field', [
+      { id: '1', label: 'Option 1' },
+    ]);
+  });
+  it('Supports custom renderGroup prop for grouped options', () => {
+    cy.mount(
+      <CategoricalField
+        label={props.label}
+        options={props.options}
+        onFieldChange={props.onFieldChange}
+        inputValue={props.inputValue}
+        renderGroup={(params) => (
+          <li key={params.key}>
+            <div data-cy="custom-group-header">{params.group}</div>
+            <ul>{params.children}</ul>
+          </li>
+        )}
+        groupBy={() => 'Group 1'}
+      />
+    );
+    cy.get('[data-cy="Categorical Field-categorical-field"]').click();
+    cy.get('[data-cy="custom-group-header"]').should('contain', 'Group 1');
+  });
 });

@@ -76,6 +76,7 @@ function CollapsiblePipelineGroup({
           }}
         >
           <Checkbox
+            data-cy={`pipeline-group-${pId}-checkbox`}
             size="small"
             checked={isPipelineChecked}
             onClick={(e) => {
