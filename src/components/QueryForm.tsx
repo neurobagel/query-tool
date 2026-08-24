@@ -188,7 +188,7 @@ function QueryForm({
       if (versions.length === 0) {
         return [
           {
-            label: pLabel,
+            label: `${pLabel} any version`,
             id: pId,
             group: pLabel,
           },
@@ -217,7 +217,7 @@ function QueryForm({
     }
     return [
       {
-        label: p.label,
+        label: `${p.label} any version`,
         id: p.id,
         group: p.label,
       },

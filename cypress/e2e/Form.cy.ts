@@ -97,7 +97,10 @@ describe('App', () => {
       'fmriprep 0.2.3'
     );
     cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
-    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should('contain', 'fmriprep');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep any version'
+    );
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
       'not.contain',
       'fmriprep 0.2.3'
