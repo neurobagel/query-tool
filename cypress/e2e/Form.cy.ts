@@ -68,6 +68,7 @@ describe('App', () => {
   });
   it('Allows selecting a pipeline option in the Pipeline field', () => {
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
       'contain',
@@ -76,6 +77,7 @@ describe('App', () => {
   });
   it('Should clear selected pipeline options when the clear button is clicked', () => {
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
       'contain',
@@ -91,6 +93,7 @@ describe('App', () => {
   });
   it('should clear specific pipeline versions when clicking the pipeline group header checkbox', () => {
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
       'contain',

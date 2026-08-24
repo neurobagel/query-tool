@@ -85,6 +85,7 @@ describe('Successful API attribute responses', () => {
   it('Loads pipeline versions correctly if all node responses are successful', () => {
     cy.get('[data-cy="close-auth-dialog-button"]').click();
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 23.1.3').click();
   });
   it('Empty diagnosis response makes info toast appear', () => {
@@ -461,6 +462,7 @@ describe('Successful API query requests', () => {
     cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').type('2');
     cy.get('[data-cy="Minimum number of phenotypic sessions-continuous-field"]').type('3');
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
       'contain',

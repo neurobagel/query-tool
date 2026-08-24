@@ -38,7 +38,7 @@ function CollapsiblePipelineGroup({
   selectedVersions: FieldInputOption[];
   onTogglePipeline: (pId: string, pLabel: string) => void;
 }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const pLabel = params.group;
   const isPipelineInName = selectedPipelines.some((p) => p.label === pLabel);
   const pId = selectedPipelines.find((p) => p.label === pLabel)?.id ?? `np:${pLabel}`;

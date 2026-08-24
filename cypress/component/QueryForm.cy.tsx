@@ -251,6 +251,7 @@ describe('QueryForm', () => {
     );
 
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
     cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
       { id: 'np:fmriprep', label: 'fmriprep' },
