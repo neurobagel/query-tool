@@ -13,6 +13,8 @@ interface ExpandedDetailsProps {
   referencesAndLinks: string[];
 }
 
+const isHttpLink = (reference: string) => /^https?:\/\//i.test(reference.trim());
+
 function ExpandedDetails({
   datasetUuid,
   keywords,
@@ -138,11 +140,15 @@ function ExpandedDetails({
           </Typography>
           {referencesAndLinks.length > 0 ? (
             <Stack spacing={0.5}>
-              {referencesAndLinks.map((link) => (
-                <Typography key={link} variant="body2" sx={{ wordBreak: 'break-all' }}>
-                  <a href={link} target="_blank" rel="noopener noreferrer">
-                    {link}
-                  </a>
+              {referencesAndLinks.map((reference) => (
+                <Typography key={reference} variant="body2" sx={{ wordBreak: 'break-all' }}>
+                  {isHttpLink(reference) ? (
+                    <a href={reference} target="_blank" rel="noopener noreferrer">
+                      {reference}
+                    </a>
+                  ) : (
+                    reference
+                  )}
                 </Typography>
               ))}
             </Stack>
