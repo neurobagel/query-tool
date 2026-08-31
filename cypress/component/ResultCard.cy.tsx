@@ -181,7 +181,7 @@ describe('ResultCard', () => {
 
     cy.get('[data-cy="card-some uuid-references"]').should('contain', 'No references available');
   });
-  it('renders only http and https references as links', () => {
+  it('Renders only http and https references as links', () => {
     const propsWithMixedReferences = {
       ...props,
       references_and_links: [
