@@ -181,6 +181,33 @@ describe('ResultCard', () => {
 
     cy.get('[data-cy="card-some uuid-references"]').should('contain', 'No references available');
   });
+  it('Renders only http and https references as links', () => {
+    const propsWithMixedReferences = {
+      ...props,
+      references_and_links: [
+        'https://somesite.com',
+        'Doe et al., Name of dataset paper. In submission.',
+      ],
+    };
+
+    cy.mount(
+      <ResultCard
+        dataset={propsWithMixedReferences}
+        imagingModalitiesMetadata={propsWithMixedReferences.imagingModalitiesMetadata}
+        checked={propsWithMixedReferences.checked}
+        onCheckboxChange={propsWithMixedReferences.onCheckboxChange}
+      />
+    );
+
+    cy.get('[data-cy="card-some uuid-expand-button"]').click();
+
+    cy.get('[data-cy="card-some uuid-references"]').within(() => {
+      cy.contains('a', 'https://somesite.com').should('have.attr', 'href', 'https://somesite.com');
+      cy.contains('Doe et al., Name of dataset paper. In submission.').should('be.visible');
+      cy.contains('a', 'Doe et al., Name of dataset paper. In submission.').should('not.exist');
+      cy.get('a').should('have.length', 1);
+    });
+  });
   it('Fires onCheckboxChange event handler with the appropriate payload when the checkbox is clicked', () => {
     const onCheckboxChangeSpy = cy.spy().as('onCheckboxChangeSpy');
     cy.mount(
