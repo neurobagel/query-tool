@@ -1,3 +1,38 @@
+# v0.16.1 (Mon Aug 31 2026)
+
+:tada: This release contains work from new contributors! :tada:
+
+Thanks for all your work!
+
+:heart: Sarthak Jagota ([@SarthakJagota](https://github.com/SarthakJagota))
+
+:heart: Aravind ([@gmarav05](https://github.com/gmarav05))
+
+#### 🚀 Enhancements
+
+- [ENH] Fix dataset title to span full width in result card. [#738](https://github.com/neurobagel/query-tool/pull/738) ([@gmarav05](https://github.com/gmarav05) [@alyssadai](https://github.com/alyssadai) [@rmanaem](https://github.com/rmanaem))
+- [REF] Refactor ImagingModalitiesColumn to use Stack with Divider [#745](https://github.com/neurobagel/query-tool/pull/745) ([@Tusharjamdade](https://github.com/Tusharjamdade) [@rmanaem](https://github.com/rmanaem))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Only linkify HTTP references in dataset cards [#846](https://github.com/neurobagel/query-tool/pull/846) ([@Copilot](https://github.com/Copilot) [@rmanaem](https://github.com/rmanaem))
+
+#### 🏠 Internal
+
+- [REF] Refactor generateTSVString to use pure transformations and remove mutation - #748 [#748](https://github.com/neurobagel/query-tool/pull/748) ([@SarthakJagota](https://github.com/SarthakJagota))
+- [MNT] Removed airbnb eslint config and moved to eslint 9 [#805](https://github.com/neurobagel/query-tool/pull/805) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 6
+
+- [@Copilot](https://github.com/Copilot)
+- Alyssa Dai ([@alyssadai](https://github.com/alyssadai))
+- Aravind ([@gmarav05](https://github.com/gmarav05))
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sarthak Jagota ([@SarthakJagota](https://github.com/SarthakJagota))
+- Tushar Jamdade ([@Tusharjamdade](https://github.com/Tusharjamdade))
+
+---
+
 # v0.16.0 (Tue May 26 2026)
 
 #### 🚀 Enhancements
