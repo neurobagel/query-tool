@@ -141,6 +141,13 @@ describe('Unprotected response', () => {
     cy.intercept(
       {
         method: 'GET',
+        url: '/nodes',
+      },
+      nodeOptions
+    ).as('getNodes');
+    cy.intercept(
+      {
+        method: 'GET',
         url: '/diagnoses',
       },
       diagnosisOptions
@@ -159,8 +166,21 @@ describe('Unprotected response', () => {
       },
       imagingModalityOptions
     ).as('getImagingModalityOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
     cy.visit('/');
-    cy.wait(['@getDiagnosisOptions', '@getAssessmentToolOptions', '@getImagingModalityOptions']);
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getImagingModalityOptions',
+      '@getPipelineOptions',
+    ]);
     // TODO: remove this
     // Bit of a hacky way to close the auth dialog
     // But we need to do it until we make auth an always-on feature
