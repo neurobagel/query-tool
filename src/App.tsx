@@ -464,9 +464,9 @@ function App() {
     if (maxAgeNumber !== null) requestBody.max_age = maxAgeNumber;
     if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
 
-    const diagArray = normalizeFieldInputOptions(diagnosis);
-    if (diagArray.length > 0) {
-      requestBody.diagnosis = diagArray.map((d) => d.id);
+    const selectedDiagnoses = normalizeFieldInputOptions(diagnosis);
+    if (selectedDiagnoses.length > 0) {
+      requestBody.diagnosis = selectedDiagnoses.map((d) => d.id);
     }
 
     const minNumImagingSessionsNumber = parseNumericValue(minNumImagingSessions);
@@ -477,14 +477,14 @@ function App() {
     if (minNumPhenotypicSessionsNumber !== null)
       requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessionsNumber;
 
-    const assessArray = normalizeFieldInputOptions(assessmentTool);
-    if (assessArray.length > 0) {
-      requestBody.assessment = assessArray.map((a) => a.id);
+    const selectedAssessments = normalizeFieldInputOptions(assessmentTool);
+    if (selectedAssessments.length > 0) {
+      requestBody.assessment = selectedAssessments.map((a) => a.id);
     }
 
-    const modalArray = normalizeFieldInputOptions(imagingModality);
-    if (modalArray.length > 0) {
-      requestBody.image_modal = modalArray.map((m) => m.id);
+    const selectedImagingModalities = normalizeFieldInputOptions(imagingModality);
+    if (selectedImagingModalities.length > 0) {
+      requestBody.image_modal = selectedImagingModalities.map((m) => m.id);
     }
 
     const selectedPipelines = normalizeFieldInputOptions(pipelineName);
