@@ -7,7 +7,7 @@ import {
   AttributeOption,
   FieldInput,
   FieldInputOption,
-  CategoricalFieldOption,
+  PipelineVersionOption,
   Pipelines,
   ImagingModalityOption,
 } from '../utils/types';
@@ -15,14 +15,12 @@ import {
   parseNumericValue,
   normalizeFieldInputOptions,
   validateContinuousValue,
-  getPipelineLabel,
-  buildPipelineCombinedOptions,
-  buildCombinedInputValue,
 } from '../utils/utils';
-import CategoricalField from './CategoricalField';
+import SingleSelectField from './SingleSelectField';
+import MultiSelectField from './MultiSelectField';
+import PipelineField, { PipelineOption } from './PipelineField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
-import CollapsiblePipelineGroup from './CollapsiblePipelineGroup';
 
 function QueryForm({
   availableNodes,
@@ -93,43 +91,27 @@ function QueryForm({
     maxAgeHelperText !== '' ||
     minNumImagingSessionsHelperText !== '';
 
-  const pipelineCombinedOptions = buildPipelineCombinedOptions(pipelines);
   const selectedPipelines = normalizeFieldInputOptions(pipelineName);
-  const selectedVersionsAll = normalizeFieldInputOptions(pipelineVersion);
-  const combinedInputValue = buildCombinedInputValue(selectedPipelines, selectedVersionsAll);
+  const selectedVersionsAll = normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
 
-  const handleTogglePipeline = (pId: string, pLabel: string) => {
-    const hasSelectedVersion = selectedVersionsAll.some((v) => v.id.startsWith(`${pId}::`));
-    const isPipelineInName = selectedPipelines.some((p) => p.id === pId);
-    const isHeaderChecked = isPipelineInName && !hasSelectedVersion;
-
-    let updatedPipelines: FieldInputOption[];
-    let updatedVersions: FieldInputOption[];
-
-    if (isHeaderChecked) {
-      updatedPipelines = selectedPipelines.filter((p) => p.id !== pId);
-      updatedVersions = selectedVersionsAll.filter((v) => !v.id.startsWith(`${pId}::`));
-    } else {
-      const exists = selectedPipelines.some((p) => p.id === pId);
-      updatedPipelines = exists
-        ? selectedPipelines
-        : [...selectedPipelines, { id: pId, label: pLabel }];
-      updatedVersions = selectedVersionsAll.filter((v) => !v.id.startsWith(`${pId}::`));
+  const pipelineValue: PipelineOption[] = selectedPipelines.flatMap((p) => {
+    const pVersions = selectedVersionsAll.filter((v) => v.pipelineId === p.id);
+    if (pVersions.length > 0) {
+      return pVersions.map((v) => ({
+        pipelineId: p.id,
+        pipelineLabel: p.label,
+        version: v.id,
+      }));
     }
+    return [
+      {
+        pipelineId: p.id,
+        pipelineLabel: p.label,
+      },
+    ];
+  });
 
-    updateCategoricalQueryParams(
-      'Pipeline name',
-      updatedPipelines.length > 0 ? updatedPipelines : null
-    );
-    updateCategoricalQueryParams(
-      'Pipeline version',
-      updatedVersions.length > 0 ? updatedVersions : null
-    );
-  };
-
-  const handleCombinedPipelineChange = (selectedOptionsInput: FieldInput) => {
-    const selectedOptions = normalizeFieldInputOptions(selectedOptionsInput);
-
+  const handlePipelineFieldChange = (selectedOptions: PipelineOption[]) => {
     if (selectedOptions.length === 0) {
       updateCategoricalQueryParams('Pipeline name', null);
       updateCategoricalQueryParams('Pipeline version', null);
@@ -137,21 +119,20 @@ function QueryForm({
     }
 
     const updatedPipelinesMap = new Map<string, FieldInputOption>();
-    const updatedVersions: FieldInputOption[] = [];
+    const updatedVersions: PipelineVersionOption[] = [];
 
-    (selectedOptions as CategoricalFieldOption[]).forEach((opt) => {
-      const isVersionOption = opt.id.includes('::');
-      const pId = isVersionOption ? opt.id.split('::')[0] : opt.id;
-      const pLabel = opt.group ?? getPipelineLabel(pId);
-
-      updatedPipelinesMap.set(pId, { id: pId, label: pLabel });
-      if (isVersionOption) {
-        updatedVersions.push({ id: opt.id, label: opt.label });
+    selectedOptions.forEach((opt) => {
+      updatedPipelinesMap.set(opt.pipelineId, { id: opt.pipelineId, label: opt.pipelineLabel });
+      if (opt.version) {
+        updatedVersions.push({
+          id: opt.version,
+          label: `${opt.pipelineLabel} ${opt.version}`,
+          pipelineId: opt.pipelineId,
+        });
       }
     });
 
     const updatedPipelines = Array.from(updatedPipelinesMap.values());
-
     updateCategoricalQueryParams(
       'Pipeline name',
       updatedPipelines.length > 0 ? updatedPipelines : null
@@ -165,15 +146,14 @@ function QueryForm({
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <CategoricalField
+        <MultiSelectField
           label="Neurobagel graph"
           options={availableNodes.map((n) => ({
             label: n.NodeName,
             id: n.ApiURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          multiple
-          inputValue={selectedNode}
+          value={normalizeFieldInputOptions(selectedNode)}
         />
       </div>
       <div>
@@ -200,27 +180,26 @@ function QueryForm({
         </div>
       )}
       <div>
-        <CategoricalField
+        <SingleSelectField
           label="Sex"
           options={Object.entries(sexes).map(([key, value]) => ({
             label: key,
             id: value,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          inputValue={sex}
+          value={sex as FieldInputOption | null}
         />
       </div>
       <div>
         <div>
-          <CategoricalField
+          <MultiSelectField
             label="Diagnosis"
             options={diagnosisOptions.map((d) => ({
               label: d.Label as string,
               id: d.TermURL,
             }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-            multiple
-            inputValue={diagnosis}
+            value={normalizeFieldInputOptions(diagnosis)}
           />
         </div>
       </div>
@@ -241,45 +220,29 @@ function QueryForm({
         />
       </div>
       <div>
-        <CategoricalField
+        <MultiSelectField
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label as string, id: a.TermURL }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          multiple
-          inputValue={assessmentTool}
+          value={normalizeFieldInputOptions(assessmentTool)}
         />
       </div>
       <div>
-        <CategoricalField
+        <MultiSelectField
           label="Imaging modality"
           options={imagingModalityOptions.map((value) => ({
             label: value.Label as string,
             id: value.TermURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          multiple
-          inputValue={imagingModality}
+          value={normalizeFieldInputOptions(imagingModality)}
         />
       </div>
       <div>
-        <CategoricalField
-          label="Pipeline name and version"
-          options={pipelineCombinedOptions}
-          onFieldChange={(_, value) => handleCombinedPipelineChange(value)}
-          multiple
-          inputValue={combinedInputValue}
-          renderGroup={({ key, group, children }) => (
-            <CollapsiblePipelineGroup
-              key={key}
-              groupKey={key}
-              groupLabel={group}
-              selectedPipelines={selectedPipelines}
-              selectedVersions={selectedVersionsAll}
-              onTogglePipeline={handleTogglePipeline}
-            >
-              {children}
-            </CollapsiblePipelineGroup>
-          )}
+        <PipelineField
+          pipelines={pipelines}
+          value={pipelineValue}
+          onFieldChange={handlePipelineFieldChange}
         />
       </div>
 

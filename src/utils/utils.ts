@@ -3,8 +3,6 @@ import { datasetsURL, subjectsURL } from './constants';
 import {
   FieldInput,
   FieldInputOption,
-  CategoricalFieldOption,
-  Pipelines,
   QueryFormState,
   QueryParams,
   DatasetsResponse,
@@ -14,11 +12,17 @@ import {
   SubjectsQueryParams,
 } from './types';
 
-export function normalizeFieldInputOptions(input: FieldInput): FieldInputOption[] {
+/**
+ * Normalizes a FieldInput (null, single option, or array) into an array of options.
+ * Accepts an optional generic T to preserve specific option subtypes (e.g. PipelineVersionOption).
+ */
+export function normalizeFieldInputOptions<T extends FieldInputOption = FieldInputOption>(
+  input: FieldInput
+): T[] {
   if (input === null) {
     return [];
   }
-  return Array.isArray(input) ? input : [input];
+  return (Array.isArray(input) ? input : [input]) as T[];
 }
 
 export function validateContinuousValue(rawValue: string, parsedValue: number | null): string {
@@ -37,52 +41,6 @@ export function validateContinuousValue(rawValue: string, parsedValue: number | 
 
 export function getPipelineLabel(pId: string): string {
   return pId.startsWith('np:') ? pId.slice(3) : pId;
-}
-
-export function buildPipelineCombinedOptions(pipelines: Pipelines): CategoricalFieldOption[] {
-  return Object.keys(pipelines).flatMap((pId) => {
-    const pLabel = getPipelineLabel(pId);
-    const versions = pipelines[pId] ?? [];
-
-    if (versions.length === 0) {
-      return [
-        {
-          label: `${pLabel} any version`,
-          id: pId,
-          group: pLabel,
-        },
-      ];
-    }
-
-    return versions.map((v) => ({
-      label: `${pLabel} ${v}`,
-      id: `${pId}::${v}`,
-      group: pLabel,
-    }));
-  });
-}
-
-export function buildCombinedInputValue(
-  selectedPipelines: FieldInputOption[],
-  selectedVersionsAll: FieldInputOption[]
-): CategoricalFieldOption[] {
-  return selectedPipelines.flatMap((p) => {
-    const pVersions = selectedVersionsAll.filter((v) => v.id.startsWith(`${p.id}::`));
-    if (pVersions.length > 0) {
-      return pVersions.map((v) => ({
-        label: v.label,
-        id: v.id,
-        group: p.label,
-      }));
-    }
-    return [
-      {
-        label: `${p.label} any version`,
-        id: p.id,
-        group: p.label,
-      },
-    ];
-  });
 }
 
 function normalizeFieldInput(input: FieldInput): string {

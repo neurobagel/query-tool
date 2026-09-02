@@ -3,6 +3,10 @@ export interface FieldInputOption {
   id: string;
 }
 
+export interface PipelineVersionOption extends FieldInputOption {
+  pipelineId: string;
+}
+
 export interface AttributeOption {
   Label: string | null;
   TermURL: string;
@@ -160,23 +164,6 @@ export interface SubjectsRequestBody {
   image_modal?: string[];
   pipeline?: PipelineQueryParam[];
   nodes: Array<{ node_url: string; dataset_uuids: string[] }>;
-}
-
-import { AutocompleteRenderGroupParams } from '@mui/material';
-
-export interface CategoricalFieldOption extends FieldInputOption {
-  group?: string;
-}
-
-export interface CategoricalFieldProps {
-  label: string;
-  options: CategoricalFieldOption[];
-  onFieldChange: (fieldLabel: string, value: FieldInput) => void;
-  multiple?: boolean;
-  inputValue: FieldInput;
-  disabled?: boolean;
-  groupBy?: (option: CategoricalFieldOption) => string;
-  renderGroup?: (params: AutocompleteRenderGroupParams) => React.ReactNode;
 }
 
 export type ToastProps = {

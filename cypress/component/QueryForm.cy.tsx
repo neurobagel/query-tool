@@ -257,7 +257,7 @@ describe('QueryForm', () => {
       { id: 'np:fmriprep', label: 'fmriprep' },
     ]);
     cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline version', [
-      { id: 'np:fmriprep::0.2.3', label: 'fmriprep 0.2.3' },
+      { id: '0.2.3', label: 'fmriprep 0.2.3', pipelineId: 'np:fmriprep' },
     ]);
   });
   it('Fires updateCategoricalQueryParams event handler when clicking the pipeline group header checkbox in the Pipeline field', () => {

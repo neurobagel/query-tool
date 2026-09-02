@@ -16,6 +16,7 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
+  PipelineVersionOption,
   Pipelines,
   DatasetsResponse,
   QueryParams,
@@ -409,11 +410,9 @@ function App() {
         const newSelectedPipelines = normalizeFieldInputOptions(value);
         const newPipelineIds = new Set(newSelectedPipelines.map((p) => p.id));
         if (pipelineVersion) {
-          const currentVersions = normalizeFieldInputOptions(pipelineVersion);
-          const validVersions = currentVersions.filter((v) => {
-            const pId = v.id.includes('::') ? v.id.split('::')[0] : '';
-            return newPipelineIds.has(pId);
-          });
+          const currentVersions =
+            normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
+          const validVersions = currentVersions.filter((v) => newPipelineIds.has(v.pipelineId));
           setPipelineVersion(validVersions.length > 0 ? validVersions : null);
         }
         break;
@@ -491,14 +490,14 @@ function App() {
     const selectedPipelines = normalizeFieldInputOptions(pipelineName);
 
     if (selectedPipelines.length > 0) {
-      const selectedVersions = normalizeFieldInputOptions(pipelineVersion);
+      const selectedVersions = normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
 
       requestBody.pipeline = selectedPipelines.flatMap((p) => {
-        const pVersions = selectedVersions.filter((v) => v.id.startsWith(`${p.id}::`));
+        const pVersions = selectedVersions.filter((v) => v.pipelineId === p.id);
         if (pVersions.length > 0) {
           return pVersions.map((v) => ({
             name: p.id,
-            version: v.id.split('::')[1],
+            version: v.id,
           }));
         }
         return [{ name: p.id }];

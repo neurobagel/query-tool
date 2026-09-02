@@ -8,8 +8,8 @@ describe('CollapsiblePipelineGroup', () => {
         <CollapsiblePipelineGroup
           groupKey="np:fmriprep"
           groupLabel="fmriprep"
-          selectedPipelines={[]}
-          selectedVersions={[]}
+          pipelineId="np:fmriprep"
+          isPipelineChecked={false}
           onTogglePipeline={onTogglePipelineSpy}
         >
           <li key="v1">fmriprep 0.2.3</li>
@@ -21,15 +21,15 @@ describe('CollapsiblePipelineGroup', () => {
     cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"] input').should('not.be.checked');
   });
 
-  it('should render checkbox as checked when pipeline is selected without specific versions', () => {
+  it('should render checkbox as checked when isPipelineChecked is true', () => {
     const onTogglePipelineSpy = cy.spy().as('onTogglePipelineSpy');
     cy.mount(
       <ul>
         <CollapsiblePipelineGroup
           groupKey="np:fmriprep"
           groupLabel="fmriprep"
-          selectedPipelines={[{ id: 'np:fmriprep', label: 'fmriprep' }]}
-          selectedVersions={[]}
+          pipelineId="np:fmriprep"
+          isPipelineChecked={true}
           onTogglePipeline={onTogglePipelineSpy}
         >
           <li key="v1">fmriprep 0.2.3</li>
@@ -40,25 +40,6 @@ describe('CollapsiblePipelineGroup', () => {
     cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"] input').should('be.checked');
   });
 
-  it('should render checkbox as unchecked when specific versions are selected', () => {
-    const onTogglePipelineSpy = cy.spy().as('onTogglePipelineSpy');
-    cy.mount(
-      <ul>
-        <CollapsiblePipelineGroup
-          groupKey="np:fmriprep"
-          groupLabel="fmriprep"
-          selectedPipelines={[{ id: 'np:fmriprep', label: 'fmriprep' }]}
-          selectedVersions={[{ id: 'np:fmriprep::0.2.3', label: 'fmriprep 0.2.3' }]}
-          onTogglePipeline={onTogglePipelineSpy}
-        >
-          <li key="v1">fmriprep 0.2.3</li>
-        </CollapsiblePipelineGroup>
-      </ul>
-    );
-
-    cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"] input').should('not.be.checked');
-  });
-
   it('should fire onTogglePipeline event handler when clicking the group header checkbox', () => {
     const onTogglePipelineSpy = cy.spy().as('onTogglePipelineSpy');
     cy.mount(
@@ -66,8 +47,8 @@ describe('CollapsiblePipelineGroup', () => {
         <CollapsiblePipelineGroup
           groupKey="np:fmriprep"
           groupLabel="fmriprep"
-          selectedPipelines={[]}
-          selectedVersions={[]}
+          pipelineId="np:fmriprep"
+          isPipelineChecked={false}
           onTogglePipeline={onTogglePipelineSpy}
         >
           <li key="v1">fmriprep 0.2.3</li>
