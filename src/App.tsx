@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, IconButton } from '@mui/material';
@@ -57,6 +57,9 @@ function App() {
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
   const [pipelines, setPipelines] = useState<Pipelines>({});
+  // Track pipeline IDs for which version fetching has already been initiated to prevent
+  // duplicate in-flight requests or infinite fetch loops when a pipeline has no versions.
+  const fetchedPipelineURIs = useRef<Set<string>>(new Set());
 
   // Track which node admonitions have been dismissed
   const [dismissedNodeAdmonitions, setDismissedNodeAdmonitions] = useState<string[]>([]);
@@ -311,7 +314,11 @@ function App() {
     const pipelineURIs = Object.keys(pipelines);
 
     pipelineURIs.forEach((pId) => {
-      if (pipelines[pId] == null || pipelines[pId].length === 0) {
+      // Only initiate fetching if this pipeline has not already been requested.
+      // This ensures each pipeline is fetched once, avoiding duplicate in-flight
+      // requests and preventing infinite loops when a pipeline has zero versions.
+      if (!fetchedPipelineURIs.current.has(pId)) {
+        fetchedPipelineURIs.current.add(pId);
         const pOption: FieldInputOption = {
           id: pId,
           label: pId.startsWith('np:') ? pId.slice(3) : pId,
