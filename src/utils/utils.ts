@@ -2,6 +2,7 @@ import axios from 'axios';
 import { datasetsURL, subjectsURL } from './constants';
 import {
   FieldInput,
+  FieldInputOption,
   QueryFormState,
   QueryParams,
   DatasetsResponse,
@@ -11,12 +12,46 @@ import {
   SubjectsQueryParams,
 } from './types';
 
+/**
+ * Normalizes a FieldInput (null, single option, or array) into an array of options.
+ * Accepts an optional generic T to preserve specific option subtypes (e.g. PipelineVersionOption).
+ */
+export function normalizeFieldInputOptions<T extends FieldInputOption = FieldInputOption>(
+  input: FieldInput
+): T[] {
+  if (input === null) {
+    return [];
+  }
+  return (Array.isArray(input) ? input : [input]) as T[];
+}
+
+export function validateContinuousValue(rawValue: string, parsedValue: number | null): string {
+  const trimmed = rawValue.trim();
+  if (trimmed === '') {
+    return '';
+  }
+  if (parsedValue === null) {
+    return 'Please enter a valid number!';
+  }
+  if (parsedValue < 0) {
+    return 'Please enter a positive number!';
+  }
+  return '';
+}
+
+export function getPipelineLabel(pId: string): string {
+  return pId.startsWith('np:') ? pId.slice(3) : pId;
+}
+
 function normalizeFieldInput(input: FieldInput): string {
   if (input === null) {
     return 'null';
   }
 
   if (Array.isArray(input)) {
+    if (input.length === 0) {
+      return 'null';
+    }
     const ids = input.map((option) => option.id).sort();
     return `multi:${ids.join('|')}`;
   }

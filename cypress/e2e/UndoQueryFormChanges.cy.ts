@@ -12,6 +12,7 @@ describe('Undo cohort changes', () => {
     cy.intercept('GET', '/diagnoses', diagnosisOptions).as('getDiagnoses');
     cy.intercept('GET', '/assessments', assessmentToolOptions).as('getAssessments');
     cy.intercept('GET', '/pipelines', pipelineOptions).as('getPipelines');
+    cy.intercept('GET', '/pipelines/*/versions', []).as('getPipelineVersions');
     cy.intercept('POST', '/datasets', protectedResponse2).as('datasetsQuery');
 
     cy.visit('/');
@@ -43,18 +44,16 @@ describe('Undo cohort changes', () => {
     cy.get('[data-cy="card-https://someportal.org/datasets/ds0001-checkbox"] input').check();
     cy.get('[data-cy="download-results-button"]').should('not.be.disabled');
 
-    cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
-      'have.value',
-      "Parkinson's disease"
-    );
+    cy.get('[data-cy="Diagnosis-categorical-field"]').click();
+    cy.contains('.MuiAutocomplete-option', "Parkinson's disease").click();
+    cy.get('[data-cy="Diagnosis-categorical-field"]').should('contain', "Parkinson's disease");
     cy.get('[data-cy="query-form-changed-alert"]').should('be.visible');
     cy.get('[data-cy="download-results-button"]').should('be.disabled');
 
     cy.get('[data-cy="query-form-changed-alert"]').contains('button', 'Undo changes').click();
 
     cy.get('[data-cy="query-form-changed-alert"]').should('not.exist');
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should('have.value', '');
+    cy.get('[data-cy="Diagnosis-categorical-field"]').should('not.contain', "Parkinson's disease");
     cy.get('[data-cy="download-results-button"]').should('not.be.disabled');
   });
 });

@@ -97,8 +97,7 @@ describe('QueryForm', () => {
     );
     cy.get('[data-cy="Assessment tool-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Imaging modality-categorical-field"]').should('be.visible');
-    cy.get('[data-cy="Pipeline name-categorical-field"]').should('be.visible');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should('be.visible');
     cy.get('[data-cy="submit-query-button"]').should('be.visible');
     cy.get('[data-cy="how-to-get-data-dialog-button"]').should('be.visible');
   });
@@ -159,10 +158,12 @@ describe('QueryForm', () => {
     );
 
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('Some{downarrow}{enter}');
-    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Diagnosis', {
-      id: 'https://someurl/',
-      label: 'Some Diagnosis',
-    });
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Diagnosis', [
+      {
+        id: 'https://someurl/',
+        label: 'Some Diagnosis',
+      },
+    ]);
   });
   it('Fires updateContinuousQueryParams event handler with the appropriate payload when a continuous field is selected', () => {
     const updateContinuousQueryParamsSpy = cy.spy().as('updateContinuousQueryParamsSpy');
@@ -221,5 +222,80 @@ describe('QueryForm', () => {
     );
     cy.get('[data-cy="submit-query-button"]').click();
     cy.get('@onSubmitQuerySpy').should('have.been.called');
+  });
+  it('Fires updateCategoricalQueryParams event handler when selecting a pipeline version in the Pipeline field', () => {
+    const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
+    cy.mount(
+      <QueryForm
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
+      />
+    );
+
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
+      { id: 'np:fmriprep', label: 'fmriprep' },
+    ]);
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline version', [
+      { id: '0.2.3', label: 'fmriprep 0.2.3', pipelineId: 'np:fmriprep' },
+    ]);
+  });
+  it('Fires updateCategoricalQueryParams event handler when clicking the pipeline group header checkbox in the Pipeline field', () => {
+    const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
+    cy.mount(
+      <QueryForm
+        availableNodes={defaultProps.availableNodes}
+        diagnosisOptions={defaultProps.diagnosisOptions}
+        assessmentOptions={defaultProps.assessmentOptions}
+        imagingModalityOptions={defaultProps.imagingModalityOptions}
+        selectedNode={defaultProps.selectedNode}
+        minAge={defaultProps.minAge}
+        maxAge={defaultProps.maxAge}
+        sex={defaultProps.sex}
+        diagnosis={defaultProps.diagnosis}
+        minNumImagingSessions={defaultProps.minNumImagingSessions}
+        minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
+        assessmentTool={defaultProps.assessmentTool}
+        imagingModality={defaultProps.imagingModality}
+        pipelineVersion={defaultProps.pipelineVersion}
+        pipelineName={defaultProps.pipelineName}
+        pipelines={defaultProps.pipelines}
+        updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
+        updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        loading={defaultProps.loading}
+        onSubmitQuery={defaultProps.onSubmitQuery}
+      />
+    );
+
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
+    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
+      { id: 'np:fmriprep', label: 'fmriprep' },
+    ]);
+    cy.get('@updateCategoricalQueryParamsSpy').should(
+      'have.been.calledWith',
+      'Pipeline version',
+      null
+    );
   });
 });

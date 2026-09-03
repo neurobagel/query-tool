@@ -3,6 +3,10 @@ export interface FieldInputOption {
   id: string;
 }
 
+export interface PipelineVersionOption extends FieldInputOption {
+  pipelineId: string;
+}
+
 export interface AttributeOption {
   Label: string | null;
   TermURL: string;
@@ -131,17 +135,21 @@ export interface SubjectsResponse extends BaseAPIResponse {
   responses: SubjectsResult[];
 }
 
+export interface PipelineQueryParam {
+  name: string;
+  version?: string;
+}
+
 export interface QueryParams {
   min_age?: number;
   max_age?: number;
   sex?: string;
-  diagnosis?: string;
+  diagnosis?: string[];
   min_num_imaging_sessions?: number;
   min_num_phenotypic_sessions?: number;
-  assessment?: string;
-  image_modal?: string;
-  pipeline_name?: string;
-  pipeline_version?: string;
+  assessment?: string[];
+  image_modal?: string[];
+  pipeline?: PipelineQueryParam[];
   nodes: Array<{ node_url: string }>;
 }
 
@@ -149,23 +157,13 @@ export interface SubjectsRequestBody {
   min_age?: number;
   max_age?: number;
   sex?: string;
-  diagnosis?: string;
+  diagnosis?: string[];
   min_num_imaging_sessions?: number;
   min_num_phenotypic_sessions?: number;
-  assessment?: string;
-  image_modal?: string;
-  pipeline_name?: string;
-  pipeline_version?: string;
+  assessment?: string[];
+  image_modal?: string[];
+  pipeline?: PipelineQueryParam[];
   nodes: Array<{ node_url: string; dataset_uuids: string[] }>;
-}
-
-export interface CategoricalFieldProps {
-  label: string;
-  options: FieldInputOption[];
-  onFieldChange: (fieldLabel: string, value: FieldInput) => void;
-  multiple?: boolean;
-  inputValue: FieldInput;
-  disabled?: boolean;
 }
 
 export type ToastProps = {

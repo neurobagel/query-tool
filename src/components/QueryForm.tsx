@@ -1,17 +1,24 @@
 import { useState } from 'react';
-import { Button, CircularProgress, FormHelperText, Tooltip, Typography } from '@mui/material';
+import { Button, CircularProgress, FormHelperText } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { sexes } from '../utils/constants';
 import {
   NodeOption,
   AttributeOption,
-  FieldInputOption,
   FieldInput,
+  FieldInputOption,
+  PipelineVersionOption,
   Pipelines,
   ImagingModalityOption,
 } from '../utils/types';
-import { parseNumericValue } from '../utils/utils';
-import CategoricalField from './CategoricalField';
+import {
+  parseNumericValue,
+  normalizeFieldInputOptions,
+  validateContinuousValue,
+} from '../utils/utils';
+import SingleSelectField from './SingleSelectField';
+import MultiSelectField from './MultiSelectField';
+import PipelineField, { PipelineOption } from './PipelineField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
 
@@ -60,21 +67,6 @@ function QueryForm({
 }) {
   const [openDialog, setOpenDialog] = useState(false);
 
-  function validateContinuousValue(rawValue: string, parsedValue: number | null) {
-    const trimmed = rawValue.trim();
-    if (trimmed === '') {
-      // Value is default, user has not entered anything yet
-      return '';
-    }
-    if (parsedValue === null) {
-      return 'Please enter a valid number!';
-    }
-    if (parsedValue < 0) {
-      return 'Please enter a positive number!';
-    }
-    return '';
-  }
-
   const parsedMinAge = parseNumericValue(minAge);
   const parsedMaxAge = parseNumericValue(maxAge);
   const parsedMinNumImagingSessions = parseNumericValue(minNumImagingSessions);
@@ -99,18 +91,69 @@ function QueryForm({
     maxAgeHelperText !== '' ||
     minNumImagingSessionsHelperText !== '';
 
+  const selectedPipelines = normalizeFieldInputOptions(pipelineName);
+  const selectedVersionsAll = normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
+
+  const pipelineValue: PipelineOption[] = selectedPipelines.flatMap((p) => {
+    const pVersions = selectedVersionsAll.filter((v) => v.pipelineId === p.id);
+    if (pVersions.length > 0) {
+      return pVersions.map((v) => ({
+        pipelineId: p.id,
+        pipelineLabel: p.label,
+        version: v.id,
+      }));
+    }
+    return [
+      {
+        pipelineId: p.id,
+        pipelineLabel: p.label,
+      },
+    ];
+  });
+
+  const handlePipelineFieldChange = (selectedOptions: PipelineOption[]) => {
+    if (selectedOptions.length === 0) {
+      updateCategoricalQueryParams('Pipeline name', null);
+      updateCategoricalQueryParams('Pipeline version', null);
+      return;
+    }
+
+    const updatedPipelinesMap = new Map<string, FieldInputOption>();
+    const updatedVersions: PipelineVersionOption[] = [];
+
+    selectedOptions.forEach((opt) => {
+      updatedPipelinesMap.set(opt.pipelineId, { id: opt.pipelineId, label: opt.pipelineLabel });
+      if (opt.version) {
+        updatedVersions.push({
+          id: opt.version,
+          label: `${opt.pipelineLabel} ${opt.version}`,
+          pipelineId: opt.pipelineId,
+        });
+      }
+    });
+
+    const updatedPipelines = Array.from(updatedPipelinesMap.values());
+    updateCategoricalQueryParams(
+      'Pipeline name',
+      updatedPipelines.length > 0 ? updatedPipelines : null
+    );
+    updateCategoricalQueryParams(
+      'Pipeline version',
+      updatedVersions.length > 0 ? updatedVersions : null
+    );
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <CategoricalField
+        <MultiSelectField
           label="Neurobagel graph"
           options={availableNodes.map((n) => ({
             label: n.NodeName,
             id: n.ApiURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          multiple
-          inputValue={selectedNode}
+          value={normalizeFieldInputOptions(selectedNode)}
         />
       </div>
       <div>
@@ -137,26 +180,26 @@ function QueryForm({
         </div>
       )}
       <div>
-        <CategoricalField
+        <SingleSelectField
           label="Sex"
           options={Object.entries(sexes).map(([key, value]) => ({
             label: key,
             id: value,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          inputValue={sex}
+          value={sex as FieldInputOption | null}
         />
       </div>
       <div>
         <div>
-          <CategoricalField
+          <MultiSelectField
             label="Diagnosis"
             options={diagnosisOptions.map((d) => ({
               label: d.Label as string,
               id: d.TermURL,
             }))}
             onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-            inputValue={diagnosis}
+            value={normalizeFieldInputOptions(diagnosis)}
           />
         </div>
       </div>
@@ -177,64 +220,31 @@ function QueryForm({
         />
       </div>
       <div>
-        <CategoricalField
+        <MultiSelectField
           label="Assessment tool"
           options={assessmentOptions.map((a) => ({ label: a.Label as string, id: a.TermURL }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          inputValue={assessmentTool}
+          value={normalizeFieldInputOptions(assessmentTool)}
         />
       </div>
       <div>
-        <CategoricalField
+        <MultiSelectField
           label="Imaging modality"
           options={imagingModalityOptions.map((value) => ({
             label: value.Label as string,
             id: value.TermURL,
           }))}
           onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          inputValue={imagingModality}
+          value={normalizeFieldInputOptions(imagingModality)}
         />
       </div>
       <div>
-        <CategoricalField
-          label="Pipeline name"
-          options={Object.keys(pipelines).map((pipelineURI) => ({
-            // Remove the `np:` prefix
-            label: pipelineURI.slice(3),
-            id: pipelineURI,
-          }))}
-          onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-          inputValue={pipelineName}
+        <PipelineField
+          pipelines={pipelines}
+          value={pipelineValue}
+          onFieldChange={handlePipelineFieldChange}
         />
       </div>
-      {pipelineName === null ? (
-        <Tooltip
-          title={<Typography variant="body1">Please select a pipeline name</Typography>}
-          placement="right"
-        >
-          <div>
-            <CategoricalField
-              label="Pipeline version"
-              options={[]}
-              onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-              inputValue={null}
-              disabled
-            />
-          </div>
-        </Tooltip>
-      ) : (
-        <div>
-          <CategoricalField
-            label="Pipeline version"
-            options={Object.values(pipelines[(pipelineName as FieldInputOption).id]).map((v) => ({
-              label: v,
-              id: v,
-            }))}
-            onFieldChange={(label, value) => updateCategoricalQueryParams(label, value)}
-            inputValue={pipelineVersion}
-          />
-        </div>
-      )}
 
       <div className="flex justify-between">
         <Button

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, IconButton } from '@mui/material';
@@ -16,6 +16,7 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
+  PipelineVersionOption,
   Pipelines,
   DatasetsResponse,
   QueryParams,
@@ -36,6 +37,7 @@ import NodeAdmonition from './components/NodeAdmonition';
 import './App.css';
 import logo from './assets/logo.png';
 import areFormStatesEqual, {
+  normalizeFieldInputOptions,
   parseNumericValue,
   sendDatasetsQuery,
   sendSubjectsQuery,
@@ -55,6 +57,9 @@ function App() {
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
   const [pipelines, setPipelines] = useState<Pipelines>({});
+  // Track pipeline IDs for which version fetching has already been initiated to prevent
+  // duplicate in-flight requests or infinite fetch loops when a pipeline has no versions.
+  const fetchedPipelineURIs = useRef<Set<string>>(new Set());
 
   // Track which node admonitions have been dismissed
   const [dismissedNodeAdmonitions, setDismissedNodeAdmonitions] = useState<string[]>([]);
@@ -305,22 +310,28 @@ function App() {
         return [];
       }
     }
-    // Get pipeline versions if
-    // 1. A pipeline has been selected (this implementation only works for single value for pipeline name field)
-    // 2. This is the first time its being selected (i.e., we haven't retrieved pipeline versions before)
-    if (
-      pipelineName !== null &&
-      !Array.isArray(pipelineName) &&
-      pipelines[pipelineName.id].length === 0
-    ) {
-      getPipelineVersions(pipelineName).then((pipelineVersionsRespnse) => {
-        setPipelines((prevPipelines) => ({
-          ...prevPipelines,
-          [pipelineName.id]: pipelineVersionsRespnse,
-        }));
-      });
-    }
-  }, [pipelines, pipelineName]);
+
+    const pipelineURIs = Object.keys(pipelines);
+
+    pipelineURIs.forEach((pId) => {
+      // Only initiate fetching if this pipeline has not already been requested.
+      // This ensures each pipeline is fetched once, avoiding duplicate in-flight
+      // requests and preventing infinite loops when a pipeline has zero versions.
+      if (!fetchedPipelineURIs.current.has(pId)) {
+        fetchedPipelineURIs.current.add(pId);
+        const pOption: FieldInputOption = {
+          id: pId,
+          label: pId.startsWith('np:') ? pId.slice(3) : pId,
+        };
+        getPipelineVersions(pOption).then((pipelineVersionsResponse) => {
+          setPipelines((prevPipelines) => ({
+            ...prevPipelines,
+            [pId]: pipelineVersionsResponse,
+          }));
+        });
+      }
+    });
+  }, [pipelines]);
 
   useEffect(() => {
     if (availableNodes.length > 1) {
@@ -401,9 +412,18 @@ function App() {
       case 'Pipeline version':
         setPipelineVersion(value);
         break;
-      case 'Pipeline name':
+      case 'Pipeline name': {
         setPipelineName(value);
+        const newSelectedPipelines = normalizeFieldInputOptions(value);
+        const newPipelineIds = new Set(newSelectedPipelines.map((p) => p.id));
+        if (pipelineVersion) {
+          const currentVersions =
+            normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
+          const validVersions = currentVersions.filter((v) => newPipelineIds.has(v.pipelineId));
+          setPipelineVersion(validVersions.length > 0 ? validVersions : null);
+        }
         break;
+      }
       default:
         break;
     }
@@ -450,7 +470,12 @@ function App() {
     const maxAgeNumber = parseNumericValue(maxAge);
     if (maxAgeNumber !== null) requestBody.max_age = maxAgeNumber;
     if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
-    if (diagnosis && !Array.isArray(diagnosis)) requestBody.diagnosis = diagnosis.id;
+
+    const selectedDiagnoses = normalizeFieldInputOptions(diagnosis);
+    if (selectedDiagnoses.length > 0) {
+      requestBody.diagnosis = selectedDiagnoses.map((d) => d.id);
+    }
+
     const minNumImagingSessionsNumber = parseNumericValue(minNumImagingSessions);
     if (minNumImagingSessionsNumber !== null)
       requestBody.min_num_imaging_sessions = minNumImagingSessionsNumber;
@@ -458,13 +483,33 @@ function App() {
     const minNumPhenotypicSessionsNumber = parseNumericValue(minNumPhenotypicSessions);
     if (minNumPhenotypicSessionsNumber !== null)
       requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessionsNumber;
-    if (assessmentTool && !Array.isArray(assessmentTool))
-      requestBody.assessment = assessmentTool.id;
-    if (imagingModality && !Array.isArray(imagingModality))
-      requestBody.image_modal = imagingModality.id;
-    if (pipelineName && !Array.isArray(pipelineName)) requestBody.pipeline_name = pipelineName.id;
-    if (pipelineVersion && !Array.isArray(pipelineVersion) && pipelineName)
-      requestBody.pipeline_version = pipelineVersion.id;
+
+    const selectedAssessments = normalizeFieldInputOptions(assessmentTool);
+    if (selectedAssessments.length > 0) {
+      requestBody.assessment = selectedAssessments.map((a) => a.id);
+    }
+
+    const selectedImagingModalities = normalizeFieldInputOptions(imagingModality);
+    if (selectedImagingModalities.length > 0) {
+      requestBody.image_modal = selectedImagingModalities.map((m) => m.id);
+    }
+
+    const selectedPipelines = normalizeFieldInputOptions(pipelineName);
+
+    if (selectedPipelines.length > 0) {
+      const selectedVersions = normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
+
+      requestBody.pipeline = selectedPipelines.flatMap((p) => {
+        const pVersions = selectedVersions.filter((v) => v.pipelineId === p.id);
+        if (pVersions.length > 0) {
+          return pVersions.map((v) => ({
+            name: p.id,
+            version: v.id,
+          }));
+        }
+        return [{ name: p.id }];
+      });
+    }
 
     return requestBody;
   }
