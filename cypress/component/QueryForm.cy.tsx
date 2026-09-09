@@ -254,7 +254,11 @@ describe('QueryForm', () => {
     cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
     cy.get('@onPipelineChangeSpy').should('have.been.calledWith', [
-      { pipelineId: 'np:fmriprep', pipelineLabel: 'fmriprep', version: '0.2.3' },
+      {
+        pipelineId: 'np:fmriprep',
+        pipelineLabel: 'fmriprep',
+        version: '0.2.3',
+      },
     ]);
   });
   it('Fires onPipelineChange event handler when clicking the pipeline group header checkbox in the Pipeline field', () => {

@@ -59,7 +59,7 @@ function App() {
   const [pipelines, setPipelines] = useState<Pipelines>({});
   // Track pipeline IDs for which version fetching has already been initiated to prevent
   // duplicate in-flight requests or infinite fetch loops when a pipeline has no versions.
-  const fetchedPipelineURIs = useRef<Set<string>>(new Set());
+  const fetchedPipelineURIs = useRef<Set<keyof Pipelines>>(new Set());
 
   // Track which node admonitions have been dismissed
   const [dismissedNodeAdmonitions, setDismissedNodeAdmonitions] = useState<string[]>([]);

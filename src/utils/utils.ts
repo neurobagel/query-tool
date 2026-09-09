@@ -3,7 +3,9 @@ import { datasetsURL, subjectsURL } from './constants';
 import {
   FieldInput,
   FieldInputOption,
+  HierarchicalOption,
   PipelineOption,
+  Pipelines,
   QueryFormState,
   QueryParams,
   DatasetsResponse,
@@ -42,6 +44,69 @@ export function validateContinuousValue(rawValue: string, parsedValue: number | 
 
 export function getPipelineLabel(pId: string): string {
   return pId.startsWith('np:') ? pId.slice(3) : pId;
+}
+
+export function buildPipelineOptions(pipelines: Pipelines): HierarchicalOption[] {
+  return Object.keys(pipelines).flatMap((pId): HierarchicalOption[] => {
+    const pLabel = getPipelineLabel(pId);
+    const versions = pipelines[pId] ?? [];
+    if (versions.length === 0) {
+      return [
+        {
+          id: pId,
+          label: `${pLabel} any version`,
+          parentId: pId,
+          parentLabel: pLabel,
+          isTopLevel: true,
+        },
+      ];
+    }
+    return versions.map((v) => ({
+      id: `${pId}::${v}`,
+      label: `${pLabel} ${v}`,
+      parentId: pId,
+      parentLabel: pLabel,
+      isTopLevel: false,
+    }));
+  });
+}
+
+export function pipelineOptionsToHierarchical(selected: PipelineOption[]): HierarchicalOption[] {
+  return selected.map((p) => {
+    if (p.version) {
+      return {
+        id: `${p.pipelineId}::${p.version}`,
+        label: `${p.pipelineLabel} ${p.version}`,
+        parentId: p.pipelineId,
+        parentLabel: p.pipelineLabel,
+        isTopLevel: false,
+      };
+    }
+    return {
+      id: p.pipelineId,
+      label: `${p.pipelineLabel} any version`,
+      parentId: p.pipelineId,
+      parentLabel: p.pipelineLabel,
+      isTopLevel: true,
+    };
+  });
+}
+
+export function hierarchicalToPipelineOptions(selected: HierarchicalOption[]): PipelineOption[] {
+  return selected.map((opt) => {
+    if (opt.isTopLevel) {
+      return {
+        pipelineId: opt.parentId,
+        pipelineLabel: opt.parentLabel,
+      };
+    }
+    const version = opt.id.includes('::') ? opt.id.split('::')[1] : undefined;
+    return {
+      pipelineId: opt.parentId,
+      pipelineLabel: opt.parentLabel,
+      ...(version ? { version } : {}),
+    };
+  });
 }
 
 function normalizeFieldInput(input: FieldInput): string {

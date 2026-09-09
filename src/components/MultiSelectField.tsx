@@ -9,6 +9,12 @@ export interface MultiSelectFieldProps {
   disabled?: boolean;
 }
 
+/**
+ * A reusable multi-select categorical input field built on MUI Autocomplete.
+ *
+ * Renders a searchable dropdown with checkbox-enabled options sorted alphabetically.
+ * Dispatches changes via `onFieldChange` with the updated list of `FieldInputOption` items.
+ */
 function MultiSelectField({
   label,
   options,

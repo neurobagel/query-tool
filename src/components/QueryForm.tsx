@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button, CircularProgress, FormHelperText } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { sexes } from '../utils/constants';
@@ -15,10 +15,13 @@ import {
   parseNumericValue,
   normalizeFieldInputOptions,
   validateContinuousValue,
+  buildPipelineOptions,
+  pipelineOptionsToHierarchical,
+  hierarchicalToPipelineOptions,
 } from '../utils/utils';
 import SingleSelectField from './SingleSelectField';
 import MultiSelectField from './MultiSelectField';
-import PipelineField from './PipelineField';
+import HierarchicalSelectField from './HierarchicalSelectField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
 
@@ -90,6 +93,12 @@ function QueryForm({
     minAgeHelperText !== '' ||
     maxAgeHelperText !== '' ||
     minNumImagingSessionsHelperText !== '';
+
+  const pipelineOptions = useMemo(() => buildPipelineOptions(pipelines), [pipelines]);
+  const hierarchicalSelectedPipelines = useMemo(
+    () => pipelineOptionsToHierarchical(selectedPipelines),
+    [selectedPipelines]
+  );
 
   return (
     <div className="flex flex-col gap-2">
@@ -187,10 +196,14 @@ function QueryForm({
         />
       </div>
       <div>
-        <PipelineField
-          pipelines={pipelines}
-          value={selectedPipelines}
-          onFieldChange={onPipelineChange}
+        <HierarchicalSelectField
+          label="Pipeline name and version"
+          placeholder="Select an option"
+          dataCy="Pipeline name and version-categorical-field"
+          groupCheckboxDataCyPrefix="pipeline-group"
+          options={pipelineOptions}
+          value={hierarchicalSelectedPipelines}
+          onFieldChange={(selected) => onPipelineChange(hierarchicalToPipelineOptions(selected))}
         />
       </div>
 

@@ -2,23 +2,35 @@ import { useState, ReactNode } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export interface CollapsiblePipelineGroupProps {
+export interface CollapsibleSelectGroupProps {
   groupKey: string | number;
+  groupId: string;
   groupLabel: string;
-  pipelineId: string;
-  isPipelineChecked: boolean;
+  isGroupChecked: boolean;
+  isGroupIndeterminate?: boolean;
+  groupCheckboxDataCyPrefix?: string;
   children: ReactNode;
-  onTogglePipeline: (pId: string, pLabel: string) => void;
+  onToggleGroup: (groupId: string, groupLabel: string) => void;
 }
 
-function CollapsiblePipelineGroup({
+/**
+ * A collapsible accordion group header used inside hierarchical select dropdowns.
+ *
+ * Renders an expandable group item with:
+ * - A top-level checkbox representing the group itself.
+ * - Support for checked, unchecked, and indeterminate (partially selected) states.
+ * - An accordion toggle button to reveal/hide the list of individual child options.
+ */
+function CollapsibleSelectGroup({
   groupKey,
+  groupId,
   groupLabel,
-  pipelineId,
-  isPipelineChecked,
+  isGroupChecked,
+  isGroupIndeterminate = false,
+  groupCheckboxDataCyPrefix = 'select-group',
   children,
-  onTogglePipeline,
-}: CollapsiblePipelineGroupProps) {
+  onToggleGroup,
+}: CollapsibleSelectGroupProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -51,12 +63,13 @@ function CollapsiblePipelineGroup({
           }}
         >
           <Checkbox
-            data-cy={`pipeline-group-${pipelineId}-checkbox`}
+            data-cy={`${groupCheckboxDataCyPrefix}-${groupId}-checkbox`}
             size="small"
-            checked={isPipelineChecked}
+            checked={isGroupChecked}
+            indeterminate={isGroupIndeterminate}
             onClick={(e) => {
               e.stopPropagation();
-              onTogglePipeline(pipelineId, groupLabel);
+              onToggleGroup(groupId, groupLabel);
             }}
           />
           <Typography variant="body2" fontWeight={600} sx={{ ml: 0.5 }}>
@@ -71,4 +84,4 @@ function CollapsiblePipelineGroup({
   );
 }
 
-export default CollapsiblePipelineGroup;
+export default CollapsibleSelectGroup;

@@ -9,6 +9,12 @@ export interface SingleSelectFieldProps {
   disabled?: boolean;
 }
 
+/**
+ * A reusable single-select categorical input field built on MUI Autocomplete.
+ *
+ * Renders a searchable dropdown for mutually exclusive options sorted alphabetically.
+ * Dispatches changes via `onFieldChange` with the selected `FieldInputOption` or `null` if cleared.
+ */
 function SingleSelectField({
   label,
   options,

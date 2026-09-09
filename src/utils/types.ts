@@ -3,6 +3,14 @@ export interface FieldInputOption {
   id: string;
 }
 
+export interface HierarchicalOption {
+  id: string;
+  label: string;
+  parentId: string;
+  parentLabel: string;
+  isTopLevel?: boolean;
+}
+
 export interface PipelineOption {
   pipelineId: string;
   pipelineLabel: string;
