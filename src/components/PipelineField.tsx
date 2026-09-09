@@ -1,12 +1,6 @@
 import { Autocomplete, Checkbox, TextField } from '@mui/material';
-import { Pipelines } from '../utils/types';
+import { Pipelines, PipelineOption } from '../utils/types';
 import CollapsiblePipelineGroup from './CollapsiblePipelineGroup';
-
-export interface PipelineOption {
-  pipelineId: string;
-  pipelineLabel: string;
-  version?: string;
-}
 
 export interface PipelineFieldProps {
   pipelines: Pipelines;
@@ -32,6 +26,11 @@ function buildPipelineOptions(pipelines: Pipelines): PipelineOption[] {
 
 function PipelineField({ pipelines, value, onFieldChange, disabled = false }: PipelineFieldProps) {
   const options = buildPipelineOptions(pipelines);
+  const pipelineLabelToId = Object.keys(pipelines).reduce<Record<string, string>>((acc, id) => {
+    const label = id.startsWith('np:') ? id.slice(3) : id;
+    acc[label] = id;
+    return acc;
+  }, {});
 
   const handleTogglePipeline = (pId: string, pLabel: string) => {
     const isHeaderChecked = value.some((opt) => opt.pipelineId === pId && !opt.version);
@@ -79,10 +78,7 @@ function PipelineField({ pipelines, value, onFieldChange, disabled = false }: Pi
       }
       groupBy={(option) => option.pipelineLabel}
       renderGroup={({ key, group, children }) => {
-        const pId =
-          Object.keys(pipelines).find(
-            (id) => (id.startsWith('np:') ? id.slice(3) : id) === group
-          ) ?? `np:${group}`;
+        const pId = pipelineLabelToId[group] ?? `np:${group}`;
         const isPipelineChecked = value.some((opt) => opt.pipelineId === pId && !opt.version);
 
         return (

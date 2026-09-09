@@ -7,9 +7,9 @@ import {
   AttributeOption,
   FieldInput,
   FieldInputOption,
-  PipelineVersionOption,
   Pipelines,
   ImagingModalityOption,
+  PipelineOption,
 } from '../utils/types';
 import {
   parseNumericValue,
@@ -18,7 +18,7 @@ import {
 } from '../utils/utils';
 import SingleSelectField from './SingleSelectField';
 import MultiSelectField from './MultiSelectField';
-import PipelineField, { PipelineOption } from './PipelineField';
+import PipelineField from './PipelineField';
 import ContinuousField from './ContinuousField';
 import GetDataDialog from './GetDataDialog';
 
@@ -36,11 +36,11 @@ function QueryForm({
   minNumPhenotypicSessions,
   assessmentTool,
   imagingModality,
-  pipelineVersion,
-  pipelineName,
+  selectedPipelines,
   pipelines,
   updateCategoricalQueryParams,
   updateContinuousQueryParams,
+  onPipelineChange,
   loading,
   onSubmitQuery,
 }: {
@@ -57,11 +57,11 @@ function QueryForm({
   minNumPhenotypicSessions: string;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
-  pipelineVersion: FieldInput;
-  pipelineName: FieldInput;
+  selectedPipelines: PipelineOption[];
   pipelines: Pipelines;
   updateCategoricalQueryParams: (label: string, value: FieldInput) => void;
   updateContinuousQueryParams: (label: string, value: string) => void;
+  onPipelineChange: (selectedPipelines: PipelineOption[]) => void;
   loading: boolean;
   onSubmitQuery: () => void;
 }) {
@@ -90,58 +90,6 @@ function QueryForm({
     minAgeHelperText !== '' ||
     maxAgeHelperText !== '' ||
     minNumImagingSessionsHelperText !== '';
-
-  const selectedPipelines = normalizeFieldInputOptions(pipelineName);
-  const selectedVersionsAll = normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
-
-  const pipelineValue: PipelineOption[] = selectedPipelines.flatMap((p) => {
-    const pVersions = selectedVersionsAll.filter((v) => v.pipelineId === p.id);
-    if (pVersions.length > 0) {
-      return pVersions.map((v) => ({
-        pipelineId: p.id,
-        pipelineLabel: p.label,
-        version: v.id,
-      }));
-    }
-    return [
-      {
-        pipelineId: p.id,
-        pipelineLabel: p.label,
-      },
-    ];
-  });
-
-  const handlePipelineFieldChange = (selectedOptions: PipelineOption[]) => {
-    if (selectedOptions.length === 0) {
-      updateCategoricalQueryParams('Pipeline name', null);
-      updateCategoricalQueryParams('Pipeline version', null);
-      return;
-    }
-
-    const updatedPipelinesMap = new Map<string, FieldInputOption>();
-    const updatedVersions: PipelineVersionOption[] = [];
-
-    selectedOptions.forEach((opt) => {
-      updatedPipelinesMap.set(opt.pipelineId, { id: opt.pipelineId, label: opt.pipelineLabel });
-      if (opt.version) {
-        updatedVersions.push({
-          id: opt.version,
-          label: `${opt.pipelineLabel} ${opt.version}`,
-          pipelineId: opt.pipelineId,
-        });
-      }
-    });
-
-    const updatedPipelines = Array.from(updatedPipelinesMap.values());
-    updateCategoricalQueryParams(
-      'Pipeline name',
-      updatedPipelines.length > 0 ? updatedPipelines : null
-    );
-    updateCategoricalQueryParams(
-      'Pipeline version',
-      updatedVersions.length > 0 ? updatedVersions : null
-    );
-  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -241,8 +189,8 @@ function QueryForm({
       <div>
         <PipelineField
           pipelines={pipelines}
-          value={pipelineValue}
-          onFieldChange={handlePipelineFieldChange}
+          value={selectedPipelines}
+          onFieldChange={onPipelineChange}
         />
       </div>
 

@@ -16,7 +16,7 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
-  PipelineVersionOption,
+  PipelineOption,
   Pipelines,
   DatasetsResponse,
   QueryParams,
@@ -77,8 +77,7 @@ function App() {
   const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<string>('');
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
-  const [pipelineVersion, setPipelineVersion] = useState<FieldInput>(null);
-  const [pipelineName, setPipelineName] = useState<FieldInput>(null);
+  const [selectedPipelines, setSelectedPipelines] = useState<PipelineOption[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [activeQueryParams, setActiveQueryParams] = useState<QueryParams | null>(null);
@@ -142,8 +141,7 @@ function App() {
     minNumPhenotypicSessions,
     assessmentTool,
     imagingModality,
-    pipelineName,
-    pipelineVersion,
+    selectedPipelines,
   };
 
   useEffect(() => {
@@ -409,21 +407,6 @@ function App() {
       case 'Imaging modality':
         setImagingModality(value);
         break;
-      case 'Pipeline version':
-        setPipelineVersion(value);
-        break;
-      case 'Pipeline name': {
-        setPipelineName(value);
-        const newSelectedPipelines = normalizeFieldInputOptions(value);
-        const newPipelineIds = new Set(newSelectedPipelines.map((p) => p.id));
-        if (pipelineVersion) {
-          const currentVersions =
-            normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
-          const validVersions = currentVersions.filter((v) => newPipelineIds.has(v.pipelineId));
-          setPipelineVersion(validVersions.length > 0 ? validVersions : null);
-        }
-        break;
-      }
       default:
         break;
     }
@@ -494,21 +477,10 @@ function App() {
       requestBody.image_modal = selectedImagingModalities.map((m) => m.id);
     }
 
-    const selectedPipelines = normalizeFieldInputOptions(pipelineName);
-
     if (selectedPipelines.length > 0) {
-      const selectedVersions = normalizeFieldInputOptions<PipelineVersionOption>(pipelineVersion);
-
-      requestBody.pipeline = selectedPipelines.flatMap((p) => {
-        const pVersions = selectedVersions.filter((v) => v.pipelineId === p.id);
-        if (pVersions.length > 0) {
-          return pVersions.map((v) => ({
-            name: p.id,
-            version: v.id,
-          }));
-        }
-        return [{ name: p.id }];
-      });
+      requestBody.pipeline = selectedPipelines.map((p) =>
+        p.version ? { name: p.pipelineId, version: p.version } : { name: p.pipelineId }
+      );
     }
 
     return requestBody;
@@ -546,8 +518,7 @@ function App() {
     setMinNumPhenotypicSessions(activeQueryParamsState.minNumPhenotypicSessions);
     setAssessmentTool(activeQueryParamsState.assessmentTool);
     setImagingModality(activeQueryParamsState.imagingModality);
-    setPipelineName(activeQueryParamsState.pipelineName);
-    setPipelineVersion(activeQueryParamsState.pipelineVersion);
+    setSelectedPipelines(activeQueryParamsState.selectedPipelines);
     setSearchParams({ node: activeQueryParamsState.nodes });
   }
 
@@ -679,9 +650,9 @@ function App() {
               minNumPhenotypicSessions={minNumPhenotypicSessions}
               assessmentTool={assessmentTool}
               imagingModality={imagingModality}
-              pipelineVersion={pipelineVersion}
-              pipelineName={pipelineName}
+              selectedPipelines={selectedPipelines}
               pipelines={pipelines}
+              onPipelineChange={setSelectedPipelines}
               updateCategoricalQueryParams={(label, value) =>
                 updateCategoricalQueryParams(label, value)
               }

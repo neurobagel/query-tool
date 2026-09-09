@@ -3,6 +3,7 @@ import { datasetsURL, subjectsURL } from './constants';
 import {
   FieldInput,
   FieldInputOption,
+  PipelineOption,
   QueryFormState,
   QueryParams,
   DatasetsResponse,
@@ -14,7 +15,7 @@ import {
 
 /**
  * Normalizes a FieldInput (null, single option, or array) into an array of options.
- * Accepts an optional generic T to preserve specific option subtypes (e.g. PipelineVersionOption).
+ * Accepts an optional generic T to preserve specific option subtypes.
  */
 export function normalizeFieldInputOptions<T extends FieldInputOption = FieldInputOption>(
   input: FieldInput
@@ -74,6 +75,18 @@ function areStringArraysEqual(a: string[], b: string[]): boolean {
   return sortedA.every((value, index) => value === sortedB[index]);
 }
 
+function arePipelineOptionsEqual(a: PipelineOption[], b: PipelineOption[]): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  const serialize = (opt: PipelineOption) => `${opt.pipelineId}::${opt.version ?? ''}`;
+  const sortedA = [...a].map(serialize).sort();
+  const sortedB = [...b].map(serialize).sort();
+
+  return sortedA.every((value, index) => value === sortedB[index]);
+}
+
 export function parseNumericValue(value: string): number | null {
   const trimmedValue = value.trim();
   if (trimmedValue === '') {
@@ -95,8 +108,7 @@ export default function areFormStatesEqual(a: QueryFormState, b: QueryFormState)
     a.minNumPhenotypicSessions === b.minNumPhenotypicSessions &&
     areFieldInputsEqual(a.assessmentTool, b.assessmentTool) &&
     areFieldInputsEqual(a.imagingModality, b.imagingModality) &&
-    areFieldInputsEqual(a.pipelineName, b.pipelineName) &&
-    areFieldInputsEqual(a.pipelineVersion, b.pipelineVersion)
+    arePipelineOptionsEqual(a.selectedPipelines, b.selectedPipelines)
   );
 }
 

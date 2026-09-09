@@ -3,8 +3,10 @@ export interface FieldInputOption {
   id: string;
 }
 
-export interface PipelineVersionOption extends FieldInputOption {
+export interface PipelineOption {
   pipelineId: string;
+  pipelineLabel: string;
+  version?: string;
 }
 
 export interface AttributeOption {
@@ -74,8 +76,7 @@ export type QueryFormState = {
   minNumPhenotypicSessions: string;
   assessmentTool: FieldInput;
   imagingModality: FieldInput;
-  pipelineName: FieldInput;
-  pipelineVersion: FieldInput;
+  selectedPipelines: PipelineOption[];
 };
 
 export interface Subject {

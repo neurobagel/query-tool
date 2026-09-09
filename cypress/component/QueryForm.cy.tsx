@@ -48,11 +48,11 @@ const defaultProps = {
   minNumPhenotypicSessions: '',
   assessmentTool: null,
   imagingModality: null,
-  pipelineVersion: null,
-  pipelineName: null,
+  selectedPipelines: [],
   pipelines: {
     'np:fmriprep': ['0.2.3', '23.1.3'],
   },
+  onPipelineChange: () => {},
   updateCategoricalQueryParams: () => {},
   updateContinuousQueryParams: () => {},
   loading: false,
@@ -76,9 +76,9 @@ describe('QueryForm', () => {
         minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
         assessmentTool={defaultProps.assessmentTool}
         imagingModality={defaultProps.imagingModality}
-        pipelineVersion={defaultProps.pipelineVersion}
-        pipelineName={defaultProps.pipelineName}
+        selectedPipelines={defaultProps.selectedPipelines}
         pipelines={defaultProps.pipelines}
+        onPipelineChange={defaultProps.onPipelineChange}
         updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
         updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
         loading={defaultProps.loading}
@@ -117,9 +117,9 @@ describe('QueryForm', () => {
         minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
         assessmentTool={defaultProps.assessmentTool}
         imagingModality={defaultProps.imagingModality}
-        pipelineVersion={defaultProps.pipelineVersion}
-        pipelineName={defaultProps.pipelineName}
+        selectedPipelines={defaultProps.selectedPipelines}
         pipelines={defaultProps.pipelines}
+        onPipelineChange={defaultProps.onPipelineChange}
         updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
         updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
         loading={defaultProps.loading}
@@ -147,9 +147,9 @@ describe('QueryForm', () => {
         minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
         assessmentTool={defaultProps.assessmentTool}
         imagingModality={defaultProps.imagingModality}
-        pipelineVersion={defaultProps.pipelineVersion}
-        pipelineName={defaultProps.pipelineName}
+        selectedPipelines={defaultProps.selectedPipelines}
         pipelines={defaultProps.pipelines}
+        onPipelineChange={defaultProps.onPipelineChange}
         updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
         updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
         loading={defaultProps.loading}
@@ -182,9 +182,9 @@ describe('QueryForm', () => {
         minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
         assessmentTool={defaultProps.assessmentTool}
         imagingModality={defaultProps.imagingModality}
-        pipelineVersion={defaultProps.pipelineVersion}
-        pipelineName={defaultProps.pipelineName}
+        selectedPipelines={defaultProps.selectedPipelines}
         pipelines={defaultProps.pipelines}
+        onPipelineChange={defaultProps.onPipelineChange}
         updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
         updateContinuousQueryParams={updateContinuousQueryParamsSpy}
         loading={defaultProps.loading}
@@ -211,9 +211,9 @@ describe('QueryForm', () => {
         minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
         assessmentTool={defaultProps.assessmentTool}
         imagingModality={defaultProps.imagingModality}
-        pipelineVersion={defaultProps.pipelineVersion}
-        pipelineName={defaultProps.pipelineName}
+        selectedPipelines={defaultProps.selectedPipelines}
         pipelines={defaultProps.pipelines}
+        onPipelineChange={defaultProps.onPipelineChange}
         updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
         updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
         loading={defaultProps.loading}
@@ -223,8 +223,8 @@ describe('QueryForm', () => {
     cy.get('[data-cy="submit-query-button"]').click();
     cy.get('@onSubmitQuerySpy').should('have.been.called');
   });
-  it('Fires updateCategoricalQueryParams event handler when selecting a pipeline version in the Pipeline field', () => {
-    const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
+  it('Fires onPipelineChange event handler when selecting a pipeline version in the Pipeline field', () => {
+    const onPipelineChangeSpy = cy.spy().as('onPipelineChangeSpy');
     cy.mount(
       <QueryForm
         availableNodes={defaultProps.availableNodes}
@@ -240,11 +240,11 @@ describe('QueryForm', () => {
         minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
         assessmentTool={defaultProps.assessmentTool}
         imagingModality={defaultProps.imagingModality}
-        pipelineVersion={defaultProps.pipelineVersion}
-        pipelineName={defaultProps.pipelineName}
+        selectedPipelines={defaultProps.selectedPipelines}
         pipelines={defaultProps.pipelines}
-        updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
+        updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
         updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        onPipelineChange={onPipelineChangeSpy}
         loading={defaultProps.loading}
         onSubmitQuery={defaultProps.onSubmitQuery}
       />
@@ -253,15 +253,12 @@ describe('QueryForm', () => {
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
     cy.contains('fmriprep').click();
     cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
-    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
-      { id: 'np:fmriprep', label: 'fmriprep' },
-    ]);
-    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline version', [
-      { id: '0.2.3', label: 'fmriprep 0.2.3', pipelineId: 'np:fmriprep' },
+    cy.get('@onPipelineChangeSpy').should('have.been.calledWith', [
+      { pipelineId: 'np:fmriprep', pipelineLabel: 'fmriprep', version: '0.2.3' },
     ]);
   });
-  it('Fires updateCategoricalQueryParams event handler when clicking the pipeline group header checkbox in the Pipeline field', () => {
-    const updateCategoricalQueryParamsSpy = cy.spy().as('updateCategoricalQueryParamsSpy');
+  it('Fires onPipelineChange event handler when clicking the pipeline group header checkbox in the Pipeline field', () => {
+    const onPipelineChangeSpy = cy.spy().as('onPipelineChangeSpy');
     cy.mount(
       <QueryForm
         availableNodes={defaultProps.availableNodes}
@@ -277,11 +274,11 @@ describe('QueryForm', () => {
         minNumPhenotypicSessions={defaultProps.minNumPhenotypicSessions}
         assessmentTool={defaultProps.assessmentTool}
         imagingModality={defaultProps.imagingModality}
-        pipelineVersion={defaultProps.pipelineVersion}
-        pipelineName={defaultProps.pipelineName}
+        selectedPipelines={defaultProps.selectedPipelines}
         pipelines={defaultProps.pipelines}
-        updateCategoricalQueryParams={updateCategoricalQueryParamsSpy}
+        updateCategoricalQueryParams={defaultProps.updateCategoricalQueryParams}
         updateContinuousQueryParams={defaultProps.updateContinuousQueryParams}
+        onPipelineChange={onPipelineChangeSpy}
         loading={defaultProps.loading}
         onSubmitQuery={defaultProps.onSubmitQuery}
       />
@@ -289,13 +286,8 @@ describe('QueryForm', () => {
 
     cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
     cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
-    cy.get('@updateCategoricalQueryParamsSpy').should('have.been.calledWith', 'Pipeline name', [
-      { id: 'np:fmriprep', label: 'fmriprep' },
+    cy.get('@onPipelineChangeSpy').should('have.been.calledWith', [
+      { pipelineId: 'np:fmriprep', pipelineLabel: 'fmriprep' },
     ]);
-    cy.get('@updateCategoricalQueryParamsSpy').should(
-      'have.been.calledWith',
-      'Pipeline version',
-      null
-    );
   });
 });
