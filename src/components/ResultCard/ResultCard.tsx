@@ -47,7 +47,7 @@ const ResultCard = memo(function ResultCard({
   const isCatalog = numMatchingSubjects === null;
 
   return (
-    <Card data-cy={`card-${datasetUuid}`} sx={{ mb: 2 }}>
+    <Card data-cy={`card-${datasetUuid}`} sx={{ mb: 0 }}>
       <ResultCardHeader
         nodeName={nodeName}
         recordsProtected={recordsProtected}
