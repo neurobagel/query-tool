@@ -28,6 +28,13 @@ describe('App', () => {
       },
       pipelineOptions
     ).as('getPipelineOptions');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines/np:fmriprep/versions',
+      },
+      pipelineVersionOptions
+    ).as('getPipelineVersionsOptions');
     cy.visit('/');
     cy.wait(['@getNodes', '@getDiagnosisOptions', '@getPipelineOptions']);
 
@@ -57,43 +64,50 @@ describe('App', () => {
   it('Displays the diagnosis options it retrieves from a node API', () => {
     cy.get('[data-cy="Diagnosis-categorical-field"] input').should('not.be.disabled');
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
-    cy.get('[data-cy="Diagnosis-categorical-field"] input').should(
-      'have.value',
-      "Parkinson's disease"
+    cy.get('[data-cy="Diagnosis-categorical-field"]').should('contain', "Parkinson's disease");
+  });
+  it('Allows selecting a pipeline option in the Pipeline field', () => {
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep 0.2.3'
     );
   });
-  it('Enables the pipeline version field once a pipeline name is selected', () => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/pipelines/np:fmriprep/versions',
-      },
-      pipelineVersionOptions
-    ).as('getPipelineVersionsOptions');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
-    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
-    cy.wait('@getPipelineVersionsOptions');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('not.be.disabled');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
+  it('Should clear selected pipeline options when the clear button is clicked', () => {
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep 0.2.3'
+    );
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]')
+      .find('.MuiAutocomplete-clearIndicator')
+      .click({ force: true });
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'not.contain',
+      'fmriprep 0.2.3'
+    );
   });
-  it('Should disable and clear the pipeline version field when the pipeline name field is cleared', () => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/pipelines/np:fmriprep/versions',
-      },
-      pipelineVersionOptions
-    ).as('getPipelineVersionsOptions');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
-    cy.get('[data-cy="Pipeline name-categorical-field"]').type('fmri{downarrow}{enter}');
-    cy.wait('@getPipelineVersionsOptions');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('not.be.disabled');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').type('0.2.3{downarrow}{enter}');
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('have.value', '0.2.3');
-    cy.get('[data-cy="Pipeline name-categorical-field"]').clear();
-    cy.get('[data-cy="Pipeline version-categorical-field"] input').should('be.disabled');
-    cy.get('[data-cy="Pipeline version-categorical-field"]').should('have.value', '');
+  it('should clear specific pipeline versions when clicking the pipeline group header checkbox', () => {
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').click();
+    cy.contains('fmriprep').click();
+    cy.contains('.MuiAutocomplete-option', 'fmriprep 0.2.3').click();
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep 0.2.3'
+    );
+    cy.get('[data-cy="pipeline-group-np:fmriprep-checkbox"]').click({ force: true });
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'contain',
+      'fmriprep any version'
+    );
+    cy.get('[data-cy="Pipeline name and version-categorical-field"]').should(
+      'not.contain',
+      'fmriprep 0.2.3'
+    );
   });
   it('should toggle the filter form visibility when clicking the button', () => {
     cy.viewport(800, 600); // Mobile/tablet viewport
@@ -129,7 +143,9 @@ describe('App', () => {
       'OpenNeur{downarrow}{enter}'
     );
     cy.get('[data-cy="Neurobagel graph-categorical-field"] input').type('Quebec{downarrow}{enter}');
-    cy.get('.MuiAutocomplete-clearIndicator').click();
+    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+      .find('.MuiAutocomplete-clearIndicator')
+      .click({ force: true });
     cy.get('[data-cy="Neurobagel graph-categorical-field"]')
       .should('not.contain', 'Quebec')
       .and('not.contain', 'OpenNeuro');
