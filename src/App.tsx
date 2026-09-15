@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Button, IconButton } from '@mui/material';
@@ -16,6 +16,7 @@ import {
   NodeOption,
   FieldInput,
   FieldInputOption,
+  PipelineOption,
   Pipelines,
   DatasetsResponse,
   QueryParams,
@@ -36,6 +37,7 @@ import NodeAdmonition from './components/NodeAdmonition';
 import './App.css';
 import logo from './assets/logo.png';
 import areFormStatesEqual, {
+  normalizeFieldInputOptions,
   parseNumericValue,
   sendDatasetsQuery,
   sendSubjectsQuery,
@@ -55,6 +57,9 @@ function App() {
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
   const [pipelines, setPipelines] = useState<Pipelines>({});
+  // Track pipeline IDs for which version fetching has already been initiated to prevent
+  // duplicate in-flight requests or infinite fetch loops when a pipeline has no versions.
+  const fetchedPipelineURIs = useRef<Set<keyof Pipelines>>(new Set());
 
   // Track which node admonitions have been dismissed
   const [dismissedNodeAdmonitions, setDismissedNodeAdmonitions] = useState<string[]>([]);
@@ -72,8 +77,7 @@ function App() {
   const [minNumPhenotypicSessions, setMinNumPhenotypicSessions] = useState<string>('');
   const [assessmentTool, setAssessmentTool] = useState<FieldInput>(null);
   const [imagingModality, setImagingModality] = useState<FieldInput>(null);
-  const [pipelineVersion, setPipelineVersion] = useState<FieldInput>(null);
-  const [pipelineName, setPipelineName] = useState<FieldInput>(null);
+  const [selectedPipelines, setSelectedPipelines] = useState<PipelineOption[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [activeQueryParams, setActiveQueryParams] = useState<QueryParams | null>(null);
@@ -137,8 +141,7 @@ function App() {
     minNumPhenotypicSessions,
     assessmentTool,
     imagingModality,
-    pipelineName,
-    pipelineVersion,
+    selectedPipelines,
   };
 
   useEffect(() => {
@@ -305,22 +308,28 @@ function App() {
         return [];
       }
     }
-    // Get pipeline versions if
-    // 1. A pipeline has been selected (this implementation only works for single value for pipeline name field)
-    // 2. This is the first time its being selected (i.e., we haven't retrieved pipeline versions before)
-    if (
-      pipelineName !== null &&
-      !Array.isArray(pipelineName) &&
-      pipelines[pipelineName.id].length === 0
-    ) {
-      getPipelineVersions(pipelineName).then((pipelineVersionsRespnse) => {
-        setPipelines((prevPipelines) => ({
-          ...prevPipelines,
-          [pipelineName.id]: pipelineVersionsRespnse,
-        }));
-      });
-    }
-  }, [pipelines, pipelineName]);
+
+    const pipelineURIs = Object.keys(pipelines);
+
+    pipelineURIs.forEach((pId) => {
+      // Only initiate fetching if this pipeline has not already been requested.
+      // This ensures each pipeline is fetched once, avoiding duplicate in-flight
+      // requests and preventing infinite loops when a pipeline has zero versions.
+      if (!fetchedPipelineURIs.current.has(pId)) {
+        fetchedPipelineURIs.current.add(pId);
+        const pOption: FieldInputOption = {
+          id: pId,
+          label: pId.startsWith('np:') ? pId.slice(3) : pId,
+        };
+        getPipelineVersions(pOption).then((pipelineVersionsResponse) => {
+          setPipelines((prevPipelines) => ({
+            ...prevPipelines,
+            [pId]: pipelineVersionsResponse,
+          }));
+        });
+      }
+    });
+  }, [pipelines]);
 
   useEffect(() => {
     if (availableNodes.length > 1) {
@@ -398,12 +407,6 @@ function App() {
       case 'Imaging modality':
         setImagingModality(value);
         break;
-      case 'Pipeline version':
-        setPipelineVersion(value);
-        break;
-      case 'Pipeline name':
-        setPipelineName(value);
-        break;
       default:
         break;
     }
@@ -450,7 +453,12 @@ function App() {
     const maxAgeNumber = parseNumericValue(maxAge);
     if (maxAgeNumber !== null) requestBody.max_age = maxAgeNumber;
     if (sex && !Array.isArray(sex)) requestBody.sex = sex.id;
-    if (diagnosis && !Array.isArray(diagnosis)) requestBody.diagnosis = diagnosis.id;
+
+    const selectedDiagnoses = normalizeFieldInputOptions(diagnosis);
+    if (selectedDiagnoses.length > 0) {
+      requestBody.diagnosis = selectedDiagnoses.map((d) => d.id);
+    }
+
     const minNumImagingSessionsNumber = parseNumericValue(minNumImagingSessions);
     if (minNumImagingSessionsNumber !== null)
       requestBody.min_num_imaging_sessions = minNumImagingSessionsNumber;
@@ -458,13 +466,22 @@ function App() {
     const minNumPhenotypicSessionsNumber = parseNumericValue(minNumPhenotypicSessions);
     if (minNumPhenotypicSessionsNumber !== null)
       requestBody.min_num_phenotypic_sessions = minNumPhenotypicSessionsNumber;
-    if (assessmentTool && !Array.isArray(assessmentTool))
-      requestBody.assessment = assessmentTool.id;
-    if (imagingModality && !Array.isArray(imagingModality))
-      requestBody.image_modal = imagingModality.id;
-    if (pipelineName && !Array.isArray(pipelineName)) requestBody.pipeline_name = pipelineName.id;
-    if (pipelineVersion && !Array.isArray(pipelineVersion) && pipelineName)
-      requestBody.pipeline_version = pipelineVersion.id;
+
+    const selectedAssessments = normalizeFieldInputOptions(assessmentTool);
+    if (selectedAssessments.length > 0) {
+      requestBody.assessment = selectedAssessments.map((a) => a.id);
+    }
+
+    const selectedImagingModalities = normalizeFieldInputOptions(imagingModality);
+    if (selectedImagingModalities.length > 0) {
+      requestBody.image_modal = selectedImagingModalities.map((m) => m.id);
+    }
+
+    if (selectedPipelines.length > 0) {
+      requestBody.pipeline = selectedPipelines.map((p) =>
+        p.version ? { name: p.pipelineId, version: p.version } : { name: p.pipelineId }
+      );
+    }
 
     return requestBody;
   }
@@ -501,8 +518,7 @@ function App() {
     setMinNumPhenotypicSessions(activeQueryParamsState.minNumPhenotypicSessions);
     setAssessmentTool(activeQueryParamsState.assessmentTool);
     setImagingModality(activeQueryParamsState.imagingModality);
-    setPipelineName(activeQueryParamsState.pipelineName);
-    setPipelineVersion(activeQueryParamsState.pipelineVersion);
+    setSelectedPipelines(activeQueryParamsState.selectedPipelines);
     setSearchParams({ node: activeQueryParamsState.nodes });
   }
 
@@ -634,9 +650,9 @@ function App() {
               minNumPhenotypicSessions={minNumPhenotypicSessions}
               assessmentTool={assessmentTool}
               imagingModality={imagingModality}
-              pipelineVersion={pipelineVersion}
-              pipelineName={pipelineName}
+              selectedPipelines={selectedPipelines}
               pipelines={pipelines}
+              onPipelineChange={setSelectedPipelines}
               updateCategoricalQueryParams={(label, value) =>
                 updateCategoricalQueryParams(label, value)
               }

@@ -1,3 +1,24 @@
+# v0.17.0 (Tue Sep 15 2026)
+
+#### 💥 Breaking Changes
+
+- [ENH] Enable selecting multiple options for AND queries [#841](https://github.com/neurobagel/query-tool/pull/841) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Virtualize dataset card rendering in `ResultContainer` to resolve selection lag [#858](https://github.com/neurobagel/query-tool/pull/858) ([@rmanaem](https://github.com/rmanaem) [@surchs](https://github.com/surchs))
+
+#### 🏠 Internal
+
+- [TST] Intercept and wait for nodes and pipelines in `ResultsTSV` [#853](https://github.com/neurobagel/query-tool/pull/853) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 2
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+- Sebastian Urchs ([@surchs](https://github.com/surchs))
+
+---
+
 # v0.16.1 (Mon Aug 31 2026)
 
 :tada: This release contains work from new contributors! :tada:
