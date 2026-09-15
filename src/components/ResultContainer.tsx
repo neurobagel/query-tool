@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { FormControlLabel, Checkbox, Typography, Switch } from '@mui/material';
 import ResultCard from './ResultCard/ResultCard';
+import VirtualResultList from './VirtualResultList';
 import {
   DatasetsResponse,
   SubjectsResponse,
@@ -372,16 +373,25 @@ function ResultContainer({
             </Typography>
           </div>
         </div>
-        <div className="h-[65vh] space-y-1 overflow-auto">
-          {displayedDatasets.map((item) => (
-            <ResultCard
-              key={item.dataset_uuid}
-              dataset={item}
-              imagingModalitiesMetadata={imagingModalitiesMetadata}
-              checked={download.includes(item.dataset_uuid)}
-              onCheckboxChange={updateDownload}
-            />
-          ))}
+        <div className="h-[65vh] w-full">
+          <VirtualResultList
+            key={`${displayedDatasets.length}-${subjectLevelOnly}-${datasetsResponse.responses[0]?.dataset_uuid ?? 'empty'}`}
+            listKey={`${displayedDatasets.length}-${subjectLevelOnly}-${datasetsResponse.responses[0]?.dataset_uuid ?? 'empty'}`}
+            itemCount={displayedDatasets.length}
+          >
+            {({ index }) => {
+              const item = displayedDatasets[index];
+              return (
+                <ResultCard
+                  key={item.dataset_uuid}
+                  dataset={item}
+                  imagingModalitiesMetadata={imagingModalitiesMetadata}
+                  checked={download.includes(item.dataset_uuid)}
+                  onCheckboxChange={updateDownload}
+                />
+              );
+            }}
+          </VirtualResultList>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
           <DownloadResultButton
