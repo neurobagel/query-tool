@@ -203,6 +203,14 @@ export const diagnosisOptions = {
         TermURL: 'snomed:370143000',
         Label: 'Major depressive disorder',
       },
+      {
+        TermURL: 'ncit:C94342',
+        Label: 'Healthy Control',
+      },
+      {
+        TermURL: 'snomed:406506008',
+        Label: 'Attention deficit hyperactivity disorder',
+      },
     ],
   },
   nodes_response_status: 'success',
@@ -284,6 +292,14 @@ export const assessmentToolOptions = {
         TermURL: 'cogatlas:trm_4f2419c4a1646',
         Label: 'multisource interference task',
       },
+      {
+        TermURL: 'snomed:859351000000102',
+        Label: 'Montreal cognitive assessment',
+      },
+      {
+        TermURL: 'snomed:342061000000106',
+        Label: 'Unified Parkinsons disease rating scale score',
+      },
     ],
   },
   nodes_response_status: 'success',
@@ -322,20 +338,20 @@ export const imagingModalityOptions = {
     'nb:Image': [
       {
         TermURL: 'nidm:T1Weighted',
-        Label: 'T1 Weighted',
+        Label: 'T1-weighted image',
         Abbreviation: 'T1w',
         DataType: 'anat',
       },
       {
         TermURL: 'nidm:T2Weighted',
-        Label: 'T2 Weighted',
+        Label: 'T2-weighted image',
         Abbreviation: 'T2w',
         DataType: 'anat',
       },
       {
         TermURL: 'nidm:FlowWeighted',
-        Label: 'Functional MRI',
-        Abbreviation: 'fMRI',
+        Label: 'Blood-Oxygen-Level Dependent image',
+        Abbreviation: 'bold',
         DataType: 'func',
       },
       {
