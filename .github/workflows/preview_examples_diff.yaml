@@ -1,0 +1,72 @@
+name: preview examples diff
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  generate-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Set up node env
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: Create .env file
+        run: |
+          echo -e "NB_API_QUERY_URL=https://federate.neurobagel.org/\nNB_ENABLE_AUTH=true\nNB_QUERY_CLIENT_ID=mockclientid" > .env
+
+      - name: Build
+        run: npm install && npm run build
+
+      - name: Run Cypress tests to generate example TSVs
+        uses: cypress-io/github-action@v7
+        with:
+          wait-on: http://localhost:5173
+          start: npm run preview
+          spec: cypress/e2e/UpdateExamples.cy.ts
+          component: false
+
+      - name: Normalize generated TSV names
+        run: |
+          mv cypress/downloads/neurobagel-query-results_*.tsv cypress/downloads/neurobagel-query-results_YYYYMMDDHHMMSS.tsv
+          mv cypress/downloads/neurobagel-query-results-with-URIs_*.tsv cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv
+
+      - name: Checkout reference TSVs from neurobagel_examples
+        uses: actions/checkout@v7
+        with:
+          repository: neurobagel/neurobagel_examples
+          ref: main
+          path: reference_examples
+
+      - name: Compute diff
+        run: |
+          mkdir -p diff-artifact
+          echo "${{ github.event.pull_request.number }}" > diff-artifact/pr_number.txt
+
+          mkdir -p generated_examples/query-tool-results
+          cp cypress/downloads/neurobagel-query-results_YYYYMMDDHHMMSS.tsv generated_examples/query-tool-results/
+          cp cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv generated_examples/query-tool-results/
+
+          git diff --no-index reference_examples/query-tool-results/ generated_examples/query-tool-results/ > diff-artifact/combined.diff || true
+
+          if [ -s diff-artifact/combined.diff ]; then
+            echo "has_diff=true" > diff-artifact/diff_status.txt
+          else
+            echo "has_diff=false" > diff-artifact/diff_status.txt
+          fi
+
+      - name: Upload diff artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: examples-diff-artifact
+          path: diff-artifact/
