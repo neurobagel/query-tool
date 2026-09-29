@@ -1,20 +1,21 @@
 name: update examples
 
 on:
-  pull_request_target:
+  push:
+    branches:
+      - main
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   generate-example-files:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR head branch
+      - name: Checkout
         uses: actions/checkout@v7
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: false  
           submodules: true
 
       - name: Set up node env
