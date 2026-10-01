@@ -9,6 +9,7 @@
 [![License](https://img.shields.io/github/license/neurobagel/query-tool?style=flat-square&color=purple&link=LICENSE)](LICENSE)
 [![Docker Image Version (tag)](https://img.shields.io/docker/v/neurobagel/query_tool/latest?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)](https://hub.docker.com/r/neurobagel/query_tool/tags)
 [![Docker Pulls](https://img.shields.io/docker/pulls/neurobagel/query_tool?style=flat-square&logo=docker&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fneurobagel%2Fquery_tool%2Ftags)](https://hub.docker.com/r/neurobagel/query_tool/tags)
+[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/neurobagel/query-tool?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/neurobagel/query-tool)
 
 [![Staging app status](https://img.shields.io/website?url=https%3A%2F%2Fneurobagel-query.netlify.app&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=staging%20app&link=https%3A%2F%2Fneurobagel-query.netlify.app)](https://neurobagel-query.netlify.app/)
 [![Deployed app status](https://img.shields.io/website?url=https%3A%2F%2Fquery.neurobagel.org&up_message=live&up_color=B0C4DE&down_message=down&down_color=CD5C5C&style=flat-square&label=deployed%20app&link=https%3A%2F%2Fquery.neurobagel.org)](https://query.neurobagel.org/)
