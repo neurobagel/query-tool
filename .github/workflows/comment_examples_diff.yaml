@@ -33,30 +33,27 @@ jobs:
           if [ "$(cat diff-artifact/diff_status.txt)" = "has_diff=true" ]; then
             head -c 50000 diff-artifact/combined.diff > diff-artifact/diff_truncated.diff
 
-            cat << 'EOF' > "$COMMENT_FILE"
-
-⚠️ **Changes detected** in the query tool results TSV compared to `neurobagel_examples:main`:
-
-<details open>
-<summary><b>View TSV Diff</b></summary>
-
-```diff
-EOF
-            cat diff-artifact/diff_truncated.diff >> "$COMMENT_FILE"
-            if [ $(wc -c < diff-artifact/combined.diff) -gt 50000 ]; then
-              echo -e "\n... [Diff truncated due to size limit. View workflow artifacts for full diff]" >> "$COMMENT_FILE"
-            fi
-            cat << 'EOF' >> "$COMMENT_FILE"
-```
-</details>
-
-EOF
+            {
+              echo ""
+              echo "⚠️ **Changes detected** in the query tool results TSV compared to \`neurobagel_examples:main\`:"
+              echo ""
+              echo "<details open>"
+              echo "<summary><b>View TSV Diff</b></summary>"
+              echo ""
+              echo '```diff'
+              cat diff-artifact/diff_truncated.diff
+              if [ $(wc -c < diff-artifact/combined.diff) -gt 50000 ]; then
+                echo ""
+                echo "... [Diff truncated due to size limit. View workflow artifacts for full diff]"
+              fi
+              echo '```'
+              echo "</details>"
+            } > "$COMMENT_FILE"
           else
-            cat << 'EOF' > "$COMMENT_FILE"
-
-✅ **No changes detected** in the query tool results TSV compared to `neurobagel_examples:main`.
-
-EOF
+            {
+              echo ""
+              echo "✅ **No changes detected** in the query tool results TSV compared to \`neurobagel_examples:main\`."
+            } > "$COMMENT_FILE"
           fi
 
       - name: Post or update PR comment
