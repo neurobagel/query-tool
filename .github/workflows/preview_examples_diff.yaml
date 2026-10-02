@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   generate-diff:
@@ -70,3 +72,46 @@ jobs:
         with:
           name: examples-diff-artifact
           path: diff-artifact/
+
+      - name: Generate comment markdown
+        id: prep
+        run: |
+          echo "pr_number=$(cat diff-artifact/pr_number.txt)" >> "$GITHUB_OUTPUT"
+          COMMENT_FILE="diff-artifact/comment.md"
+
+          if [ "$(cat diff-artifact/diff_status.txt)" = "has_diff=true" ]; then
+            head -c 50000 diff-artifact/combined.diff > diff-artifact/diff_truncated.diff
+
+            cat << 'EOF' > "$COMMENT_FILE"
+
+⚠️ **Changes detected** in the query tool results TSV compared to `neurobagel_examples:main`:
+
+<details open>
+<summary><b>View TSV Diff</b></summary>
+
+```diff
+EOF
+            cat diff-artifact/diff_truncated.diff >> "$COMMENT_FILE"
+            if [ $(wc -c < diff-artifact/combined.diff) -gt 50000 ]; then
+              echo -e "\n... [Diff truncated due to size limit. View workflow artifacts for full diff]" >> "$COMMENT_FILE"
+            fi
+            cat << 'EOF' >> "$COMMENT_FILE"
+```
+</details>
+
+EOF
+          else
+            cat << 'EOF' > "$COMMENT_FILE"
+
+✅ **No changes detected** in the query tool results TSV compared to `neurobagel_examples:main`.
+
+EOF
+          fi
+
+      - name: Post or update PR comment
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: query-tool-examples-diff-preview
+          number: ${{ steps.prep.outputs.pr_number }}
+          path: diff-artifact/comment.md
