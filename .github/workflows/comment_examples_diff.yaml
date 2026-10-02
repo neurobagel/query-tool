@@ -56,10 +56,18 @@ jobs:
             } > "$COMMENT_FILE"
           fi
 
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.NB_BOT_ID }}
+          private-key: ${{ secrets.NB_BOT_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Post or update PR comment
         uses: marocchino/sticky-pull-request-comment@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           header: query-tool-examples-diff-preview
           number: ${{ steps.prep.outputs.pr_number }}
           path: diff-artifact/comment.md
