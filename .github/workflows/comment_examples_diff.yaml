@@ -31,23 +31,43 @@ jobs:
           COMMENT_FILE="diff-artifact/comment.md"
 
           if [ "$(cat diff-artifact/diff_status.txt)" = "has_diff=true" ]; then
-            head -c 50000 diff-artifact/combined.diff > diff-artifact/diff_truncated.diff
-
             {
               echo ""
               echo "⚠️ **Changes detected** in the query tool results TSV compared to \`neurobagel_examples:main\`:"
-              echo ""
-              echo "<details open>"
-              echo "<summary><b>View TSV Diff</b></summary>"
-              echo ""
-              echo '```diff'
-              cat diff-artifact/diff_truncated.diff
-              if [ $(wc -c < diff-artifact/combined.diff) -gt 50000 ]; then
+
+              if [ -s diff-artifact/results.diff ]; then
                 echo ""
-                echo "... [Diff truncated due to size limit. View workflow artifacts for full diff]"
+                echo "<details open>"
+                echo "<summary><b>📄 neurobagel-query-results.tsv</b></summary>"
+                echo ""
+                echo '```diff'
+                if [ $(wc -c < diff-artifact/results.diff) -gt 25000 ]; then
+                  head -c 25000 diff-artifact/results.diff
+                  echo ""
+                  echo "... [Diff truncated due to size limit. View workflow artifacts for full diff]"
+                else
+                  cat diff-artifact/results.diff
+                fi
+                echo '```'
+                echo "</details>"
               fi
-              echo '```'
-              echo "</details>"
+
+              if [ -s diff-artifact/results_uris.diff ]; then
+                echo ""
+                echo "<details open>"
+                echo "<summary><b>📄 neurobagel-query-results-with-URIs.tsv</b></summary>"
+                echo ""
+                echo '```diff'
+                if [ $(wc -c < diff-artifact/results_uris.diff) -gt 25000 ]; then
+                  head -c 25000 diff-artifact/results_uris.diff
+                  echo ""
+                  echo "... [Diff truncated due to size limit. View workflow artifacts for full diff]"
+                else
+                  cat diff-artifact/results_uris.diff
+                fi
+                echo '```'
+                echo "</details>"
+              fi
             } > "$COMMENT_FILE"
           else
             {
