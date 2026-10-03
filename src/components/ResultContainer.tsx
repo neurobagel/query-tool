@@ -200,7 +200,7 @@ function ResultContainer({
       'SessionCompletedPipelines',
       'DatasetImagingModalities',
       'DatasetPipelines',
-      'AccessLink_TestDiff',
+      'AccessLink',
     ].join('\t');
 
     const dataRows = subjectsResponse.responses.flatMap((subResp) => {
