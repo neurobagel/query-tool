@@ -2,14 +2,12 @@ name: comment examples diff
 
 on:
   workflow_run:
-    workflows: ["preview examples diff"]
+    workflows: ["generate examples diff"]
     types:
       - completed
 
 permissions:
   actions: read
-  pull-requests: write
-  issues: write
 
 jobs:
   post-comment:
@@ -30,15 +28,15 @@ jobs:
           echo "pr_number=$(cat diff-artifact/pr_number.txt)" >> "$GITHUB_OUTPUT"
           COMMENT_FILE="diff-artifact/comment.md"
 
-          if [ "$(cat diff-artifact/diff_status.txt)" = "has_diff=true" ]; then
+          if [ "$(cat diff-artifact/has_diff.txt)" = "true" ]; then
             {
               echo ""
-              echo "⚠️ **Changes detected** in the query tool results TSV compared to \`neurobagel_examples:main\`:"
+              echo "⚠️ **Changes detected** in the query tool results TSV(s) compared to \`neurobagel_examples:main\`:"
 
               if [ -s diff-artifact/results.diff ]; then
                 echo ""
                 echo "<details open>"
-                echo "<summary><b>📄 neurobagel-query-results.tsv</b></summary>"
+                echo "<summary><b>📄 neurobagel-query-results_YYYYMMDDHHMMSS.tsv</b></summary>"
                 echo ""
                 echo '```diff'
                 if [ $(wc -c < diff-artifact/results.diff) -gt 25000 ]; then
@@ -55,7 +53,7 @@ jobs:
               if [ -s diff-artifact/results_uris.diff ]; then
                 echo ""
                 echo "<details open>"
-                echo "<summary><b>📄 neurobagel-query-results-with-URIs.tsv</b></summary>"
+                echo "<summary><b>📄 neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv</b></summary>"
                 echo ""
                 echo '```diff'
                 if [ $(wc -c < diff-artifact/results_uris.diff) -gt 25000 ]; then
@@ -72,7 +70,7 @@ jobs:
           else
             {
               echo ""
-              echo "✅ **No changes detected** in the query tool results TSV compared to \`neurobagel_examples:main\`."
+              echo "✅ **No changes detected** in the query tool results TSVs compared to \`neurobagel_examples:main\`."
             } > "$COMMENT_FILE"
           fi
 

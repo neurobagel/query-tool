@@ -1,13 +1,10 @@
-name: preview examples diff
+name: generate examples diff
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
-  pull-requests: write
-  issues: write
 
 jobs:
   generate-diff:
@@ -59,20 +56,21 @@ jobs:
           cp cypress/downloads/neurobagel-query-results_YYYYMMDDHHMMSS.tsv generated_examples/query-tool-results/
           cp cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv generated_examples/query-tool-results/
 
-          diff -U 0 --label "reference/neurobagel-query-results.tsv" --label "generated/neurobagel-query-results.tsv" \
+          # compute diff in minimal unified format (GitHub +/- style) and with custom filenames in the diff header
+          diff -U 0 --label "reference/neurobagel-query-results_YYYYMMDDHHMMSS.tsv" --label "generated/neurobagel-query-results_YYYYMMDDHHMMSS.tsv" \
             reference_examples/query-tool-results/neurobagel-query-results_YYYYMMDDHHMMSS.tsv \
             generated_examples/query-tool-results/neurobagel-query-results_YYYYMMDDHHMMSS.tsv \
             > diff-artifact/results.diff || true
 
-          diff -U 0 --label "reference/neurobagel-query-results-with-URIs.tsv" --label "generated/neurobagel-query-results-with-URIs.tsv" \
+          diff -U 0 --label "reference/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv" --label "generated/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv" \
             reference_examples/query-tool-results/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv \
             generated_examples/query-tool-results/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv \
             > diff-artifact/results_uris.diff || true
 
           if [ -s diff-artifact/results.diff ] || [ -s diff-artifact/results_uris.diff ]; then
-            echo "has_diff=true" > diff-artifact/diff_status.txt
+            echo "true" > diff-artifact/has_diff.txt
           else
-            echo "has_diff=false" > diff-artifact/diff_status.txt
+            echo "false" > diff-artifact/has_diff.txt
           fi
 
       - name: Upload diff artifact
@@ -87,15 +85,15 @@ jobs:
           echo "pr_number=$(cat diff-artifact/pr_number.txt)" >> "$GITHUB_OUTPUT"
           COMMENT_FILE="diff-artifact/comment.md"
 
-          if [ "$(cat diff-artifact/diff_status.txt)" = "has_diff=true" ]; then
+          if [ "$(cat diff-artifact/has_diff.txt)" = "true" ]; then
             {
               echo ""
-              echo "⚠️ **Changes detected** in the query tool results TSV compared to \`neurobagel_examples:main\`:"
+              echo "⚠️ **Changes detected** in the query tool results TSV(s) compared to \`neurobagel_examples:main\`:"
 
               if [ -s diff-artifact/results.diff ]; then
                 echo ""
                 echo "<details open>"
-                echo "<summary><b>📄 neurobagel-query-results.tsv</b></summary>"
+                echo "<summary><b>📄 neurobagel-query-results_YYYYMMDDHHMMSS.tsv</b></summary>"
                 echo ""
                 echo '```diff'
                 if [ $(wc -c < diff-artifact/results.diff) -gt 25000 ]; then
@@ -112,7 +110,7 @@ jobs:
               if [ -s diff-artifact/results_uris.diff ]; then
                 echo ""
                 echo "<details open>"
-                echo "<summary><b>📄 neurobagel-query-results-with-URIs.tsv</b></summary>"
+                echo "<summary><b>📄 neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv</b></summary>"
                 echo ""
                 echo '```diff'
                 if [ $(wc -c < diff-artifact/results_uris.diff) -gt 25000 ]; then
@@ -129,7 +127,7 @@ jobs:
           else
             {
               echo ""
-              echo "✅ **No changes detected** in the query tool results TSV compared to \`neurobagel_examples:main\`."
+              echo "✅ **No changes detected** in the query tool results TSVs compared to \`neurobagel_examples:main\`."
             } > "$COMMENT_FILE"
           fi
 
