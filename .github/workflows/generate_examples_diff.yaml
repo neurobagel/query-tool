@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR head
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           submodules: true
 
@@ -41,7 +41,7 @@ jobs:
           mv cypress/downloads/neurobagel-query-results-with-URIs_*.tsv cypress/downloads/neurobagel-query-results-with-URIs_YYYYMMDDHHMMSS.tsv
 
       - name: Checkout reference TSVs from neurobagel_examples
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           repository: neurobagel/neurobagel_examples
           ref: main
