@@ -85,10 +85,10 @@ describe('QueryForm', () => {
         onSubmitQuery={defaultProps.onSubmitQuery}
       />
     );
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Neurobagel node-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Minimum age-continuous-field"]').should('be.visible');
     cy.get('[data-cy="Maximum age-continuous-field"]').should('be.visible');
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('be.visible');
+    cy.get('[data-cy="Neurobagel node-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Sex-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Diagnosis-categorical-field"]').should('be.visible');
     cy.get('[data-cy="Minimum number of imaging sessions-continuous-field"]').should('be.visible');
@@ -293,5 +293,11 @@ describe('QueryForm', () => {
     cy.get('@onPipelineChangeSpy').should('have.been.calledWith', [
       { pipelineId: 'np:fmriprep', pipelineLabel: 'fmriprep' },
     ]);
+  });
+
+  it('shows a tooltip describing nodes on hover', () => {
+    cy.mount(<QueryForm {...defaultProps} />);
+    cy.get('[data-cy="Neurobagel node-tooltip-icon"]').trigger('mouseover');
+    cy.get('[role="tooltip"]').should('contain', 'collection of datasets');
   });
 });
