@@ -1,4 +1,5 @@
-import { Autocomplete, Checkbox, TextField } from '@mui/material';
+import { Autocomplete, Box, Checkbox, TextField, Tooltip } from '@mui/material';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { FieldInputOption } from '../utils/types';
 
 export interface MultiSelectFieldProps {
@@ -7,6 +8,7 @@ export interface MultiSelectFieldProps {
   onFieldChange: (fieldLabel: string, value: FieldInputOption[]) => void;
   value: FieldInputOption[];
   disabled?: boolean;
+  tooltip?: string;
 }
 
 /**
@@ -21,10 +23,11 @@ function MultiSelectField({
   onFieldChange,
   value,
   disabled = false,
+  tooltip,
 }: MultiSelectFieldProps) {
   const sortedOptions = [...options].sort((a, b) => a.label.localeCompare(b.label));
 
-  return (
+  const field = (
     <Autocomplete
       multiple
       disableCloseOnSelect
@@ -43,7 +46,25 @@ function MultiSelectField({
       )}
       onChange={(_, newValue) => onFieldChange(label, newValue)}
       disabled={disabled}
+      sx={tooltip ? { flexGrow: 1 } : undefined}
     />
+  );
+
+  if (!tooltip) return field;
+
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      {field}
+      <Tooltip title={tooltip} arrow>
+        <HelpOutlineIcon
+          fontSize="small"
+          color="action"
+          tabIndex={0}
+          aria-label={tooltip}
+          data-cy={`${label}-tooltip-icon`}
+        />
+      </Tooltip>
+    </Box>
   );
 }
 
