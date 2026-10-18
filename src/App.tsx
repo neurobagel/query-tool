@@ -52,6 +52,7 @@ function App() {
   const [imagingModalityOptions, setImagingModalityOptions] = useState<ImagingModalityOption[]>([]);
   const [imagingModalitiesMetadata, setImagingModalitiesMetadata] =
     useState<ImagingModalitiesMetadata>({});
+  const [isImagingModalitiesLoading, setIsImagingModalitiesLoading] = useState<boolean>(true);
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
@@ -149,7 +150,7 @@ function App() {
       NBResource: string,
       dataElementURI: string,
       onSuccess: (items: T[]) => void,
-      options: { removeMissingLabels?: boolean } = {}
+      options: { removeMissingLabels?: boolean; onFinally?: () => void } = {}
     ) {
       const removeMissingLabels = options.removeMissingLabels ?? true;
       try {
@@ -205,6 +206,8 @@ function App() {
         onSuccess(filteredItems as T[]);
       } catch {
         enqueueSnackbar(`Failed to retrieve ${NBResource} options`, { variant: 'error', action });
+      } finally {
+        options.onFinally?.();
       }
     }
 
@@ -216,17 +219,24 @@ function App() {
       setAssessmentOptions(assessmentResponse);
     });
 
-    getAttributes<ImagingModalityOption>('imaging-modalities', 'nb:Image', (modalities) => {
-      setImagingModalityOptions(modalities);
-      const modalityMap = modalities.reduce<ImagingModalitiesMetadata>((acc, modality) => {
-        const [, suffix] = modality.TermURL.split(':');
-        const fullIRI = suffix ? `http://purl.org/nidash/nidm#${suffix}` : modality.TermURL;
-        acc[modality.TermURL] = modality;
-        acc[fullIRI] = modality;
-        return acc;
-      }, {});
-      setImagingModalitiesMetadata(modalityMap);
-    });
+    getAttributes<ImagingModalityOption>(
+      'imaging-modalities',
+      'nb:Image',
+      (modalities) => {
+        setImagingModalityOptions(modalities);
+        const modalityMap = modalities.reduce<ImagingModalitiesMetadata>((acc, modality) => {
+          const [, suffix] = modality.TermURL.split(':');
+          const fullIRI = suffix ? `http://purl.org/nidash/nidm#${suffix}` : modality.TermURL;
+          acc[modality.TermURL] = modality;
+          acc[fullIRI] = modality;
+          return acc;
+        }, {});
+        setImagingModalitiesMetadata(modalityMap);
+      },
+      {
+        onFinally: () => setIsImagingModalitiesLoading(false),
+      }
+    );
 
     getAttributes<AttributeOption>(
       'pipelines',
@@ -700,6 +710,7 @@ function App() {
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
                 imagingModalitiesMetadata={imagingModalitiesMetadata}
+                isImagingModalitiesLoading={isImagingModalitiesLoading}
                 queryForm={activeQueryParams}
                 disableDownloads={queryFormHasChanged}
                 onDownload={(buttonIndex, selection) => handleDownload(buttonIndex, selection)}
