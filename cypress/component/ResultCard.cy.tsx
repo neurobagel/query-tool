@@ -384,4 +384,20 @@ describe('ResultCard', () => {
     cy.get('[data-testid="MenuBookIcon"]').parent().trigger('mouseover', { force: true });
     cy.get('.MuiTooltip-tooltip').should('contain', 'Catalog-Level Dataset (No Subject Data)');
   });
+
+  it('should display skeleton loading state when imaging modality metadata is loading', () => {
+    cy.mount(
+      <ResultCard
+        dataset={props}
+        imagingModalitiesMetadata={{}}
+        isImagingModalitiesLoading={true}
+        checked={props.checked}
+        onCheckboxChange={props.onCheckboxChange}
+      />
+    );
+
+    cy.get('[data-cy="card-some uuid-modality-skeleton"]').should('be.visible');
+    cy.get('[data-cy="modality-buttons"]').should('not.exist');
+    cy.contains('No imaging modalities available').should('not.exist');
+  });
 });
