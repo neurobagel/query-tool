@@ -297,7 +297,7 @@ describe('QueryForm', () => {
 
   it('shows a tooltip describing nodes on hover', () => {
     cy.mount(<QueryForm {...defaultProps} />);
-    cy.get('[data-cy="Neurobagel node-tooltip-icon"]').trigger('mouseover');
-    cy.get('[role="tooltip"]').should('contain', 'collection of datasets');
+    cy.get('[data-cy="Neurobagel node-categorical-field"]').trigger('mouseover');
+    cy.get('[role="tooltip"]').should('contain', 'collection of datasets hosted remotely');
   });
 });

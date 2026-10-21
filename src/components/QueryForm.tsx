@@ -105,7 +105,7 @@ function QueryForm({
       <div>
         <MultiSelectField
           label="Neurobagel node"
-          tooltip="A collection of datasets owned, hosted, and/or made available by a research data provider"
+          tooltip="A node is a collection of datasets hosted remotely by a data provider."
           options={availableNodes.map((n) => ({
             label: n.NodeName,
             id: n.ApiURL,
