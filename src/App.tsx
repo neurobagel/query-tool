@@ -357,7 +357,7 @@ function App() {
 
   function updateCategoricalQueryParams(fieldLabel: string, value: FieldInput) {
     switch (fieldLabel) {
-      case 'Neurobagel graph':
+      case 'Neurobagel node':
         if (Array.isArray(value)) {
           const isAllSelectedNow = value.some((n) => n.label === 'All');
           const wasAllSelectedBefore = Array.isArray(selectedNode)

@@ -148,26 +148,26 @@ describe('App', () => {
     cy.get('[data-cy="query-form-container"]').should('be.visible');
   });
   it('Selects different nodes in the nodes field', () => {
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]').click();
+    cy.get('[data-cy="Neurobagel node-categorical-field"]').click();
     cy.contains('.MuiAutocomplete-option', 'OpenNeuro').click();
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('contain', 'OpenNeuro');
+    cy.get('[data-cy="Neurobagel node-categorical-field"]').should('contain', 'OpenNeuro');
     cy.contains('.MuiAutocomplete-option', 'Quebec Parkinson Network').click();
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+    cy.get('[data-cy="Neurobagel node-categorical-field"]')
       .should('contain', 'Quebec')
       .and('contain', 'OpenNeuro');
     cy.contains('.MuiAutocomplete-option', 'All').click();
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+    cy.get('[data-cy="Neurobagel node-categorical-field"]')
       .should('not.contain', 'Quebec')
       .and('not.contain', 'OpenNeuro');
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('contain', 'All');
+    cy.get('[data-cy="Neurobagel node-categorical-field"]').should('contain', 'All');
     cy.contains('.MuiAutocomplete-option', 'OpenNeuro').click();
     cy.contains('.MuiAutocomplete-option', 'Quebec Parkinson Network').click();
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+    cy.get('[data-cy="Neurobagel node-categorical-field"]')
       .find('.MuiAutocomplete-clearIndicator')
       .click({ force: true });
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]')
+    cy.get('[data-cy="Neurobagel node-categorical-field"]')
       .should('not.contain', 'Quebec')
       .and('not.contain', 'OpenNeuro');
-    cy.get('[data-cy="Neurobagel graph-categorical-field"]').should('contain', 'All');
+    cy.get('[data-cy="Neurobagel node-categorical-field"]').should('contain', 'All');
   });
 });

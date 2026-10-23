@@ -1,4 +1,4 @@
-import { Autocomplete, Checkbox, TextField } from '@mui/material';
+import { Autocomplete, Checkbox, TextField, Tooltip } from '@mui/material';
 import { FieldInputOption } from '../utils/types';
 
 export interface MultiSelectFieldProps {
@@ -7,6 +7,7 @@ export interface MultiSelectFieldProps {
   onFieldChange: (fieldLabel: string, value: FieldInputOption[]) => void;
   value: FieldInputOption[];
   disabled?: boolean;
+  tooltip?: string;
 }
 
 /**
@@ -21,10 +22,11 @@ function MultiSelectField({
   onFieldChange,
   value,
   disabled = false,
+  tooltip,
 }: MultiSelectFieldProps) {
   const sortedOptions = [...options].sort((a, b) => a.label.localeCompare(b.label));
 
-  return (
+  const field = (
     <Autocomplete
       multiple
       disableCloseOnSelect
@@ -44,6 +46,14 @@ function MultiSelectField({
       onChange={(_, newValue) => onFieldChange(label, newValue)}
       disabled={disabled}
     />
+  );
+
+  if (!tooltip) return field;
+
+  return (
+    <Tooltip title={tooltip} arrow>
+      <div>{field}</div>
+    </Tooltip>
   );
 }
 
