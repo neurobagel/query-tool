@@ -1,3 +1,25 @@
+# v0.17.1 (Fri Oct 23 2026)
+
+#### 🚀 Enhancements
+
+- [ENH] Rename "Neurobagel graph" to "Neurobagel node" and add explanatory tooltip [#893](https://github.com/neurobagel/query-tool/pull/893) ([@Copilot](https://github.com/Copilot))
+
+#### 🏠 Internal
+
+- [TST] fix flakiness in form node selection test [#878](https://github.com/neurobagel/query-tool/pull/878) ([@rmanaem](https://github.com/rmanaem))
+- [ENH] Display diff for example files on pull request [#872](https://github.com/neurobagel/query-tool/pull/872) ([@rmanaem](https://github.com/rmanaem) [@alyssadai](https://github.com/alyssadai))
+- [MNT] Add OpenSSF Scorecard badge to README [#875](https://github.com/neurobagel/query-tool/pull/875) ([@alyssadai](https://github.com/alyssadai))
+- [MNT] Address Security and Quality Issues [#870](https://github.com/neurobagel/query-tool/pull/870) ([@rmanaem](https://github.com/rmanaem))
+- [MNT] Add missing attribute options to mocked responses - #855 [#855](https://github.com/neurobagel/query-tool/pull/855) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 3
+
+- [@Copilot](https://github.com/Copilot)
+- Alyssa Dai ([@alyssadai](https://github.com/alyssadai))
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.17.0 (Tue Sep 15 2026)
 
 #### 💥 Breaking Changes
