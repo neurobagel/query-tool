@@ -16,11 +16,13 @@ import ExpandedDetails from './ExpandedDetails';
 const ResultCard = memo(function ResultCard({
   dataset,
   imagingModalitiesMetadata,
+  isImagingModalitiesLoading,
   checked,
   onCheckboxChange,
 }: {
   dataset: DatasetsResult;
   imagingModalitiesMetadata: ImagingModalitiesMetadata;
+  isImagingModalitiesLoading?: boolean;
   checked: boolean;
   onCheckboxChange: (id: string) => void;
 }) {
@@ -101,6 +103,7 @@ const ResultCard = memo(function ResultCard({
                 imageModals={imageModals}
                 imagingModalitiesMetadata={imagingModalitiesMetadata}
                 datasetUuid={datasetUuid}
+                isLoading={isImagingModalitiesLoading}
               />
               <DerivativeDataColumn
                 availablePipelines={availablePipelines}

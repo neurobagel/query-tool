@@ -537,6 +537,82 @@ describe('Regression Tests', () => {
     cy.get('[data-cy="Diagnosis-categorical-field"]').type('parkin{downarrow}{enter}');
     cy.get('[data-cy="Diagnosis-categorical-field"]').should('contain', "Parkinson's disease");
   });
+
+  it('should display skeleton loading state when imaging modality metadata lags behind dataset results', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/nodes',
+      },
+      nodeOptions
+    ).as('getNodes');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/diagnoses',
+      },
+      diagnosisOptions
+    ).as('getDiagnosisOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/assessments',
+      },
+      assessmentToolOptions
+    ).as('getAssessmentToolOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/pipelines',
+      },
+      pipelineOptions
+    ).as('getPipelineOptions');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/imaging-modalities',
+      },
+      (req) => {
+        req.on('response', (res) => {
+          res.setDelay(3500);
+        });
+      }
+    ).as('delayedImagingModalities');
+
+    cy.intercept(
+      {
+        method: 'POST',
+        url: '/datasets',
+      },
+      mixedResponse
+    ).as('postDatasets');
+
+    cy.visit('/');
+    cy.wait([
+      '@getNodes',
+      '@getDiagnosisOptions',
+      '@getAssessmentToolOptions',
+      '@getPipelineOptions',
+    ]);
+
+    cy.get('[data-cy="close-auth-dialog-button"]').click();
+
+    cy.get('[data-cy="submit-query-button"]').click();
+    cy.wait('@postDatasets');
+
+    // While imaging modalities metadata is still in-flight, a skeleton placeholder should be shown
+    cy.get('[data-cy*="modality-skeleton"]').should('be.visible');
+    cy.get('[data-cy="modality-buttons"]').should('not.exist');
+
+    // Once imaging modalities metadata arrives, the skeleton should be replaced by buttons
+    cy.wait('@delayedImagingModalities');
+    cy.get('[data-cy*="modality-skeleton"]').should('not.exist');
+    cy.get('[data-cy="modality-buttons"]').should('be.visible');
+  });
 });
 
 describe('Partially successful API query requests', () => {
