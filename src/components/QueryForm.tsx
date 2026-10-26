@@ -104,7 +104,8 @@ function QueryForm({
     <div className="flex flex-col gap-2">
       <div>
         <MultiSelectField
-          label="Neurobagel graph"
+          label="Neurobagel node"
+          tooltip="A node is a collection of datasets hosted remotely by a data provider."
           options={availableNodes.map((n) => ({
             label: n.NodeName,
             id: n.ApiURL,
