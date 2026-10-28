@@ -25,6 +25,7 @@ import {
   ImagingModalityOption,
   AttributeResponse,
   ImagingModalitiesMetadata,
+  AttributesLoading,
 } from './utils/types';
 import QueryForm from './components/QueryForm';
 import ResultContainer from './components/ResultContainer';
@@ -52,7 +53,12 @@ function App() {
   const [imagingModalityOptions, setImagingModalityOptions] = useState<ImagingModalityOption[]>([]);
   const [imagingModalitiesMetadata, setImagingModalitiesMetadata] =
     useState<ImagingModalitiesMetadata>({});
-  const [isImagingModalitiesLoading, setIsImagingModalitiesLoading] = useState<boolean>(true);
+  const [attributesLoading, setAttributesLoading] = useState<AttributesLoading>({
+    diagnoses: true,
+    assessments: true,
+    imagingModalities: true,
+    pipelines: true,
+  });
   const [availableNodes, setAvailableNodes] = useState<NodeOption[]>([
     { NodeName: 'All', ApiURL: 'allNodes' },
   ]);
@@ -211,13 +217,27 @@ function App() {
       }
     }
 
-    getAttributes<AttributeOption>('diagnoses', 'nb:Diagnosis', (diagnosisResponse) => {
-      setDiagnosisOptions(diagnosisResponse);
-    });
+    getAttributes<AttributeOption>(
+      'diagnoses',
+      'nb:Diagnosis',
+      (diagnosisResponse) => {
+        setDiagnosisOptions(diagnosisResponse);
+      },
+      {
+        onFinally: () => setAttributesLoading((prev) => ({ ...prev, diagnoses: false })),
+      }
+    );
 
-    getAttributes<AttributeOption>('assessments', 'nb:Assessment', (assessmentResponse) => {
-      setAssessmentOptions(assessmentResponse);
-    });
+    getAttributes<AttributeOption>(
+      'assessments',
+      'nb:Assessment',
+      (assessmentResponse) => {
+        setAssessmentOptions(assessmentResponse);
+      },
+      {
+        onFinally: () => setAttributesLoading((prev) => ({ ...prev, assessments: false })),
+      }
+    );
 
     getAttributes<ImagingModalityOption>(
       'imaging-modalities',
@@ -234,7 +254,7 @@ function App() {
         setImagingModalitiesMetadata(modalityMap);
       },
       {
-        onFinally: () => setIsImagingModalitiesLoading(false),
+        onFinally: () => setAttributesLoading((prev) => ({ ...prev, imagingModalities: false })),
       }
     );
 
@@ -247,7 +267,10 @@ function App() {
         });
       },
       // TODO to revisit once pipelines come with Label
-      { removeMissingLabels: false }
+      {
+        removeMissingLabels: false,
+        onFinally: () => setAttributesLoading((prev) => ({ ...prev, pipelines: false })),
+      }
     );
 
     async function getNodeOptions(fetchURL: string) {
@@ -710,7 +733,7 @@ function App() {
                 diagnosisOptions={diagnosisOptions}
                 assessmentOptions={assessmentOptions}
                 imagingModalitiesMetadata={imagingModalitiesMetadata}
-                isImagingModalitiesLoading={isImagingModalitiesLoading}
+                isImagingModalitiesLoading={attributesLoading.imagingModalities}
                 queryForm={activeQueryParams}
                 disableDownloads={queryFormHasChanged}
                 onDownload={(buttonIndex, selection) => handleDownload(buttonIndex, selection)}
