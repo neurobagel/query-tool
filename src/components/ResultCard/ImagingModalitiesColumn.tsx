@@ -1,4 +1,4 @@
-import { Tooltip, Button, Stack, Divider } from '@mui/material';
+import { Tooltip, Button, Stack, Divider, Skeleton } from '@mui/material';
 import { ImagingModalitiesMetadata } from '../../utils/types';
 import { modalitiesDataTypeColorMapping } from '../../utils/constants';
 
@@ -6,14 +6,48 @@ interface ImagingModalitiesColumnProps {
   imageModals: string[];
   imagingModalitiesMetadata: ImagingModalitiesMetadata;
   datasetUuid: string;
+  isLoading?: boolean;
 }
 
 function ImagingModalitiesColumn({
   imageModals,
   imagingModalitiesMetadata,
   datasetUuid,
+  isLoading = false,
 }: ImagingModalitiesColumnProps) {
-  return imageModals.length > 0 ? (
+  if (imageModals.length === 0) {
+    return (
+      <Button disabled sx={{ textTransform: 'none', fontStyle: 'italic' }} disableElevation>
+        No imaging modalities available
+      </Button>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Stack
+        direction="row"
+        data-cy={`card-${datasetUuid}-modality-skeleton`}
+        spacing={0.5}
+        sx={{
+          borderRadius: 1,
+          overflow: 'hidden',
+        }}
+      >
+        {imageModals.map((modal, index) => (
+          <Skeleton
+            key={modal || index}
+            variant="rectangular"
+            width={48}
+            height={26}
+            sx={{ borderRadius: 0.5 }}
+          />
+        ))}
+      </Stack>
+    );
+  }
+
+  return (
     <Stack
       direction="row"
       data-cy="modality-buttons"
@@ -30,7 +64,7 @@ function ImagingModalitiesColumn({
         overflow: 'hidden',
       }}
     >
-      {imageModals
+      {[...imageModals]
         .sort()
         .filter((modal) => {
           const metadata = imagingModalitiesMetadata[modal];
@@ -65,10 +99,6 @@ function ImagingModalitiesColumn({
           );
         })}
     </Stack>
-  ) : (
-    <Button disabled sx={{ textTransform: 'none', fontStyle: 'italic' }} disableElevation>
-      No imaging modalities available
-    </Button>
   );
 }
 

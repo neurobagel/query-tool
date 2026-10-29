@@ -31,6 +31,13 @@ export interface ImagingModalitiesMetadata {
   [key: string]: ImagingModalityOption;
 }
 
+export interface AttributesLoading {
+  diagnoses: boolean;
+  assessments: boolean;
+  imagingModalities: boolean;
+  pipelines: boolean;
+}
+
 export interface NodeOption {
   NodeName: string;
   ApiURL: string;

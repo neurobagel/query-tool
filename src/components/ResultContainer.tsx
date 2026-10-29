@@ -20,6 +20,7 @@ function ResultContainer({
   diagnosisOptions,
   assessmentOptions,
   imagingModalitiesMetadata,
+  isImagingModalitiesLoading,
   datasetsResponse,
   queryForm,
   disableDownloads,
@@ -28,6 +29,7 @@ function ResultContainer({
   diagnosisOptions: AttributeOption[];
   assessmentOptions: AttributeOption[];
   imagingModalitiesMetadata: ImagingModalitiesMetadata;
+  isImagingModalitiesLoading?: boolean;
   datasetsResponse: DatasetsResponse | null;
   queryForm: QueryParams | null;
   disableDownloads: boolean;
@@ -386,6 +388,7 @@ function ResultContainer({
                   key={item.dataset_uuid}
                   dataset={item}
                   imagingModalitiesMetadata={imagingModalitiesMetadata}
+                  isImagingModalitiesLoading={isImagingModalitiesLoading}
                   checked={download.includes(item.dataset_uuid)}
                   onCheckboxChange={updateDownload}
                 />
