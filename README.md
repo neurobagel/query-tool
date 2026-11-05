@@ -214,6 +214,39 @@ To run the tests execute the following command:
 npx cypress open
 ```
 
+## Working in the monorepo
+
+This tool lives in `packages/query-tool` of the Neurobagel monorepo ([neurobagel/neurobagel](https://github.com/neurobagel/neurobagel)). Clone the monorepo, not the old `neurobagel/query-tool` repository, which is a read-only mirror of this folder:
+
+```bash
+git clone --recurse-submodules https://github.com/neurobagel/neurobagel.git
+cd neurobagel
+```
+
+Differences from the instructions above:
+
+- `recipes` and `neurobagel_examples` are no longer submodules. They are symlinks to the monorepo's `deploy/` and `testdata/` folders, so no `git submodule update` is needed.
+- The husky hooks are replaced by the monorepo's root pre-commit hooks; `npx husky init` is not needed.
+- Run the commands from `packages/query-tool`.
+
+From the monorepo root:
+
+```bash
+cd packages/query-tool
+npm ci
+npm run lint:check
+npm run format:check
+export NB_API_QUERY_URL=https://federate.neurobagel.org/
+npx cypress run --component
+NB_ENABLE_AUTH=true NB_QUERY_CLIENT_ID=mockclientid npm run build
+npm run preview &
+npx cypress run --e2e
+```
+
+Stop the preview server afterwards (for example with `fg`, then Ctrl+C).
+
+Code style checks run through the monorepo's root pre-commit configuration (`pre-commit install` at the repository root). Pull request titles must be conventional commits, and releases (tags `query-tool-v<version>`) are made from the monorepo; see [DEVELOPING.md](https://github.com/neurobagel/neurobagel/blob/main/DEVELOPING.md).
+
 ## License
 
 The query tool is released under the terms of the [MIT License](LICENSE)
