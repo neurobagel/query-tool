@@ -1,3 +1,19 @@
+# v0.17.2 (Thu Nov 26 2026)
+
+#### 🚀 Enhancements
+
+- Trigger release [#917](https://github.com/neurobagel/query-tool/pull/917) ([@rmanaem](https://github.com/rmanaem))
+
+#### 🐛 Bug Fixes
+
+- [FIX] Display skeleton loading state while imaging modality metadata is loading [#894](https://github.com/neurobagel/query-tool/pull/894) ([@rmanaem](https://github.com/rmanaem))
+
+#### Authors: 1
+
+- Arman Jahanpour ([@rmanaem](https://github.com/rmanaem))
+
+---
+
 # v0.17.1 (Fri Oct 23 2026)
 
 #### 🚀 Enhancements
